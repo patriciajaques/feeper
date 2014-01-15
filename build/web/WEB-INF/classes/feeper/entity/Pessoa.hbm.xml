@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 6, 2014 9:05:52 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="feeper.entity.Pessoa" table="Pessoa" catalog="feeper">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="identity" />
+        </id>
+        <property name="nome" type="string">
+            <column name="Nome" length="100" not-null="true" />
+        </property>
+        <property name="email" type="string">
+            <column name="Email" length="100" not-null="true" />
+        </property>
+        <property name="senha" type="string">
+            <column name="Senha" length="50" not-null="true" />
+        </property>
+        <property name="dataCadastro" type="timestamp">
+            <column name="DataCadastro" length="19" not-null="true" />
+        </property>
+        <property name="dataUltimoAcesso" type="timestamp">
+            <column name="DataUltimoAcesso" length="19" />
+        </property>
+        <property name="tipoPessoa" type="char">
+            <column name="TipoPessoa" length="1" not-null="true">
+                <comment>'A': Aluno 'P': Professor</comment>
+            </column>
+        </property>
+        <property name="ativo" type="boolean">
+            <column name="Ativo" not-null="true" />
+        </property>
+        <property name="ip" type="string">
+            <column name="IP" length="15" />
+        </property>
+        <property name="idNivelDificuldade" type="int">
+            <column name="IdNivelDificuldade" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

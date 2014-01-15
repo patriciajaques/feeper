@@ -1,0 +1,54 @@
+html,body{ height:100% }
+body { padding-top: 70px; }
+body.clean-modal { padding-top: 0px; height: auto; }
+
+.linemarker {
+    width: 58px;
+    font-size: 15px;
+    height: 20px;
+    padding-top: 0px;
+    padding-right: 0px;
+}
+
+.badge-important{
+    background-color:#3276b1;
+}
+
+/*
+ * Glyphicons
+ *
+ * Special styles for displaying the icons and their classes in the docs.
+ */
+
+.mosaico {
+  padding-left: 0;
+  padding-bottom: 1px;
+  margin-bottom: 20px;
+  list-style: none;
+  overflow: hidden;
+}
+.mosaico li {
+  float: left;
+  width: 25%;
+  height: 115px;
+  padding: 10px;
+  margin: 0 -1px -1px 0;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+.mosaico .quebrar-linha {
+  display: block;
+  text-align: center;
+  word-wrap: break-word; /* Help out IE10+ with class names */
+}
+.mosaico li:hover {
+  background-color: rgba(86,61,124,.1);
+}
+
+@media (min-width: 768px) {
+  .mosaico li {
+    width: 12.5%;
+  }
+}
