@@ -1,0 +1,28 @@
+{
+    "talk": [
+        {
+            "id" :27291,
+            "n"  :"Fábio Alves",
+            "dt" :"2013/09/20 17:57:30",
+            "c"  :"Olá professor, estou com uma dúvida a linha 53. Não sei como implementar o IF ternário"
+        },
+        {
+            "id" :27291,
+            "n"  :"Fábio Alves",
+            "dt" :"2013/09/20 17:57:33",
+            "c"  :"Você poderia me ajudar?"
+        },
+        {
+            "id" :843,
+            "n"  :"Fulano Siclano da Silva",
+            "dt" :"2013/09/21 09:10:13",
+            "c"  :"Bom dia Fábio! Para utilizar o if ternário implemente utilizando os seguintes operadores '?' e ':'"
+        },
+        {
+            "id" :843,
+            "n"  :"Fulano Siclano da Silva",
+            "dt" :"2013/09/21 09:10:17",
+            "c"  :"string a = b == 1 ? \"verdadeiro\" : \"falso\";"
+        }
+    ]
+}
