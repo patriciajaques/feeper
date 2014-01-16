@@ -2,7 +2,6 @@ package feeper.entity;
 // Generated Jan 6, 2014 9:05:50 PM by Hibernate Tools 3.2.1.GA
 
 
-import flexjson.JSON;
 import java.util.Date;
 
 /**

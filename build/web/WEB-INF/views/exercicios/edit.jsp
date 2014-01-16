@@ -12,6 +12,29 @@
                 $("#menu-cadastro-exercicio").addClass("active");
                 
                 
+                $('#file_upload').uploadify({
+                    'swf'           : '<c:url value='/resources/uploadify/uploadify.swf'/>',
+                    'uploader'      : '<c:url value='/'/>exercicios/upload',
+                    'fileTypeDesc'  : 'Arquivos PDF',
+                    'fileTypeExts'  : '*.pdf',
+                    'fileSizeLimit' : '500KB',
+                    'buttonText'    : '<fmt:message key="button.escolherarquivo"/>',
+                    'multi'         : false,
+                    //'fileOjbName'  : 'file',
+                    'onUploadSuccess' : function(file, data, response) {
+                        alert('The file ' + file.name + ' was successfully uploaded with a response of ' + response + ':' + data);
+                    },
+                    'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+                        alert('The file ' + file.name + ' could not be uploaded: ' + errorString);
+                    }
+                });
+                
+                $(".rd-detalhamento").click(function(){
+                    var show = $(this).attr("show-div");
+                    $(".div-detalhamento").slideUp("fast");
+                    $("#" + show).slideDown("fast");
+                });
+                
             });
         </script>
         
@@ -19,10 +42,10 @@
     <jsp:body>
         <h2><c:choose>
             <c:when test="${IsAdd != null && IsAdd}">
-                <fmt:message key="label.novoexercicio"/>
+                <fmt:message key="label.exercicios.novo"/>
             </c:when>
             <c:otherwise>
-                <fmt:message key="label.editarexercicio"/>
+                <fmt:message key="label.exercicios.editar"/>
             </c:otherwise>
         </c:choose></h2>
         
@@ -31,101 +54,52 @@
 
                 <form role="form">
                     <div class="form-group">
-                        <label for="nome">Nome:</label>
-                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Informe o nome da turma">
+                        <label for="titulo"><fmt:message key="label.exercicios.titulo"/>:</label>
+                        <input type="text" class="form-control" id="titulo" name="titulo" placeholder="<fmt:message key="label.exercicios.tituloinforme"/>">
                     </div>
                     <div class="form-group">
-                        <label for="professor">Professor:</label>
-                        <input type="text" class="form-control" id="professor" name="professor" placeholder="Informe o nome do professor">
-                    </div>
-                    <div class="form-group">
-                        <label for="encerramento">Data Encerramento:</label>
-                        <input type="text" class="form-control" id="encerramento" name="encerramento" placeholder="Informe a data de encerramento">
+                        <label for="nivel"><fmt:message key="label.exercicios.dificuldade"/>:</label>
+                        <select class="form-control" id="nivel" name="nivel">
+                            <option value="1">Baixa</option>
+                            <option value="2">Média</option>
+                            <option value="3">Alta</option>
+                        </select>
                     </div>
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" value="1" name="ativo" checked> Ativo
+                            <input type="checkbox" value="1" name="ativo" checked>
+                            <fmt:message key="label.exercicios.ativo"/>
                         </label>
                     </div>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                    <button type="button" class="btn btn-default">Voltar para listagem</button>
+                    <div class="form-group">
+                        <label for="encerramento"><fmt:message key="label.exercicios.detalhamento"/>:</label><br>
+                        <label class="radio-inline">
+                            <input type="radio" id="rdHTML" name="rdDetalhamento" class="rd-detalhamento" value="html" show-div="editorhtml" checked="">
+                            <fmt:message key="label.exercicios.utilizareditorhtml"/>
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" id="rdPDF" name="rdDetalhamento" class="rd-detalhamento" value="pdf" show-div="uploadpdf">
+                            <fmt:message key="label.exercicios.utilizarpdf"/>
+                        </label>
+                    </div>
+                    
+                    <div id="editorhtml" class="div-detalhamento">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                              Editor HTML
+                            </div>
+                        </div>
+                    </div>
+                    <div id="uploadpdf" style="display:none;" class="div-detalhamento">
+                        <input type="file" name="file_upload" id="file_upload" />
+                    </div>
+                        
+                    <button type="submit" class="btn btn-primary"><fmt:message key="button.salvar"/></button>
+                    <button type="button" class="btn btn-default"><fmt:message key="button.voltarlistagem"/></button>
                 </form>
 
             </div>
         </div>
-        
-        <c:if test="${IsAdd != null && !IsAdd}">
-            <h2>Lista de Alunos</h2>
-            <button type="button" id="btn-novo-aluno" class="btn btn-primary">Novo Aluno</button>
-            <button type="button" id="btn-novo-aluno" class="btn btn-default">Enviar Convite aos Alunos</button>
-            <br /><br />
-            
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Registros Cadastrados</h3>
-                </div>
-                <div class="panel-body">
-
-                    <table class="table table-striped table-hover" style="margin-bottom: 0px;">
-                        <thead>
-                            <tr>
-                                <th>Ações</th>
-                                <th>#</th>
-                                <th>Nome dd Aluno</th>
-                                <th>E-mail</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="btn-group btn-group-xs">
-                                        <button type="button" class="btn btn-default">Editar</button>
-                                        <button type="button" class="btn btn-default">Excluir</button>
-                                    </div>
-                                </td>
-                                <td>1</td>
-                                <td>Fábio Alves</td>
-                                <td>arnistrong@gmail.com</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="btn-group btn-group-xs">
-                                        <button type="button" class="btn btn-default">Editar</button>
-                                        <button type="button" class="btn btn-default">Excluir</button>
-                                    </div>
-                                </td>
-                                <td>2</td>
-                                <td>Fulano da Silva</td>
-                                <td>fulano.silva@gmail.com</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="btn-group btn-group-xs">
-                                        <button type="button" class="btn btn-default">Editar</button>
-                                        <button type="button" class="btn btn-default">Excluir</button>
-                                    </div>
-                                </td>
-                                <td>3</td>
-                                <td>Siclano Alves</td>
-                                <td>siclano.alves@gmail.com</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="btn-group btn-group-xs">
-                                        <button type="button" class="btn btn-default">Editar</button>
-                                        <button type="button" class="btn btn-default">Excluir</button>
-                                    </div>
-                                </td>
-                                <td>4</td>
-                                <td>Beltrano Lima</td>
-                                <td>beltrano.lima@gmail.com</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-        </c:if>
 
     </jsp:body>
 </t:master>

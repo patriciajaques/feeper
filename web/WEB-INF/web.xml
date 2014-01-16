@@ -22,16 +22,6 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     
-    <filter>
-        <filter-name>RequestFilter</filter-name>
-        <filter-class>feeper.model.RequestFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>RequestFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
     <!-- Handles all requests into the application -->
     <servlet>
         <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
