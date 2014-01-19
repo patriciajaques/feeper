@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Controller
 @RequestMapping(value="/exercicios")
@@ -62,26 +63,15 @@ public class ExerciciosController {
     
     @RequestMapping(value="/upload", method=RequestMethod.POST, produces="application/json")
     @ResponseBody
-    public Exercicio upload(HttpServletRequest request,
-		HttpServletResponse response, Object command, BindException errors)
-		throws Exception {
+    public String upload(MultipartHttpServletRequest request) {
         
-        //FileUpload file = (FileUpload)command;
-        MultipartFile file = (MultipartFile)command;
+        MultipartFile file = request.getFile("filedata");
+        
+        //file.getBytes()
  
-        //MultipartFile multipartFile = file.
+        //String s = request.getParameter("myParamName"); 
 
-        String fileName="";
-
-        //if(multipartFile!=null){
-        //        fileName = multipartFile.getOriginalFilename();
-                //do whatever you want
-        //}
-
-        Exercicio exercicio = new Exercicio();
-        exercicio.setNome("nome do exercicio");
-        exercicio.setId(123);
-        return exercicio;
+        return file.getOriginalFilename();
     }
     
     /*

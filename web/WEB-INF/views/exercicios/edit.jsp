@@ -20,12 +20,15 @@
                     'fileSizeLimit' : '500KB',
                     'buttonText'    : '<fmt:message key="button.escolherarquivo"/>',
                     'multi'         : false,
-                    //'fileOjbName'  : 'file',
+                    'fileObjName'   : 'filedata',
+                    'checkExisting' : false,
+                    'width'         : 146,
+                    'height'        : 34,
                     'onUploadSuccess' : function(file, data, response) {
-                        alert('The file ' + file.name + ' was successfully uploaded with a response of ' + response + ':' + data);
+                        //alert('The file ' + file.name + ' was successfully uploaded with a response of ' + response + ':' + data);
                     },
                     'onUploadError' : function(file, errorCode, errorMsg, errorString) {
-                        alert('The file ' + file.name + ' could not be uploaded: ' + errorString);
+                        //alert('The file ' + file.name + ' could not be uploaded: ' + errorString);
                     }
                 });
                 
@@ -40,14 +43,16 @@
         
     </jsp:attribute>
     <jsp:body>
-        <h2><c:choose>
+        <h2>
+        <c:choose>
             <c:when test="${IsAdd != null && IsAdd}">
                 <fmt:message key="label.exercicios.novo"/>
             </c:when>
             <c:otherwise>
                 <fmt:message key="label.exercicios.editar"/>
             </c:otherwise>
-        </c:choose></h2>
+        </c:choose>
+        </h2>
         
         <div class="panel panel-default">
             <div class="panel-body">
@@ -100,6 +105,89 @@
 
             </div>
         </div>
+                
+        <c:if test="${IsAdd != null && !IsAdd}">
+
+            <h2><fmt:message key="label.exercicios.cadastrarentradassaidas"/></h2>
+            
+            <button type="button" id="btn-nova-linha" class="btn btn-primary"><fmt:message key="button.novalinha"/></button>
+            <br /><br />
+            
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><fmt:message key="label.registroscadastrados"/></h3>
+                </div>
+                <div class="panel-body">
+
+                    <table class="table table-striped table-hover" style="margin-bottom: 0px;">
+                        <thead>
+                            <tr>
+                                <th><fmt:message key="label.exercicios.acoes"/></th>
+                                <th><fmt:message key="label.exercicios.entrada"/></th>
+                                <th><fmt:message key="label.exercicios.saida"/></th>
+                                <th><fmt:message key="label.exercicios.mensagemperzonalizada"/></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="btn-group btn-group-xs">
+                                        <button type="button" class="btn btn-default"><fmt:message key="button.excluir"/></button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </td>
+                                <td>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </td>
+                                <td>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="btn-group btn-group-xs">
+                                        <button type="button" class="btn btn-default"><fmt:message key="button.excluir"/></button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </td>
+                                <td>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </td>
+                                <td>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="btn-group btn-group-xs">
+                                        <button type="button" class="btn btn-default"><fmt:message key="button.excluir"/></button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </td>
+                                <td>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </td>
+                                <td>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <button type="button" id="btn-nova-linha" class="btn btn-primary"><fmt:message key="button.novalinha"/></button>
+            <br><br>
+            
+        </c:if>
+                
+        
 
     </jsp:body>
 </t:master>

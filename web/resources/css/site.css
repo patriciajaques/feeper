@@ -52,3 +52,12 @@ body.clean-modal { padding-top: 0px; height: auto; }
     width: 12.5%;
   }
 }
+
+#editor {
+    display: block;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}

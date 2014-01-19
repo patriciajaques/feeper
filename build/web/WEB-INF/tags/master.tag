@@ -4,6 +4,7 @@
 <%@attribute name="title" fragment="true" %>
 <%@attribute name="header" fragment="true" %>
 <%@attribute name="footer" fragment="true" %>
+<%@attribute name="rightmenu" fragment="true" %>
 <!DOCTYPE html>
 <html lang="pt">
     <head>
@@ -11,7 +12,7 @@
         
         <link href="<c:url value='/resources/css/bootstrap.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/css/util.css'/>" rel="stylesheet" type="text/css" />
-        <link href="<c:url value='/resources/css/webkit-scrollbars.css'/>" rel="stylesheet" type="text/css" />
+        <!--link href="<c:url value='/resources/css/webkit-scrollbars.css'/>" rel="stylesheet" type="text/css" /-->
         <link href="<c:url value='/resources/assets/google-code-prettify/prettify.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/css/site.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/fancybox/jquery.fancybox.css'/>" rel="stylesheet" type="text/css" />
@@ -108,6 +109,8 @@
                             <span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;<fmt:message key="menu.colegas"/>
                         </a>
                     </div>
+                        
+                    <jsp:invoke fragment="rightmenu"/>
                 </div>
             </div>
         </div>
