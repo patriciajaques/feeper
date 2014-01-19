@@ -10,6 +10,10 @@
         <script type="text/javascript">
             $(function(){
                 $("#menu-lista-exercicios").addClass("active");
+                
+                $(".btn-responder").click(function(){
+                    document.location.href = "<c:url value='/'/>exercicios/responder";
+                });
             });
         </script>
         
@@ -34,7 +38,7 @@
             <small class="pull-right">Data da Última Resposta</small>
             <br>
             <p>
-                <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.responder"/></button>
+                <button type="button" class="btn btn-primary btn-xs btn-responder"><fmt:message key="button.responder"/></button>
             </p>
         </blockquote>
         
@@ -44,7 +48,7 @@
             <small class="pull-right">Data da Última Resposta</small>
             <br>
             <p>
-                <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.responder"/></button>
+                <button type="button" class="btn btn-primary btn-xs btn-responder"><fmt:message key="button.responder"/></button>
             </p>
         </blockquote>
         
@@ -54,7 +58,7 @@
             <small class="pull-right">Data da Última Resposta</small>
             <br>
             <p>
-                <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.responder"/></button>
+                <button type="button" class="btn btn-primary btn-xs btn-responder"><fmt:message key="button.responder"/></button>
             </p>
         </blockquote>
         
@@ -64,7 +68,7 @@
             <small class="pull-right">Data da Última Resposta</small>
             <br>
             <p>
-                <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.responder"/></button>
+                <button type="button" class="btn btn-primary btn-xs btn-responder"><fmt:message key="button.responder"/></button>
             </p>
         </blockquote>
         
