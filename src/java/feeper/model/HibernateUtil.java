@@ -12,15 +12,19 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
  
-public abstract class HibernateUtil {
+public class HibernateUtil<T> {
     private static SessionFactory fabricaSessao;
     private static Session sessao;
     private static Transaction transacao;
+    
+    public HibernateUtil(){
+        iniciarSessao();
+    }
      
     /**
      * Inicia a SessionFactory
      */
-    public static void iniciarSessao(){        
+    private void iniciarSessao(){        
         if(fabricaSessao == null)
             try {
                 fabricaSessao = new AnnotationConfiguration().configure().buildSessionFactory();
@@ -33,8 +37,25 @@ public abstract class HibernateUtil {
      * Retorna uma nova sessão
      * @return Session
      */
-    private static Session getSessao(){
+    public Session getSessao(){
         return fabricaSessao.openSession();
+    }
+    
+    public List<T> pesquisar(Class objClass, String coluna, String dado){
+        List<T> lista = null;
+        Query query = null;
+        try {
+            sessao = getSessao();
+            transacao = sessao.beginTransaction();
+            query = sessao.createQuery("From "+objClass.getName()+" Where "+coluna+" like '%"+dado+"%'");
+            lista = query.list();
+        } catch (HibernateException e) { 
+            transacao.rollback();
+            System.err.println(e.fillInStackTrace());
+        } finally {
+            sessao.close();
+            return lista;
+        }
     }
 
     /**
@@ -42,8 +63,8 @@ public abstract class HibernateUtil {
      * @param objClass
      * @return List<Object>
      */
-    public static List<Object> selecionar(Class objClass){
-        List<Object> lista = null;
+    public List<T> selecionar(Class objClass){
+        List<T> lista = null;
         Query query = null;
         try {
             sessao = getSessao();
@@ -65,12 +86,12 @@ public abstract class HibernateUtil {
      * @param id
      * @return Object
      */
-    public static Object selecionar(Class objClass, long id){
-        Object objGet = null;
+    public T selecionar(Class objClass, Integer id){
+        T objGet = null;
         try {
             sessao = getSessao();
             transacao = sessao.beginTransaction();
-            objGet = sessao.get(objClass, id);
+            objGet = (T)sessao.get(objClass, id);
         } catch (HibernateException e) { 
             transacao.rollback();
             System.err.println(e.fillInStackTrace());
@@ -84,7 +105,8 @@ public abstract class HibernateUtil {
      * Persiste o objeto passado por parâmetro
      * @param obj 
      */
-    public static boolean inserir(Object obj){
+    public boolean inserir(T obj){
+        if (obj == null) return false;
         try{
             sessao = getSessao();
             transacao = sessao.beginTransaction();
@@ -104,7 +126,8 @@ public abstract class HibernateUtil {
      * Atualiza o objeto passado por parâmetro
      * @param obj 
      */
-    public static boolean atualizar(Object obj){
+    public boolean atualizar(T obj){
+        if (obj == null) return false;
         try{
             sessao = getSessao();
             transacao = sessao.beginTransaction();
@@ -124,7 +147,8 @@ public abstract class HibernateUtil {
      * Exclui o objeto passado por parâmetro
      * @param obj 
      */
-    public static boolean excluir(Object obj){
+    public boolean excluir(T obj){
+        if (obj == null) return false;
         try{
             sessao = getSessao();
             transacao = sessao.beginTransaction();

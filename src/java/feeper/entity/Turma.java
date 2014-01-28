@@ -1,5 +1,5 @@
 package feeper.entity;
-// Generated Jan 6, 2014 9:05:50 PM by Hibernate Tools 3.2.1.GA
+// Generated Jan 27, 2014 10:21:02 PM by Hibernate Tools 3.2.1.GA
 
 
 import java.util.Date;
@@ -9,13 +9,13 @@ import java.util.Date;
  */
 public class Turma  implements java.io.Serializable {
 
-
      private Integer id;
      private String nome;
      private Date dataCadastro;
      private Date dataEncerramento;
      private boolean ativo;
      private Integer idProfessor;
+     private Pessoa professor;
 
     public Turma() {
     }
@@ -26,12 +26,12 @@ public class Turma  implements java.io.Serializable {
         this.dataCadastro = dataCadastro;
         this.ativo = ativo;
     }
-    public Turma(String nome, Date dataCadastro, Date dataEncerramento, boolean ativo, Integer idProfessor) {
+    public Turma(String nome, Date dataCadastro, Date dataEncerramento, boolean ativo, Pessoa professor) {
        this.nome = nome;
        this.dataCadastro = dataCadastro;
        this.dataEncerramento = dataEncerramento;
        this.ativo = ativo;
-       this.idProfessor = idProfessor;
+       this.professor = professor;
     }
    
     public Integer getId() {
@@ -76,9 +76,13 @@ public class Turma  implements java.io.Serializable {
     public void setIdProfessor(Integer idProfessor) {
         this.idProfessor = idProfessor;
     }
-
-
-
+    public Pessoa getProfessor() {
+        return this.professor;
+    }
+    
+    public void setProfessor(Pessoa professor) {
+        this.professor = professor;
+    }
 
 }
 

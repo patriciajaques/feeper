@@ -6,6 +6,8 @@ package feeper.controller;
 
 import feeper.entity.Pessoa;
 import feeper.model.ETipoPessoa;
+import feeper.model.HibernateUtil;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Controller
@@ -71,6 +74,16 @@ public class PessoaController {
         model.addAttribute("IsAdd", false);
         
         return "pessoa/edit";
+    }
+    
+    @RequestMapping(value="/search/{word}", method=RequestMethod.GET, produces="application/json")
+    @ResponseBody
+    public List<Pessoa> search(@PathVariable String word, Model model) {
+        
+        HibernateUtil<Pessoa> repo = new HibernateUtil<Pessoa>();
+        List<Pessoa> lista = repo.pesquisar(Pessoa.class, "nome", word);
+        
+        return lista;
     }
 
     /*

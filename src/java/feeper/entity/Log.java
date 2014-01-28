@@ -1,5 +1,5 @@
 package feeper.entity;
-// Generated Jan 6, 2014 9:05:50 PM by Hibernate Tools 3.2.1.GA
+// Generated Jan 27, 2014 10:21:02 PM by Hibernate Tools 3.2.1.GA
 
 
 import java.util.Date;
@@ -10,11 +10,11 @@ import java.util.Date;
 public class Log  implements java.io.Serializable {
 
 
-    private Long id;
-    private int idPessoa;
-    private String mensagem;
-    private int idTipoLog;
-    private Date dataCadastro;
+     private Long id;
+     private int idPessoa;
+     private String mensagem;
+     private int idTipoLog;
+     private Date dataCadastro;
 
     public Log() {
     }
@@ -40,7 +40,6 @@ public class Log  implements java.io.Serializable {
     public void setIdPessoa(int idPessoa) {
         this.idPessoa = idPessoa;
     }
-    
     public String getMensagem() {
         return this.mensagem;
     }

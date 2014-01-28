@@ -10,6 +10,24 @@
         <script type="text/javascript">
             $(function(){
                 $("#menu-lista-turma").addClass("active");
+                
+                $(".btn-novo").click(function(){
+                    document.location.href = "<c:url value='/'/>turma/add";
+                });
+                
+                $(".btn-editar").click(function(){
+                    var id = $(this).attr("data-id");
+                    if (id === undefined) return;
+                    document.location.href = "<c:url value='/'/>turma/edit/" + id;
+                });
+                
+                $(".btn-excluir").click(function(){
+                    var id = $(this).attr("data-id");
+                    if (id === undefined) return;
+                    if (!confirm("<fmt:message key="label.confirmaexclusao"/>")) return;
+                    document.location.href = "<c:url value='/'/>turma/delete/" + id;
+                });
+                
             });
         </script>
         
@@ -18,7 +36,14 @@
         
         <h2><fmt:message key="label.turmas"/></h2>
         
-        <button type="button" class="btn btn-primary"><fmt:message key="button.novaturma"/></button>
+        <c:if test="${not empty MSG_SUCESSO}">
+            <div class="alert alert-success">${MSG_SUCESSO}</div>
+        </c:if>
+        <c:if test="${not empty MSG_ERRO}">
+            <div class="alert alert-danger">${MSG_ERRO}</div>
+        </c:if>
+        
+        <button type="button" class="btn btn-primary btn-novo"><fmt:message key="button.novaturma"/></button>
         <br /><br />
         
         <div class="panel panel-default">
@@ -41,7 +66,6 @@
                 
             </div>
         </div>
-        
         
         <ul class="pagination pagination-sm">
           <li><a href="#">«</a></li>
@@ -70,54 +94,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <div class="btn-group btn-group-xs">
-                                    <button type="button" class="btn btn-default"><fmt:message key="button.editar"/></button>
-                                    <button type="button" class="btn btn-default"><fmt:message key="button.excluir"/></button>
-                                </div>
-                            </td>
-                            <td>1</td>
-                            <td>Programação 1</td>
-                            <td>Patricia Jaques</td>
-                            <td>35</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="btn-group btn-group-xs">
-                                    <button type="button" class="btn btn-default"><fmt:message key="button.editar"/></button>
-                                    <button type="button" class="btn btn-default"><fmt:message key="button.excluir"/></button>
-                                </div>
-                            </td>
-                            <td>2</td>
-                            <td>Programação 2</td>
-                            <td>Fulano da Silva</td>
-                            <td>41</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="btn-group btn-group-xs">
-                                    <button type="button" class="btn btn-default"><fmt:message key="button.editar"/></button>
-                                    <button type="button" class="btn btn-default"><fmt:message key="button.excluir"/></button>
-                                </div>
-                            </td>
-                            <td>3</td>
-                            <td>Laboratório 1</td>
-                            <td>Siclano Alves</td>
-                            <td>39</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="btn-group btn-group-xs">
-                                    <button type="button" class="btn btn-default"><fmt:message key="button.editar"/></button>
-                                    <button type="button" class="btn btn-default"><fmt:message key="button.excluir"/></button>
-                                </div>
-                            </td>
-                            <td>4</td>
-                            <td>Laboratório 2</td>
-                            <td>Beltrano Lima</td>
-                            <td>45</td>
-                        </tr>
+                        <c:if test="${not empty listaTurma}">
+                            <c:forEach var="item" varStatus="status" items="${listaTurma}">
+                                <tr>
+                                    <td>
+                                        <div class="btn-group btn-group-xs">
+                                            <button type="button" class="btn btn-default btn-editar" data-id="${item.getId()}"><fmt:message key="button.editar"/></button>
+                                            <button type="button" class="btn btn-default btn-excluir" data-id="${item.getId()}"><fmt:message key="button.excluir"/></button>
+                                        </div>
+                                    </td>
+                                    <td>${item.getId()}</td>
+                                    <td>${item.getNome()}</td>
+                                    <td>{item.getProfessor()}</td>
+                                    <td>AA</td>
+                                </tr>
+                            </c:forEach>
+                        </c:if>
+                        <c:if test="${empty listaTurma}">
+                            <tr>
+                                <td colspan="5"><fmt:message key="label.nenhumregistroencontrado"/></td>
+                            </tr>
+                        </c:if>
                     </tbody>
                 </table>
             

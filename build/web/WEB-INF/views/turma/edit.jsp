@@ -7,6 +7,8 @@
     <jsp:attribute name="title"><fmt:message key="title.turmas"/></jsp:attribute>
     <jsp:attribute name="header">
         
+        <link href="<c:url value='/resources/jquery/themes/base/jquery.ui.all.css'/>" rel="stylesheet" type="text/css" />
+        
         <script type="text/javascript">
             $(function(){
                 $("#menu-cadastro-turma").addClass("active");
@@ -22,6 +24,29 @@
 			'type': 'iframe',
                         'modal': true
                     });
+                });
+                
+                $("#professor").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: '<c:url value='/'/>pessoa/search/' + $("#professor").val(),
+                            type: 'GET',
+                            dataType: 'json'
+                        }).done(function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.nome, value: item.nome, id: item.id };
+                            }));
+                        }).fail(function () {
+                            $('.ui-autocomplete-loading').removeClass("ui-autocomplete-loading");
+                        });
+                    },
+                    minLength: 5,
+                    select: function (event, ui) {
+                        $("#idProfessor").val(ui.item.id);
+                    },
+                    change: function (event, ui) {
+                        //$("#idProfessor").val("");
+                    }
                 });
             });
         </script>
@@ -39,8 +64,8 @@
         
         <div class="panel panel-default">
             <div class="panel-body">
-
-                <form role="form">
+                
+                <form role="form" action="${IsAdd != null && IsAdd ? "saveadd" : "saveedit"}" method="POST">
                     <div class="form-group">
                         <label for="nome"><fmt:message key="label.turma.nome"/>:</label>
                         <input type="text" class="form-control" id="nome" name="nome" placeholder="Informe o nome da turma">
@@ -48,10 +73,11 @@
                     <div class="form-group">
                         <label for="professor"><fmt:message key="label.turma.professor"/>:</label>
                         <input type="text" class="form-control" id="professor" name="professor" placeholder="Informe o nome do professor">
+                        <input type="hidden" id="idProfessor" name="idProfessor">
                     </div>
                     <div class="form-group">
-                        <label for="encerramento"><fmt:message key="label.turma.dataencerramento"/>:</label>
-                        <input type="text" class="form-control" id="encerramento" name="encerramento" placeholder="Informe a data de encerramento">
+                        <label for="dataEncerramento"><fmt:message key="label.turma.dataencerramento"/>:</label>
+                        <input type="text" class="form-control" id="dataEncerramento" name="dataEncerramento" placeholder="Informe a data de encerramento">
                     </div>
                     <div class="checkbox">
                         <label>

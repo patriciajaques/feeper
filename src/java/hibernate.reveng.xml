@@ -2,27 +2,27 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd">
 <hibernate-reverse-engineering>
   <schema-selection match-catalog="feeper"/>
-  <table-filter match-name="TipoLog"/>
+  <table-filter match-name="CodigoFonteMarcacao"/>
   <table-filter match-name="TipoNovidade"/>
-  <table-filter match-name="TurmaPessoa"/>
-  <table-filter match-name="Exercicio"/>
+  <table-filter match-name="MensagemLeitor"/>
+  <table-filter match-name="Conquista"/>
+  <table-filter match-name="ExercicioValidacao"/>
+  <table-filter match-name="Turma"/>
   <table-filter match-name="Pessoa"/>
   <table-filter match-name="CodigoFonte"/>
-  <table-filter match-name="PessoaConquista"/>
+  <table-filter match-name="Grade"/>
   <table-filter match-name="Log"/>
-  <table-filter match-name="TipoMarcacao"/>
-  <table-filter match-name="Conquista"/>
+  <table-filter match-name="TipoLog"/>
+  <table-filter match-name="MensagemCurtir"/>
+  <table-filter match-name="TurmaExercicio"/>
   <table-filter match-name="Novidade"/>
   <table-filter match-name="NivelDificuldade"/>
   <table-filter match-name="StatusCodigoFonte"/>
+  <table-filter match-name="TurmaPessoa"/>
+  <table-filter match-name="PessoaConquista"/>
+  <table-filter match-name="TipoMarcacao"/>
+  <table-filter match-name="Exercicio"/>
   <table-filter match-name="MensagemCabecalho"/>
-  <table-filter match-name="TurmaExercicio"/>
-  <table-filter match-name="CodigoFonteMarcacao"/>
   <table-filter match-name="MensagemComentario"/>
-  <table-filter match-name="Grade"/>
-  <table-filter match-name="MensagemCurtir"/>
-  <table-filter match-name="MensagemLeitor"/>
-  <table-filter match-name="Turma"/>
   <table-filter match-name="Mensagem"/>
-  <table-filter match-name="ExercicioValidacao"/>
 </hibernate-reverse-engineering>
