@@ -7,8 +7,8 @@
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/feeper?zeroDateTimeBehavior=convertToNull</property>
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.show_sql">true</property>
-    <property name="hibernate.query.factory_class">org.hibernate.hql.classic.ClassicQueryTranslatorFactory</property>
-    <property name="hibernate.current_session_context_class">thread</property>
+    <property name="hibernate.query.factory_class">org.hibernate.hql.ast.ASTQueryTranslatorFactory</property>
+    <property name="hibernate.current_session_context_class">jta</property>
     <mapping resource="feeper/entity/Conquista.hbm.xml"/>
     <mapping resource="feeper/entity/Mensagem.hbm.xml"/>
     <mapping resource="feeper/entity/Exercicio.hbm.xml"/>

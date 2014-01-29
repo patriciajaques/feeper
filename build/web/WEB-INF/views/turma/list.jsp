@@ -52,30 +52,23 @@
             </div>
             <div class="panel-body">
                 
-                <form class="form-inline" role="form">
+                <form class="form-inline" role="form" method="POST" id="frm-paged">
                     <div class="form-group">
                         <label class="sr-only" for="nome"><fmt:message key="label.turma.nome"/>:</label>
-                        <input type="text" class="form-control" id="nome" name="nome" placeholder="<fmt:message key="label.turma.nometurma"/>">
+                        <input type="text" class="form-control" id="nome" name="nome" placeholder="<fmt:message key="label.turma.nometurma"/>" value="${nome}">
                     </div>
                     <div class="form-group">
                         <label class="sr-only" for="professor"><fmt:message key="label.turma.professor"/>:</label>
-                        <input type="text" class="form-control" id="professor" name="professor" placeholder="<fmt:message key="label.turma.nomeprofessor"/>">
+                        <input type="text" class="form-control" id="professor" name="professor" placeholder="<fmt:message key="label.turma.nomeprofessor"/>" value="${professor}">
                     </div>
                     <button type="submit" class="btn btn-primary"><fmt:message key="button.pesquisar"/></button>
+                    <%@include file="/WEB-INF/jspf/paginador_campos.jspf" %>
                 </form>
                 
             </div>
         </div>
         
-        <ul class="pagination pagination-sm">
-          <li><a href="#">«</a></li>
-          <li class="active"><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li><a href="#">»</a></li>
-        </ul>
+        <%@include file="/WEB-INF/jspf/paginador.jspf" %>
         
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -105,8 +98,8 @@
                                     </td>
                                     <td>${item.getId()}</td>
                                     <td>${item.getNome()}</td>
-                                    <td>{item.getProfessor()}</td>
-                                    <td>AA</td>
+                                    <td>${item.getProfessor().getNome()}</td>
+                                    <td>0</td>
                                 </tr>
                             </c:forEach>
                         </c:if>
@@ -121,15 +114,7 @@
             </div>
         </div>
         
-        <ul class="pagination pagination-sm">
-          <li><a href="#">«</a></li>
-          <li class="active"><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li><a href="#">»</a></li>
-        </ul>
+        <%@include file="/WEB-INF/jspf/paginador.jspf" %>
             
     </jsp:body>
 </t:master>

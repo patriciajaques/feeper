@@ -7,6 +7,7 @@ package feeper.model;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -41,19 +42,25 @@ public class HibernateUtil<T> {
         return fabricaSessao.openSession();
     }
     
+    public SQLQuery query(String sqlQuery)
+    {
+        sessao = getSessao();
+        return sessao.createSQLQuery(sqlQuery);
+    }
+    
     public List<T> pesquisar(Class objClass, String coluna, String dado){
         List<T> lista = null;
         Query query = null;
         try {
             sessao = getSessao();
-            transacao = sessao.beginTransaction();
+            //transacao = sessao.beginTransaction();
             query = sessao.createQuery("From "+objClass.getName()+" Where "+coluna+" like '%"+dado+"%'");
             lista = query.list();
         } catch (HibernateException e) { 
-            transacao.rollback();
+            //transacao.rollback();
             System.err.println(e.fillInStackTrace());
         } finally {
-            sessao.close();
+            //sessao.close();
             return lista;
         }
     }
@@ -68,14 +75,14 @@ public class HibernateUtil<T> {
         Query query = null;
         try {
             sessao = getSessao();
-            transacao = sessao.beginTransaction();
+            //transacao = sessao.beginTransaction();
             query = sessao.createQuery("From "+objClass.getName());
             lista = query.list();
         } catch (HibernateException e) { 
-            transacao.rollback();
+            //transacao.rollback();
             System.err.println(e.fillInStackTrace());
         } finally {
-            sessao.close();
+            //sessao.close();
             return lista;
         }
     }
@@ -90,13 +97,13 @@ public class HibernateUtil<T> {
         T objGet = null;
         try {
             sessao = getSessao();
-            transacao = sessao.beginTransaction();
+            //transacao = sessao.beginTransaction();
             objGet = (T)sessao.get(objClass, id);
         } catch (HibernateException e) { 
-            transacao.rollback();
+            //transacao.rollback();
             System.err.println(e.fillInStackTrace());
         } finally {
-            sessao.close();
+            //sessao.close();
             return objGet;
         }
     }
@@ -112,13 +119,13 @@ public class HibernateUtil<T> {
             transacao = sessao.beginTransaction();
             sessao.save(obj);
             transacao.commit();
+            return true;
         } catch (HibernateException e) { 
             transacao.rollback();
             System.err.println(e.fillInStackTrace());
             return false;
         } finally {
             sessao.close();
-            return true;
         }
     }
      
@@ -133,13 +140,13 @@ public class HibernateUtil<T> {
             transacao = sessao.beginTransaction();
             sessao.update(obj);
             transacao.commit();
+            return true;
         } catch (HibernateException e) { 
             transacao.rollback();
             System.err.println(e.fillInStackTrace());
             return false;
         } finally {
             sessao.close();
-            return true;
         }
     }
      
@@ -154,13 +161,13 @@ public class HibernateUtil<T> {
             transacao = sessao.beginTransaction();
             sessao.delete(obj);
             transacao.commit();
+            return true;
         } catch (HibernateException e) { 
             transacao.rollback();
             System.err.println(e.fillInStackTrace());
             return false;
         } finally {
             sessao.close();
-            return true;
         }
     }
     

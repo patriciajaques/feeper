@@ -65,23 +65,24 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 
-                <form role="form" action="${IsAdd != null && IsAdd ? "saveadd" : "saveedit"}" method="POST">
+                <form role="form" action="<c:url value='/'/>${IsAdd != null && IsAdd ? "turma/saveadd" : "turma/saveedit/"}" method="POST">
+                    <input type="hidden" id="id" name="id" value="${turma.getId()}">
                     <div class="form-group">
                         <label for="nome"><fmt:message key="label.turma.nome"/>:</label>
-                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Informe o nome da turma">
+                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Informe o nome da turma" value="${turma.getNome()}">
                     </div>
                     <div class="form-group">
                         <label for="professor"><fmt:message key="label.turma.professor"/>:</label>
-                        <input type="text" class="form-control" id="professor" name="professor" placeholder="Informe o nome do professor">
-                        <input type="hidden" id="idProfessor" name="idProfessor">
+                        <input type="text" class="form-control" id="professor" name="professor" placeholder="Informe o nome do professor" value="${turma.getProfessor().getNome()}">
+                        <input type="hidden" id="idProfessor" name="idProfessor" value="${turma.getIdProfessor()}">
                     </div>
                     <div class="form-group">
                         <label for="dataEncerramento"><fmt:message key="label.turma.dataencerramento"/>:</label>
-                        <input type="text" class="form-control" id="dataEncerramento" name="dataEncerramento" placeholder="Informe a data de encerramento">
+                        <input type="text" class="form-control" id="dataEncerramento" name="dataEncerramento" placeholder="Informe a data de encerramento" value="<fmt:formatDate value="${turma.getDataEncerramento()}" pattern="dd/MM/yyyy" />">
                     </div>
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" value="1" name="ativo" checked> <fmt:message key="label.turma.ativo"/>
+                            <input type="checkbox" name="ativo" ${IsAdd != null && IsAdd ? "checked" : turma.isAtivo() ? "checked" : ""}> <fmt:message key="label.turma.ativo"/>
                         </label>
                     </div>
                     <button type="submit" class="btn btn-primary"><fmt:message key="button.salvar"/></button>

@@ -1,5 +1,5 @@
 package feeper.entity;
-// Generated Jan 27, 2014 10:21:02 PM by Hibernate Tools 3.2.1.GA
+// Generated Jan 28, 2014 7:18:55 PM by Hibernate Tools 3.2.1.GA
 
 
 import java.math.BigDecimal;

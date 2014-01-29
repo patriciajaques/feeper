@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated Jan 27, 2014 10:21:02 PM by Hibernate Tools 3.2.1.GA -->
+<!-- Generated Jan 28, 2014 7:18:55 PM by Hibernate Tools 3.2.1.GA -->
 <hibernate-mapping>
     <class name="feeper.entity.Turma" table="Turma" catalog="feeper">
         <id name="id" type="java.lang.Integer">
@@ -20,5 +20,13 @@
         <property name="ativo" type="boolean">
             <column name="Ativo" not-null="true" />
         </property>
+        <property name="idProfessor" type="java.lang.Integer">
+            <column name="IdProfessor" />
+        </property>
+        <many-to-one name="professor" class="feeper.entity.Pessoa" column="idProfessor" insert="false" update="false" />
+        <!--set name="alunos" table="TurmaPessoa">
+            <key column="idTurma" />
+            <many-to-many class="feeper.entity.Pessoa" column="idPessoa" />
+        </set-->
     </class>
 </hibernate-mapping>
