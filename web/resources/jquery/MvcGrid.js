@@ -11,6 +11,10 @@ function sort(sortField, sortDirection) {
     submitForm();
 }
 
+function setSearch() {
+    $("#frm-paged").find("#gridAction").val("Searched");
+}
+
 function submitForm() {
     var form = $("#frm-paged");
     form.submit();

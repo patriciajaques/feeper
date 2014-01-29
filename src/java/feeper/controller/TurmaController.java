@@ -39,7 +39,7 @@ public class TurmaController extends ApplicationController {
         //return "turma/list";
         
         
-        return list("", "", 1, 10, "id", "asc", "", model, null);
+        return list("", "", 1, 2, "id", "asc", "", model, null);
     }
     
     @RequestMapping(method=RequestMethod.POST)
@@ -55,30 +55,27 @@ public class TurmaController extends ApplicationController {
             BindingResult result) {
         
         //Configurações do Paginador
-        if (gridAction != null && !gridAction.isEmpty())
-            currentPage = 0;
-        else if (gridAction.equals("PageSizeChanged") || gridAction.equals("Sorted"))
+        if (gridAction.equals("PageSizeChanged") || gridAction.equals("Sorted") || gridAction.equals("Searched"))
             currentPage = 1;
 
         if (currentPage == 0) currentPage = 1;
         if (pageSize == 0) pageSize = 10;
-        if (sortField != null && !sortField.isEmpty()) sortField = "ID";
+        if (sortField != null && !sortField.isEmpty()) sortField = "T.ID";
         if (sortDirection != null && !sortDirection.isEmpty()) sortDirection = "Asc";
         //-------------------------
         
         
-        HibernateUtil<Turma> repo = new HibernateUtil<Turma>();
         PaginadorUtil<Turma> paginador = new PaginadorUtil<Turma>();
         
-        String sql = "select * from Turma as T\n" +
-                    "inner join Pessoa as P\n" +
-                    "on P.ID = T.IdProfessor\n" +
-                    "where T.nome like '%:p0%'\n" +
-                    "and P.nome like '%:p1%'";
+        String sql = "select * from Turma as T " +
+                    "inner join Pessoa as P " +
+                    "on P.ID = T.IdProfessor " +
+                    "where T.nome like :p0 " +
+                    "and P.nome like :p1 ";
         
         String[] params = new String[2];
-        params[0] = nome;
-        params[1] = professor;
+        params[0] = "%"+ nome + "%";
+        params[1] = "%"+ professor + "%";
         
         List<Turma> lista = paginador.Execute(
                                         Turma.class, 

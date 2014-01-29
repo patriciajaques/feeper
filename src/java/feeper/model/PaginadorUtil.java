@@ -6,6 +6,7 @@ package feeper.model;
 
 import java.math.BigInteger;
 import java.util.List;
+import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.springframework.ui.Model;
 
@@ -164,7 +165,7 @@ public class PaginadorUtil<T> {
                 if (i != currentPage)
                     html.append("<li><a href='#' onclick='goToPage(").append(i).append(")'>").append(i).append("</a></li>");
                 else
-                    html.append("<li><a href='#' class='active' onclick='goToPage(").append(i).append(")'>").append(i).append("</a></li>");
+                    html.append("<li class='active'><a href='#' onclick='goToPage(").append(i).append(")'>").append(i).append("</a></li>");
             }
         }
 

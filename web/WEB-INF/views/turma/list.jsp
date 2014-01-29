@@ -28,6 +28,10 @@
                     document.location.href = "<c:url value='/'/>turma/delete/" + id;
                 });
                 
+                $(".btn-pesquisar").click(function(){
+                    setSearch();
+                });
+                
             });
         </script>
         
@@ -61,7 +65,7 @@
                         <label class="sr-only" for="professor"><fmt:message key="label.turma.professor"/>:</label>
                         <input type="text" class="form-control" id="professor" name="professor" placeholder="<fmt:message key="label.turma.nomeprofessor"/>" value="${professor}">
                     </div>
-                    <button type="submit" class="btn btn-primary"><fmt:message key="button.pesquisar"/></button>
+                    <button type="submit" class="btn btn-primary btn-pesquisar"><fmt:message key="button.pesquisar"/></button>
                     <%@include file="/WEB-INF/jspf/paginador_campos.jspf" %>
                 </form>
                 
