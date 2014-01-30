@@ -71,7 +71,7 @@ public class PaginadorUtil<T> {
         String commandCount = "SELECT FOUND_ROWS()";
         command += query.substring(6) + " LIMIT " + ((currentPage - 1) * pageSize) + ", " + pageSize;
         
-        HibernateUtil<T> repo = new HibernateUtil<T>();
+        HibernateUtil<T> repo = new HibernateUtil<T>(objClass);
         SQLQuery exec = repo.query(command).addEntity(objClass);
         
         for (int i = 0; i < params.length; i++)

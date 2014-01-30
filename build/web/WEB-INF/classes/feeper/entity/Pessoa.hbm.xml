@@ -37,10 +37,5 @@
         <property name="idNivelDificuldade" type="int">
             <column name="IdNivelDificuldade" not-null="true" />
         </property>
-        
-        <!--set name="turmas" table="TurmaPessoa" inverse="true">
-            <key column="IdPessoa" />
-            <many-to-many class="feeper.entity.Turma" column="IdTurma" />
-        </set-->
     </class>
 </hibernate-mapping>

@@ -27,10 +27,10 @@
     <mapping resource="feeper/entity/CodigoFonteMarcacao.hbm.xml"/>
     <mapping resource="feeper/entity/MensagemComentario.hbm.xml"/>
     <mapping resource="feeper/entity/MensagemCurtir.hbm.xml"/>
-    <mapping resource="feeper/entity/TurmaPessoa.hbm.xml"/>
     <mapping resource="feeper/entity/ExercicioValidacao.hbm.xml"/>
     <mapping resource="feeper/entity/StatusCodigoFonte.hbm.xml"/>
     <mapping resource="feeper/entity/CodigoFonte.hbm.xml"/>
     <mapping resource="feeper/entity/Pessoa.hbm.xml"/>
+    <mapping resource="feeper/entity/TurmaPessoa.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

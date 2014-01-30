@@ -23,10 +23,6 @@
         <property name="idProfessor" type="java.lang.Integer">
             <column name="IdProfessor" />
         </property>
-        <many-to-one name="professor" class="feeper.entity.Pessoa" column="idProfessor" insert="false" update="false" />
-        <!--set name="alunos" table="TurmaPessoa">
-            <key column="idTurma" />
-            <many-to-many class="feeper.entity.Pessoa" column="idPessoa" />
-        </set-->
+        <many-to-one name="professor" class="feeper.entity.Pessoa" column="IdProfessor" insert="false" update="false" />
     </class>
 </hibernate-mapping>

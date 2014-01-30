@@ -14,16 +14,13 @@
                 $("#menu-cadastro-turma").addClass("active");
                 
                 $("#btn-novo-aluno").click(function(){
-                    $.fancybox({
-			'autoSize': false,
-                        'openEffect': 'fade',
-			'closeEffect': 'fade',
-			'width': 500,
-			'height': 350,
-			'href': '<c:url value='/'/>pessoa/addaluno',
-			'type': 'iframe',
-                        'modal': true
-                    });
+                    var url = "<c:url value='/'/>pessoa/addaluno/${turma.getId()}";
+                    modalAluno(url);
+                });
+                
+                $("#btn-novo-aluno-existente").click(function(){
+                    var url = "<c:url value='/'/>pessoa/listaluno/${turma.getId()}";
+                    modalAluno(url);
                 });
                 
                 $(".btn-voltar").click(function(){
@@ -52,7 +49,51 @@
                         //$("#idProfessor").val("");
                     }
                 });
+                
+                $(".btn-editar").click(function(){
+                    var id = $(this).attr("data-id");
+                    if (id === undefined) return;
+                    var url = "<c:url value='/'/>pessoa/editaluno/" + id;
+                    modalAluno(url);
+                });
+                
+                $(".btn-excluir").click(function(){
+                    var id = $(this).attr("data-id");
+                    if (id === undefined) return;
+                    if (!confirm("<fmt:message key="label.confirmaexclusao"/>")) return;
+                    $.getJSON("<c:url value='/'/>pessoa/deleteturmaaluno/" + id, function( data ) {
+                        alert(data);
+                        if (data === "err")
+                        {
+                            $("#msgErro").html("<fmt:message key="label.turma.erroremoveraluno"/>").slideDown("fast");
+                        }
+                        else
+                        {
+                            $("#msgSucesso").html("<fmt:message key="label.turma.sucessoremoveraluno"/>").slideDown("fast");
+                            $("#trAluno" + id).remove();
+                        }
+                    });
+                });
             });
+            
+            function modalAluno(url)
+            {
+                $.fancybox({
+                    'autoSize': false,
+                    'openEffect': 'fade',
+                    'closeEffect': 'fade',
+                    'width': 500,
+                    'height': 350,
+                    'href': url,
+                    'type': 'iframe',
+                    'modal': true
+                });
+            }
+            
+            function AtualizaListagem()
+            {
+                location.reload();
+            }
         </script>
         
     </jsp:attribute>
@@ -98,8 +139,13 @@
         
         <c:if test="${IsAdd != null && !IsAdd}">
             <h2><fmt:message key="label.turma.listaalunos"/></h2>
+            
+            <div class="alert alert-success" id="msgSucesso" style="display:none"></div>
+            <div class="alert alert-danger" id="msgErro" style="display:none"></div>
+            
             <button type="button" id="btn-novo-aluno" class="btn btn-primary"><fmt:message key="button.novoaluno"/></button>
-            <button type="button" id="btn-novo-aluno" class="btn btn-default"><fmt:message key="button.enviarconvitealunos"/></button>
+            <button type="button" id="btn-novo-aluno-existente" class="btn btn-primary"><fmt:message key="button.novoalunoexistente"/></button>
+            <button type="button" id="btn-enviar-convites" class="btn btn-default"><fmt:message key="button.enviarconvitealunos"/></button>
             <br /><br />
             
             <div class="panel panel-default">
@@ -118,50 +164,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <div class="btn-group btn-group-xs">
-                                        <button type="button" class="btn btn-default"><fmt:message key="button.editar"/></button>
-                                        <button type="button" class="btn btn-default"><fmt:message key="button.excluir"/></button>
-                                    </div>
-                                </td>
-                                <td>1</td>
-                                <td>Fábio Alves</td>
-                                <td>arnistrong@gmail.com</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="btn-group btn-group-xs">
-                                        <button type="button" class="btn btn-default"><fmt:message key="button.editar"/></button>
-                                        <button type="button" class="btn btn-default"><fmt:message key="button.excluir"/></button>
-                                    </div>
-                                </td>
-                                <td>2</td>
-                                <td>Fulano da Silva</td>
-                                <td>fulano.silva@gmail.com</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="btn-group btn-group-xs">
-                                        <button type="button" class="btn btn-default"><fmt:message key="button.editar"/></button>
-                                        <button type="button" class="btn btn-default"><fmt:message key="button.excluir"/></button>
-                                    </div>
-                                </td>
-                                <td>3</td>
-                                <td>Siclano Alves</td>
-                                <td>siclano.alves@gmail.com</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="btn-group btn-group-xs">
-                                        <button type="button" class="btn btn-default"><fmt:message key="button.editar"/></button>
-                                        <button type="button" class="btn btn-default"><fmt:message key="button.excluir"/></button>
-                                    </div>
-                                </td>
-                                <td>4</td>
-                                <td>Beltrano Lima</td>
-                                <td>beltrano.lima@gmail.com</td>
-                            </tr>
+                            <c:if test="${not empty turma.getAlunos()}">
+                                <c:forEach var="item" varStatus="status" items="${turma.getAlunos()}">
+                                    <tr id="trAluno${turma.getId()}@${item.getId()}">
+                                        <td>
+                                            <div class="btn-group btn-group-xs">
+                                                <button type="button" class="btn btn-default btn-editar" data-id="${turma.getId()}@${item.getId()}"><fmt:message key="button.editar"/></button>
+                                                <button type="button" class="btn btn-default btn-excluir" data-id="${turma.getId()}@${item.getId()}"><fmt:message key="button.excluir"/></button>
+                                            </div>
+                                        </td>
+                                        <td>${item.getId()}</td>
+                                        <td>${item.getNome()}</td>
+                                        <td>${item.getEmail()}</td>
+                                    </tr>
+                                </c:forEach>
+                            </c:if>
+                            <c:if test="${empty turma.getAlunos()}">
+                                <tr>
+                                    <td colspan="4"><fmt:message key="label.nenhumregistroencontrado"/></td>
+                                </tr>
+                            </c:if>
                         </tbody>
                     </table>
 

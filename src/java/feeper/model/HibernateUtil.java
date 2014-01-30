@@ -14,21 +14,23 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
  
 public class HibernateUtil<T> {
-    private static SessionFactory fabricaSessao;
-    private static Session sessao;
-    private static Transaction transacao;
+    private static SessionFactory sessionFactory;
+    private static Session session;
+    private static Transaction transaction;
+    private Class objClass;
     
-    public HibernateUtil(){
-        iniciarSessao();
+    public HibernateUtil(Class objClass){
+        beginSession();
+        this.objClass = objClass;
     }
      
     /**
      * Inicia a SessionFactory
      */
-    private void iniciarSessao(){        
-        if(fabricaSessao == null)
+    private void beginSession(){        
+        if(sessionFactory == null)
             try {
-                fabricaSessao = new AnnotationConfiguration().configure().buildSessionFactory();
+                sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
             } catch (Exception e){
                 System.err.println(e.fillInStackTrace());
             }
@@ -38,23 +40,23 @@ public class HibernateUtil<T> {
      * Retorna uma nova sessão
      * @return Session
      */
-    public Session getSessao(){
-        return fabricaSessao.openSession();
+    public Session getSession(){
+        return sessionFactory.openSession();
     }
     
     public SQLQuery query(String sqlQuery)
     {
-        sessao = getSessao();
-        return sessao.createSQLQuery(sqlQuery);
+        session = getSession();
+        return session.createSQLQuery(sqlQuery);
     }
     
-    public List<T> pesquisar(Class objClass, String coluna, String dado){
+    public List<T> search(String coluna, String dado){
         List<T> lista = null;
         Query query = null;
         try {
-            sessao = getSessao();
-            //transacao = sessao.beginTransaction();
-            query = sessao.createQuery("From "+objClass.getName()+" Where "+coluna+" like '%"+dado+"%'");
+            session = getSession();
+            //transacao = session.beginTransaction();
+            query = session.createQuery("From "+objClass.getName()+" Where "+coluna+" like '%"+dado+"%'");
             lista = query.list();
         } catch (HibernateException e) { 
             //transacao.rollback();
@@ -70,13 +72,13 @@ public class HibernateUtil<T> {
      * @param objClass
      * @return List<Object>
      */
-    public List<T> selecionar(Class objClass){
+    public List<T> getAll(){
         List<T> lista = null;
         Query query = null;
         try {
-            sessao = getSessao();
-            //transacao = sessao.beginTransaction();
-            query = sessao.createQuery("From "+objClass.getName());
+            session = getSession();
+            //transacao = session.beginTransaction();
+            query = session.createQuery("From "+objClass.getName());
             lista = query.list();
         } catch (HibernateException e) { 
             //transacao.rollback();
@@ -93,12 +95,12 @@ public class HibernateUtil<T> {
      * @param id
      * @return Object
      */
-    public T selecionar(Class objClass, Integer id){
+    public T getById(Integer id){
         T objGet = null;
         try {
-            sessao = getSessao();
-            //transacao = sessao.beginTransaction();
-            objGet = (T)sessao.get(objClass, id);
+            session = getSession();
+            //transacao = session.beginTransaction();
+            objGet = (T)session.get(objClass, id);
         } catch (HibernateException e) { 
             //transacao.rollback();
             System.err.println(e.fillInStackTrace());
@@ -112,20 +114,21 @@ public class HibernateUtil<T> {
      * Persiste o objeto passado por parâmetro
      * @param obj 
      */
-    public boolean inserir(T obj){
+    public boolean insert(T obj){
         if (obj == null) return false;
         try{
-            sessao = getSessao();
-            transacao = sessao.beginTransaction();
-            sessao.save(obj);
-            transacao.commit();
+            session = getSession();
+            transaction = session.beginTransaction();
+            session.save(obj);
+            session.refresh(obj);
+            transaction.commit();
             return true;
         } catch (HibernateException e) { 
-            transacao.rollback();
+            transaction.rollback();
             System.err.println(e.fillInStackTrace());
             return false;
         } finally {
-            sessao.close();
+            session.close();
         }
     }
      
@@ -133,20 +136,20 @@ public class HibernateUtil<T> {
      * Atualiza o objeto passado por parâmetro
      * @param obj 
      */
-    public boolean atualizar(T obj){
+    public boolean update(T obj){
         if (obj == null) return false;
         try{
-            sessao = getSessao();
-            transacao = sessao.beginTransaction();
-            sessao.update(obj);
-            transacao.commit();
+            session = getSession();
+            transaction = session.beginTransaction();
+            session.update(obj);
+            transaction.commit();
             return true;
         } catch (HibernateException e) { 
-            transacao.rollback();
+            transaction.rollback();
             System.err.println(e.fillInStackTrace());
             return false;
         } finally {
-            sessao.close();
+            session.close();
         }
     }
      
@@ -154,20 +157,20 @@ public class HibernateUtil<T> {
      * Exclui o objeto passado por parâmetro
      * @param obj 
      */
-    public boolean excluir(T obj){
+    public boolean delete(T obj){
         if (obj == null) return false;
         try{
-            sessao = getSessao();
-            transacao = sessao.beginTransaction();
-            sessao.delete(obj);
-            transacao.commit();
+            session = getSession();
+            transaction = session.beginTransaction();
+            session.delete(obj);
+            transaction.commit();
             return true;
         } catch (HibernateException e) { 
-            transacao.rollback();
+            transaction.rollback();
             System.err.println(e.fillInStackTrace());
             return false;
         } finally {
-            sessao.close();
+            session.close();
         }
     }
     

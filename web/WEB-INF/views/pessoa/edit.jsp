@@ -26,18 +26,21 @@
             </c:otherwise>
         </c:choose></h2>
 
-        <form role="form">
+        <form role="form" action="<c:url value='/'/>${IsAdd != null && IsAdd ? "pessoa/saveadd" : "pessoa/saveedit/"}" method="POST">
+            <input type="hidden" id="id" name="id" value="${pessoa.getId()}">
+            <input type="hidden" id="idTurma" name="idTurma" value="${IdTurma}">
+            <input type="hidden" id="tipoPessoa" name="tipoPessoa" value="${pessoa.getTipoPessoa()}">
             <div class="form-group">
                 <label for="nome"><fmt:message key="label.pessoa.nome"/>:</label>
-                <input type="text" class="form-control" id="nome" name="nome" placeholder="<fmt:message key="label.pessoa.informenome"/>">
+                <input type="text" class="form-control" id="nome" name="nome" placeholder="<fmt:message key="label.pessoa.informenome"/>" value="${pessoa.getNome()}">
             </div>
             <div class="form-group">
                 <label for="email"><fmt:message key="label.pessoa.email"/></label>
-                <input type="text" class="form-control" id="email" name="email" placeholder="<fmt:message key="label.pessoa.informeemail"/>">
+                <input type="text" class="form-control" id="email" name="email" placeholder="<fmt:message key="label.pessoa.informeemail"/>" value="${pessoa.getEmail()}">
             </div>
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" value="1" name="ativo" checked> <fmt:message key="label.pessoa.ativo"/>
+                    <input type="checkbox" name="ativo" ${IsAdd != null && IsAdd ? "checked" : pessoa.isAtivo() ? "checked" : ""}> <fmt:message key="label.pessoa.ativo"/>
                 </label>
             </div>
             <button type="submit" class="btn btn-primary"><fmt:message key="button.salvar"/></button>

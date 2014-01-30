@@ -6,10 +6,13 @@ package feeper.controller;
 
 import feeper.entity.Pessoa;
 import feeper.entity.Turma;
+import feeper.entity.TurmaPessoa;
 import feeper.model.HibernateUtil;
 import feeper.model.PaginadorUtil;
+import feeper.model.TurmaService;
 import java.util.Date;
 import java.util.List;
+import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,19 +29,15 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequestMapping(value="/turma")
 public class TurmaController extends ApplicationController {
     
+    private TurmaService service;
+    
+    public TurmaController()
+    {
+        this.service = new TurmaService();
+    }
+    
     @RequestMapping(method=RequestMethod.GET)
     public String list(Model model) {
-        //HibernateUtil<Turma> repo = new HibernateUtil<Turma>();
-        //PaginadorUtil<Turma> paginador = new PaginadorUtil<Turma>();
-        
-        //String sql = "select * from Turma";
-        //List<Turma> lista = paginador.Execute(Turma.class, model, sql, new String[]{}, 1, 2, null, null);
-        
-        //model.addAttribute("listaTurma", lista);
-        
-        //return "turma/list";
-        
-        
         return list("", "", 1, 2, "id", "asc", "", model, null);
     }
     
@@ -63,7 +62,6 @@ public class TurmaController extends ApplicationController {
         if (sortField != null && !sortField.isEmpty()) sortField = "T.ID";
         if (sortDirection != null && !sortDirection.isEmpty()) sortDirection = "Asc";
         //-------------------------
-        
         
         PaginadorUtil<Turma> paginador = new PaginadorUtil<Turma>();
         
@@ -110,8 +108,7 @@ public class TurmaController extends ApplicationController {
         
         turma.setDataCadastro(new Date());        
         
-        HibernateUtil<Turma> repo = new HibernateUtil<Turma>();
-        if (repo.inserir(turma))
+        if (service.insert(turma))
             mav.addObject("MSG_SUCESSO", "Registro inserido com sucesso");
         else
             mav.addObject("MSG_ERRO", "Ocorreu um erro ao inserir o registro");
@@ -122,8 +119,9 @@ public class TurmaController extends ApplicationController {
     @RequestMapping(value="/edit/{id}", method=RequestMethod.GET)
     public String edit(@PathVariable int id, Model model) {
         
-        HibernateUtil<Turma> repo = new HibernateUtil<Turma>();
-        Turma turma = repo.selecionar(Turma.class, id);
+        TurmaService repo = new TurmaService();
+        Turma turma = repo.getById(id);
+        turma.setAlunos(repo.getAlunos(id));
         
         model.addAttribute(turma);
         model.addAttribute("IsAdd", false);
@@ -136,15 +134,14 @@ public class TurmaController extends ApplicationController {
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/turma", true, true, false));
         
-        HibernateUtil<Turma> repo = new HibernateUtil<Turma>();
-        Turma turmaBanco = repo.selecionar(Turma.class, turma.getId());
+        Turma turmaBanco = service.getById(turma.getId());
         
         turmaBanco.setAtivo(turma.isAtivo());
         turmaBanco.setDataEncerramento(turma.getDataEncerramento());
         turmaBanco.setIdProfessor(turma.getIdProfessor());
         turmaBanco.setNome(turma.getNome());
         
-        if (repo.atualizar(turmaBanco))
+        if (service.update(turmaBanco))
             mav.addObject("MSG_SUCESSO", "Registro alterado com sucesso");
         else
             mav.addObject("MSG_ERRO", "Ocorreu um erro ao alterar o registro");
@@ -157,10 +154,9 @@ public class TurmaController extends ApplicationController {
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/turma", true, true, false));
         
-        HibernateUtil<Turma> repo = new HibernateUtil<Turma>();
-        Turma turma = repo.selecionar(Turma.class, id);
+        Turma turma = service.getById(id);
         
-        if (repo.excluir(turma))
+        if (service.delete(turma))
             mav.addObject("MSG_SUCESSO", "Registro excluído com sucesso");
         else
             mav.addObject("MSG_ERRO", "Ocorreu um erro ao excluir o registro");
