@@ -11,6 +11,8 @@
             $(function(){
                 $("#menu-cadastro-exercicio").addClass("active");
                 
+                $(".editor").jqte();
+                
                 
                 $('#file_upload').uploadify({
                     'swf'           : '<c:url value='/resources/uploadify/uploadify.swf'/>',
@@ -34,8 +36,12 @@
                 
                 $(".rd-detalhamento").click(function(){
                     var show = $(this).attr("show-div");
-                    $(".div-detalhamento").slideUp("fast");
-                    $("#" + show).slideDown("fast");
+                    $(".div-detalhamento").hide();
+                    $("#" + show).show();
+                });
+                
+                $(".btn-voltar").click(function(){
+                    document.location.href = "<c:url value='/'/>exercicios";
                 });
                 
             });
@@ -57,14 +63,15 @@
         <div class="panel panel-default">
             <div class="panel-body">
 
-                <form role="form">
+                <form role="form" action="<c:url value='/'/>${IsAdd != null && IsAdd ? "exercicios/saveadd" : "exercicios/saveedit/"}" method="POST">
+                    <input type="hidden" id="id" name="id" value="${exercicio.getId()}">
                     <div class="form-group">
                         <label for="titulo"><fmt:message key="label.exercicios.titulo"/>:</label>
-                        <input type="text" class="form-control" id="titulo" name="titulo" placeholder="<fmt:message key="label.exercicios.tituloinforme"/>">
+                        <input type="text" class="form-control" id="nome" name="nome" placeholder="<fmt:message key="label.exercicios.tituloinforme"/>" value="${exercicio.getNome()}">
                     </div>
                     <div class="form-group">
                         <label for="nivel"><fmt:message key="label.exercicios.dificuldade"/>:</label>
-                        <select class="form-control" id="nivel" name="nivel">
+                        <select class="form-control" id="idNivelDificuldade" name="idNivelDificuldade">
                             <option value="1">Baixa</option>
                             <option value="2">Média</option>
                             <option value="3">Alta</option>
@@ -72,7 +79,7 @@
                     </div>
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" value="1" name="ativo" checked>
+                            <input type="checkbox" name="ativo" ${IsAdd != null && IsAdd ? "checked" : exercicio.isAtivo() ? "checked" : ""}>
                             <fmt:message key="label.exercicios.ativo"/>
                         </label>
                     </div>
@@ -89,11 +96,7 @@
                     </div>
                     
                     <div id="editorhtml" class="div-detalhamento">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                              Editor HTML
-                            </div>
-                        </div>
+                        <textarea class="editor" name="htmlcontent"><fmt:message key="label.exercicios.descricaoinforme"/></textarea>
                     </div>
                     <div id="uploadpdf" style="display:none;" class="div-detalhamento">
                         <input type="file" name="file_upload" id="file_upload" />

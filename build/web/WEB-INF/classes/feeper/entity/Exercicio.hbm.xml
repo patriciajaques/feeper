@@ -26,5 +26,7 @@
         <property name="idNivelDificuldade" type="int">
             <column name="IdNivelDificuldade" not-null="true" />
         </property>
+        <many-to-one name="autor" class="feeper.entity.Pessoa" column="IdAutor" insert="false" update="false" />
+        <many-to-one name="nivelDificuldade" class="feeper.entity.NivelDificuldade" column="IdNivelDificuldade" insert="false" update="false" />
     </class>
 </hibernate-mapping>

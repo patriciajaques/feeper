@@ -114,16 +114,16 @@
                     <input type="hidden" id="id" name="id" value="${turma.getId()}">
                     <div class="form-group">
                         <label for="nome"><fmt:message key="label.turma.nome"/>:</label>
-                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Informe o nome da turma" value="${turma.getNome()}">
+                        <input type="text" class="form-control" id="nome" name="nome" placeholder="<fmt:message key="label.turma.nomeinforme"/>" value="${turma.getNome()}">
                     </div>
                     <div class="form-group">
                         <label for="professor"><fmt:message key="label.turma.professor"/>:</label>
-                        <input type="text" class="form-control" id="professor" name="professor" placeholder="Informe o nome do professor" value="${turma.getProfessor().getNome()}">
+                        <input type="text" class="form-control" id="professor" name="professor" placeholder="<fmt:message key="label.turma.professorinforme"/>" value="${turma.getProfessor().getNome()}">
                         <input type="hidden" id="idProfessor" name="idProfessor" value="${turma.getIdProfessor()}">
                     </div>
                     <div class="form-group">
                         <label for="dataEncerramento"><fmt:message key="label.turma.dataencerramento"/>:</label>
-                        <input type="text" class="form-control" id="dataEncerramento" name="dataEncerramento" placeholder="Informe a data de encerramento" value="<fmt:formatDate value="${turma.getDataEncerramento()}" pattern="dd/MM/yyyy" />">
+                        <input type="text" class="form-control" id="dataEncerramento" name="dataEncerramento" placeholder="<fmt:message key="label.turma.dataencerramentoinforme"/>" value="<fmt:formatDate value="${turma.getDataEncerramento()}" pattern="dd/MM/yyyy" />">
                     </div>
                     <div class="checkbox">
                         <label>

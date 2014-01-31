@@ -119,9 +119,8 @@ public class TurmaController extends ApplicationController {
     @RequestMapping(value="/edit/{id}", method=RequestMethod.GET)
     public String edit(@PathVariable int id, Model model) {
         
-        TurmaService repo = new TurmaService();
-        Turma turma = repo.getById(id);
-        turma.setAlunos(repo.getAlunos(id));
+        Turma turma = service.getById(id);
+        turma.setAlunos(service.getAlunos(id));
         
         model.addAttribute(turma);
         model.addAttribute("IsAdd", false);

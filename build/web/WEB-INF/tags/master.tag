@@ -17,6 +17,7 @@
         <link href="<c:url value='/resources/css/site.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/fancybox/jquery.fancybox.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/uploadify/uploadify.css'/>" rel="stylesheet" type="text/css" />
+        <link href="<c:url value='/resources/jquery-te/jquery-te-1.4.0.css'/>" rel="stylesheet" type="text/css" />
         
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -32,6 +33,7 @@
         <script src="<c:url value='/resources/assets/google-code-prettify/prettify.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/fancybox/jquery.fancybox.pack.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/uploadify/jquery.uploadify.min.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/jquery-te/jquery-te-1.4.0.min.js'/>" type="text/javascript"></script>
         
         <script type="text/javascript">
             function MostraCarregando() {
@@ -75,7 +77,7 @@
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                ${NomeUsuarioLogado} <b class="caret"></b>
+                                ${UsuarioLogado.getNome()} <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a href="<c:url value='/'/>conquistas"><span class="glyphicon glyphicon-certificate"></span>&nbsp;&nbsp;<fmt:message key="menu.minhasconquistas"/></a></li>

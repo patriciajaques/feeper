@@ -7,7 +7,10 @@ package feeper.model;
 import feeper.entity.Pessoa;
 import feeper.entity.Turma;
 import java.util.List;
+import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -29,16 +32,26 @@ public class TurmaService extends HibernateUtil<Turma> {
     
     public boolean removeAluno(int idTurma, int idAluno)
     {
+        Transaction transaction_;
+        Session session_;
+        
+        session_ = getSession();
+        transaction_ = session_.beginTransaction();
+        
         try {
-            SQLQuery query = query("delete from TurmaPessoa where IdTurma = :idTurma and IdPessoa = :idPessoa");
-            query.setInteger("idTurma", idTurma);
-            query.setInteger("idPessoa", idAluno);
+            
+            SQLQuery query = session_.createSQLQuery("delete from TurmaPessoa where IdTurma = "+ idTurma +" and IdPessoa = "+ idAluno);
+//            query.setInteger("idTurma", idTurma);
+//            query.setInteger("idPessoa", idAluno);
             
             query.executeUpdate();
-            
             return true;
-        } catch (Exception e) {
+            
+        } catch (HibernateException e) { 
+            transaction_.rollback();
             return false;
+        } finally {
+            session_.close();
         }
     }
     
