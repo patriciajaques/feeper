@@ -19,18 +19,18 @@
     <mapping resource="feeper/entity/NivelDificuldade.hbm.xml"/>
     <mapping resource="feeper/entity/TipoMarcacao.hbm.xml"/>
     <mapping resource="feeper/entity/Turma.hbm.xml"/>
-    <mapping resource="feeper/entity/TipoLog.hbm.xml"/>
     <mapping resource="feeper/entity/Novidade.hbm.xml"/>
+    <mapping resource="feeper/entity/TipoLog.hbm.xml"/>
     <mapping resource="feeper/entity/MensagemCabecalho.hbm.xml"/>
     <mapping resource="feeper/entity/TurmaExercicio.hbm.xml"/>
-    <mapping resource="feeper/entity/TipoNovidade.hbm.xml"/>
     <mapping resource="feeper/entity/CodigoFonteMarcacao.hbm.xml"/>
+    <mapping resource="feeper/entity/TipoNovidade.hbm.xml"/>
     <mapping resource="feeper/entity/MensagemComentario.hbm.xml"/>
     <mapping resource="feeper/entity/MensagemCurtir.hbm.xml"/>
+    <mapping resource="feeper/entity/TurmaPessoa.hbm.xml"/>
     <mapping resource="feeper/entity/ExercicioValidacao.hbm.xml"/>
     <mapping resource="feeper/entity/StatusCodigoFonte.hbm.xml"/>
     <mapping resource="feeper/entity/CodigoFonte.hbm.xml"/>
     <mapping resource="feeper/entity/Pessoa.hbm.xml"/>
-    <mapping resource="feeper/entity/TurmaPessoa.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

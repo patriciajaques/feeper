@@ -1,5 +1,5 @@
 package feeper.entity;
-// Generated Jan 29, 2014 8:29:38 PM by Hibernate Tools 3.2.1.GA
+// Generated Feb 1, 2014 9:45:43 AM by Hibernate Tools 3.2.1.GA
 
 
 

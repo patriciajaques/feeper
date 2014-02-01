@@ -10,6 +10,7 @@ import feeper.model.ExercicioService;
 import feeper.model.PaginadorUtil;
 import java.util.Date;
 import java.util.List;
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,7 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
-@SessionAttributes({ "MSG_SUCESSO", "MSG_ERRO" })
+@SessionAttributes({ "MSG_SUCESSO", "MSG_ERRO", "UsuarioLogado" })
 @RequestMapping(value="/exercicios")
 public class ExerciciosController extends ApplicationController {
     
@@ -107,14 +108,16 @@ public class ExerciciosController extends ApplicationController {
     public ModelAndView saveadd(
             @ModelAttribute("exercicio") Exercicio exercicio, 
             @ModelAttribute("htmlcontent") String html,
-            @ModelAttribute("UsuarioLogado") Pessoa usuarioLogado,
+            HttpSession session,
             BindingResult result) {
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/exercicios", true, true, false));
         
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
+        
         exercicio.setDataCadastro(new Date());
         exercicio.setIdAutor(usuarioLogado.getId());
-        exercicio.setDescricao(html.getBytes());
+        exercicio.setDescricaoHtml(html);
         
         if (service.insert(exercicio))
             mav.addObject("MSG_SUCESSO", "Registro inserido com sucesso");

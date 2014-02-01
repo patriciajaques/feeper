@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated Jan 28, 2014 7:18:55 PM by Hibernate Tools 3.2.1.GA -->
+<!-- Generated Feb 1, 2014 9:45:43 AM by Hibernate Tools 3.2.1.GA -->
 <hibernate-mapping>
-    <class name="feeper.entity.Exercicio" table="Exercicio" catalog="feeper">
+    <class name="feeper.entity.Exercicio" table="exercicio" catalog="feeper">
         <id name="id" type="java.lang.Integer">
             <column name="ID" />
             <generator class="identity" />
@@ -26,7 +26,11 @@
         <property name="idNivelDificuldade" type="int">
             <column name="IdNivelDificuldade" not-null="true" />
         </property>
+        <property name="descricaoHtml" type="string">
+            <column name="DescricaoHtml" length="65535" />
+        </property>
         <many-to-one name="autor" class="feeper.entity.Pessoa" column="IdAutor" insert="false" update="false" />
         <many-to-one name="nivelDificuldade" class="feeper.entity.NivelDificuldade" column="IdNivelDificuldade" insert="false" update="false" />
+
     </class>
 </hibernate-mapping>
