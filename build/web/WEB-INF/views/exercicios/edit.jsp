@@ -8,6 +8,8 @@
     <jsp:attribute name="header">
         
         <script type="text/javascript">
+            var trTemplate = "<tr id=\"trLinhaNova#id#\" class=\"linha-validacao\"><td><div class=\"btn-group btn-group-xs\"><button type=\"button\" class=\"btn btn-default btn-excluir\" data-source=\"0\" data-id=\"#id#\"><fmt:message key="button.excluir"/></button></div></td><td><textarea class=\"form-control\" rows=\"3\" id=\"entrada#id#\" name=\"entrada#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"saida#id#\" name=\"saida#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"mensagem#id#\" name=\"mensagem#id#\"></textarea></td></tr>";
+    
             $(function(){
                 $("#menu-cadastro-exercicio").addClass("active");
                 
@@ -26,8 +28,10 @@
                     'checkExisting' : false,
                     'width'         : 146,
                     'height'        : 34,
+                    'removeCompleted' : false,
                     'onUploadSuccess' : function(file, data, response) {
-                        //alert('The file ' + file.name + ' was successfully uploaded with a response of ' + response + ':' + data);
+                        alert(data);
+                        $("#idUploadTemp").val(data);
                     },
                     'onUploadError' : function(file, errorCode, errorMsg, errorString) {
                         //alert('The file ' + file.name + ' could not be uploaded: ' + errorString);
@@ -42,6 +46,21 @@
                 
                 $(".btn-voltar").click(function(){
                     document.location.href = "<c:url value='/'/>exercicios";
+                });
+                
+                $(document).on("click", ".btn-excluir", function(){
+                    var id = $(this).attr("data-id");
+                    if (id === undefined) return;
+                    var source = parseInt($(this).attr("data-source"));
+                    var trId = (source === 1) ? "#trLinha" + id : "#trLinhaNova" + id;
+                    $(trId).remove();
+                });
+                
+                $(".btn-nova-linha").click(function(){
+                    var cont = parseInt($("#contador").val()) + 1;
+                    var linha = trTemplate.replace(/#id#/gi, cont);
+                    $("#tbody-validacoes").append(linha);
+                    $("#contador").val(cont);
                 });
                 
             });
@@ -96,9 +115,19 @@
                     </div>
                     
                     <div id="editorhtml" class="div-detalhamento">
-                        <textarea class="editor" name="htmlcontent"><fmt:message key="label.exercicios.descricaoinforme"/></textarea>
+                        <textarea class="editor" name="htmlcontent">
+                            <c:choose>
+                                <c:when test="${IsAdd != null && IsAdd}">
+                                    <fmt:message key="label.exercicios.descricaoinforme"/>
+                                </c:when>
+                                <c:otherwise>
+                                    ${exercicio.getDescricaoHtml()}
+                                </c:otherwise>
+                            </c:choose>
+                        </textarea>
                     </div>
                     <div id="uploadpdf" style="display:none;" class="div-detalhamento">
+                        <input type="hidden" id="idUploadTemp" name="idUploadTemp">
                         <input type="file" name="file_upload" id="file_upload" />
                     </div>
                         
@@ -113,79 +142,60 @@
 
             <h2><fmt:message key="label.exercicios.cadastrarentradassaidas"/></h2>
             
-            <button type="button" id="btn-nova-linha" class="btn btn-primary"><fmt:message key="button.novalinha"/></button>
-            <br /><br />
-            
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title"><fmt:message key="label.registroscadastrados"/></h3>
-                </div>
-                <div class="panel-body">
+            <form role="form" action="<c:url value='/'/>exercicios/savevalidacao" method="POST">
+                <input type="hidden" id="idExercicio" name="idExercicio" value="${exercicio.getId()}">
+                <input type="hidden" id="contador" name="contador" value="${exercicio.getValidacoes().size()}">
+                
+                
+                <button type="button" class="btn btn-primary btn-nova-linha"><fmt:message key="button.novalinha"/></button>
+                <button type="submit" class="btn btn-primary"><fmt:message key="button.salvarvalidacao"/></button>
+                <br /><br />
 
-                    <table class="table table-striped table-hover" style="margin-bottom: 0px;">
-                        <thead>
-                            <tr>
-                                <th><fmt:message key="label.exercicios.acoes"/></th>
-                                <th><fmt:message key="label.exercicios.entrada"/></th>
-                                <th><fmt:message key="label.exercicios.saida"/></th>
-                                <th><fmt:message key="label.exercicios.mensagemperzonalizada"/></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="btn-group btn-group-xs">
-                                        <button type="button" class="btn btn-default"><fmt:message key="button.excluir"/></button>
-                                    </div>
-                                </td>
-                                <td>
-                                    <textarea class="form-control" rows="3"></textarea>
-                                </td>
-                                <td>
-                                    <textarea class="form-control" rows="3"></textarea>
-                                </td>
-                                <td>
-                                    <textarea class="form-control" rows="3"></textarea>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="btn-group btn-group-xs">
-                                        <button type="button" class="btn btn-default"><fmt:message key="button.excluir"/></button>
-                                    </div>
-                                </td>
-                                <td>
-                                    <textarea class="form-control" rows="3"></textarea>
-                                </td>
-                                <td>
-                                    <textarea class="form-control" rows="3"></textarea>
-                                </td>
-                                <td>
-                                    <textarea class="form-control" rows="3"></textarea>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="btn-group btn-group-xs">
-                                        <button type="button" class="btn btn-default"><fmt:message key="button.excluir"/></button>
-                                    </div>
-                                </td>
-                                <td>
-                                    <textarea class="form-control" rows="3"></textarea>
-                                </td>
-                                <td>
-                                    <textarea class="form-control" rows="3"></textarea>
-                                </td>
-                                <td>
-                                    <textarea class="form-control" rows="3"></textarea>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><fmt:message key="label.registroscadastrados"/></h3>
+                    </div>
+                    <div class="panel-body">
 
+                        <table class="table table-striped table-hover" style="margin-bottom: 0px;">
+                            <thead>
+                                <tr>
+                                    <th><fmt:message key="label.exercicios.acoes"/></th>
+                                    <th><fmt:message key="label.exercicios.entrada"/></th>
+                                    <th><fmt:message key="label.exercicios.saida"/></th>
+                                    <th><fmt:message key="label.exercicios.mensagemperzonalizada"/></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-validacoes">
+                                <c:if test="${not empty exercicio.getValidacoes()}">
+                                    <c:forEach var="item" varStatus="status" items="${exercicio.getValidacoes()}">
+                                        <tr id="trLinha${item.getId()}" class="linha-validacao">
+                                            <td>
+                                                <div class="btn-group btn-group-xs">
+                                                    <input type="hidden" id="idValidacao${status.index + 1}" name="idValidacao${status.index + 1}" value="${item.getId()}">
+                                                    <button type="button" class="btn btn-default btn-excluir" data-source="1" data-id="${item.getId()}"><fmt:message key="button.excluir"/></button>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <textarea class="form-control" rows="3" id="entrada${status.index + 1}" name="entrada${status.index + 1}">${item.getEntrada()}</textarea>
+                                            </td>
+                                            <td>
+                                                <textarea class="form-control" rows="3" id="saida${status.index + 1}" name="saida${status.index + 1}">${item.getSaida()}</textarea>
+                                            </td>
+                                            <td>
+                                                <textarea class="form-control" rows="3" id="mensagem${status.index + 1}" name="mensagem${status.index + 1}">${item.getMensagem()}</textarea>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:if>
+                            </tbody>
+                        </table>
+
+                    </div>
                 </div>
-            </div>
-            <button type="button" id="btn-nova-linha" class="btn btn-primary"><fmt:message key="button.novalinha"/></button>
+                <button type="button" class="btn btn-primary btn-nova-linha"><fmt:message key="button.novalinha"/></button>
+                <button type="submit" class="btn btn-primary"><fmt:message key="button.salvarvalidacao"/></button>
+            </form>
             <br><br>
             
         </c:if>

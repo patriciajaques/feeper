@@ -41,8 +41,6 @@ public class TurmaService extends HibernateUtil<Turma> {
         try {
             
             SQLQuery query = session_.createSQLQuery("delete from TurmaPessoa where IdTurma = "+ idTurma +" and IdPessoa = "+ idAluno);
-//            query.setInteger("idTurma", idTurma);
-//            query.setInteger("idPessoa", idAluno);
             
             query.executeUpdate();
             return true;

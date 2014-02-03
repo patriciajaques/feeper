@@ -5,7 +5,6 @@
 package feeper.model;
 
 import feeper.entity.TurmaPessoa;
-import feeper.entity.TurmaPessoaId;
 import java.math.BigInteger;
 import java.util.List;
 import org.hibernate.SQLQuery;

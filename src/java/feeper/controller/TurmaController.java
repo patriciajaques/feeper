@@ -38,7 +38,7 @@ public class TurmaController extends ApplicationController {
     
     @RequestMapping(method=RequestMethod.GET)
     public String list(Model model) {
-        return list("", "", 1, 2, "id", "asc", "", model, null);
+        return list("", "", 1, 10, "id", "asc", "", model, null);
     }
     
     @RequestMapping(method=RequestMethod.POST)

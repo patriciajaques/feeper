@@ -32,5 +32,6 @@
     <mapping resource="feeper/entity/StatusCodigoFonte.hbm.xml"/>
     <mapping resource="feeper/entity/CodigoFonte.hbm.xml"/>
     <mapping resource="feeper/entity/Pessoa.hbm.xml"/>
+    <mapping resource="feeper/entity/UploadTemp.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>
