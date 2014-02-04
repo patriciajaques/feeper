@@ -61,7 +61,7 @@ public class PessoaController extends ApplicationController {
         mav.setView(new RedirectView("/closemodal", true, true, false));
         
         pessoa.setDataCadastro(new Date());
-        pessoa.setSenha(service.gerarSenha());
+        pessoa.setSenha(service.gerarSenha(8));
         pessoa.setIdNivelDificuldade(1);
    
         if (service.insert(pessoa))
@@ -96,7 +96,7 @@ public class PessoaController extends ApplicationController {
         mav.setView(new RedirectView("/closemodal", true, true, false));
         
         pessoa.setDataCadastro(new Date());
-        pessoa.setSenha(service.gerarSenha());
+        pessoa.setSenha(service.gerarSenha(8));
         pessoa.setIdNivelDificuldade(1);
         
         Pessoa pessoaBanco = service.getById(pessoa.getId());

@@ -29,5 +29,11 @@
         <property name="ativo" type="boolean">
             <column name="Ativo" not-null="true" />
         </property>
+        <property name="idExercicio" type="int">
+            <column name="IdExercicio" not-null="true" />
+        </property>
+        
+        <many-to-one name="autor" class="feeper.entity.Pessoa" column="IdAutor" insert="false" update="false" />
+        <many-to-one name="status" class="feeper.entity.StatusCodigoFonte" column="IdStatus" insert="false" update="false" />
     </class>
 </hibernate-mapping>

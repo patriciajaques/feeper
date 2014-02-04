@@ -18,6 +18,9 @@ public class CodigoFonte  implements java.io.Serializable {
      private Date dataAlteracao;
      private int idStatus;
      private boolean ativo;
+     private int idExercicio;
+     private Pessoa autor;
+     private StatusCodigoFonte status;
 
     public CodigoFonte() {
     }
@@ -95,6 +98,30 @@ public class CodigoFonte  implements java.io.Serializable {
     
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public Pessoa getAutor() {
+        return autor;
+    }
+
+    public void setAutor(Pessoa autor) {
+        this.autor = autor;
+    }
+
+    public StatusCodigoFonte getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusCodigoFonte status) {
+        this.status = status;
+    }
+
+    public int getIdExercicio() {
+        return idExercicio;
+    }
+
+    public void setIdExercicio(int idExercicio) {
+        this.idExercicio = idExercicio;
     }
 
 

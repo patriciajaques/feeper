@@ -5,6 +5,8 @@
 package feeper.model;
 
 import feeper.entity.Pessoa;
+import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -17,9 +19,74 @@ public class PessoaService extends HibernateUtil<Pessoa> {
         super(Pessoa.class);
     }
     
-    public String gerarSenha()
+    final String MAIUSCULAS = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z";
+    final String MINUSCULAS = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
+    final String NUMEROS = "0,1,2,3,4,5,6,7,8,9";
+    final String SIMBOLOS = "!,@,#,?";
+    
+    public String gerarSenha(int tamanhoSenha)
     {
-        return "senha";
+        String senhaGerada = "";
+        boolean valido = false;
+        String[] permitidos = String.format("%s,%s,%s,%s", MAIUSCULAS, MINUSCULAS, NUMEROS, SIMBOLOS).split(",");
+
+        do
+        {
+            Random rd = new Random();
+
+            String temp = "";
+            senhaGerada = "";
+
+            for (int i = 0; i < tamanhoSenha; i++)
+            {
+                temp = permitidos[rd.nextInt(permitidos.length)];
+                senhaGerada += temp;
+            }
+
+            valido = ValidarFormatoSenha(senhaGerada);
+        } while (!valido);
+
+        return senhaGerada;
+    }
+
+    public boolean ValidarFormatoSenha(String senha)
+    {
+        String[] listaMaiusculas = MAIUSCULAS.split(",");
+        String[] listaMinusculas = MINUSCULAS.split(",");
+        String[] listaNumeros = NUMEROS.split(",");
+        String[] listaSimbolos = SIMBOLOS.split(",");
+
+        boolean temMaiuscula = false;
+        boolean temMinuscula = false;
+        boolean temNumero = false;
+        boolean temSimbolo = false;
+        
+        for (int i = 0; i < listaMaiusculas.length; i++)
+            if (senha.contains(listaMaiusculas[i]))
+            {
+                temMaiuscula = true;
+                break;
+            }
+        for (int i = 0; i < listaMinusculas.length; i++)
+            if (senha.contains(listaMinusculas[i]))
+            {
+                temMinuscula = true;
+                break;
+            }
+        for (int i = 0; i < listaNumeros.length; i++)
+            if (senha.contains(listaNumeros[i]))
+            {
+                temNumero = true;
+                break;
+            }
+        for (int i = 0; i < listaSimbolos.length; i++)
+            if (senha.contains(listaSimbolos[i]))
+            {
+                temSimbolo = true;
+                break;
+            }
+        
+        return (temMaiuscula && temMinuscula && temNumero && temSimbolo);
     }
     
 }

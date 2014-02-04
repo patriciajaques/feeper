@@ -83,7 +83,7 @@
                                 <li><a href="<c:url value='/'/>conquistas"><span class="glyphicon glyphicon-certificate"></span>&nbsp;&nbsp;<fmt:message key="menu.minhasconquistas"/></a></li>
                                 <li class="divider"></li>
                                 <li><a href="#"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;<fmt:message key="menu.configuracoes"/></a></li>
-                                <li><a href="#"><span class="glyphicon glyphicon-off"></span>&nbsp;&nbsp;<fmt:message key="menu.logout"/></a></li>
+                                <li><a href="<c:url value='/'/>login/logout"><span class="glyphicon glyphicon-off"></span>&nbsp;&nbsp;<fmt:message key="menu.logout"/></a></li>
                             </ul>
                         </li>
                     </ul>
