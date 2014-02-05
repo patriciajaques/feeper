@@ -53,4 +53,11 @@ public class TurmaService extends HibernateUtil<Turma> {
         }
     }
     
+    public List<Turma> getTurmasByIdPessoa(int idPessoa)
+    {
+        SQLQuery query = query("select T.* from Turma T inner join TurmaPessoa TP on T.ID = TP.IdTurma where TP.IdPessoa = :idPessoa order by T.Nome").addEntity(Turma.class);
+        query.setInteger("idPessoa", idPessoa);
+        return query.list();
+    }
+    
 }

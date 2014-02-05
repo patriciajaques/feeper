@@ -15,8 +15,6 @@ import feeper.model.PaginadorUtil;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -27,14 +25,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
-@SessionAttributes({ "MSG_SUCESSO", "MSG_ERRO", "UsuarioLogado" })
 @RequestMapping(value="/exercicios")
 public class ExerciciosController extends ApplicationController {
     
@@ -99,14 +96,13 @@ public class ExerciciosController extends ApplicationController {
         model.addAttribute("listaExercicios", lista);
         model.addAttribute("nome", nome);
         model.addAttribute("autor", autor);
-        model.addAttribute("MSG_SUCESSO", "");
-        model.addAttribute("MSG_ERRO", "");
         
         return "exercicios/list";
     }
     
     @RequestMapping(value="/add", method=RequestMethod.GET)
     public String add(Model model) {
+        
         model.addAttribute(new Exercicio());
         model.addAttribute("IsAdd", true);
         return "exercicios/edit";
@@ -118,7 +114,9 @@ public class ExerciciosController extends ApplicationController {
             @ModelAttribute("htmlcontent") String html,
             @ModelAttribute("idUploadTemp") String idUploadTemp,
             HttpSession session,
-            BindingResult result) {
+            BindingResult result,
+            final RedirectAttributes flash) {
+        
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/exercicios", true, true, false));
         
@@ -138,9 +136,9 @@ public class ExerciciosController extends ApplicationController {
         }
         
         if (service.insert(exercicio))
-            mav.addObject("MSG_SUCESSO", "Registro inserido com sucesso");
+            flash.addFlashAttribute("MSG_SUCESSO", "Registro inserido com sucesso");
         else
-            mav.addObject("MSG_ERRO", "Ocorreu um erro ao inserir o registro");
+            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao inserir o registro");
         
         return mav;
     }
@@ -161,7 +159,9 @@ public class ExerciciosController extends ApplicationController {
     public ModelAndView saveedit(
             @ModelAttribute("exercicio") Exercicio exercicio, 
             @ModelAttribute("htmlcontent") String html,
-            BindingResult result) {
+            BindingResult result,
+            final RedirectAttributes flash) {
+        
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/exercicios", true, true, false));
         
@@ -173,15 +173,16 @@ public class ExerciciosController extends ApplicationController {
         exercicioBanco.setNome(exercicio.getNome());
         
         if (service.update(exercicioBanco))
-            mav.addObject("MSG_SUCESSO", "Registro alterado com sucesso");
+            flash.addFlashAttribute("MSG_SUCESSO", "Registro alterado com sucesso");
         else
-            mav.addObject("MSG_ERRO", "Ocorreu um erro ao alterar o registro");
+            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao alterar o registro");
         
         return mav;
     }
     
     @RequestMapping(value="/savevalidacao", method=RequestMethod.POST)
     public ModelAndView savevalidacao(HttpServletRequest request) {
+        
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/exercicios", true, true, false));
         
@@ -218,16 +219,20 @@ public class ExerciciosController extends ApplicationController {
     }
     
     @RequestMapping(value="/delete/{id}", method=RequestMethod.GET)
-    public ModelAndView delete(@PathVariable int id, Model model) {
+    public ModelAndView delete(
+            @PathVariable int id, 
+            Model model,
+            final RedirectAttributes flash) {
+        
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/exercicios", true, true, false));
         
         Exercicio exercicio = service.getById(id);
         
         if (service.delete(exercicio))
-            mav.addObject("MSG_SUCESSO", "Registro excluído com sucesso");
+            flash.addFlashAttribute("MSG_SUCESSO", "Registro excluído com sucesso");
         else
-            mav.addObject("MSG_ERRO", "Ocorreu um erro ao excluir o registro");
+            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao excluir o registro");
         
         return mav;
     }

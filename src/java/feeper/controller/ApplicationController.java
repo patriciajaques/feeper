@@ -6,6 +6,7 @@ package feeper.controller;
 
 import feeper.entity.Pessoa;
 import feeper.entity.Turma;
+import feeper.model.DontValidateAccess;
 import java.net.InetAddress;
 import java.util.Date;
 import java.util.List;
@@ -27,21 +28,8 @@ public class ApplicationController {
     public ApplicationController() {
         
     }
-
-//    @ModelAttribute("UsuarioLogado")
-//    public Pessoa getInitializedUsuarioLogado() {
-//        Pessoa pessoa = new Pessoa();
-//        
-//        pessoa.setIp("127.0.0.1");
-//        pessoa.setNome("Fábio Pacheco Alves");
-//        pessoa.setId(1);
-//        pessoa.setTipoPessoa('A');
-//        pessoa.setDataUltimoAcesso(new Date());
-//        pessoa.setEmail("arnistrong@gmail.com");
-//        
-//        return pessoa;
-//    }
     
+    @DontValidateAccess
     @RequestMapping(value="/closemodal", method=RequestMethod.GET)
     public String closeModal() {
         return "closemodal";

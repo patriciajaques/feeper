@@ -66,6 +66,24 @@ public class HibernateUtil<T> {
             return lista;
         }
     }
+    
+    public List<Object> search(String colunaFiltro, String filtro, String colunasResultado){
+        List<Object> lista = null;
+        Query query = null;
+        try {
+            session = getSession();
+            //transacao = session.beginTransaction();
+            query = session.createQuery("Select "+colunasResultado+" From "+objClass.getName()+" Where "+colunaFiltro+" like :like ");
+            query.setParameter("like", "%" + filtro + "%");
+            lista = query.list();
+        } catch (HibernateException e) { 
+            //transacao.rollback();
+            System.err.println(e.fillInStackTrace());
+        } finally {
+            //sessao.close();
+            return lista;
+        }
+    }
 
     /**
      * Retorna todos os registros da tabela (classe) informada

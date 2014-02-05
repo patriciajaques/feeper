@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
@@ -38,6 +39,7 @@ public class TurmaController extends ApplicationController {
     
     @RequestMapping(method=RequestMethod.GET)
     public String list(Model model) {
+        
         return list("", "", 1, 10, "id", "asc", "", model, null);
     }
     
@@ -88,30 +90,33 @@ public class TurmaController extends ApplicationController {
         model.addAttribute("listaTurma", lista);
         model.addAttribute("nome", nome);
         model.addAttribute("professor", professor);
-        model.addAttribute("MSG_SUCESSO", "");
-        model.addAttribute("MSG_ERRO", "");
         
         return "turma/list";
     }
     
     @RequestMapping(value="/add", method=RequestMethod.GET)
     public String add(Model model) {
+        
         model.addAttribute(new Turma());
         model.addAttribute("IsAdd", true);
         return "turma/edit";
     }
     
     @RequestMapping(value="/saveadd", method=RequestMethod.POST)
-    public ModelAndView saveadd(@ModelAttribute("turma") Turma turma, BindingResult result) {
+    public ModelAndView saveadd(
+            @ModelAttribute("turma") Turma turma, 
+            BindingResult result,
+            final RedirectAttributes flash) {
+        
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/turma", true, true, false));
         
         turma.setDataCadastro(new Date());        
         
         if (service.insert(turma))
-            mav.addObject("MSG_SUCESSO", "Registro inserido com sucesso");
+            flash.addFlashAttribute("MSG_SUCESSO", "Registro inserido com sucesso");
         else
-            mav.addObject("MSG_ERRO", "Ocorreu um erro ao inserir o registro");
+            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao inserir o registro");
         
         return mav;
     }
@@ -129,7 +134,11 @@ public class TurmaController extends ApplicationController {
     }
     
     @RequestMapping(value="/saveedit", method=RequestMethod.POST)
-    public ModelAndView saveedit(@ModelAttribute("turma") Turma turma, BindingResult result) {
+    public ModelAndView saveedit(
+            @ModelAttribute("turma") Turma turma, 
+            BindingResult result,
+            final RedirectAttributes flash) {
+        
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/turma", true, true, false));
         
@@ -141,30 +150,35 @@ public class TurmaController extends ApplicationController {
         turmaBanco.setNome(turma.getNome());
         
         if (service.update(turmaBanco))
-            mav.addObject("MSG_SUCESSO", "Registro alterado com sucesso");
+            flash.addFlashAttribute("MSG_SUCESSO", "Registro alterado com sucesso");
         else
-            mav.addObject("MSG_ERRO", "Ocorreu um erro ao alterar o registro");
+            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao alterar o registro");
         
         return mav;
     }
     
     @RequestMapping(value="/delete/{id}", method=RequestMethod.GET)
-    public ModelAndView delete(@PathVariable int id, Model model) {
+    public ModelAndView delete(
+            @PathVariable int id, 
+            Model model,
+            final RedirectAttributes flash) {
+        
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/turma", true, true, false));
         
         Turma turma = service.getById(id);
         
         if (service.delete(turma))
-            mav.addObject("MSG_SUCESSO", "Registro excluído com sucesso");
+            flash.addFlashAttribute("MSG_SUCESSO", "Registro excluído com sucesso");
         else
-            mav.addObject("MSG_ERRO", "Ocorreu um erro ao excluir o registro");
+            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao excluir o registro");
         
         return mav;
     }
     
     @RequestMapping(value="/details/{id}", method=RequestMethod.GET)
     public String details(@PathVariable int id, Model model) {
+        
         Turma turma = new Turma();
         turma.setNome("Programação 1");
         

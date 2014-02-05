@@ -18,10 +18,10 @@ public class Pessoa  implements java.io.Serializable {
     private String senha;
     private Date dataCadastro;
     private Date dataUltimoAcesso;
-    private char tipoPessoa;
     private boolean ativo;
     private String ip;
     private int idNivelDificuldade;
+    private int idPerfil;
     private List<Turma> turmas;
     //private List<Turma> turmasProfessor;
 
@@ -30,22 +30,20 @@ public class Pessoa  implements java.io.Serializable {
     }
 
 	
-    public Pessoa(String nome, String email, String senha, Date dataCadastro, char tipoPessoa, boolean ativo, int idNivelDificuldade) {
+    public Pessoa(String nome, String email, String senha, Date dataCadastro, boolean ativo, int idNivelDificuldade) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.dataCadastro = dataCadastro;
-        this.tipoPessoa = tipoPessoa;
         this.ativo = ativo;
         this.idNivelDificuldade = idNivelDificuldade;
     }
-    public Pessoa(String nome, String email, String senha, Date dataCadastro, Date dataUltimoAcesso, char tipoPessoa, boolean ativo, String ip, int idNivelDificuldade) {
+    public Pessoa(String nome, String email, String senha, Date dataCadastro, Date dataUltimoAcesso, boolean ativo, String ip, int idNivelDificuldade) {
        this.nome = nome;
        this.email = email;
        this.senha = senha;
        this.dataCadastro = dataCadastro;
        this.dataUltimoAcesso = dataUltimoAcesso;
-       this.tipoPessoa = tipoPessoa;
        this.ativo = ativo;
        this.ip = ip;
        this.idNivelDificuldade = idNivelDificuldade;
@@ -93,13 +91,7 @@ public class Pessoa  implements java.io.Serializable {
     public void setDataUltimoAcesso(Date dataUltimoAcesso) {
         this.dataUltimoAcesso = dataUltimoAcesso;
     }
-    public char getTipoPessoa() {
-        return this.tipoPessoa;
-    }
-    
-    public void setTipoPessoa(char tipoPessoa) {
-        this.tipoPessoa = tipoPessoa;
-    }
+
     public boolean isAtivo() {
         return this.ativo;
     }
@@ -130,6 +122,13 @@ public class Pessoa  implements java.io.Serializable {
         this.turmas = turmas;
     }
 
+    public int getIdPerfil() {
+        return idPerfil;
+    }
+
+    public void setIdPerfil(int idPerfil) {
+        this.idPerfil = idPerfil;
+    }
 
 
 }

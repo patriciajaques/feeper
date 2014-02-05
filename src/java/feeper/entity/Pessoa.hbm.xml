@@ -23,11 +23,6 @@
         <property name="dataUltimoAcesso" type="timestamp">
             <column name="DataUltimoAcesso" length="19" />
         </property>
-        <property name="tipoPessoa" type="char">
-            <column name="TipoPessoa" length="1" not-null="true">
-                <comment>'A': Aluno 'P': Professor</comment>
-            </column>
-        </property>
         <property name="ativo" type="boolean">
             <column name="Ativo" not-null="true" />
         </property>
@@ -36,6 +31,9 @@
         </property>
         <property name="idNivelDificuldade" type="int">
             <column name="IdNivelDificuldade" not-null="true" />
+        </property>
+        <property name="idPerfil" type="int">
+            <column name="IdPerfil" not-null="true" />
         </property>
     </class>
 </hibernate-mapping>

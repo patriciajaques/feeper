@@ -35,7 +35,7 @@
                             dataType: 'json'
                         }).done(function (data) {
                             response($.map(data, function (item) {
-                                return { label: item.nome, value: item.nome, id: item.id };
+                                return { label: item[1], value: item[1], id: item[0] };
                             }));
                         }).fail(function () {
                             $('.ui-autocomplete-loading').removeClass("ui-autocomplete-loading");

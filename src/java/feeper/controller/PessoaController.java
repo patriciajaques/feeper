@@ -7,13 +7,16 @@ package feeper.controller;
 import feeper.entity.Pessoa;
 import feeper.entity.TurmaPessoa;
 import feeper.entity.TurmaPessoaId;
-import feeper.model.ETipoPessoa;
+import feeper.model.EPerfil;
 import feeper.model.HibernateUtil;
 import feeper.model.PessoaService;
 import feeper.model.TurmaPessoaService;
 import feeper.model.TurmaService;
+import feeper.model.Util;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,7 +31,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 
 @Controller
-@SessionAttributes({ "MSG_SUCESSO", "MSG_ERRO" })
 @RequestMapping(value="/pessoa")
 public class PessoaController extends ApplicationController {
     
@@ -46,7 +48,7 @@ public class PessoaController extends ApplicationController {
     public String addAluno(@PathVariable int idTurma, Model model) {
         
         Pessoa pessoa = new Pessoa();
-        pessoa.setTipoPessoa(ETipoPessoa.ALUNO);
+        pessoa.setIdPerfil(EPerfil.ALUNO);
         
         model.addAttribute(pessoa);
         model.addAttribute("IsAdd", true);
@@ -61,7 +63,7 @@ public class PessoaController extends ApplicationController {
         mav.setView(new RedirectView("/closemodal", true, true, false));
         
         pessoa.setDataCadastro(new Date());
-        pessoa.setSenha(service.gerarSenha(8));
+        pessoa.setSenha(Util.gerarSenha(8));
         pessoa.setIdNivelDificuldade(1);
    
         if (service.insert(pessoa))
@@ -96,7 +98,7 @@ public class PessoaController extends ApplicationController {
         mav.setView(new RedirectView("/closemodal", true, true, false));
         
         pessoa.setDataCadastro(new Date());
-        pessoa.setSenha(service.gerarSenha(8));
+        pessoa.setSenha(Util.gerarSenha(8));
         pessoa.setIdNivelDificuldade(1);
         
         Pessoa pessoaBanco = service.getById(pessoa.getId());
@@ -132,7 +134,7 @@ public class PessoaController extends ApplicationController {
     public String addProfessor(Model model) {
         
         Pessoa pessoa = new Pessoa();
-        pessoa.setTipoPessoa(ETipoPessoa.PROFESSOR);
+        pessoa.setIdPerfil(EPerfil.PROFESSOR);
         
         model.addAttribute(pessoa);
         model.addAttribute("IsAdd", true);
@@ -152,12 +154,10 @@ public class PessoaController extends ApplicationController {
         return "pessoa/edit";
     }
     
-    @RequestMapping(value="/search/{word}", method=RequestMethod.GET, produces="application/json")
+    @RequestMapping(value="/search/{word}", method=RequestMethod.GET, produces="application/json;charset=UTF-8")
     @ResponseBody
-    public List<Pessoa> search(@PathVariable String word, Model model) {
-        
-        List<Pessoa> lista = service.search("nome", word);
-        
+    public List<Object> search(@PathVariable String word, Model model) {
+        List<Object> lista = service.search("nome", word, "id, nome");
         return lista;
     }
 

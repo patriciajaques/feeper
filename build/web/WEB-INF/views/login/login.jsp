@@ -22,8 +22,13 @@
 
                     <div class="panel panel-default">
                         <div class="panel-body">
-
                             <form role="form" action="<c:url value='/'/>login/validate" method="POST">
+                                <c:if test="${not empty MSG_SUCESSO}">
+                                    <div class="alert alert-success">${MSG_SUCESSO}</div>
+                                </c:if>
+                                <c:if test="${not empty MSG_ERRO}">
+                                    <div class="alert alert-danger">${MSG_ERRO}</div>
+                                </c:if>
                                 <div class="form-group">
                                     <input type="email" class="form-control" id="email" name="email" placeholder="<fmt:message key="label.email"/>">
                                 </div>
