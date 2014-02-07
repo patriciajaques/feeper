@@ -55,34 +55,46 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a href="#">
+                    <a href="<c:url value='/'/>">
                         <img src="<c:url value='/resources/img/logo_p.png'/>" style="border:0px; padding-top:8px; padding-right:10px;" />
                     </a>
                 </div>
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
                     <ul class="nav navbar-nav">
-                        <li id="menu-novidades"><a href="<c:url value='/'/>novidades"><fmt:message key="menu.novidades"/> <span class="badge badge-important">7</span></a></li>
-                        <li id="menu-mensagens"><a href="<c:url value='/'/>mensagens"><fmt:message key="menu.mensagens"/> <span class="badge badge-important">3</span></a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="menu.turmas"/> <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Programação I</a></li>
-                                <li><a href="#">Laboratório I</a></li>
-                            </ul>
-                        </li>
+                        <c:choose>
+                            <c:when test="${UsuarioLogado.getIdPerfil() == 1}">
+                                <li id="menu-lista-turma"><a href="<c:url value='/'/>turma"><fmt:message key="menu.turmas"/></a></li>
+                                <li id="menu-lista-pessoas"><a href="<c:url value='/'/>pessoa"><fmt:message key="menu.pessoas"/></a></li>
+                                <li id="menu-lista-exercicio"><a href="<c:url value='/'/>exercicios"><fmt:message key="menu.exercicios"/></a></li>
+                                <li id="menu-lista-conquistas"><a href="<c:url value='/'/>conquistas"><fmt:message key="menu.conquistas"/></a></li>
+                            </c:when>
+                            <c:otherwise>
+                                <li id="menu-novidades"><a href="<c:url value='/'/>novidades"><fmt:message key="menu.novidades"/> ${BadgeNovidades}</a></li>
+                                <li id="menu-mensagens"><a href="<c:url value='/'/>mensagens"><fmt:message key="menu.mensagens"/> ${BadgeMensagens}</a></li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="menu.turmas"/> <b class="caret"></b></a>
+                                    <ul class="dropdown-menu">${MinhasTurmas}</ul>
+                                </li>
+                            </c:otherwise>
+                        </c:choose>
+                        
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li style="margin-top: 3px">
-                            <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
+                            <img src="<c:url value='/resources/img/photo/photo-${UsuarioLogado.getId()}.png'/>" style="width:45px; height:45px;" alt="${UsuarioLogado.getNome()}" class="img-circle">
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 ${UsuarioLogado.getNome()} <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="<c:url value='/'/>conquistas"><span class="glyphicon glyphicon-certificate"></span>&nbsp;&nbsp;<fmt:message key="menu.minhasconquistas"/></a></li>
+                                
+                                <c:if test="${UsuarioLogado.getIdPerfil() == 3}">
+                                <li><a href="<c:url value='/'/>conquistas/minhasconquistas"><span class="glyphicon glyphicon-certificate"></span>&nbsp;&nbsp;<fmt:message key="menu.minhasconquistas"/></a></li>
                                 <li class="divider"></li>
-                                <li><a href="#"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;<fmt:message key="menu.configuracoes"/></a></li>
+                                </c:if>
+                                
+                                <li><a href="<c:url value='/'/>pessoa/perfil"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;<fmt:message key="menu.configuracoes"/></a></li>
                                 <li><a href="<c:url value='/'/>login/logout"><span class="glyphicon glyphicon-off"></span>&nbsp;&nbsp;<fmt:message key="menu.logout"/></a></li>
                             </ul>
                         </li>
@@ -93,28 +105,37 @@
         
         <div class="container">
             <div class="row">
-                <div class="col-md-9">            
-                    <jsp:doBody/>
-                </div>
-                <div class="col-md-3">
-                    <h4>Programação I</h4>
-                    <div class="list-group">
-                        <a href="<c:url value='/'/>codigos" class="list-group-item" id="menu-meus-codigos-favoritos">
-                            <span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;<fmt:message key="menu.codigosfavoritos"/>
-                        </a>
-                        <a href="<c:url value='/'/>exercicios" class="list-group-item" id="menu-lista-exercicios">
-                            <span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;<fmt:message key="menu.exercicios"/>
-                        </a>
-                        <a href="<c:url value='/'/>notas" class="list-group-item" id="menu-minhas-notas">
-                            <span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;<fmt:message key="menu.minhasnotas"/>
-                        </a>
-                        <a href="<c:url value='/'/>colegas" class="list-group-item" id="menu-colegas">
-                            <span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;<fmt:message key="menu.colegas"/>
-                        </a>
-                    </div>
-                        
-                    <jsp:invoke fragment="rightmenu"/>
-                </div>
+                <c:choose>
+                    <c:when test="${UsuarioLogado.getIdPerfil() == 1}">
+                        <div class="col-md-12">            
+                            <jsp:doBody/>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="col-md-9">            
+                            <jsp:doBody/>
+                        </div>
+                        <div class="col-md-3">
+                            <h4>Programação I</h4>
+                            <div class="list-group">
+                                <a href="<c:url value='/'/>codigos" class="list-group-item" id="menu-meus-codigos-favoritos">
+                                    <span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;<fmt:message key="menu.codigosfavoritos"/>
+                                </a>
+                                <a href="<c:url value='/'/>exercicios/meusexercicios" class="list-group-item" id="menu-lista-exercicios">
+                                    <span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;<fmt:message key="menu.meusexercicios"/>
+                                </a>
+                                <a href="<c:url value='/'/>notas" class="list-group-item" id="menu-minhas-notas">
+                                    <span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;<fmt:message key="menu.minhasnotas"/>
+                                </a>
+                                <a href="<c:url value='/'/>colegas" class="list-group-item" id="menu-colegas">
+                                    <span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;<fmt:message key="menu.colegas"/>
+                                </a>
+                            </div>
+
+                            <jsp:invoke fragment="rightmenu"/>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
         

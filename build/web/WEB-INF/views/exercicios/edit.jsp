@@ -11,7 +11,7 @@
             var trTemplate = "<tr id=\"trLinhaNova#id#\" class=\"linha-validacao\"><td><div class=\"btn-group btn-group-xs\"><button type=\"button\" class=\"btn btn-default btn-excluir\" data-source=\"0\" data-id=\"#id#\"><fmt:message key="button.excluir"/></button></div></td><td><textarea class=\"form-control\" rows=\"3\" id=\"entrada#id#\" name=\"entrada#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"saida#id#\" name=\"saida#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"mensagem#id#\" name=\"mensagem#id#\"></textarea></td></tr>";
     
             $(function(){
-                $("#menu-cadastro-exercicio").addClass("active");
+                $("#menu-lista-exercicio").addClass("active");
                 
                 $(".editor").jqte();
                 

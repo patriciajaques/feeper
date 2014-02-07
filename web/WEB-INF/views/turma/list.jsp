@@ -88,6 +88,7 @@
                             <th><fmt:message key="label.turma.nometurma"/></th>
                             <th><fmt:message key="label.turma.professor"/></th>
                             <th><fmt:message key="label.turma.qtdealunos"/></th>
+                            <th><fmt:message key="label.turma.ativo"/></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -104,6 +105,7 @@
                                     <td>${item.getNome()}</td>
                                     <td>${item.getProfessor().getNome()}</td>
                                     <td>0</td>
+                                    <td>${item.isAtivo()}</td>
                                 </tr>
                             </c:forEach>
                         </c:if>

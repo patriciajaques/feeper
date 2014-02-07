@@ -5,9 +5,6 @@
 package feeper.model;
 
 import feeper.entity.Pessoa;
-import java.security.MessageDigest;
-import java.util.List;
-import java.util.Random;
 import org.hibernate.SQLQuery;
 
 /**
@@ -26,7 +23,7 @@ public class PessoaService extends HibernateUtil<Pessoa> {
         try {
             senha = Util.criptoMD5(senha);
             
-            SQLQuery query = query("SELECT * FROM Pessoa WHERE Email = :email AND Senha = :senha").addEntity(Pessoa.class);
+            SQLQuery query = query("SELECT * FROM Pessoa WHERE Email = :email AND Senha = :senha AND Ativo = 1").addEntity(Pessoa.class);
             query.setString("email", email);
             query.setString("senha", senha);
             

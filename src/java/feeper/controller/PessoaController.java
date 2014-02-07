@@ -5,18 +5,13 @@
 package feeper.controller;
 
 import feeper.entity.Pessoa;
-import feeper.entity.TurmaPessoa;
-import feeper.entity.TurmaPessoaId;
 import feeper.model.EPerfil;
-import feeper.model.HibernateUtil;
 import feeper.model.PessoaService;
 import feeper.model.TurmaPessoaService;
 import feeper.model.TurmaService;
 import feeper.model.Util;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,7 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 

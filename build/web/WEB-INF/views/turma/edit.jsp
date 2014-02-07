@@ -11,7 +11,7 @@
         
         <script type="text/javascript">
             $(function(){
-                $("#menu-cadastro-turma").addClass("active");
+                $("#menu-lista-turma").addClass("active");
                 
                 $("#btn-novo-aluno").click(function(){
                     var url = "<c:url value='/'/>pessoa/addaluno/${turma.getId()}";

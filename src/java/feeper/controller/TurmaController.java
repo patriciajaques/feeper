@@ -4,15 +4,13 @@
  */
 package feeper.controller;
 
-import feeper.entity.Pessoa;
 import feeper.entity.Turma;
-import feeper.entity.TurmaPessoa;
-import feeper.model.HibernateUtil;
 import feeper.model.PaginadorUtil;
 import feeper.model.TurmaService;
 import java.util.Date;
 import java.util.List;
-import org.hibernate.SQLQuery;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -184,6 +182,22 @@ public class TurmaController extends ApplicationController {
         
         model.addAttribute(turma);
         return "turma/details";
+    }
+    
+    @RequestMapping(value="/change/{id}", method=RequestMethod.GET)
+    public String change(@PathVariable int id, HttpServletRequest request) {
+        
+        HttpSession session = request.getSession(false);
+        
+        if (session != null)
+        {
+            TurmaService repoTurma = new TurmaService();
+            Turma turma = repoTurma.getById(id);
+            if (turma.isAtivo())
+                session.setAttribute("TurmaSelecionada", turma);
+        }
+        
+        return "redirect:/";
     }
     
 }

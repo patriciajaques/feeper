@@ -5,6 +5,8 @@
 package feeper.model;
 
 import feeper.entity.Pessoa;
+import feeper.entity.Turma;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -12,12 +14,47 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 @Component
 public class ActionExecuteInterceptor extends HandlerInterceptorAdapter {
- 
+
+    public void postHandle(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Object handler,
+            ModelAndView modelAndView
+            ) throws Exception {
+        
+        try {
+            if (request.getRequestURI().startsWith(request.getContextPath() + "/resources"))
+                return;
+            
+            if (handler instanceof HandlerMethod)
+            {   
+                if (((HandlerMethod)handler).getMethodAnnotation(DontValidateAccess.class) != null)
+                    return;
+                if (((HandlerMethod)handler).getMethod().getDeclaringClass().getAnnotation(DontValidateAccess.class) != null)
+                    return;
+            }
+        } catch (Exception e) {
+        }
+        
+        HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute("UsuarioLogado") != null)
+        {
+            if (((Pessoa)session.getAttribute("UsuarioLogado")).getIdPerfil() > 1)
+            {
+                carregaBadges(modelAndView, session);
+                carregaTurmas(modelAndView, session);
+            }
+            
+        }
+    }
+    
+    
     public boolean preHandle(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -97,6 +134,37 @@ public class ActionExecuteInterceptor extends HandlerInterceptorAdapter {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    private void carregaBadges(ModelAndView modelAndView, HttpSession session) {
+        
+        int idPessoa = ((Pessoa)session.getAttribute("UsuarioLogado")).getId();
+        int contBadgeNovidades = 0;
+        int contBadgeMensagens = 0;
+        MensagemService repoMensagem = new MensagemService();
+        NovidadeService repoNovidade = new NovidadeService();
+        
+        contBadgeNovidades = repoNovidade.getCountMinhasNovidades(idPessoa);
+        contBadgeMensagens = repoMensagem.getCountMinhasMensagens(idPessoa);
+        
+        modelAndView.addObject("BadgeNovidades", contBadgeNovidades > 0 ? "<span class=\"badge badge-important\">"+ contBadgeNovidades +"</span>" : "");
+        modelAndView.addObject("BadgeMensagens", contBadgeMensagens > 0 ? "<span class=\"badge badge-important\">"+ contBadgeMensagens +"</span>" : "");
+    }
+    
+    private void carregaTurmas(ModelAndView modelAndView, HttpSession session) {
+        
+        int idPessoa = ((Pessoa)session.getAttribute("UsuarioLogado")).getId();
+        TurmaService repoTurma = new TurmaService();
+        
+        List<Turma> turmas = repoTurma.getTurmasByIdPessoa(idPessoa);
+        StringBuilder html = new StringBuilder();
+        
+        for (final Turma turma : turmas)
+        {
+            html.append("<li><a href=\"#\">").append(turma.getNome()).append("</a></li>");
+        }
+        
+        modelAndView.addObject("MinhasTurmas", html.toString());
     }
     
     

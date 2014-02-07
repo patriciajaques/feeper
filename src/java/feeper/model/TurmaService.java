@@ -25,7 +25,7 @@ public class TurmaService extends HibernateUtil<Turma> {
     
     public List<Pessoa> getAlunos(int idTurma)
     {
-        SQLQuery query = query("select P.* from TurmaPessoa TP inner join Pessoa P on P.ID = TP.IdPessoa where TP.IdTurma = :idTurma order by P.Nome").addEntity(Pessoa.class);
+        SQLQuery query = query("select P.* from TurmaPessoa TP inner join Pessoa P on P.ID = TP.IdPessoa where T.Ativo = 1 and TP.IdTurma = :idTurma order by P.Nome").addEntity(Pessoa.class);
         query.setInteger("idTurma", idTurma);
         return query.list();
     }
@@ -55,7 +55,10 @@ public class TurmaService extends HibernateUtil<Turma> {
     
     public List<Turma> getTurmasByIdPessoa(int idPessoa)
     {
-        SQLQuery query = query("select T.* from Turma T inner join TurmaPessoa TP on T.ID = TP.IdTurma where TP.IdPessoa = :idPessoa order by T.Nome").addEntity(Turma.class);
+        SQLQuery query = query("select T.* from Turma T inner join TurmaPessoa TP on T.ID = TP.IdTurma where TP.IdPessoa = :idPessoa and T.Ativo = 1\n" +
+                                "union all\n" +
+                                "select T.* from Turma T where T.IdProfessor = :idPessoa and T.Ativo = 1 \n" +
+                                "order by Nome").addEntity(Turma.class);
         query.setInteger("idPessoa", idPessoa);
         return query.list();
     }

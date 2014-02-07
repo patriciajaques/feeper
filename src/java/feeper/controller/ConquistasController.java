@@ -13,8 +13,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class ConquistasController {
     
     @RequestMapping(method=RequestMethod.GET)
-    public String getView() {
+    public String list() {
         return "conquistas/list";
+    }
+    
+    @RequestMapping(value="/minhasconquistas", method=RequestMethod.GET)
+    public String minhasconquistas() {
+        return "exercicios/minhasconquistas";
     }
     
 }
