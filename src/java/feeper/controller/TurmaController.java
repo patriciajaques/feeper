@@ -4,6 +4,7 @@
  */
 package feeper.controller;
 
+import feeper.entity.Pessoa;
 import feeper.entity.Turma;
 import feeper.model.PaginadorUtil;
 import feeper.model.TurmaService;
@@ -24,7 +25,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
-@SessionAttributes({ "MSG_SUCESSO", "MSG_ERRO" })
 @RequestMapping(value="/turma")
 public class TurmaController extends ApplicationController {
     
@@ -185,19 +185,26 @@ public class TurmaController extends ApplicationController {
     }
     
     @RequestMapping(value="/change/{id}", method=RequestMethod.GET)
-    public String change(@PathVariable int id, HttpServletRequest request) {
+    public ModelAndView change(@PathVariable int id, HttpServletRequest request) {
         
         HttpSession session = request.getSession(false);
         
         if (session != null)
         {
-            TurmaService repoTurma = new TurmaService();
-            Turma turma = repoTurma.getById(id);
-            if (turma.isAtivo())
-                session.setAttribute("TurmaSelecionada", turma);
+            Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
+            List<Turma> minhasTurmas = pessoa.getTurmas();
+            for (Turma turma : minhasTurmas) {
+                if (turma.getId() == id)
+                {
+                    session.setAttribute("TurmaSelecionada", turma);
+                    break;
+                }
+            }
         }
         
-        return "redirect:/";
+        ModelAndView mav = new ModelAndView();
+        mav.setView(new RedirectView("/", true, true, false));
+        return mav;
     }
     
 }

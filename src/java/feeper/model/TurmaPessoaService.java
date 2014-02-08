@@ -39,7 +39,8 @@ public class TurmaPessoaService extends HibernateUtil<TurmaPessoa> {
         SQLQuery query = query("select count(*) from TurmaPessoa where IdTurma = :idTurma and IdPessoa = :idPessoa");
         query.setInteger("idTurma", idTurma);
         query.setInteger("idPessoa", idPessoa);
-        return ((BigInteger)query.uniqueResult()).intValue() >= 1;
+        Object result = query.uniqueResult();
+        return result != null && ((BigInteger)result).intValue() >= 1;
     }
     
     public boolean insertIfNotExist(int idTurma, int idPessoa)

@@ -12,7 +12,9 @@
                 $("#menu-lista-exercicios").addClass("active");
                 
                 $(".btn-responder").click(function(){
-                    document.location.href = "<c:url value='/'/>exercicios/responder";
+                    var id = $(this).attr("data-id");
+                    if (id === undefined) return;
+                    document.location.href = "<c:url value='/'/>exercicios/responder/" + id;
                 });
             });
         </script>
@@ -20,67 +22,27 @@
     </jsp:attribute>
     <jsp:body>
         
-        <h2>Programação I - <fmt:message key="label.exercicios"/></h2>
+        <h2>${TurmaSelecionada.getNome()} - <fmt:message key="label.exercicios"/></h2>
         
-        <ul class="pagination pagination-sm">
-          <li><a href="#">«</a></li>
-          <li class="active"><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li><a href="#">»</a></li>
-        </ul>
+        <form class="form-inline" role="form" method="POST" id="frm-paged">
+            <%@include file="/WEB-INF/jspf/paginador_campos.jspf" %>
+        </form>
         
-        <blockquote>
-            <p><b>Lista Encadeada:</b> Monte uma lista simplesmente encadeada para armazenar uma lista de valores e devolver estes valores ordenados de forma descrescente.</p>
-            <small class="pull-left">Programação I - Dificuldade Baixa</small>
-            <small class="pull-right">Data da Última Resposta</small>
-            <br>
-            <p>
-                <button type="button" class="btn btn-primary btn-xs btn-responder"><fmt:message key="button.responder"/></button>
-            </p>
-        </blockquote>
+        <%@include file="/WEB-INF/jspf/paginador.jspf" %>
         
-        <blockquote>
-            <p><b>Lista Encadeada:</b> Monte uma lista simplesmente encadeada para armazenar uma lista de valores e devolver estes valores ordenados de forma descrescente.</p>
-            <small class="pull-left">Programação I - Dificuldade Baixa</small>
-            <small class="pull-right">Data da Última Resposta</small>
-            <br>
-            <p>
-                <button type="button" class="btn btn-primary btn-xs btn-responder"><fmt:message key="button.responder"/></button>
-            </p>
-        </blockquote>
+        <c:if test="${not empty listaExercicios}">
+            <c:forEach var="item" varStatus="status" items="${listaExercicios}">
+                <blockquote>
+                    <p><b>${item[1]}:</b> ${item[3]}</p>
+                    <small class="pull-left">${item[5]} - <fmt:message key="label.exercicios.nivel"/> ${item[4]}</small>
+                    <small class="pull-right"><fmt:message key="label.exercicios.dataultimaresposta"/> ${item[6]}</small>
+                    <br>
+                    <p><button type="button" class="btn btn-primary btn-xs btn-responder" data-id="${item[0]}"><fmt:message key="button.responder"/></button></p>
+                </blockquote>
+            </c:forEach>
+        </c:if>
         
-        <blockquote>
-            <p><b>Lista Encadeada:</b> Monte uma lista simplesmente encadeada para armazenar uma lista de valores e devolver estes valores ordenados de forma descrescente.</p>
-            <small class="pull-left">Programação I - Dificuldade Baixa</small>
-            <small class="pull-right">Data da Última Resposta</small>
-            <br>
-            <p>
-                <button type="button" class="btn btn-primary btn-xs btn-responder"><fmt:message key="button.responder"/></button>
-            </p>
-        </blockquote>
-        
-        <blockquote>
-            <p><b>Lista Encadeada:</b> Monte uma lista simplesmente encadeada para armazenar uma lista de valores e devolver estes valores ordenados de forma descrescente.</p>
-            <small class="pull-left">Programação I - Dificuldade Baixa</small>
-            <small class="pull-right">Data da Última Resposta</small>
-            <br>
-            <p>
-                <button type="button" class="btn btn-primary btn-xs btn-responder"><fmt:message key="button.responder"/></button>
-            </p>
-        </blockquote>
-        
-        <ul class="pagination pagination-sm">
-          <li><a href="#">«</a></li>
-          <li class="active"><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li><a href="#">»</a></li>
-        </ul>
+        <%@include file="/WEB-INF/jspf/paginador.jspf" %>
             
     </jsp:body>
 </t:master>

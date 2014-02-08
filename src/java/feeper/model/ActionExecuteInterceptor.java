@@ -48,7 +48,7 @@ public class ActionExecuteInterceptor extends HandlerInterceptorAdapter {
             if (((Pessoa)session.getAttribute("UsuarioLogado")).getIdPerfil() > 1)
             {
                 carregaBadges(modelAndView, session);
-                carregaTurmas(modelAndView, session);
+                carregaTurmas(session);
             }
             
         }
@@ -151,20 +151,19 @@ public class ActionExecuteInterceptor extends HandlerInterceptorAdapter {
         modelAndView.addObject("BadgeMensagens", contBadgeMensagens > 0 ? "<span class=\"badge badge-important\">"+ contBadgeMensagens +"</span>" : "");
     }
     
-    private void carregaTurmas(ModelAndView modelAndView, HttpSession session) {
+    private void carregaTurmas(HttpSession session) {
         
-        int idPessoa = ((Pessoa)session.getAttribute("UsuarioLogado")).getId();
-        TurmaService repoTurma = new TurmaService();
-        
-        List<Turma> turmas = repoTurma.getTurmasByIdPessoa(idPessoa);
+        if (session.getAttribute("MinhasTurmas") != null) return;
+            
+        Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
+        List<Turma> turmas = pessoa.getTurmas();
         StringBuilder html = new StringBuilder();
         
         for (final Turma turma : turmas)
         {
-            html.append("<li><a href=\"#\">").append(turma.getNome()).append("</a></li>");
+            html.append("<li><a href=\"#\" onclick=\"changeTurma(").append(turma.getId()).append(");\">").append(turma.getNome()).append("</a></li>");
         }
-        
-        modelAndView.addObject("MinhasTurmas", html.toString());
+        session.setAttribute("MinhasTurmas", html.toString());
     }
     
     

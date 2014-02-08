@@ -6,17 +6,21 @@ package feeper.controller;
 
 import feeper.entity.Exercicio;
 import feeper.entity.ExercicioValidacao;
+import feeper.entity.MeusExercicios;
 import feeper.entity.Pessoa;
+import feeper.entity.Turma;
 import feeper.entity.UploadTemp;
 import feeper.model.ExercicioService;
 import feeper.model.ExercicioValidacaoService;
 import feeper.model.HibernateUtil;
 import feeper.model.PaginadorUtil;
+import feeper.model.ScalarResult;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -258,13 +262,113 @@ public class ExerciciosController extends ApplicationController {
     }
     
     @RequestMapping(value="/meusexercicios", method=RequestMethod.GET)
-    public String meusexercicios() {
+    public String meusexercicios(Model model, HttpServletRequest request) {
+        
+        return meusexercicios(1, 10, "Nome", "asc", "", model, null, request);
+    }
+    
+    @RequestMapping(value="/meusexercicios", method=RequestMethod.POST)
+    public String meusexercicios(
+            @ModelAttribute("currentPage") int currentPage,
+            @ModelAttribute("pageSize") int pageSize,
+            @ModelAttribute("sortField") String sortField, 
+            @ModelAttribute("sortDirection") String sortDirection, 
+            @ModelAttribute("gridAction") String gridAction, 
+            Model model, 
+            BindingResult result, 
+            HttpServletRequest request) {
+        
+        //Configurações do Paginador
+        if (gridAction.equals("PageSizeChanged") || gridAction.equals("Sorted") || gridAction.equals("Searched"))
+            currentPage = 1;
+
+        if (currentPage == 0) currentPage = 1;
+        if (pageSize == 0) pageSize = 10;
+        if (sortField != null && !sortField.isEmpty()) sortField = "E.Nome";
+        if (sortDirection != null && !sortDirection.isEmpty()) sortDirection = "Asc";
+        //-------------------------
+        
+        PaginadorUtil<MeusExercicios> paginador = new PaginadorUtil<MeusExercicios>();
+        
+        HttpSession session = request.getSession(false);
+        Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
+        Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
+        
+        String sql = "select " +
+                    "  E.ID,  " +
+                    "  E.Nome, " +
+                    "  E.Descricao, " +
+                    "  E.DescricaoHtml, " +
+                    "  ND.Nome AS NivelDificuldade, " +
+                    "  T.Nome AS Turma, " +
+                    "  IFNULL(CF.DataAlteracao, CF.DataCadastro) AS DataUltimaAlteracao " +
+                    "from  " +
+                    "  TurmaExercicio TE " +
+                    "  inner join Exercicio E " +
+                    "  on E.ID = TE.IdExercicio " +
+                    "  inner join NivelDificuldade ND " +
+                    "  on ND.ID = E.IdNivelDificuldade " +
+                    "  inner join Turma T " +
+                    "  on T.ID = TE.IdTurma " +
+                    "  left join CodigoFonte CF " +
+                    "  on CF.IdExercicio = E.ID " +
+                    "  and CF.IdAutor = :p0 " +
+                    "  and CF.Ativo = 1 " +
+                    "where " +
+                    "  TE.Visivel = 1 " +
+                    "  and TE.IdTurma = :p1 " +
+                    "  and E.IdNivelDificuldade <= :p2 " +
+                    "  and T.Ativo = 1";
+        
+        Integer[] params = new Integer[3];
+        params[0] = pessoa.getId();
+        params[1] = turma.getId();
+        params[2] = pessoa.getIdNivelDificuldade();
+        
+        ScalarResult[] scalarResult = new ScalarResult[7];
+        scalarResult[0] = new ScalarResult("ID", Hibernate.INTEGER);
+        scalarResult[1] = new ScalarResult("Nome", Hibernate.STRING);
+        scalarResult[2] = new ScalarResult("Descricao", Hibernate.BINARY);
+        scalarResult[3] = new ScalarResult("DescricaoHtml", Hibernate.STRING);
+        scalarResult[4] = new ScalarResult("NivelDificuldade", Hibernate.STRING);
+        scalarResult[5] = new ScalarResult("Turma", Hibernate.STRING);
+        scalarResult[6] = new ScalarResult("DataUltimaAlteracao", Hibernate.TIMESTAMP);
+        
+        List lista = paginador.Execute(model, 
+                                        sql, 
+                                        params,
+                                        scalarResult,
+                                        currentPage, 
+                                        pageSize, 
+                                        sortField, 
+                                        sortDirection);
+        
+        model.addAttribute("listaExercicios", lista);
+        
         return "exercicios/meusexercicios";
     }
     
-    @RequestMapping(value="/responder", method=RequestMethod.GET)
-    public String getResponder() {
-        return "exercicios/responder";
+    @RequestMapping(value="/responder/{id}", method=RequestMethod.GET)
+    public ModelAndView getResponder(
+            @PathVariable int id, 
+            Model model,
+            HttpServletRequest request) {
+        
+        ModelAndView mav = new ModelAndView();
+        HttpSession session = request.getSession(false);
+        Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
+        Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
+        
+        ExercicioService repoExercicio = new ExercicioService();
+        if (repoExercicio.isMeuExercicio(turma.getId(), pessoa.getIdNivelDificuldade(), id))
+        {
+            
+            
+            mav.setViewName("exercicios/responder");
+            return mav;
+        }
+        mav.setView(new RedirectView("/exercicios/meusexercicios", true, true, false));
+        return mav;
     }
     
 }

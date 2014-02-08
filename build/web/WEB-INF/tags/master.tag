@@ -46,6 +46,11 @@
             function FechaModal() {
                 $.fancybox.close(true);
             }
+            
+            function changeTurma(id) {
+                if (id === undefined) return;
+                document.location.href = "<c:url value='/'/>turma/change/" + id;
+            }
         </script>
         
         <jsp:invoke fragment="header"/>
@@ -116,7 +121,7 @@
                             <jsp:doBody/>
                         </div>
                         <div class="col-md-3">
-                            <h4>Programação I</h4>
+                            <h4>${TurmaSelecionada.getNome()}</h4>
                             <div class="list-group">
                                 <a href="<c:url value='/'/>codigos" class="list-group-item" id="menu-meus-codigos-favoritos">
                                     <span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;<fmt:message key="menu.codigosfavoritos"/>

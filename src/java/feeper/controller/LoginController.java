@@ -50,6 +50,10 @@ public class LoginController extends ApplicationController {
             
             HttpSession session = request.getSession(true);
             session.setAttribute("UsuarioLogado", pessoa);
+            
+            if (pessoa.getTurmas().size() > 0)
+                session.setAttribute("TurmaSelecionada", pessoa.getTurmas().get(0));
+            
             mav.setView(new RedirectView("/", true, true, false));
         }
         return mav;

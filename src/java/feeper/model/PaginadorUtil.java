@@ -5,6 +5,7 @@
 package feeper.model;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -17,11 +18,54 @@ import org.springframework.ui.Model;
  */
 public class PaginadorUtil<T> {
     
-    
     public List<T> Execute(Class objClass
                             , Model model
                             , String query
-                            , String[] params
+                            , Object[] params
+                            , int currentPage
+                            , int pageSize
+                            , String sortField
+                            , String sortDirection)
+    {
+        return Execute(objClass, model, query, params, null, currentPage, pageSize, sortField, sortDirection);
+    }
+    public List<T> Execute(Class objClass
+                            , Model model
+                            , String query
+                            , int currentPage
+                            , int pageSize
+                            , String sortField
+                            , String sortDirection)
+    {
+        return Execute(objClass, model, query, null, null, currentPage, pageSize, sortField, sortDirection);
+    }
+    public List<T> Execute(Model model
+                            , String query
+                            , Object[] params
+                            , ScalarResult[] scalarResult
+                            , int currentPage
+                            , int pageSize
+                            , String sortField
+                            , String sortDirection)
+    {
+        return Execute(null, model, query, params, scalarResult, currentPage, pageSize, sortField, sortDirection);
+    }
+    public List<T> Execute(Model model
+                            , String query
+                            , ScalarResult[] scalarResult
+                            , int currentPage
+                            , int pageSize
+                            , String sortField
+                            , String sortDirection)
+    {
+        return Execute(null, model, query, null, scalarResult, currentPage, pageSize, sortField, sortDirection);
+    }
+    
+    private List<T> Execute(Class objClass
+                            , Model model
+                            , String query
+                            , Object[] params
+                            , ScalarResult[] scalarResult
                             , int currentPage
                             , int pageSize
                             , String sortField
@@ -34,7 +78,7 @@ public class PaginadorUtil<T> {
         if (sortField != null && !sortField.isEmpty())
             query = AddQuerySorting(query, sortField, sortDirection);
         
-        list = ExecutePagedQuery(objClass, query, params, pageSize, currentPage, totalRows);
+        list = ExecutePagedQuery(objClass, query, params, scalarResult, pageSize, currentPage, totalRows);
         
         totalPages = (int)Math.ceil((double)totalRows.getResult() / (double)pageSize);
 
@@ -65,21 +109,34 @@ public class PaginadorUtil<T> {
         return query;
     }
     
-    private List<T> ExecutePagedQuery(Class objClass, String query, String[] params, int pageSize, int currentPage, IntegerResult count)
+    private List ExecutePagedQuery(Class objClass, String query, Object[] params, ScalarResult[] scalarResult, int pageSize, int currentPage, IntegerResult count)
     {
         String command = "SELECT SQL_CALC_FOUND_ROWS";
         String commandCount = "SELECT FOUND_ROWS()";
         command += query.substring(6) + " LIMIT " + ((currentPage - 1) * pageSize) + ", " + pageSize;
         
         HibernateUtil<T> repo = new HibernateUtil<T>(objClass);
-        SQLQuery exec = repo.query(command).addEntity(objClass);
+        SQLQuery exec = repo.query(command);
         
-        for (int i = 0; i < params.length; i++)
-        {
-            exec.setString("p" + i, params[i]);
-        }
+        if (objClass != null)
+            exec.addEntity(objClass);
+        else
+            if (scalarResult != null)
+                for (int i = 0; i < scalarResult.length; i++)
+                    exec.addScalar(scalarResult[i].getColumn(), scalarResult[i].getType());
         
-        List<T> list = exec.list();
+        if (params != null)
+            for (int i = 0; i < params.length; i++)
+            {
+                if (params[i] instanceof String)
+                    exec.setString("p" + i, params[i].toString());
+                else if (params[i] instanceof Integer)
+                    exec.setInteger("p" + i, Integer.parseInt(params[i].toString()));
+                else if (params[i] instanceof Date)
+                    exec.setDate("p" + i, new Date(params[i].toString()));
+            }
+        
+        List list = exec.list();
         count.setResult(((BigInteger)repo.query(commandCount).uniqueResult()).intValue());
         
         return list;
