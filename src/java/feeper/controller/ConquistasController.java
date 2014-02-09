@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package feeper.controller;
 
 import org.springframework.stereotype.Controller;
@@ -10,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping(value="/conquistas")
-public class ConquistasController {
+public class ConquistasController extends ApplicationController {
     
     @RequestMapping(method=RequestMethod.GET)
     public String list() {
@@ -19,7 +15,7 @@ public class ConquistasController {
     
     @RequestMapping(value="/minhasconquistas", method=RequestMethod.GET)
     public String minhasconquistas() {
-        return "exercicios/minhasconquistas";
+        return "conquistas/minhasconquistas";
     }
     
 }

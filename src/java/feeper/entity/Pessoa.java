@@ -19,7 +19,7 @@ public class Pessoa  implements java.io.Serializable {
     private Date dataCadastro;
     private Date dataUltimoAcesso;
     private boolean ativo;
-    private String ip;
+    private boolean possuiFoto;
     private int idNivelDificuldade;
     private int idPerfil;
     private List<Turma> turmas;
@@ -38,14 +38,13 @@ public class Pessoa  implements java.io.Serializable {
         this.ativo = ativo;
         this.idNivelDificuldade = idNivelDificuldade;
     }
-    public Pessoa(String nome, String email, String senha, Date dataCadastro, Date dataUltimoAcesso, boolean ativo, String ip, int idNivelDificuldade) {
+    public Pessoa(String nome, String email, String senha, Date dataCadastro, Date dataUltimoAcesso, boolean ativo, int idNivelDificuldade) {
        this.nome = nome;
        this.email = email;
        this.senha = senha;
        this.dataCadastro = dataCadastro;
        this.dataUltimoAcesso = dataUltimoAcesso;
        this.ativo = ativo;
-       this.ip = ip;
        this.idNivelDificuldade = idNivelDificuldade;
     }
    
@@ -99,13 +98,6 @@ public class Pessoa  implements java.io.Serializable {
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
     }
-    public String getIp() {
-        return this.ip;
-    }
-    
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
     public int getIdNivelDificuldade() {
         return this.idNivelDificuldade;
     }
@@ -128,6 +120,14 @@ public class Pessoa  implements java.io.Serializable {
 
     public void setIdPerfil(int idPerfil) {
         this.idPerfil = idPerfil;
+    }
+
+    public boolean isPossuiFoto() {
+        return possuiFoto;
+    }
+
+    public void setPossuiFoto(boolean possuiFoto) {
+        this.possuiFoto = possuiFoto;
     }
 
 

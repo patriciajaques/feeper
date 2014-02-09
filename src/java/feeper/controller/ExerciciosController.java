@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package feeper.controller;
 
 import feeper.entity.CodigoFonte;
@@ -14,6 +10,7 @@ import feeper.entity.Turma;
 import feeper.entity.UploadTemp;
 import feeper.model.CodigoFonteService;
 import feeper.model.EStatusCodigoFonte;
+import feeper.model.ETipoLog;
 import feeper.model.ExercicioService;
 import feeper.model.ExercicioValidacaoService;
 import feeper.model.HibernateUtil;
@@ -137,7 +134,7 @@ public class ExerciciosController extends ApplicationController {
         exercicio.setDataCadastro(new Date());
         exercicio.setIdAutor(usuarioLogado.getId());
         
-        if (idUploadTemp == null)
+        if (idUploadTemp == null || idUploadTemp.isEmpty())
         {
             exercicio.setDescricaoHtml(html);
         }
@@ -148,9 +145,15 @@ public class ExerciciosController extends ApplicationController {
         }
         
         if (service.insert(exercicio))
+        {
+            log(usuarioLogado.getId(), "SUCESSO: ID: " + exercicio.getId(), ETipoLog.CADASTRAR_EXERCICIO);
             flash.addFlashAttribute("MSG_SUCESSO", "Registro inserido com sucesso");
+        }
         else
+        {
+            log(usuarioLogado.getId(), "ERRO: ID: " + exercicio.getNome(), ETipoLog.CADASTRAR_EXERCICIO);
             flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao inserir o registro");
+        }
         
         return mav;
     }
@@ -171,6 +174,7 @@ public class ExerciciosController extends ApplicationController {
     public ModelAndView saveedit(
             @ModelAttribute("exercicio") Exercicio exercicio, 
             @ModelAttribute("htmlcontent") String html,
+            HttpSession session,
             BindingResult result,
             final RedirectAttributes flash) {
         
@@ -184,16 +188,24 @@ public class ExerciciosController extends ApplicationController {
         exercicioBanco.setIdNivelDificuldade(exercicio.getIdNivelDificuldade());
         exercicioBanco.setNome(exercicio.getNome());
         
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
+        
         if (service.update(exercicioBanco))
+        {
+            log(usuarioLogado.getId(), "SUCESSO: ID: " + exercicioBanco.getId(), ETipoLog.ALTERAR_EXERCICIO);
             flash.addFlashAttribute("MSG_SUCESSO", "Registro alterado com sucesso");
+        }
         else
+        {
+            log(usuarioLogado.getId(), "ERRO: ID: " + exercicioBanco.getId(), ETipoLog.ALTERAR_EXERCICIO);
             flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao alterar o registro");
+        }
         
         return mav;
     }
     
     @RequestMapping(value="/savevalidacao", method=RequestMethod.POST)
-    public ModelAndView savevalidacao(HttpServletRequest request) {
+    public ModelAndView savevalidacao(HttpServletRequest request, HttpSession session) {
         
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/exercicios", true, true, false));
@@ -227,6 +239,9 @@ public class ExerciciosController extends ApplicationController {
         
         repo.deleteNotIn(idExercicio, idsExistentes.toString());
         
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
+        log(usuarioLogado.getId(), "SUCESSO: VALIDACAO: ID: " + idExercicio, ETipoLog.ALTERAR_EXERCICIO);
+        
         return mav;
     }
     
@@ -234,6 +249,7 @@ public class ExerciciosController extends ApplicationController {
     public ModelAndView delete(
             @PathVariable int id, 
             Model model,
+            HttpSession session,
             final RedirectAttributes flash) {
         
         ModelAndView mav = new ModelAndView();
@@ -241,10 +257,17 @@ public class ExerciciosController extends ApplicationController {
         
         Exercicio exercicio = service.getById(id);
         
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
         if (service.delete(exercicio))
+        {
+            log(usuarioLogado.getId(), "SUCESSO: ID: " + id, ETipoLog.EXCLUIR_EXERCICIO);
             flash.addFlashAttribute("MSG_SUCESSO", "Registro excluído com sucesso");
+        }
         else
+        {
+            log(usuarioLogado.getId(), "ERRO: ID: " + id, ETipoLog.EXCLUIR_EXERCICIO);
             flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao excluir o registro");
+        }
         
         return mav;
     }
@@ -254,15 +277,23 @@ public class ExerciciosController extends ApplicationController {
     public String upload(MultipartHttpServletRequest request) {
         
         MultipartFile file = request.getFile("filedata");
+        HttpSession session = request.getSession();
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
         
         try {
             UploadTemp uploadTemp = new UploadTemp();
             uploadTemp.setArquivo(file.getBytes());
             HibernateUtil<UploadTemp> repo = new HibernateUtil<UploadTemp>(UploadTemp.class);
             if (repo.insert(uploadTemp))
+            {
+                log(usuarioLogado.getId(), "SUCESSO: ID: " + uploadTemp.getId() + " NOME: " + file.getOriginalFilename(), ETipoLog.UPLOAD_EXERCICIO);
                 return uploadTemp.getId().toString();
+            }
             else
+            {
+                log(usuarioLogado.getId(), "ERRO: NOME: " + file.getOriginalFilename(), ETipoLog.UPLOAD_EXERCICIO);
                 return "erro";
+            }
             
         } catch (IOException ex) {
             return "";
@@ -428,9 +459,15 @@ public class ExerciciosController extends ApplicationController {
             codigoFonte.setIdStatus(EStatusCodigoFonte.AGUARDANDO);
             
             if (codigoFonte.getId() == null)
+            {
                 repoCodigoFonte.insert(codigoFonte);
+                log(pessoa.getId(), "SUCESSO: ID: " + codigoFonte.getId(), ETipoLog.CODIGO_ENVIADO);
+            }
             else
+            {
                 repoCodigoFonte.update(codigoFonte);
+                log(pessoa.getId(), "SUCESSO: ID: " + codigoFonte.getId(), ETipoLog.CODIGO_ENVIADO);
+            }
         }
         mav.setView(new RedirectView("/exercicios/responder/" + id, true, true, false));
         return mav;
@@ -457,6 +494,8 @@ public class ExerciciosController extends ApplicationController {
             if (codigoFonte != null)
             {
                 try {
+                    log(pessoa.getId(), "SUCESSO: ID: " + codigoFonte.getId(), ETipoLog.CODIGO_BAIXADO);
+                    
                     InputStream stream = new ByteArrayInputStream(codigoFonte.getFonte().getBytes("UTF-8"));
                     IOUtils.copy(stream, response.getOutputStream());
                     

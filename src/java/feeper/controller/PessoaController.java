@@ -1,17 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package feeper.controller;
 
 import feeper.entity.Pessoa;
 import feeper.model.EPerfil;
+import feeper.model.ETipoLog;
 import feeper.model.PessoaService;
 import feeper.model.TurmaPessoaService;
 import feeper.model.TurmaService;
 import feeper.model.Util;
 import java.util.Date;
 import java.util.List;
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,9 +33,6 @@ public class PessoaController extends ApplicationController {
         this.service = new PessoaService();
     }
     
-    /*
-     * Métodos ALUNO
-     */
     @RequestMapping(value="/addaluno/{idTurma}", method=RequestMethod.GET)
     public String addAluno(@PathVariable int idTurma, Model model) {
         
@@ -52,13 +47,20 @@ public class PessoaController extends ApplicationController {
     }
     
     @RequestMapping(value="/saveadd", method=RequestMethod.POST)
-    public ModelAndView saveadd(@ModelAttribute("pessoa") Pessoa pessoa, @ModelAttribute("idTurma") int idTurma, BindingResult result) {
+    public ModelAndView saveadd(
+            @ModelAttribute("pessoa") Pessoa pessoa, 
+            @ModelAttribute("idTurma") int idTurma, 
+            HttpSession session,
+            BindingResult result) {
+        
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/closemodal", true, true, false));
         
         pessoa.setDataCadastro(new Date());
         pessoa.setSenha(Util.gerarSenha(8));
         pessoa.setIdNivelDificuldade(1);
+        
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
    
         if (service.insert(pessoa))
         {
@@ -66,6 +68,7 @@ public class PessoaController extends ApplicationController {
             {
                 TurmaPessoaService turmaPessoaService = new TurmaPessoaService();
                 turmaPessoaService.insertIfNotExist(idTurma, pessoa.getId());
+                log(usuarioLogado.getId(), "SUCESSO: ID: " + pessoa.getId(), ETipoLog.CADASTRAR_PESSOA);
             }
         }
         return mav;
@@ -87,9 +90,16 @@ public class PessoaController extends ApplicationController {
     }
     
     @RequestMapping(value="/saveedit", method=RequestMethod.POST)
-    public ModelAndView saveedit(@ModelAttribute("pessoa") Pessoa pessoa, @ModelAttribute("idTurma") int idTurma, BindingResult result) {
+    public ModelAndView saveedit(
+            @ModelAttribute("pessoa") Pessoa pessoa, 
+            @ModelAttribute("idTurma") int idTurma, 
+            HttpSession session,
+            BindingResult result) {
+        
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/closemodal", true, true, false));
+        
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
         
         pessoa.setDataCadastro(new Date());
         pessoa.setSenha(Util.gerarSenha(8));
@@ -102,6 +112,8 @@ public class PessoaController extends ApplicationController {
         pessoaBanco.setNome(pessoa.getNome());
    
         service.update(pessoaBanco);
+        
+        log(usuarioLogado.getId(), "SUCESSO: ID: " + pessoa.getId(), ETipoLog.ALTERAR_PESSOA);
         
         return mav;
     }

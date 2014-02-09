@@ -20,6 +20,11 @@
                     $(this).tab('show');
                 });
                 
+                $(".btn-codigo-download").click(function(){
+                    var id = $("#hdnIdExercicio").val();
+                    document.location.href = "<c:url value='/'/>exercicios/download/" + id;
+                });
+                
             });
         </script>
         
@@ -46,7 +51,7 @@
             <a href="#" class="list-group-item">
                 <span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.compartilhar"/>
             </a>
-            <a href="#" class="list-group-item">
+            <a href="#" class="list-group-item btn-codigo-favorito">
                 <span class="glyphicon glyphicon-star-empty"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.favorito"/>
             </a>
         </div>
@@ -82,10 +87,13 @@
                     $("#frmResponder").submit();
                 });
                 
-                $(".btn-codigo-download").click(function(){
-                    var id = $("#hdnIdExercicio").val();
-                    document.location.href = "<c:url value='/'/>exercicios/download/" + id;
+                $(".btn-codigo-favorito").click(function(){
+                    //editor.selectMoreLines(1,false);
+                    var texto = editor.getSession().getTextRange(editor.getSelectionRange());
+                    alert(texto);
+                    //alert(editor.getSelectionRange());
                 });
+                
             });
         </script>
         
@@ -153,8 +161,10 @@ class Solution
                 </c:when>
             </c:choose>
         </c:if>
-                    
-        <small><fmt:message key="label.exercicios.dataultimaresposta"/> <fmt:formatDate value="${CodigoFonte.getDataAlteracao()}" pattern="dd/MM/yyyy HH:mm" /></small>
+                  
+        <c:if test="${CodigoFonte != null}">
+            <small><fmt:message key="label.exercicios.dataultimaresposta"/> <fmt:formatDate value="${CodigoFonte.getDataAlteracao()}" pattern="dd/MM/yyyy HH:mm" /></small>
+        </c:if>
         
     </jsp:body>
         

@@ -10,11 +10,12 @@
         
         <link href="<c:url value='/resources/css/bootstrap.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/css/util.css'/>" rel="stylesheet" type="text/css" />
-        <link href="<c:url value='/resources/css/webkit-scrollbars.css'/>" rel="stylesheet" type="text/css" />
+        <!--link href="<c:url value='/resources/css/webkit-scrollbars.css'/>" rel="stylesheet" type="text/css" /-->
         <link href="<c:url value='/resources/assets/google-code-prettify/prettify.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/css/site.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/fancybox/jquery.fancybox.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/uploadify/uploadify.css'/>" rel="stylesheet" type="text/css" />
+        <link href="<c:url value='/resources/jquery-te/jquery-te-1.4.0.css'/>" rel="stylesheet" type="text/css" />
         
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -26,9 +27,11 @@
         <script src="<c:url value='/resources/jquery/ui/jquery-ui.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/js/bootstrap.min.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/js/util.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/jquery/MvcGrid.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/assets/google-code-prettify/prettify.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/fancybox/jquery.fancybox.pack.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/uploadify/jquery.uploadify.min.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/jquery-te/jquery-te-1.4.0.min.js'/>" type="text/javascript"></script>
         
         <script type="text/javascript">
             function MostraCarregando() {
@@ -62,7 +65,7 @@
             <jsp:doBody/>
         </div>
         
-        <p style="text-align: center"><fmt:message key="author"/></p>
+        <p style="text-align: center; margin-top: 50px;"><small><fmt:message key="author"/></small></p>
         
     </body>
 </html>

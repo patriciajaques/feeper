@@ -132,7 +132,7 @@
                     </div>
                         
                     <button type="submit" class="btn btn-primary"><fmt:message key="button.salvar"/></button>
-                    <button type="button" class="btn btn-default"><fmt:message key="button.voltarlistagem"/></button>
+                    <button type="button" class="btn btn-default btn-voltar"><fmt:message key="button.voltarlistagem"/></button>
                 </form>
 
             </div>

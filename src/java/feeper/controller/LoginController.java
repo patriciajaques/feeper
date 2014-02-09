@@ -1,11 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package feeper.controller;
 
 import feeper.entity.Pessoa;
 import feeper.model.DontValidateAccess;
+import feeper.model.ETipoLog;
 import feeper.model.PessoaService;
 import feeper.model.TurmaService;
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +41,8 @@ public class LoginController extends ApplicationController {
         }
         else
         {
+            log(pessoa.getId(), "IP: " + request.getRemoteAddr(), ETipoLog.LOGIN);
+            
             TurmaService repoTurma = new TurmaService();
             
             pessoa.setTurmas(repoTurma.getTurmasByIdPessoa(pessoa.getId()));

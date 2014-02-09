@@ -10,8 +10,8 @@
         
         <div class="jumbotron">
             <h1><fmt:message key="label.boasvindas"/></h1>
-            <p><fmt:message key="label.boasvindas.descricao"/></p>
-            <p><a class="btn btn-primary btn-lg" role="button"><fmt:message key="button.desejocadastrar"/></a></p>
+            <p style="text-align: justify"><fmt:message key="label.boasvindas.descricao"/></p>
+            <!--p><a class="btn btn-primary btn-lg" role="button"><fmt:message key="button.desejocadastrar"/></a></p-->
             
             <br>
         
@@ -40,6 +40,19 @@
                         </div>
                     </div>
 
+                </div>
+                <div class="col-md-8">
+                    
+                    <div class="panel panel-default pull-right" style="width:448px; height:320px; padding: 10px;">
+                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="width:428px;">
+                            <div class="carousel-inner">
+                                <div class="item active"><img src="<c:url value='/resources/img/print1.png'/>" width="428" height="300" alt=""></div>
+                                <div class="item"><img src="<c:url value='/resources/img/print2.png'/>" width="428" height="300" alt=""></div>
+                                <div class="item"><img src="<c:url value='/resources/img/print3.png'/>" width="428" height="300" alt=""></div>
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
                 
             </div>

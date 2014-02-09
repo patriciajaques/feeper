@@ -26,8 +26,8 @@
         <property name="ativo" type="boolean">
             <column name="Ativo" not-null="true" />
         </property>
-        <property name="ip" type="string">
-            <column name="IP" length="15" />
+        <property name="possuiFoto" type="boolean">
+            <column name="PossuiFoto" />
         </property>
         <property name="idNivelDificuldade" type="int">
             <column name="IdNivelDificuldade" not-null="true" />

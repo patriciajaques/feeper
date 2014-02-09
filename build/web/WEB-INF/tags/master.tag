@@ -86,7 +86,14 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li style="margin-top: 3px">
-                            <img src="<c:url value='/resources/img/photo/photo-${UsuarioLogado.getId()}.png'/>" style="width:45px; height:45px;" alt="${UsuarioLogado.getNome()}" class="img-circle">
+                            <c:choose>
+                                <c:when test="${UsuarioLogado.isPossuiFoto()}">
+                                    <img src="<c:url value='/resources/img/photo/photo-${UsuarioLogado.getId()}.png'/>" style="width:45px; height:45px;" alt="${UsuarioLogado.getNome()}" class="img-circle">
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="${UsuarioLogado.getNome()}" class="img-circle">
+                                </c:otherwise>
+                            </c:choose>
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -145,6 +152,7 @@
         </div>
         
         <jsp:invoke fragment="footer"/>
+        <p style="text-align: center; margin-top: 50px;"><small><fmt:message key="author"/></small></p>
         
     </body>
 </html>

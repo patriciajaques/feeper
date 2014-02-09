@@ -1,11 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package feeper.controller;
 
 import feeper.entity.Pessoa;
 import feeper.entity.Turma;
+import feeper.model.ETipoLog;
 import feeper.model.PaginadorUtil;
 import feeper.model.TurmaService;
 import java.util.Date;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -104,6 +100,7 @@ public class TurmaController extends ApplicationController {
     public ModelAndView saveadd(
             @ModelAttribute("turma") Turma turma, 
             BindingResult result,
+            HttpSession session,
             final RedirectAttributes flash) {
         
         ModelAndView mav = new ModelAndView();
@@ -111,10 +108,17 @@ public class TurmaController extends ApplicationController {
         
         turma.setDataCadastro(new Date());        
         
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
         if (service.insert(turma))
+        {
+            log(usuarioLogado.getId(), "SUCESSO: ID: " + turma.getId(), ETipoLog.CADASTRAR_TURMA);
             flash.addFlashAttribute("MSG_SUCESSO", "Registro inserido com sucesso");
+        }
         else
+        {
+            log(usuarioLogado.getId(), "ERRO: ID: " + turma.getNome(), ETipoLog.CADASTRAR_TURMA);
             flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao inserir o registro");
+        }
         
         return mav;
     }
@@ -135,6 +139,7 @@ public class TurmaController extends ApplicationController {
     public ModelAndView saveedit(
             @ModelAttribute("turma") Turma turma, 
             BindingResult result,
+            HttpSession session,
             final RedirectAttributes flash) {
         
         ModelAndView mav = new ModelAndView();
@@ -147,10 +152,17 @@ public class TurmaController extends ApplicationController {
         turmaBanco.setIdProfessor(turma.getIdProfessor());
         turmaBanco.setNome(turma.getNome());
         
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
         if (service.update(turmaBanco))
+        {
+            log(usuarioLogado.getId(), "SUCESSO: ID: " + turma.getId(), ETipoLog.ALTERAR_TURMA);
             flash.addFlashAttribute("MSG_SUCESSO", "Registro alterado com sucesso");
+        }
         else
+        {
+            log(usuarioLogado.getId(), "ERRO: ID: " + turma.getId(), ETipoLog.ALTERAR_TURMA);
             flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao alterar o registro");
+        }
         
         return mav;
     }
@@ -159,6 +171,7 @@ public class TurmaController extends ApplicationController {
     public ModelAndView delete(
             @PathVariable int id, 
             Model model,
+            HttpSession session,
             final RedirectAttributes flash) {
         
         ModelAndView mav = new ModelAndView();
@@ -166,10 +179,17 @@ public class TurmaController extends ApplicationController {
         
         Turma turma = service.getById(id);
         
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
         if (service.delete(turma))
+        {
+            log(usuarioLogado.getId(), "ERRO: ID: " + turma.getId(), ETipoLog.EXCLUIR_TURMA);
             flash.addFlashAttribute("MSG_SUCESSO", "Registro excluído com sucesso");
+        }
         else
+        {
+            log(usuarioLogado.getId(), "ERRO: ID: " + turma.getId(), ETipoLog.EXCLUIR_TURMA);
             flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao excluir o registro");
+        }
         
         return mav;
     }
