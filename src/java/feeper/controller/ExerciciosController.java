@@ -4,22 +4,30 @@
  */
 package feeper.controller;
 
+import feeper.entity.CodigoFonte;
+import feeper.entity.CodigoFonteResultado;
 import feeper.entity.Exercicio;
 import feeper.entity.ExercicioValidacao;
 import feeper.entity.MeusExercicios;
 import feeper.entity.Pessoa;
 import feeper.entity.Turma;
 import feeper.entity.UploadTemp;
+import feeper.model.CodigoFonteService;
+import feeper.model.EStatusCodigoFonte;
 import feeper.model.ExercicioService;
 import feeper.model.ExercicioValidacaoService;
 import feeper.model.HibernateUtil;
 import feeper.model.PaginadorUtil;
 import feeper.model.ScalarResult;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -349,7 +357,7 @@ public class ExerciciosController extends ApplicationController {
     }
     
     @RequestMapping(value="/responder/{id}", method=RequestMethod.GET)
-    public ModelAndView getResponder(
+    public ModelAndView responder(
             @PathVariable int id, 
             Model model,
             HttpServletRequest request) {
@@ -360,15 +368,106 @@ public class ExerciciosController extends ApplicationController {
         Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
         
         ExercicioService repoExercicio = new ExercicioService();
-        if (repoExercicio.isMeuExercicio(turma.getId(), pessoa.getIdNivelDificuldade(), id))
+        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), pessoa.getIdNivelDificuldade(), id);
+        
+        if (exercicio != null)
         {
+            CodigoFonteService repoCodigoFonte = new CodigoFonteService();
+            CodigoFonte codigoFonte = repoCodigoFonte.getByIdExercicio(exercicio.getId(), pessoa.getId());
             
+            if (codigoFonte != null)
+            {
+                CodigoFonteResultado codigoFonteResultado = repoCodigoFonte.getResultado(codigoFonte.getId());
+                mav.addObject("CodigoFonteResultado", codigoFonteResultado);
+            }
+            mav.addObject("Exercicio", exercicio);
+            mav.addObject("CodigoFonte", codigoFonte);
             
             mav.setViewName("exercicios/responder");
             return mav;
         }
         mav.setView(new RedirectView("/exercicios/meusexercicios", true, true, false));
         return mav;
+    }
+    
+    @RequestMapping(value="/saveresponder", method=RequestMethod.POST)
+    public ModelAndView saveresponder(
+            Model model,
+            HttpServletRequest request) {
+        
+        int id = Integer.parseInt(request.getParameter("hdnIdExercicio").toString());
+        
+        ModelAndView mav = new ModelAndView();
+        HttpSession session = request.getSession(false);
+        
+        Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
+        Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
+        
+        ExercicioService repoExercicio = new ExercicioService();
+        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), pessoa.getIdNivelDificuldade(), id);
+        
+        if (exercicio != null)
+        {
+            CodigoFonteService repoCodigoFonte = new CodigoFonteService();
+            CodigoFonte codigoFonte = repoCodigoFonte.getByIdExercicio(exercicio.getId(), pessoa.getId());
+            
+            if (codigoFonte != null)
+            {
+                codigoFonte.setFonteAnterior(codigoFonte.getFonte());
+            }
+            else if (codigoFonte == null)
+            {
+                codigoFonte = new CodigoFonte();
+                codigoFonte.setDataCadastro(new Date());
+                codigoFonte.setIdAutor(pessoa.getId());
+                codigoFonte.setIdExercicio(exercicio.getId());
+            }
+            codigoFonte.setDataAlteracao(new Date());
+            codigoFonte.setFonte(request.getParameter("hdnEditor").toString());
+            codigoFonte.setAtivo(true);
+            codigoFonte.setIdStatus(EStatusCodigoFonte.AGUARDANDO);
+            
+            if (codigoFonte.getId() == null)
+                repoCodigoFonte.insert(codigoFonte);
+            else
+                repoCodigoFonte.update(codigoFonte);
+        }
+        mav.setView(new RedirectView("/exercicios/responder/" + id, true, true, false));
+        return mav;
+    }
+    
+    @RequestMapping(value="/download/{id}", method=RequestMethod.GET)
+    public void download(
+        @PathVariable int id, 
+        HttpServletRequest request,
+        HttpServletResponse response) {
+        
+        HttpSession session = request.getSession(false);
+        Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
+        Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
+        
+        ExercicioService repoExercicio = new ExercicioService();
+        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), pessoa.getIdNivelDificuldade(), id);
+        
+        if (exercicio != null)
+        {
+            CodigoFonteService repoCodigoFonte = new CodigoFonteService();
+            CodigoFonte codigoFonte = repoCodigoFonte.getByIdExercicio(exercicio.getId(), pessoa.getId());
+            
+            if (codigoFonte != null)
+            {
+                try {
+                    InputStream stream = new ByteArrayInputStream(codigoFonte.getFonte().getBytes("UTF-8"));
+                    IOUtils.copy(stream, response.getOutputStream());
+                    
+                    response.setContentType("application/force-download");
+                    response.setHeader("Content-Disposition", "attachment; filename=Solution.java");
+                    response.flushBuffer();
+                    
+                } catch (IOException ex) {
+                }
+            }
+        }
     }
     
 }

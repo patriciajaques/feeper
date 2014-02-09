@@ -11,11 +11,11 @@
         <property name="idAutor" type="int">
             <column name="IdAutor" not-null="true" />
         </property>
-        <property name="fonte" type="binary">
-            <column name="Fonte" not-null="true" />
+        <property name="fonte" type="string">
+            <column name="Fonte" not-null="true" length="65535" />
         </property>
-        <property name="fonteAnterior" type="binary">
-            <column name="FonteAnterior" />
+        <property name="fonteAnterior" type="string">
+            <column name="FonteAnterior" length="65535" />
         </property>
         <property name="dataCadastro" type="timestamp">
             <column name="DataCadastro" length="19" not-null="true" />

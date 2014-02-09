@@ -28,18 +28,18 @@
     <jsp:attribute name="rightmenu">
         <h4><fmt:message key="label.exercicios.acoesexercicio"/></h4>
         <div class="list-group">
-            <a href="#" class="list-group-item">
+            <a href="#" class="list-group-item btn-codigo-enviar">
                 <span class="glyphicon glyphicon-send"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.enviar"/>
             </a>
-            <a href="#" class="list-group-item">
+            <!--a href="#" class="list-group-item">
                 <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.validar"/>
-            </a>
-            <a href="#" class="list-group-item">
+            </a-->
+            <a href="#" class="list-group-item btn-codigo-download">
                 <span class="glyphicon glyphicon-save"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.baixar"/>
             </a>
-            <a href="#" class="list-group-item">
+            <!--a href="#" class="list-group-item">
                 <span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.excluir"/>
-            </a>
+            </a-->
             <a href="#" class="list-group-item">
                 <span class="glyphicon glyphicon-eye-close"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.ocultarcomentarios"/>
             </a>
@@ -67,11 +67,25 @@
                     autoScrollEditorIntoView: true
                 });
                 
+                <c:if test="${CodigoFonte != null && CodigoFonte.getIdStatus() == 5}">
+                    //editor.setReadOnly(true);
+                </c:if>
+                
                 editor.setTheme("ace/theme/eclipse");
                 editor.setShowPrintMargin(false);
                 editor.getSession().setUseSoftTabs(true);
                 editor.renderer.setHScrollBarAlwaysVisible(false);
                 editor.focus();
+                
+                $(".btn-codigo-enviar").click(function(){
+                    $("#hdnEditor").val(editor.getSession().getValue());
+                    $("#frmResponder").submit();
+                });
+                
+                $(".btn-codigo-download").click(function(){
+                    var id = $("#hdnIdExercicio").val();
+                    document.location.href = "<c:url value='/'/>exercicios/download/" + id;
+                });
             });
         </script>
         
@@ -79,26 +93,36 @@
         
     <jsp:body>
         
-        <h2>Programação I</h2>
+        <h2>${TurmaSelecionada.getNome()}</h2>
         
-        <h3>Lista Encadeada</h3>
+        <h3>${Exercicio.getNome()}</h3>
         
         <div class="panel panel-default">
             <div class="panel-body">
-                Monte uma lista simplesmente encadeada para armazenar uma lista de valores e devolver estes valores ordenados de forma descrescente.
+                ${Exercicio.getDescricaoHtml()}
             </div>
         </div>
         
         <h3><fmt:message key="label.exercicios.editesuaresposta"/></h3>
-                
-        <div id="editor" style="display:none;">/* package qualquer; // Não coloque nome no package */
+        
+        <form role="form" action="<c:url value='/'/>exercicios/saveresponder" id="frmResponder" method="POST">
+            <input type="hidden" id="hdnIdExercicio" name="hdnIdExercicio" value="${Exercicio.getId()}" />
+            <input type="hidden" id="hdnEditor" name="hdnEditor" />
+        </form>
+        
+        <c:choose>
+            <c:when test="${CodigoFonte != null}">
+                <div id="editor" style="display:none;">${CodigoFonte.getFonte()}</div>
+            </c:when>
+            <c:otherwise>
+                <div id="editor" style="display:none;">/* package qualquer; // Não coloque nome no package */
 
 import java.util.*;
 import java.lang.*;
 import java.io.*;
 
-/* O nome da classe deve ser "Main" somente se a classe é pública. */
-class ListaEncadeada
+/* O nome da classe deve ser "Solution" */
+class Solution
 {
     public static void main (String[] args) throws java.lang.Exception
     {
@@ -106,7 +130,32 @@ class ListaEncadeada
     }
 }
 </div>
-
+            </c:otherwise>
+        </c:choose>
+                
+        <c:if test="${CodigoFonte != null && CodigoFonte.getIdStatus() == 5}">
+            <div class="alert alert-info"><fmt:message key="label.exercicios.status.aguardando"/></div>
+        </c:if>
+                
+        <c:if test="${CodigoFonteResultado != null}">
+            <c:choose>
+                <c:when test="${CodigoFonteResultado.getIdStatus() == 1}">
+                    <div class="alert alert-danger"><fmt:message key="label.exercicios.status.errocompilacao"/><br>${CodigoFonteResultado.getMensagem()}</div>
+                </c:when>
+                <c:when test="${CodigoFonteResultado.getIdStatus() == 2}">
+                    <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errosaidainvalida"/></div>
+                </c:when>
+                <c:when test="${CodigoFonteResultado.getIdStatus() == 3}">
+                    <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errotempolimite"/></div>
+                </c:when>
+                <c:when test="${CodigoFonteResultado.getIdStatus() == 4}">
+                    <div class="alert alert-success"><fmt:message key="label.exercicios.status.resolvido"/></div>
+                </c:when>
+            </c:choose>
+        </c:if>
+                    
+        <small><fmt:message key="label.exercicios.dataultimaresposta"/> <fmt:formatDate value="${CodigoFonte.getDataAlteracao()}" pattern="dd/MM/yyyy HH:mm" /></small>
+        
     </jsp:body>
         
 </t:master>

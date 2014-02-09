@@ -23,27 +23,31 @@ public class ExercicioService extends HibernateUtil<Exercicio> {
         return query.list();
     }
     
-    public boolean isMeuExercicio(int idTurma, int idNivelDificuldade, int idExercicio)
+    public Exercicio getMeuExercicio(int idTurma, int idNivelDificuldade, int idExercicio)
     {
-        SQLQuery query = query("select " +
-                                "  1  " +
-                                "from  " +
-                                "  TurmaExercicio TE " +
-                                "  inner join Exercicio E " +
-                                "  on E.ID = TE.IdExercicio " +
-                                "  inner join Turma T " +
-                                "  on T.ID = TE.IdTurma " +
-                                "where " +
-                                "  TE.Visivel = 1 " +
-                                "  and TE.IdExercicio = :idExercicio  " +
-                                "  and TE.IdTurma = :idTurma  " +
-                                "  and E.IdNivelDificuldade <= :idNivelDificuldade " +
-                                "  and T.Ativo = 1");
-        query.setInteger("idTurma", idTurma);
-        query.setInteger("idExercicio", idExercicio);
-        query.setInteger("idNivelDificuldade", idNivelDificuldade);
-        Object result = query.uniqueResult();
-        return result != null && ((BigInteger)result).intValue() >= 1;
+        try {
+            SQLQuery query = query("select " +
+                                    "  E.* " +
+                                    "from  " +
+                                    "  TurmaExercicio TE " +
+                                    "  inner join Exercicio E " +
+                                    "  on E.ID = TE.IdExercicio " +
+                                    "  inner join Turma T " +
+                                    "  on T.ID = TE.IdTurma " +
+                                    "where " +
+                                    "  TE.Visivel = 1 " +
+                                    "  and TE.IdExercicio = :idExercicio  " +
+                                    "  and TE.IdTurma = :idTurma  " +
+                                    "  and E.IdNivelDificuldade <= :idNivelDificuldade " +
+                                    "  and T.Ativo = 1").addEntity(Exercicio.class);
+            query.setInteger("idTurma", idTurma);
+            query.setInteger("idExercicio", idExercicio);
+            query.setInteger("idNivelDificuldade", idNivelDificuldade);
+
+            return (Exercicio)query.list().get(0);
+        } catch (Exception e) {
+            return null;
+        }
     }
     
 }

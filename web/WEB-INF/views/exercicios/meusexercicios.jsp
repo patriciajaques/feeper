@@ -35,7 +35,7 @@
                 <blockquote>
                     <p><b>${item[1]}:</b> ${item[3]}</p>
                     <small class="pull-left">${item[5]} - <fmt:message key="label.exercicios.nivel"/> ${item[4]}</small>
-                    <small class="pull-right"><fmt:message key="label.exercicios.dataultimaresposta"/> ${item[6]}</small>
+                    <small class="pull-right"><fmt:message key="label.exercicios.dataultimaresposta"/> <fmt:formatDate value="${item[6]}" pattern="dd/MM/yyyy HH:mm" /></small>
                     <br>
                     <p><button type="button" class="btn btn-primary btn-xs btn-responder" data-id="${item[0]}"><fmt:message key="button.responder"/></button></p>
                 </blockquote>

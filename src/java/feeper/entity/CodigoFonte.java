@@ -12,8 +12,8 @@ public class CodigoFonte  implements java.io.Serializable {
 
      private Integer id;
      private int idAutor;
-     private byte[] fonte;
-     private byte[] fonteAnterior;
+     private String fonte;
+     private String fonteAnterior;
      private Date dataCadastro;
      private Date dataAlteracao;
      private int idStatus;
@@ -26,14 +26,14 @@ public class CodigoFonte  implements java.io.Serializable {
     }
 
 	
-    public CodigoFonte(int idAutor, byte[] fonte, Date dataCadastro, int idStatus, boolean ativo) {
+    public CodigoFonte(int idAutor, String fonte, Date dataCadastro, int idStatus, boolean ativo) {
         this.idAutor = idAutor;
         this.fonte = fonte;
         this.dataCadastro = dataCadastro;
         this.idStatus = idStatus;
         this.ativo = ativo;
     }
-    public CodigoFonte(int idAutor, byte[] fonte, byte[] fonteAnterior, Date dataCadastro, Date dataAlteracao, int idStatus, boolean ativo) {
+    public CodigoFonte(int idAutor, String fonte, String fonteAnterior, Date dataCadastro, Date dataAlteracao, int idStatus, boolean ativo) {
        this.idAutor = idAutor;
        this.fonte = fonte;
        this.fonteAnterior = fonteAnterior;
@@ -57,18 +57,18 @@ public class CodigoFonte  implements java.io.Serializable {
     public void setIdAutor(int idAutor) {
         this.idAutor = idAutor;
     }
-    public byte[] getFonte() {
+    public String getFonte() {
         return this.fonte;
     }
     
-    public void setFonte(byte[] fonte) {
+    public void setFonte(String fonte) {
         this.fonte = fonte;
     }
-    public byte[] getFonteAnterior() {
+    public String getFonteAnterior() {
         return this.fonteAnterior;
     }
     
-    public void setFonteAnterior(byte[] fonteAnterior) {
+    public void setFonteAnterior(String fonteAnterior) {
         this.fonteAnterior = fonteAnterior;
     }
     public Date getDataCadastro() {
