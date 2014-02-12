@@ -1,7 +1,7 @@
 package feeper.controller;
 
 import feeper.entity.CodigoFonte;
-import feeper.entity.CodigoFonteResultado;
+import feeper.entity.Resposta;
 import feeper.entity.Exercicio;
 import feeper.entity.ExercicioValidacao;
 import feeper.entity.MeusExercicios;
@@ -9,16 +9,18 @@ import feeper.entity.Pessoa;
 import feeper.entity.Turma;
 import feeper.entity.UploadTemp;
 import feeper.model.CodigoFonteService;
-import feeper.model.EStatusCodigoFonte;
+import feeper.model.EStatusResposta;
 import feeper.model.ETipoLog;
 import feeper.model.ExercicioService;
 import feeper.model.ExercicioValidacaoService;
 import feeper.model.HibernateUtil;
 import feeper.model.PaginadorUtil;
+import feeper.model.RespostaService;
 import feeper.model.ScalarResult;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -340,7 +342,7 @@ public class ExerciciosController extends ApplicationController {
                     "  E.DescricaoHtml, " +
                     "  ND.Nome AS NivelDificuldade, " +
                     "  T.Nome AS Turma, " +
-                    "  IFNULL(CF.DataAlteracao, CF.DataCadastro) AS DataUltimaAlteracao " +
+                    "  CF.DataCadastro AS DataUltimaAlteracao " +
                     "from  " +
                     "  TurmaExercicio TE " +
                     "  inner join Exercicio E " +
@@ -352,7 +354,6 @@ public class ExerciciosController extends ApplicationController {
                     "  left join CodigoFonte CF " +
                     "  on CF.IdExercicio = E.ID " +
                     "  and CF.IdAutor = :p0 " +
-                    "  and CF.Ativo = 1 " +
                     "where " +
                     "  TE.Visivel = 1 " +
                     "  and TE.IdTurma = :p1 " +
@@ -404,15 +405,26 @@ public class ExerciciosController extends ApplicationController {
         if (exercicio != null)
         {
             CodigoFonteService repoCodigoFonte = new CodigoFonteService();
-            CodigoFonte codigoFonte = repoCodigoFonte.getByIdExercicio(exercicio.getId(), pessoa.getId());
+            List<CodigoFonte> listaCodigoFonte = repoCodigoFonte.getAllByIdExercicio(exercicio.getId(), pessoa.getId());
             
-            if (codigoFonte != null)
+            if (listaCodigoFonte != null && listaCodigoFonte.size() > 0)
             {
-                CodigoFonteResultado codigoFonteResultado = repoCodigoFonte.getResultado(codigoFonte.getId());
-                mav.addObject("CodigoFonteResultado", codigoFonteResultado);
+                RespostaService repoResposta = new RespostaService();
+                Resposta resposta = repoResposta.getLastByIdExercicio(exercicio.getId(), pessoa.getId());
+                mav.addObject("Resposta", resposta);
+            }
+            else
+            {
+                CodigoFonte codigoFontePrincipal = new CodigoFonte();
+                codigoFontePrincipal.setClasse("Solution.java");
+                codigoFontePrincipal.setFonte(CodigoFonteService.CODIGO_PADRAO_PRINCIPAL);
+                codigoFontePrincipal.setPrincipal(true);
+                listaCodigoFonte = new ArrayList<CodigoFonte>();
+                listaCodigoFonte.add(codigoFontePrincipal);
             }
             mav.addObject("Exercicio", exercicio);
-            mav.addObject("CodigoFonte", codigoFonte);
+            mav.addObject("ListaCodigoFonte", listaCodigoFonte);
+            mav.addObject("CodigoFontePadraoClasse", CodigoFonteService.CODIGO_PADRAO_CLASSE.replaceAll("\n", "#n#"));
             
             mav.setViewName("exercicios/responder");
             return mav;
@@ -434,39 +446,52 @@ public class ExerciciosController extends ApplicationController {
         Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
         Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
         
+        CodigoFonteService repoCodigoFonte = new CodigoFonteService();
         ExercicioService repoExercicio = new ExercicioService();
         Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), pessoa.getIdNivelDificuldade(), id);
         
         if (exercicio != null)
         {
-            CodigoFonteService repoCodigoFonte = new CodigoFonteService();
-            CodigoFonte codigoFonte = repoCodigoFonte.getByIdExercicio(exercicio.getId(), pessoa.getId());
+            int contador = Integer.parseInt(request.getParameter("contador").toString());
+            StringBuilder idsExistentes = new StringBuilder("0");
             
-            if (codigoFonte != null)
+            try
             {
-                codigoFonte.setFonteAnterior(codigoFonte.getFonte());
-            }
-            else if (codigoFonte == null)
-            {
-                codigoFonte = new CodigoFonte();
-                codigoFonte.setDataCadastro(new Date());
-                codigoFonte.setIdAutor(pessoa.getId());
-                codigoFonte.setIdExercicio(exercicio.getId());
-            }
-            codigoFonte.setDataAlteracao(new Date());
-            codigoFonte.setFonte(request.getParameter("hdnEditor").toString());
-            codigoFonte.setAtivo(true);
-            codigoFonte.setIdStatus(EStatusCodigoFonte.AGUARDANDO);
+                for (int i = 1; i <= contador; i++) {
+
+                    boolean principal = i == 1;
+                    int idCodigoFonte = request.getParameter("idCodigoFonte" + i) == null ? 0 : Integer.parseInt(request.getParameter("idCodigoFonte" + i).toString());
+                    String fonte = request.getParameter("hdnEditor" + i) == null ? "" : request.getParameter("hdnEditor" + i).toString();
+
+                    if (fonte.isEmpty()) continue;
+
+                    idsExistentes.append(",").append(idCodigoFonte);
+
+                    CodigoFonte entity = new CodigoFonte();
+
+                    if (idCodigoFonte > 0)
+                    {
+                        entity = repoCodigoFonte.getById(idCodigoFonte);
+                        entity.setFonteAnterior(entity.getFonte());
+                    }
+                    else
+                    {
+                        entity.setIdAutor(pessoa.getId());
+                        entity.setIdExercicio(exercicio.getId());
+                    }
+                    entity.setPrincipal(principal);
+                    entity.setDataCadastro(new Date());
+                    entity.setFonte(fonte);
+
+                    repoCodigoFonte.insertOrUpdate(entity);
+                }
+
+                repoCodigoFonte.deleteNotIn(exercicio.getId(), pessoa.getId(), idsExistentes.toString());
             
-            if (codigoFonte.getId() == null)
-            {
-                repoCodigoFonte.insert(codigoFonte);
-                log(pessoa.getId(), "SUCESSO: ID: " + codigoFonte.getId(), ETipoLog.CODIGO_ENVIADO);
-            }
-            else
-            {
-                repoCodigoFonte.update(codigoFonte);
-                log(pessoa.getId(), "SUCESSO: ID: " + codigoFonte.getId(), ETipoLog.CODIGO_ENVIADO);
+                log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId(), ETipoLog.CODIGO_ENVIADO);
+            
+            } catch (Exception e) {
+                log(pessoa.getId(), "ERRO: ID EXERCICIO: " + exercicio.getId(), ETipoLog.CODIGO_ENVIADO);
             }
         }
         mav.setView(new RedirectView("/exercicios/responder/" + id, true, true, false));
@@ -489,7 +514,8 @@ public class ExerciciosController extends ApplicationController {
         if (exercicio != null)
         {
             CodigoFonteService repoCodigoFonte = new CodigoFonteService();
-            CodigoFonte codigoFonte = repoCodigoFonte.getByIdExercicio(exercicio.getId(), pessoa.getId());
+            //CodigoFonte codigoFonte = repoCodigoFonte.getByIdExercicio(exercicio.getId(), pessoa.getId());
+            CodigoFonte codigoFonte = null;
             
             if (codigoFonte != null)
             {

@@ -149,6 +149,24 @@ public class HibernateUtil<T> {
             session.close();
         }
     }
+    
+    public boolean insertOrUpdate(T obj){
+        if (obj == null) return false;
+        try{
+            session = getSession();
+            transaction = session.beginTransaction();
+            session.saveOrUpdate(obj);
+            session.refresh(obj);
+            transaction.commit();
+            return true;
+        } catch (HibernateException e) { 
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return false;
+        } finally {
+            session.close();
+        }
+    }
      
     /**
      * Atualiza o objeto passado por parâmetro

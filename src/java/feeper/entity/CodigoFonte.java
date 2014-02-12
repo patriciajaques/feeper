@@ -15,89 +15,86 @@ public class CodigoFonte  implements java.io.Serializable {
      private String fonte;
      private String fonteAnterior;
      private Date dataCadastro;
-     private Date dataAlteracao;
-     private int idStatus;
-     private boolean ativo;
+     private boolean principal;
      private int idExercicio;
+     private String classe;
      private Pessoa autor;
-     private StatusCodigoFonte status;
+     private Exercicio exercicio;
 
     public CodigoFonte() {
     }
 
 	
-    public CodigoFonte(int idAutor, String fonte, Date dataCadastro, int idStatus, boolean ativo) {
+    public CodigoFonte(int idAutor, String fonte, Date dataCadastro, int idExercicio, boolean principal) {
         this.idAutor = idAutor;
         this.fonte = fonte;
         this.dataCadastro = dataCadastro;
-        this.idStatus = idStatus;
-        this.ativo = ativo;
+        this.principal = principal;
+        this.idExercicio = idExercicio;
     }
-    public CodigoFonte(int idAutor, String fonte, String fonteAnterior, Date dataCadastro, Date dataAlteracao, int idStatus, boolean ativo) {
+    public CodigoFonte(int idAutor, String fonte, String fonteAnterior, Date dataCadastro, int idExercicio, boolean principal) {
        this.idAutor = idAutor;
        this.fonte = fonte;
        this.fonteAnterior = fonteAnterior;
        this.dataCadastro = dataCadastro;
-       this.dataAlteracao = dataAlteracao;
-       this.idStatus = idStatus;
-       this.ativo = ativo;
+       this.idExercicio = idExercicio;
+       this.principal = principal;
     }
-   
+
     public Integer getId() {
-        return this.id;
+        return id;
     }
-    
+
     public void setId(Integer id) {
         this.id = id;
     }
+
     public int getIdAutor() {
-        return this.idAutor;
+        return idAutor;
     }
-    
+
     public void setIdAutor(int idAutor) {
         this.idAutor = idAutor;
     }
+
     public String getFonte() {
-        return this.fonte;
+        return fonte;
     }
-    
+
     public void setFonte(String fonte) {
         this.fonte = fonte;
     }
+
     public String getFonteAnterior() {
-        return this.fonteAnterior;
+        return fonteAnterior;
     }
-    
+
     public void setFonteAnterior(String fonteAnterior) {
         this.fonteAnterior = fonteAnterior;
     }
+
     public Date getDataCadastro() {
-        return this.dataCadastro;
+        return dataCadastro;
     }
-    
+
     public void setDataCadastro(Date dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
-    public Date getDataAlteracao() {
-        return this.dataAlteracao;
+
+    public boolean isPrincipal() {
+        return principal;
     }
-    
-    public void setDataAlteracao(Date dataAlteracao) {
-        this.dataAlteracao = dataAlteracao;
+
+    public void setPrincipal(boolean principal) {
+        this.principal = principal;
     }
-    public int getIdStatus() {
-        return this.idStatus;
+
+    public int getIdExercicio() {
+        return idExercicio;
     }
-    
-    public void setIdStatus(int idStatus) {
-        this.idStatus = idStatus;
-    }
-    public boolean isAtivo() {
-        return this.ativo;
-    }
-    
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
+
+    public void setIdExercicio(int idExercicio) {
+        this.idExercicio = idExercicio;
     }
 
     public Pessoa getAutor() {
@@ -108,21 +105,23 @@ public class CodigoFonte  implements java.io.Serializable {
         this.autor = autor;
     }
 
-    public StatusCodigoFonte getStatus() {
-        return status;
+    public Exercicio getExercicio() {
+        return exercicio;
     }
 
-    public void setStatus(StatusCodigoFonte status) {
-        this.status = status;
+    public void setExercicio(Exercicio exercicio) {
+        this.exercicio = exercicio;
     }
 
-    public int getIdExercicio() {
-        return idExercicio;
+    public String getClasse() {
+        return classe;
     }
 
-    public void setIdExercicio(int idExercicio) {
-        this.idExercicio = idExercicio;
+    public void setClasse(String classe) {
+        this.classe = classe;
     }
+   
+    
 
 
 

@@ -29,13 +29,13 @@
     <mapping resource="feeper/entity/MensagemCurtir.hbm.xml"/>
     <mapping resource="feeper/entity/TurmaPessoa.hbm.xml"/>
     <mapping resource="feeper/entity/ExercicioValidacao.hbm.xml"/>
-    <mapping resource="feeper/entity/StatusCodigoFonte.hbm.xml"/>
+    <mapping resource="feeper/entity/StatusResposta.hbm.xml"/>
     <mapping resource="feeper/entity/CodigoFonte.hbm.xml"/>
     <mapping resource="feeper/entity/Pessoa.hbm.xml"/>
     <mapping resource="feeper/entity/UploadTemp.hbm.xml"/>
     <mapping resource="feeper/entity/TelaPerfil.hbm.xml"/>
     <mapping resource="feeper/entity/Tela.hbm.xml"/>
     <mapping resource="feeper/entity/Perfil.hbm.xml"/>
-    <mapping resource="feeper/entity/CodigoFonteResultado.hbm.xml"/>
+    <mapping resource="feeper/entity/Resposta.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

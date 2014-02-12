@@ -15,11 +15,6 @@
             $(function(){
                 $("#menu-lista-exercicios").addClass("active");
                 
-                $('#tab-cabecalho a').click(function (e) {
-                    e.preventDefault();
-                    $(this).tab('show');
-                });
-                
                 $(".btn-codigo-download").click(function(){
                     var id = $("#hdnIdExercicio").val();
                     document.location.href = "<c:url value='/'/>exercicios/download/" + id;
@@ -61,40 +56,65 @@
         
         <script src="<c:url value='/resources/ace/ace.js'/>" type="text/javascript"></script>
         <script type="text/javascript">
+            var newClassContent = "${CodigoFontePadraoClasse}";
+            var editor = ace.edit("editor");
+            $("#editor").show();
+            editor.container.style.opacity = "";
+
+            editor.setOptions({
+                maxLines: 30,
+                mode: "ace/mode/java",
+                autoScrollEditorIntoView: true
+            });
+
+            <c:if test="${CodigoFonte != null && CodigoFonte.getIdStatus() == 5}">
+                //editor.setReadOnly(true);
+            </c:if>
+
+            editor.setTheme("ace/theme/eclipse");
+            editor.setShowPrintMargin(false);
+            editor.getSession().setUseSoftTabs(true);
+            editor.renderer.setHScrollBarAlwaysVisible(false);
+            editor.focus();
+            
             $(function(){
-                var editor = ace.edit("editor");
-                $("#editor").show();
-                editor.container.style.opacity = "";
-                
-                editor.setOptions({
-                    maxLines: 30,
-                    mode: "ace/mode/java",
-                    autoScrollEditorIntoView: true
-                });
-                
-                <c:if test="${CodigoFonte != null && CodigoFonte.getIdStatus() == 5}">
-                    //editor.setReadOnly(true);
-                </c:if>
-                
-                editor.setTheme("ace/theme/eclipse");
-                editor.setShowPrintMargin(false);
-                editor.getSession().setUseSoftTabs(true);
-                editor.renderer.setHScrollBarAlwaysVisible(false);
-                editor.focus();
                 
                 $(".btn-codigo-enviar").click(function(){
+                    
+                });
+                
+                $(".btn-salvar-codigo").click(function(){
                     $("#hdnEditor").val(editor.getSession().getValue());
                     $("#frmResponder").submit();
                 });
                 
-                $(".btn-codigo-favorito").click(function(){
-                    //editor.selectMoreLines(1,false);
-                    var texto = editor.getSession().getTextRange(editor.getSelectionRange());
-                    alert(texto);
-                    //alert(editor.getSelectionRange());
+                $(".btn-nova-classe").fancybox({
+                    'autoSize': true,
+                    'openEffect': 'fade',
+                    'closeEffect': 'fade',
+                    'modal': true
+                });
+                
+                $(".btn-show-code").click(function(){
+                    var id = $(this).attr("data-id");
+                    if (id === undefined) return;
                 });
                 
             });
+            
+            function adicionarClasse(){
+                var fileName = $("#txtNomeClasse").val() + ".java";
+                $("#lblFilename").html(fileName);
+                var content = newClassContent.replace(/#@#CLASSE#@#/gi, fileName).replace(/#n#/gi, "\n");
+                editor.getSession().setValue(content);
+                $("#hdnEditor, #hdnIdCodigoFonte").val("");
+                FechaModal();
+            }
+            
+            function cancelarClasse(){
+                $("#txtNomeClasse").val("");            
+                $.fancybox.close(true);
+            }
         </script>
         
     </jsp:attribute>
@@ -111,60 +131,37 @@
             </div>
         </div>
         
-        <h3><fmt:message key="label.exercicios.editesuaresposta"/></h3>
+        <h3><fmt:message key="label.exercicios.classes"/><small>Teste de texto pequeno descritivo</small></h3>
         
-        <form role="form" action="<c:url value='/'/>exercicios/saveresponder" id="frmResponder" method="POST">
+        <div class="list-group">
+            <c:if test="${not empty ListaCodigoFonte}">
+                <c:forEach var="item" varStatus="status" items="${ListaCodigoFonte}">
+                    <a href="#" class="list-group-item ${item.isPrincipal() ? "active" : ""} btn-show-code" data-id="${item.getId()}"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;${item.getClasse()}</a>
+                </c:forEach>
+            </c:if>
+            <a href="#divNovaClasse" class="list-group-item btn-nova-classe"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;<fmt:message key="label.exercicios.novaclasse"/></a>
+        </div>
+        
+        <form role="form" action="<c:url value='/'/>exercicios/savecodigofonte" id="frmResponder" method="POST">
             <input type="hidden" id="hdnIdExercicio" name="hdnIdExercicio" value="${Exercicio.getId()}" />
+            <input type="hidden" id="hdnIdCodigoFonte" name="hdnIdCodigoFonte" />
             <input type="hidden" id="hdnEditor" name="hdnEditor" />
         </form>
+            
+        <h3 id="lblFilename">${ListaCodigoFonte.get(0).getClasse()}</h3>
         
-        <c:choose>
-            <c:when test="${CodigoFonte != null}">
-                <div id="editor" style="display:none;">${CodigoFonte.getFonte()}</div>
-            </c:when>
-            <c:otherwise>
-                <div id="editor" style="display:none;">/* package qualquer; // Não coloque nome no package */
-
-import java.util.*;
-import java.lang.*;
-import java.io.*;
-
-/* O nome da classe deve ser "Solution" */
-class Solution
-{
-    public static void main (String[] args) throws java.lang.Exception
-    {
-        // Coloque aqui o seu código
-    }
-}
-</div>
-            </c:otherwise>
-        </c:choose>
-                
-        <c:if test="${CodigoFonte != null && CodigoFonte.getIdStatus() == 5}">
-            <div class="alert alert-info"><fmt:message key="label.exercicios.status.aguardando"/></div>
-        </c:if>
-                
-        <c:if test="${CodigoFonteResultado != null}">
-            <c:choose>
-                <c:when test="${CodigoFonteResultado.getIdStatus() == 1}">
-                    <div class="alert alert-danger"><fmt:message key="label.exercicios.status.errocompilacao"/><br>${CodigoFonteResultado.getMensagem()}</div>
-                </c:when>
-                <c:when test="${CodigoFonteResultado.getIdStatus() == 2}">
-                    <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errosaidainvalida"/></div>
-                </c:when>
-                <c:when test="${CodigoFonteResultado.getIdStatus() == 3}">
-                    <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errotempolimite"/></div>
-                </c:when>
-                <c:when test="${CodigoFonteResultado.getIdStatus() == 4}">
-                    <div class="alert alert-success"><fmt:message key="label.exercicios.status.resolvido"/></div>
-                </c:when>
-            </c:choose>
-        </c:if>
-                  
-        <c:if test="${CodigoFonte != null}">
-            <small><fmt:message key="label.exercicios.dataultimaresposta"/> <fmt:formatDate value="${CodigoFonte.getDataAlteracao()}" pattern="dd/MM/yyyy HH:mm" /></small>
-        </c:if>
+        <div id="editor" style="display:none;">${ListaCodigoFonte.get(0).getFonte()}</div>
+        
+        <button type="button" class="btn btn-primary btn-salvar-codigo"><fmt:message key="button.salvar"/></button>
+        
+        <div style="display:none;" id="divNovaClasse">
+            <div class="input-group" style="width:400px; margin-bottom:3px">
+                <input type="text" class="form-control" id="txtNomeClasse" placeholder="<fmt:message key="label.exercicio.nomeclasseinforme"/>">
+                <span class="input-group-addon">.java</span>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="adicionarClasse();"><fmt:message key="button.salvar"/></button>
+            <button type="button" class="btn btn-default" onclick="cancelarClasse();"><fmt:message key="button.cancelar"/></button>
+        </div>
         
     </jsp:body>
         

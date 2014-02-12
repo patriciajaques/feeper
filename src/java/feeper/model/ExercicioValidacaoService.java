@@ -39,26 +39,26 @@ public class ExercicioValidacaoService extends HibernateUtil<ExercicioValidacao>
         return ((BigInteger)query.uniqueResult()).intValue() >= 1;
     }
     
-    public boolean insertOrUpdate(ExercicioValidacao entity)
-    {
-        try {
-            
-            if (!exists(entity.getId()))
-            {
-                entity.setDataCadastro(new Date());
-                entity.setAtivo(true);
-                insert(entity);
-            }
-            else
-            {
-                update(entity);
-            }
-                
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+//    public boolean insertOrUpdate(ExercicioValidacao entity)
+//    {
+//        try {
+//            
+//            if (!exists(entity.getId()))
+//            {
+//                entity.setDataCadastro(new Date());
+//                entity.setAtivo(true);
+//                insert(entity);
+//            }
+//            else
+//            {
+//                update(entity);
+//            }
+//                
+//            return true;
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
     
     public boolean deleteNotIn(int idExercicio, String concatIds)
     {

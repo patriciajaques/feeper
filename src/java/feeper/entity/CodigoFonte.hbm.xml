@@ -20,20 +20,17 @@
         <property name="dataCadastro" type="timestamp">
             <column name="DataCadastro" length="19" not-null="true" />
         </property>
-        <property name="dataAlteracao" type="timestamp">
-            <column name="DataAlteracao" length="19" />
-        </property>
-        <property name="idStatus" type="int">
-            <column name="IdStatus" not-null="true" />
-        </property>
-        <property name="ativo" type="boolean">
-            <column name="Ativo" not-null="true" />
+        <property name="principal" type="boolean">
+            <column name="Principal" not-null="true" />
         </property>
         <property name="idExercicio" type="int">
             <column name="IdExercicio" not-null="true" />
         </property>
+        <property name="classe" type="string">
+            <column name="Classe" length="45" not-null="true" />
+        </property>
         
         <many-to-one name="autor" class="feeper.entity.Pessoa" column="IdAutor" insert="false" update="false" />
-        <many-to-one name="status" class="feeper.entity.StatusCodigoFonte" column="IdStatus" insert="false" update="false" />
+        <many-to-one name="exercicio" class="feeper.entity.Exercicio" column="IdExercicio" insert="false" update="false" />
     </class>
 </hibernate-mapping>
