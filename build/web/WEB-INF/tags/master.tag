@@ -9,6 +9,7 @@
 <html lang="pt">
     <head>
         <title>feeper - <jsp:invoke fragment="title"/></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
         
         <link href="<c:url value='/resources/css/bootstrap.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/css/util.css'/>" rel="stylesheet" type="text/css" />
@@ -30,6 +31,9 @@
         <script src="<c:url value='/resources/js/bootstrap.min.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/js/util.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/jquery/MvcGrid.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/jquery/funcoes.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/jquery/jquery.form.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/jquery/jquery.meio.mask.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/assets/google-code-prettify/prettify.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/fancybox/jquery.fancybox.pack.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/uploadify/jquery.uploadify.min.js'/>" type="text/javascript"></script>
@@ -51,6 +55,14 @@
                 if (id === undefined) return;
                 document.location.href = "<c:url value='/'/>turma/change/" + id;
             }
+            
+            function CloseSession() {
+                document.location.href = "<c:url value='/'/>login/logout";
+            }
+            
+            $(function(){
+               SessionTimeout.schedulePopup(9, '< c:url value='/'/>timeout', '<fmt:message key="label.mensagemsessiontimeout"/>'); 
+            });
         </script>
         
         <jsp:invoke fragment="header"/>

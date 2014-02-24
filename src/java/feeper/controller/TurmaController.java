@@ -4,7 +4,7 @@ import feeper.entity.Pessoa;
 import feeper.entity.Turma;
 import feeper.model.ETipoLog;
 import feeper.model.PaginadorUtil;
-import feeper.model.TurmaService;
+import feeper.service.TurmaService;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;

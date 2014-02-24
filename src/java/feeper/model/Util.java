@@ -6,11 +6,9 @@ package feeper.model;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -143,5 +141,43 @@ public class Util {
 //            }
 //        }
     }
+    
+    public static String prepareStringForSave(String text)
+    {
+        if (text == null || text.isEmpty()) return "";
+
+        return removeSpecialCharacters(removeAccent(text)).trim();
+    }
+
+    public static String removeSpecialCharacters(String text)
+    {
+        return text.replaceAll("[^a-zA-Z 0-9]", "");
+    }
+
+    public static String removeNumbers(String text)
+    {
+        return text.replaceAll("[^a-zA-Z ]", "");
+    }
+    
+    public static String removeAccent(String text)
+    {
+        return StringUtils.stripAccents(text);
+    }
+    
+    public static String truncateString(String value, int length, String comp)
+        {
+            try
+            {
+                if (value == null || value.isEmpty()) return "";
+                if (value.length() > length)
+                    return value.substring(0, length) + comp;
+                else
+                    return value;
+            }
+            catch (Exception e)
+            {
+                return value;
+            }
+        }
     
 }

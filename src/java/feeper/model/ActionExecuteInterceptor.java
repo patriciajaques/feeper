@@ -4,6 +4,10 @@
  */
 package feeper.model;
 
+import feeper.service.TelaService;
+import feeper.service.MensagemService;
+import feeper.service.TelaPerfilService;
+import feeper.service.NovidadeService;
 import feeper.entity.Pessoa;
 import feeper.entity.Turma;
 import java.util.List;
@@ -119,7 +123,7 @@ public class ActionExecuteInterceptor extends HandlerInterceptorAdapter {
                     content += controllerName[0].replace("/", "");
                 if (viewName.length > 0)
                     content += viewName[0];
-                if (content.indexOf("/") != content.lastIndexOf("/"))
+                while (content.indexOf("/") != content.lastIndexOf("/"))
                     content = content.substring(0, content.lastIndexOf("/"));
             }
             else if (handler instanceof ParameterizableViewController)

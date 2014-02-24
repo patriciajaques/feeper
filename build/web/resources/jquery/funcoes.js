@@ -186,11 +186,11 @@ window.SessionTimeout = (function () {
     };
 
     var sendKeepAlive = function () {
+        $.fancybox.close();
         $.ajax({
             url: _urlTimeout,
             cache: false
         });
-        $.fancybox.close();
         stopTimers();
         SessionTimeout.schedulePopup(_sessionTimeout, _urlTimeout, _divMsg);
     };

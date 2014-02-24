@@ -28,4 +28,6 @@ public class ETipoLog {
     public static final int ALTERAR_EXERCICIO = 25;
     public static final int EXCLUIR_EXERCICIO = 26;
     public static final int UPLOAD_EXERCICIO = 27;
+    public static final int CODIGO_EXCLUIDO = 28;
+    public static final int CODIGO_SALVO = 29;
 }

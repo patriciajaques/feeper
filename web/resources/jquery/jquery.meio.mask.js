@@ -35,7 +35,8 @@
 
     var isIphone = (window.orientation != undefined),
     // browsers like firefox2 and before and opera doenst have the onPaste event, but the paste feature can be done with the onInput event.
-		pasteEvent = (($.browser.opera || ($.browser.mozilla && parseFloat($.browser.version.substr(0, 3)) < 1.9)) ? 'input' : 'paste');
+		//pasteEvent = (($.browser.opera || ($.browser.mozilla && parseFloat($.browser.version.substr(0, 3)) < 1.9)) ? 'input' : 'paste');
+                pasteEvent = 'paste';
 
     $.event.special.paste = {
         setup: function() {
@@ -398,8 +399,8 @@
                     this.__setRange(o._this, o.range.start, o.range.end);
 
                 //fix so ie's and safari's caret won't go to the end of the input value.
-                if (($.browser.msie || $.browser.safari) && !o.reverse)
-                    this.__setRange(o._this, o.range.start, o.range.end);
+                //if (($.browser.msie || $.browser.safari) && !o.reverse)
+                //    this.__setRange(o._this, o.range.start, o.range.end);
 
                 if (this.ignore) return true;
 
@@ -493,8 +494,8 @@
                 //this bug was pointed by Pedro Martins
                 //it fixes a strange behavior that ie was having after a char was inputted in a text input that
                 //had its content selected by any range 
-                if ($.browser.msie && ((o.range.start == 0 && o.range.end == 0) || o.range.start != o.range.end))
-                    this.__setRange(o._this, o.value.length);
+                //if ($.browser.msie && ((o.range.start == 0 && o.range.end == 0) || o.range.start != o.range.end))
+                //    this.__setRange(o._this, o.value.length);
                 return false;
             },
 
@@ -658,12 +659,12 @@
 
             // adaptation from http://digitarald.de/project/autocompleter/
             __getRange: function(input) {
-                if (!$.browser.msie) return { start: input.selectionStart, end: input.selectionEnd };
-                var pos = { start: 0, end: 0 },
+                return { start: input.selectionStart, end: input.selectionEnd };
+                /*var pos = { start: 0, end: 0 },
 					range = document.selection.createRange();
                 pos.start = 0 - range.duplicate().moveStart('character', -100000);
                 pos.end = pos.start + range.text.length;
-                return pos;
+                return pos;*/
             },
 
             //deprecated
@@ -687,4 +688,5 @@
         }
     });
 })(jQuery);
-
+
+

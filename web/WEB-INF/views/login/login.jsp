@@ -5,7 +5,15 @@
 
 <t:master.clean>
     <jsp:attribute name="title"><fmt:message key="title.login"/></jsp:attribute>
-    <jsp:attribute name="header"></jsp:attribute>
+    <jsp:attribute name="header">
+        
+        <script type="text/javascript">
+            $(function(){
+                $("#email").focus();
+            });
+        </script>
+        
+    </jsp:attribute>
     <jsp:body>
         
         <div class="jumbotron">
