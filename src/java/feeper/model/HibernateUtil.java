@@ -5,6 +5,7 @@
 package feeper.model;
 
 import java.util.List;
+import org.hibernate.CacheMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -41,12 +42,15 @@ public class HibernateUtil<T> {
      * @return Session
      */
     public Session getSession(){
-        return sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
+        session.setCacheMode(CacheMode.IGNORE);
+        return session;
     }
     
     public SQLQuery query(String sqlQuery)
     {
         session = getSession();
+        session.setCacheMode(CacheMode.IGNORE);
         return session.createSQLQuery(sqlQuery);
     }
     
@@ -156,8 +160,8 @@ public class HibernateUtil<T> {
             session = getSession();
             transaction = session.beginTransaction();
             session.saveOrUpdate(obj);
-            session.refresh(obj);
             transaction.commit();
+            session.refresh(obj);
             return true;
         } catch (HibernateException e) { 
             transaction.rollback();

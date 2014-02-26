@@ -104,12 +104,13 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
     {
         try {
             
-            SQLQuery query = query("select ID, Fonte, Classe, Principal, '#@#' AS Marcacao from CodigoFonte where IdExercicio = :idExercicio and IdAutor = :idAutor and ID = :idCodigoFonte ");
+            SQLQuery query = query("select ID, Fonte, Classe, Principal, '' AS Marcacao, '' AS Anotacao from CodigoFonte where IdExercicio = :idExercicio and IdAutor = :idAutor and ID = :idCodigoFonte ");
             query.addScalar("ID", Hibernate.INTEGER);
             query.addScalar("Fonte", Hibernate.STRING);
             query.addScalar("Classe", Hibernate.STRING);
             query.addScalar("Principal", Hibernate.BOOLEAN);
             query.addScalar("Marcacao", Hibernate.STRING);
+            query.addScalar("Anotacao", Hibernate.STRING);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAutor", idAutor);
             query.setInteger("idCodigoFonte", idCodigoFonte);
@@ -150,6 +151,39 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
         }
     }
     
+    public Object getAnotacao(int idExercicio, int idCodigoFonte, int linha)
+    {
+        try {
+            
+            SQLQuery query = query("select " +
+                                "  CFM.DataCadastro, " +
+                                "  CFM.Anotacao, " +
+                                "  CFM.LinhaInicio " +
+                                "from " +
+                                "  CodigoFonteMarcacao CFM " +
+                                "  inner join CodigoFonte CF " +
+                                "  on CF.ID = CFM.IdCodigoFonte " +
+                                "where " +
+                                "  CF.ID = :idCodigoFonte " +
+                                "  and CF.IdExercicio = :idExercicio " +
+                                "  and CFM.LinhaInicio = :linha " +
+                                "  and CFM.IdTipoMarcacao = :idTipoMarcacao " +
+                                "  and CFM.Ativo = 1");
+            query.addScalar("DataCadastro", Hibernate.DATE);
+            query.addScalar("Anotacao", Hibernate.STRING);
+            query.addScalar("LinhaInicio", Hibernate.INTEGER);
+            query.setInteger("idExercicio", idExercicio);
+            query.setInteger("idCodigoFonte", idCodigoFonte);
+            query.setInteger("linha", linha);
+            query.setInteger("idTipoMarcacao", ETipoMarcacao.ANOTACAO);
+            
+            return query.list().get(0);
+            
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
     public List<Object> getMarcacaoAutor(int idExercicio, int idAutor, int idCodigoFonte, int linha)
     {
         try {
@@ -179,7 +213,7 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
                                 "  and CF.IdExercicio = :idExercicio " +
                                 "  and CF.IdAutor = :idAutor " +
                                 "  and CFM.LinhaInicio = :linha " +
-                                "  and CFM.IdTipoMarcacao = 2 " +
+                                "  and CFM.IdTipoMarcacao = :idTipoMarcacao " +
                                 "  and CFM.Ativo = 1");
             query.addScalar("IdPessoa", Hibernate.INTEGER);
             query.addScalar("Nome", Hibernate.STRING);
@@ -191,6 +225,7 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
             query.setInteger("idAutor", idAutor);
             query.setInteger("idCodigoFonte", idCodigoFonte);
             query.setInteger("linha", linha);
+            query.setInteger("idTipoMarcacao", ETipoMarcacao.DUVIDA);
             
             return query.list();
             
@@ -199,12 +234,45 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
         }
     }
     
+    public boolean inserirAnotacao(int idExercicio, int idAutor, int idCodigoFonte, int linha, boolean publico, String texto)
+    {
+        try {
+            
+            CodigoFonteMarcacaoService repoCodigoFonteMarcacao = new CodigoFonteMarcacaoService();
+            CodigoFonteMarcacao codigoFonteMarcacao = repoCodigoFonteMarcacao.getByIdCodigoFonte(idCodigoFonte, linha, ETipoMarcacao.ANOTACAO);
+            
+            if (codigoFonteMarcacao == null)
+            {
+                codigoFonteMarcacao = new CodigoFonteMarcacao();
+                codigoFonteMarcacao.setAtivo(true);
+                codigoFonteMarcacao.setDataCadastro(new Date());
+                codigoFonteMarcacao.setIdAutor(idAutor);
+                codigoFonteMarcacao.setIdCodigoFonte(idCodigoFonte);
+                codigoFonteMarcacao.setIdTipoMarcacao(ETipoMarcacao.ANOTACAO);
+                codigoFonteMarcacao.setLinhaInicio(linha);
+                codigoFonteMarcacao.setAnotacao(texto);
+                return repoCodigoFonteMarcacao.insert(codigoFonteMarcacao);
+            }
+            else
+            {
+                codigoFonteMarcacao.setAtivo(true);
+                codigoFonteMarcacao.setDataCadastro(new Date());
+                codigoFonteMarcacao.setIdTipoMarcacao(ETipoMarcacao.ANOTACAO);
+                codigoFonteMarcacao.setAnotacao(texto);
+                return repoCodigoFonteMarcacao.update(codigoFonteMarcacao);
+            }
+            
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
     public boolean inserirPergunta(int idExercicio, int idAutor, int idCodigoFonte, int linha, boolean publico, int idLeitor, String texto)
     {
         try {
             
             CodigoFonteMarcacaoService repoCodigoFonteMarcacao = new CodigoFonteMarcacaoService();
-            CodigoFonteMarcacao codigoFonteMarcacao = repoCodigoFonteMarcacao.getByIdCodigoFonte(idCodigoFonte, linha);
+            CodigoFonteMarcacao codigoFonteMarcacao = repoCodigoFonteMarcacao.getByIdCodigoFonte(idCodigoFonte, linha, ETipoMarcacao.DUVIDA);
             
             if (codigoFonteMarcacao == null)
             {

@@ -4,10 +4,24 @@
  */
 package feeper.model;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import javax.servlet.ServletOutputStream;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -103,43 +117,37 @@ public class Util {
         return (temMaiuscula && temMinuscula && temNumero && temSimbolo);
     }
     
-    public static void zipFiles(List<String> files){
-         
-//        FileOutputStream fos = null;
-//        ZipOutputStream zipOut = null;
-//        FileInputStream fis = null;
-//        try {
-//            fos = new FileOutputStream("C:/testing.zip");
-//            zipOut = new ZipOutputStream(new BufferedOutputStream(fos));
-//            for(String filePath:files){
-//                File input = new File(filePath);
-//                fis = new FileInputStream(input);
-//                ZipEntry ze = new ZipEntry(input.getName());
-//                System.out.println("Zipping the file: "+input.getName());
-//                zipOut.putNextEntry(ze);
-//                byte[] tmp = new byte[4*1024];
-//                int size = 0;
-//                while((size = fis.read(tmp)) != -1){
-//                    zipOut.write(tmp, 0, size);
-//                }
-//                zipOut.flush();
-//                fis.close();
-//            }
-//            zipOut.close();
-//            System.out.println("Done... Zipped the files...");
-//        } catch (FileNotFoundException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } finally{
-//            try{
-//                if(fos != null) fos.close();
-//            } catch(Exception ex){
-//                 
-//            }
-//        }
+    public static byte[] zipFiles(List<byte[]> files, List<String> filenames) throws FileNotFoundException, IOException
+    {
+        byte[] buf = new byte[2048];
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ZipOutputStream out = new ZipOutputStream(baos);
+        
+        for (int i = 0; i < files.size(); i++) {
+            InputStream stream = new ByteArrayInputStream(files.get(i));
+            BufferedInputStream bis = new BufferedInputStream(stream);
+            
+            out.putNextEntry(new ZipEntry(filenames.get(i)));
+            int bytesRead;
+            
+            while ((bytesRead = bis.read(buf)) != -1) {
+                out.write(buf, 0, bytesRead);
+            }
+            
+            out.closeEntry();
+            bis.close();
+            stream.close();
+        }
+        out.flush();
+        baos.flush();
+        out.close();
+        baos.close();
+        
+        out.flush();
+        out.close();
+        
+        return baos.toByteArray();
     }
     
     public static String prepareStringForSave(String text)

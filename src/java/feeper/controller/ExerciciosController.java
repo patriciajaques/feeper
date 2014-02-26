@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -490,19 +491,28 @@ public class ExerciciosController extends ApplicationController {
         if (exercicio != null)
         {
             CodigoFonteService repoCodigoFonte = new CodigoFonteService();
-            //CodigoFonte codigoFonte = repoCodigoFonte.getByIdExercicio(exercicio.getId(), pessoa.getId());
-            CodigoFonte codigoFonte = null;
+            List<CodigoFonte> codigosFonte = repoCodigoFonte.getAllByIdExercicio(exercicio.getId(), pessoa.getId());
             
-            if (codigoFonte != null)
+            if (codigosFonte != null && codigosFonte.size() > 0)
             {
                 try {
-                    log(pessoa.getId(), "SUCESSO: ID: " + codigoFonte.getId(), ETipoLog.CODIGO_BAIXADO);
                     
-                    InputStream stream = new ByteArrayInputStream(codigoFonte.getFonte().getBytes("UTF-8"));
+                    ArrayList<byte[]> arquivos = new ArrayList<byte[]>();
+                    ArrayList<String> nomes = new ArrayList<String>();
+                    
+                    for (CodigoFonte codigoFonte : codigosFonte) {
+                        arquivos.add(codigoFonte.getFonte().getBytes("UTF-8"));
+                        nomes.add(codigoFonte.getClasse());
+                    }
+                    
+                    byte[] arquivoZip = Util.zipFiles(arquivos, nomes);
+                    InputStream stream = new ByteArrayInputStream(arquivoZip);
                     IOUtils.copy(stream, response.getOutputStream());
                     
+                    log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + id, ETipoLog.CODIGO_BAIXADO);
+                    
                     response.setContentType("application/force-download");
-                    response.setHeader("Content-Disposition", "attachment; filename=Solution.java");
+                    response.setHeader("Content-Disposition", "attachment; filename=Exercicio"+id+".zip");
                     response.flushBuffer();
                     
                 } catch (IOException ex) {
@@ -527,6 +537,7 @@ public class ExerciciosController extends ApplicationController {
             dados[2] = "Solution.java";
             dados[3] = true;
             dados[4] = "";
+            dados[5] = "";
             
             return dados;
         }
@@ -540,6 +551,7 @@ public class ExerciciosController extends ApplicationController {
         
         dados[1] = dados[1].toString().replaceAll("\"", "#'#");
         dados[4] = repoCodigoFonteMarcacao.getLinhasDuvida(idCodigoFonte);
+        dados[5] = repoCodigoFonteMarcacao.getLinhasAnotacao(idCodigoFonte);
         
         return dados;
     }
@@ -565,7 +577,7 @@ public class ExerciciosController extends ApplicationController {
             try
             {
                 int idCodigoFonte = request.getParameter("hdnIdCodigoFonte").isEmpty() ? 0 : Integer.parseInt(request.getParameter("hdnIdCodigoFonte").toString());
-                boolean principal = request.getParameter("hdnPrincipal") == null ? false : request.getParameter("hdnPrincipal").toString().equals("1");
+                boolean principal = request.getParameter("hdnPrincipal") == null ? false : request.getParameter("hdnPrincipal").toString().equals("true") || request.getParameter("hdnPrincipal").toString().equals("1");
                 String classe = request.getParameter("hdnNomeCodigoFonte") == null ? "" : request.getParameter("hdnNomeCodigoFonte").toString();
                 String fonte = request.getParameter("hdnEditor") == null ? "" : request.getParameter("hdnEditor").toString();
 
@@ -678,8 +690,6 @@ public class ExerciciosController extends ApplicationController {
         {
             try
             {
-                //int idCodigoFonte = request.getParameter("hdnQuestaoIdCodigoFonte").isEmpty() ? 0 : Integer.parseInt(request.getParameter("hdnQuestaoIdCodigoFonte").toString());
-                //int linha = request.getParameter("hdnQuestaoLinha").isEmpty() ? 0 : Integer.parseInt(request.getParameter("hdnQuestaoLinha").toString());
                 String questao = request.getParameter("questaoCodigoFonte") == null ? "" : request.getParameter("questaoCodigoFonte").toString();
                 //boolean publico = request.getParameter("chkPublico") == null ? false : request.getParameter("chkPublico").toString().equals("1");
 
@@ -698,6 +708,68 @@ public class ExerciciosController extends ApplicationController {
         }
         
         mav.setView(new RedirectView("/exercicios/showquestion/" + id + "/" + idCodigoFonte + "/" + linha, true, true, false));
+        return mav;
+        
+    }
+    
+    @RequestMapping(value="/showannotation/{idExercicio}/{idCodigoFonte}/{linha}", method=RequestMethod.GET)
+    @ResponseBody
+    public Object showannotation(
+            @PathVariable int idExercicio, 
+            @PathVariable int idCodigoFonte, 
+            @PathVariable int linha, 
+            Model model, 
+            HttpServletRequest request) {
+        
+        HttpSession session = request.getSession(false);
+        Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
+        
+        CodigoFonteService repoCodigoFonte = new CodigoFonteService();
+        Object dados = repoCodigoFonte.getAnotacao(idExercicio, idCodigoFonte, linha);
+        
+        return dados != null ? dados : "";
+    }
+    
+    @RequestMapping(value="/saveannotation", method=RequestMethod.POST)
+    public ModelAndView saveannotation(
+            @ModelAttribute("hdnAnotacaoIdExercicio") int id, 
+            @ModelAttribute("hdnAnotacaoIdCodigoFonte") int idCodigoFonte, 
+            @ModelAttribute("hdnAnotacaoLinha") int linha, 
+            HttpSession session,
+            HttpServletRequest request,
+            BindingResult result) {
+        
+        ModelAndView mav = new ModelAndView();
+        
+        Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
+        Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
+        
+        CodigoFonteService repoCodigoFonte = new CodigoFonteService();
+        ExercicioService repoExercicio = new ExercicioService();
+        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), pessoa.getIdNivelDificuldade(), id);
+        
+        if (exercicio != null)
+        {
+            try
+            {
+                String anotacao = request.getParameter("anotacaoCodigoFonte") == null ? "" : request.getParameter("anotacaoCodigoFonte").toString();
+                //boolean publico = request.getParameter("chkPublico") == null ? false : request.getParameter("chkPublico").toString().equals("1");
+
+                if (!anotacao.isEmpty())
+                {
+                    if (repoCodigoFonte.inserirAnotacao(id, pessoa.getId(), idCodigoFonte, linha, false, anotacao))
+                        log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId() + " ID CODIGOFONTE: " + idCodigoFonte + " LINHA: " + linha, ETipoLog.CODIGO_COMENTADO);
+                    else
+                        log(pessoa.getId(), "ERRO: ID EXERCICIO: " + exercicio.getId() + " ID CODIGOFONTE: " + idCodigoFonte + " LINHA: " + linha, ETipoLog.CODIGO_COMENTADO);
+                }
+            }
+            catch(Exception e) {
+                log(pessoa.getId(), "ERRO: ID EXERCICIO: " + exercicio.getId(), ETipoLog.CODIGO_COMENTADO);
+            }
+        
+        }
+        
+        mav.setView(new RedirectView("/exercicios/showannotation/" + id + "/" + idCodigoFonte + "/" + linha, true, true, false));
         return mav;
         
     }
