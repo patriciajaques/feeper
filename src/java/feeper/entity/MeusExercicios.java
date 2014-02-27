@@ -17,7 +17,6 @@ public class MeusExercicios {
     private String nome;
     private byte[] descricao;
     private String descricaoHtml;
-    private String nivelDificuldade;
     private String turma;
     private Date dataUltimaAlteracao;
 
@@ -51,14 +50,6 @@ public class MeusExercicios {
 
     public void setDescricao(byte[] descricao) {
         this.descricao = descricao;
-    }
-
-    public String getNivelDificuldade() {
-        return nivelDificuldade;
-    }
-
-    public void setNivelDificuldade(String nivelDificuldade) {
-        this.nivelDificuldade = nivelDificuldade;
     }
 
     public Date getDataUltimaAlteracao() {

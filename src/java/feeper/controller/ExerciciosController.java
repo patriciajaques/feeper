@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -88,8 +87,6 @@ public class ExerciciosController extends ApplicationController {
         String sql = "select * from Exercicio as E " +
                     "inner join Pessoa as P " +
                     "on P.ID = E.IdAutor " +
-                    "inner join NivelDificuldade as ND " +
-                    "on ND.ID = E.IdNivelDificuldade " +
                     "where E.nome like :p0 " +
                     "and P.nome like :p1 ";
         
@@ -119,6 +116,7 @@ public class ExerciciosController extends ApplicationController {
         
         model.addAttribute(new Exercicio());
         model.addAttribute("IsAdd", true);
+        
         return "exercicios/edit";
     }
     
@@ -190,7 +188,6 @@ public class ExerciciosController extends ApplicationController {
         
         exercicioBanco.setAtivo(exercicio.isAtivo());
         exercicioBanco.setDescricaoHtml(html);
-        exercicioBanco.setIdNivelDificuldade(exercicio.getIdNivelDificuldade());
         exercicioBanco.setNome(exercicio.getNome());
         
         Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
@@ -343,7 +340,6 @@ public class ExerciciosController extends ApplicationController {
                     "  E.Nome, " +
                     "  E.Descricao, " +
                     "  E.DescricaoHtml, " +
-                    "  ND.Nome AS NivelDificuldade, " +
                     "  T.Nome AS Turma, " +
                     "  (select MAX(DataCadastro) from Resposta R " +
                     "  where R.IdExercicio = E.ID and R.IdAutor = :p0 ) AS DataUltimaAlteracao " +
@@ -351,29 +347,24 @@ public class ExerciciosController extends ApplicationController {
                     "  TurmaExercicio TE " +
                     "  inner join Exercicio E " +
                     "  on E.ID = TE.IdExercicio " +
-                    "  inner join NivelDificuldade ND " +
-                    "  on ND.ID = E.IdNivelDificuldade " +
                     "  inner join Turma T " +
                     "  on T.ID = TE.IdTurma " +
                     "where " +
                     "  TE.Visivel = 1 " +
                     "  and TE.IdTurma = :p1 " +
-                    "  and E.IdNivelDificuldade <= :p2 " +
                     "  and T.Ativo = 1";
         
         Integer[] params = new Integer[3];
         params[0] = pessoa.getId();
         params[1] = turma.getId();
-        params[2] = pessoa.getIdNivelDificuldade();
         
-        ScalarResult[] scalarResult = new ScalarResult[7];
+        ScalarResult[] scalarResult = new ScalarResult[6];
         scalarResult[0] = new ScalarResult("ID", Hibernate.INTEGER);
         scalarResult[1] = new ScalarResult("Nome", Hibernate.STRING);
         scalarResult[2] = new ScalarResult("Descricao", Hibernate.BINARY);
         scalarResult[3] = new ScalarResult("DescricaoHtml", Hibernate.STRING);
-        scalarResult[4] = new ScalarResult("NivelDificuldade", Hibernate.STRING);
-        scalarResult[5] = new ScalarResult("Turma", Hibernate.STRING);
-        scalarResult[6] = new ScalarResult("DataUltimaAlteracao", Hibernate.TIMESTAMP);
+        scalarResult[4] = new ScalarResult("Turma", Hibernate.STRING);
+        scalarResult[5] = new ScalarResult("DataUltimaAlteracao", Hibernate.TIMESTAMP);
         
         List lista = paginador.Execute(model, 
                                         sql, 
@@ -401,7 +392,7 @@ public class ExerciciosController extends ApplicationController {
         Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
         
         ExercicioService repoExercicio = new ExercicioService();
-        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), pessoa.getIdNivelDificuldade(), id);
+        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), id);
         
         if (exercicio != null)
         {
@@ -451,7 +442,7 @@ public class ExerciciosController extends ApplicationController {
         
         CodigoFonteService repoCodigoFonte = new CodigoFonteService();
         ExercicioService repoExercicio = new ExercicioService();
-        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), pessoa.getIdNivelDificuldade(), id);
+        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), id);
         
         if (exercicio != null)
         {
@@ -486,7 +477,7 @@ public class ExerciciosController extends ApplicationController {
         Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
         
         ExercicioService repoExercicio = new ExercicioService();
-        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), pessoa.getIdNivelDificuldade(), id);
+        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), id);
         
         if (exercicio != null)
         {
@@ -570,7 +561,7 @@ public class ExerciciosController extends ApplicationController {
         
         CodigoFonteService repoCodigoFonte = new CodigoFonteService();
         ExercicioService repoExercicio = new ExercicioService();
-        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), pessoa.getIdNivelDificuldade(), id);
+        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), id);
         
         if (exercicio != null)
         {
@@ -684,7 +675,7 @@ public class ExerciciosController extends ApplicationController {
         
         CodigoFonteService repoCodigoFonte = new CodigoFonteService();
         ExercicioService repoExercicio = new ExercicioService();
-        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), pessoa.getIdNivelDificuldade(), id);
+        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), id);
         
         if (exercicio != null)
         {
@@ -746,7 +737,7 @@ public class ExerciciosController extends ApplicationController {
         
         CodigoFonteService repoCodigoFonte = new CodigoFonteService();
         ExercicioService repoExercicio = new ExercicioService();
-        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), pessoa.getIdNivelDificuldade(), id);
+        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), id);
         
         if (exercicio != null)
         {

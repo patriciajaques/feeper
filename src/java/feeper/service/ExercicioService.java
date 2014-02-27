@@ -24,7 +24,7 @@ public class ExercicioService extends HibernateUtil<Exercicio> {
         return query.list();
     }
     
-    public Exercicio getMeuExercicio(int idTurma, int idNivelDificuldade, int idExercicio)
+    public Exercicio getMeuExercicio(int idTurma, int idExercicio)
     {
         try {
             SQLQuery query = query("select " +
@@ -39,11 +39,9 @@ public class ExercicioService extends HibernateUtil<Exercicio> {
                                     "  TE.Visivel = 1 " +
                                     "  and TE.IdExercicio = :idExercicio  " +
                                     "  and TE.IdTurma = :idTurma  " +
-                                    "  and E.IdNivelDificuldade <= :idNivelDificuldade " +
                                     "  and T.Ativo = 1").addEntity(Exercicio.class);
             query.setInteger("idTurma", idTurma);
             query.setInteger("idExercicio", idExercicio);
-            query.setInteger("idNivelDificuldade", idNivelDificuldade);
 
             return (Exercicio)query.list().get(0);
         } catch (Exception e) {

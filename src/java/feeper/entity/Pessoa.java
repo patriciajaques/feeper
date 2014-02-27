@@ -20,7 +20,6 @@ public class Pessoa  implements java.io.Serializable {
     private Date dataUltimoAcesso;
     private boolean ativo;
     private boolean possuiFoto;
-    private int idNivelDificuldade;
     private int idPerfil;
     private List<Turma> turmas;
     //private List<Turma> turmasProfessor;
@@ -30,22 +29,20 @@ public class Pessoa  implements java.io.Serializable {
     }
 
 	
-    public Pessoa(String nome, String email, String senha, Date dataCadastro, boolean ativo, int idNivelDificuldade) {
+    public Pessoa(String nome, String email, String senha, Date dataCadastro, boolean ativo) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.dataCadastro = dataCadastro;
         this.ativo = ativo;
-        this.idNivelDificuldade = idNivelDificuldade;
     }
-    public Pessoa(String nome, String email, String senha, Date dataCadastro, Date dataUltimoAcesso, boolean ativo, int idNivelDificuldade) {
+    public Pessoa(String nome, String email, String senha, Date dataCadastro, Date dataUltimoAcesso, boolean ativo) {
        this.nome = nome;
        this.email = email;
        this.senha = senha;
        this.dataCadastro = dataCadastro;
        this.dataUltimoAcesso = dataUltimoAcesso;
        this.ativo = ativo;
-       this.idNivelDificuldade = idNivelDificuldade;
     }
    
     public Integer getId() {
@@ -98,14 +95,7 @@ public class Pessoa  implements java.io.Serializable {
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
     }
-    public int getIdNivelDificuldade() {
-        return this.idNivelDificuldade;
-    }
     
-    public void setIdNivelDificuldade(int idNivelDificuldade) {
-        this.idNivelDificuldade = idNivelDificuldade;
-    }
-
     public List<Turma> getTurmas() {
         return turmas;
     }
@@ -132,5 +122,3 @@ public class Pessoa  implements java.io.Serializable {
 
 
 }
-
-

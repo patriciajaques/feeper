@@ -88,14 +88,6 @@
                         <label for="titulo"><fmt:message key="label.exercicios.titulo"/>:</label>
                         <input type="text" class="form-control" id="nome" name="nome" placeholder="<fmt:message key="label.exercicios.tituloinforme"/>" value="${exercicio.getNome()}">
                     </div>
-                    <div class="form-group">
-                        <label for="nivel"><fmt:message key="label.exercicios.dificuldade"/>:</label>
-                        <select class="form-control" id="idNivelDificuldade" name="idNivelDificuldade">
-                            <option value="1">Baixa</option>
-                            <option value="2">Média</option>
-                            <option value="3">Alta</option>
-                        </select>
-                    </div>
                     <div class="checkbox">
                         <label>
                             <input type="checkbox" name="ativo" ${IsAdd != null && IsAdd ? "checked" : exercicio.isAtivo() ? "checked" : ""}>
@@ -105,11 +97,11 @@
                     <div class="form-group">
                         <label for="encerramento"><fmt:message key="label.exercicios.detalhamento"/>:</label><br>
                         <label class="radio-inline">
-                            <input type="radio" id="rdHTML" name="rdDetalhamento" class="rd-detalhamento" value="html" show-div="editorhtml" checked="">
+                            <input type="radio" id="rdHTML" name="rdDetalhamento" class="rd-detalhamento" value="html" show-div="editorhtml" checked="checked">
                             <fmt:message key="label.exercicios.utilizareditorhtml"/>
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" id="rdPDF" name="rdDetalhamento" class="rd-detalhamento" value="pdf" show-div="uploadpdf">
+                            <input type="radio" id="rdPDF" name="rdDetalhamento" class="rd-detalhamento" value="pdf" show-div="uploadpdf" disabled="disabled">
                             <fmt:message key="label.exercicios.utilizarpdf"/>
                         </label>
                     </div>

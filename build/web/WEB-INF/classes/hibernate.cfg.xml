@@ -16,7 +16,6 @@
     <mapping resource="feeper/entity/Grade.hbm.xml"/>
     <mapping resource="feeper/entity/PessoaConquista.hbm.xml"/>
     <mapping resource="feeper/entity/Log.hbm.xml"/>
-    <mapping resource="feeper/entity/NivelDificuldade.hbm.xml"/>
     <mapping resource="feeper/entity/TipoMarcacao.hbm.xml"/>
     <mapping resource="feeper/entity/Turma.hbm.xml"/>
     <mapping resource="feeper/entity/Novidade.hbm.xml"/>

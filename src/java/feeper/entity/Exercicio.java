@@ -18,10 +18,8 @@ public class Exercicio  implements java.io.Serializable {
     private int idAutor;
     private Date dataCadastro;
     private boolean ativo;
-    private int idNivelDificuldade;
     private String descricaoHtml;
     private Pessoa autor;
-    private NivelDificuldade nivelDificuldade;
     private List<ExercicioValidacao> validacoes;
 
 
@@ -29,20 +27,18 @@ public class Exercicio  implements java.io.Serializable {
     }
 
 	
-    public Exercicio(String nome, int idAutor, Date dataCadastro, boolean ativo, int idNivelDificuldade) {
+    public Exercicio(String nome, int idAutor, Date dataCadastro, boolean ativo) {
         this.nome = nome;
         this.idAutor = idAutor;
         this.dataCadastro = dataCadastro;
         this.ativo = ativo;
-        this.idNivelDificuldade = idNivelDificuldade;
     }
-    public Exercicio(String nome, byte[] descricao, int idAutor, Date dataCadastro, boolean ativo, int idNivelDificuldade, String descricaoHtml) {
+    public Exercicio(String nome, byte[] descricao, int idAutor, Date dataCadastro, boolean ativo, String descricaoHtml) {
        this.nome = nome;
        this.descricao = descricao;
        this.idAutor = idAutor;
        this.dataCadastro = dataCadastro;
        this.ativo = ativo;
-       this.idNivelDificuldade = idNivelDificuldade;
        this.descricaoHtml = descricaoHtml;
     }
    
@@ -88,13 +84,7 @@ public class Exercicio  implements java.io.Serializable {
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
     }
-    public int getIdNivelDificuldade() {
-        return this.idNivelDificuldade;
-    }
     
-    public void setIdNivelDificuldade(int idNivelDificuldade) {
-        this.idNivelDificuldade = idNivelDificuldade;
-    }
     public String getDescricaoHtml() {
         return this.descricaoHtml;
     }
@@ -109,14 +99,6 @@ public class Exercicio  implements java.io.Serializable {
 
     public void setAutor(Pessoa autor) {
         this.autor = autor;
-    }
-
-    public NivelDificuldade getNivelDificuldade() {
-        return nivelDificuldade;
-    }
-
-    public void setNivelDificuldade(NivelDificuldade nivelDificuldade) {
-        this.nivelDificuldade = nivelDificuldade;
     }
 
     public List<ExercicioValidacao> getValidacoes() {

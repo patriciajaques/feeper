@@ -58,8 +58,6 @@ public class PessoaController extends ApplicationController {
         
         pessoa.setDataCadastro(new Date());
         pessoa.setSenha(Util.gerarSenha(8));
-        pessoa.setIdNivelDificuldade(1);
-        
         Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
    
         if (service.insert(pessoa))
@@ -103,7 +101,6 @@ public class PessoaController extends ApplicationController {
         
         pessoa.setDataCadastro(new Date());
         pessoa.setSenha(Util.gerarSenha(8));
-        pessoa.setIdNivelDificuldade(1);
         
         Pessoa pessoaBanco = service.getById(pessoa.getId());
         

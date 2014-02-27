@@ -87,7 +87,6 @@
                             <th>#</th>
                             <th><fmt:message key="label.exercicios.nomeexercicio"/></th>
                             <th><fmt:message key="label.exercicios.autor"/></th>
-                            <th><fmt:message key="label.exercicios.dificuldade"/></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -103,13 +102,12 @@
                                     <td>${item.getId()}</td>
                                     <td>${item.getNome()}</td>
                                     <td>${item.getAutor().getNome()}</td>
-                                    <td>${item.getNivelDificuldade().getNome()}</td>
                                 </tr>
                             </c:forEach>
                         </c:if>
                         <c:if test="${empty listaExercicios}">
                             <tr>
-                                <td colspan="5"><fmt:message key="label.nenhumregistroencontrado"/></td>
+                                <td colspan="4"><fmt:message key="label.nenhumregistroencontrado"/></td>
                             </tr>
                         </c:if>
                     </tbody>
