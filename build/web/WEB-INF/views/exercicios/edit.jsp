@@ -1,4 +1,4 @@
-<%@page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@page language="java" contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -92,7 +92,7 @@
                         <label for="nivel"><fmt:message key="label.exercicios.dificuldade"/>:</label>
                         <select class="form-control" id="idNivelDificuldade" name="idNivelDificuldade">
                             <option value="1">Baixa</option>
-                            <option value="2">Média</option>
+                            <option value="2">MÃ©dia</option>
                             <option value="3">Alta</option>
                         </select>
                     </div>

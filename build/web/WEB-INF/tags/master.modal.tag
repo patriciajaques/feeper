@@ -1,4 +1,4 @@
-<%@tag description="MasterPage.Clean" pageEncoding="ISO-8859-1"%>
+<%@tag description="MasterPage.Clean" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@attribute name="title" fragment="true" %>

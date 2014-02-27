@@ -1,4 +1,4 @@
-<%@page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@page language="java" contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -18,8 +18,8 @@
         
         <h2><fmt:message key="label.novidades"/></h2>
         <blockquote>
-            <p>Pessoal estou com uma dúvida no exercício 1, não estou conseguindo montar uma lista encadeada. Alguém pode me ajudar?</p>
-            <small>Fábio Alves in <cite title="Exercício 1">Exercício 1</cite> - há 1 minuto</small><br>
+            <p>Pessoal estou com uma dË™vida no exercÃŒcio 1, nâ€o estou conseguindo montar uma lista encadeada. AlguÃˆm pode me ajudar?</p>
+            <small>FÂ·bio Alves in <cite title="ExercÃŒcio 1">ExercÃŒcio 1</cite> - hÂ· 1 minuto</small><br>
             <p>
                 <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.curtir"/></button>
                 <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.responder"/></button>
@@ -27,8 +27,8 @@
         </blockquote>
 
         <blockquote>
-            <p>Pessoal estou com uma dúvida no exercício 1, não estou conseguindo montar uma lista encadeada. Alguém pode me ajudar?</p>
-            <small>Fábio Alves in <cite title="Exercício 1">Exercício 1</cite> - há 1 minuto</small><br>
+            <p>Pessoal estou com uma dË™vida no exercÃŒcio 1, nâ€o estou conseguindo montar uma lista encadeada. AlguÃˆm pode me ajudar?</p>
+            <small>FÂ·bio Alves in <cite title="ExercÃŒcio 1">ExercÃŒcio 1</cite> - hÂ· 1 minuto</small><br>
             <p>
                 <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.curtir"/></button>
                 <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.responder"/></button>
@@ -36,8 +36,8 @@
         </blockquote>
 
         <blockquote>
-            <p>Pessoal estou com uma dúvida no exercício 1, não estou conseguindo montar uma lista encadeada. Alguém pode me ajudar?</p>
-            <small>Fábio Alves in <cite title="Exercício 1">Exercício 1</cite> - há 1 minuto</small><br>
+            <p>Pessoal estou com uma dË™vida no exercÃŒcio 1, nâ€o estou conseguindo montar uma lista encadeada. AlguÃˆm pode me ajudar?</p>
+            <small>FÂ·bio Alves in <cite title="ExercÃŒcio 1">ExercÃŒcio 1</cite> - hÂ· 1 minuto</small><br>
             <p>
                 <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.curtir"/></button>
                 <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.responder"/></button>

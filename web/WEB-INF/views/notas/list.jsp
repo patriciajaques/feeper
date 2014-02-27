@@ -1,4 +1,4 @@
-<%@page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@page language="java" contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -16,7 +16,7 @@
     </jsp:attribute>
     <jsp:body>
         
-        <h2>ProgramaÁ„o I - <fmt:message key="label.notas"/></h2>
+        <h2>Programa√Å‚Äûo I - <fmt:message key="label.notas"/></h2>
         
         <div class="panel panel-default">
             <div class="panel-body">

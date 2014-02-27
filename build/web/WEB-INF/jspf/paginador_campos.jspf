@@ -1,4 +1,4 @@
-<%@page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@page language="java" contentType="text/html" pageEncoding="UTF-8"%>
 <input type="hidden" id="currentPage" name="currentPage" value="${currentPage}" />
 <input type="hidden" id="pageSize" name="pageSize" value="${pageSize}" />
 <input type="hidden" id="sortField" name="sortField" value="${sortField}" />

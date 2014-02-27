@@ -1,4 +1,4 @@
-<%@tag description="MasterPage" pageEncoding="ISO-8859-1"%>
+<%@tag description="MasterPage" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@attribute name="title" fragment="true" %>
@@ -9,7 +9,7 @@
 <html lang="pt">
     <head>
         <title>feeper - <jsp:invoke fragment="title"/></title>
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <meta http-equiv="Content-Type" content="text/html">
         
         <link href="<c:url value='/resources/css/bootstrap.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/css/util.css'/>" rel="stylesheet" type="text/css" />

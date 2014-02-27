@@ -1,4 +1,4 @@
-<%@page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@page language="java" contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -16,14 +16,14 @@
     </jsp:attribute>
     <jsp:body>
         
-        <h2>Programa玢o I</h2>
+        <h2>Programa脕鈥瀘 I</h2>
         
         <br>
         <h4><fmt:message key="label.professor"/></h4>
         <ul class="mosaico">
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
         </ul>
         
@@ -32,83 +32,83 @@
         <ul class="mosaico">
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
             <li>
                 <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F醔io Pacheco Alves</span>
+                <span class="quebrar-linha" style="margin-top:5px;">F路bio Pacheco Alves</span>
             </li>
         </ul>
             

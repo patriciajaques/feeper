@@ -1,4 +1,4 @@
-<%@page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@page language="java" contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -16,19 +16,19 @@
     </jsp:attribute>
     <jsp:body>
         
-        <h2>Programação I - <fmt:message key="label.codigosfavoritos"/></h2>
+        <h2>ProgramaÃâ€o I - <fmt:message key="label.codigosfavoritos"/></h2>
         
         <ul class="pagination pagination-sm">
-          <li><a href="#">«</a></li>
+          <li><a href="#">Â´</a></li>
           <li class="active"><a href="#">1</a></li>
           <li><a href="#">2</a></li>
           <li><a href="#">3</a></li>
           <li><a href="#">4</a></li>
           <li><a href="#">5</a></li>
-          <li><a href="#">»</a></li>
+          <li><a href="#">Âª</a></li>
         </ul>
         
-        <h4>Calcular a média de um array</h4>
+        <h4>Calcular a mÃˆdia de um array</h4>
         
 <pre class="pre-scrollable">
 public static double CalculaMedia(ArrayList&lt;Integer&gt; lista)
@@ -50,7 +50,7 @@ public static double CalculaMedia(ArrayList&lt;Integer&gt; lista)
         
         <br><br>
         
-        <h4>Calcular o desvio padrão de uma lista</h4>
+        <h4>Calcular o desvio padrâ€o de uma lista</h4>
         
 <pre class="pre-scrollable">
 public static double CalculaDesvio(ArrayList&lt;Integer&gt; lista)
@@ -78,13 +78,13 @@ public static double CalculaDesvio(ArrayList&lt;Integer&gt; lista)
         <br><br>
         
         <ul class="pagination pagination-sm">
-          <li><a href="#">«</a></li>
+          <li><a href="#">Â´</a></li>
           <li class="active"><a href="#">1</a></li>
           <li><a href="#">2</a></li>
           <li><a href="#">3</a></li>
           <li><a href="#">4</a></li>
           <li><a href="#">5</a></li>
-          <li><a href="#">»</a></li>
+          <li><a href="#">Âª</a></li>
         </ul>
             
     </jsp:body>

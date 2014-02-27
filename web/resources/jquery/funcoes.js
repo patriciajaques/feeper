@@ -1,4 +1,4 @@
-﻿function fNumero(tecla) {
+function fNumero(tecla) {
     if (tecla.charCode) {
         num_tecla = tecla.charCode;
         if (!(num_tecla >= 48 && num_tecla <= 57)) { return false; }

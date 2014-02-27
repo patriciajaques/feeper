@@ -1,4 +1,4 @@
-﻿function goToPage(pageIndex) {
+function goToPage(pageIndex) {
     $("#frm-paged").find("#currentPage").val(pageIndex);
     $("#frm-paged").find("#gridAction").val("CurrentPageChanged");
     submitForm();

@@ -1,4 +1,4 @@
-﻿function Validador(args) {
+function Validador(args) {
     this.erros = [];
     this.submitErros = [];
     this.submitSuccess = [];
