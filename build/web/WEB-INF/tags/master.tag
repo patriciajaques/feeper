@@ -11,6 +11,9 @@
         <title>feeper - <jsp:invoke fragment="title"/></title>
         <meta http-equiv="Content-Type" content="text/html">
         
+        <!--[if IE]><link rel="shortcut icon" href="<c:url value='/resources/img/favicon.ico'/>"><![endif]-->
+        <link rel="icon" href="<c:url value='/resources/img/favicon.png'/>">
+        
         <link href="<c:url value='/resources/css/bootstrap.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/css/util.css'/>" rel="stylesheet" type="text/css" />
         <!--link href="<c:url value='/resources/css/webkit-scrollbars.css'/>" rel="stylesheet" type="text/css" /-->
@@ -61,6 +64,9 @@
             }
             
             $(function(){
+               try {
+                   parent.FechaModal();
+               } catch (e) { }
                SessionTimeout.schedulePopup(9, '< c:url value='/'/>timeout', '<fmt:message key="label.mensagemsessiontimeout"/>'); 
             });
         </script>
@@ -135,6 +141,24 @@
                             <jsp:doBody/>
                         </div>
                     </c:when>
+                    <c:when test="${UsuarioLogado.getIdPerfil() == 2}">
+                        <div class="col-md-9">            
+                            <jsp:doBody/>
+                        </div>
+                        <div class="col-md-3">
+                            <h4>${TurmaSelecionada.getNome()}</h4>
+                            <div class="list-group">
+                                <a href="<c:url value='/'/>exercicios" class="list-group-item" id="menu-lista-exercicios">
+                                    <span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;<fmt:message key="menu.exercicios"/>
+                                </a>
+                                <a href="<c:url value='/'/>notas" class="list-group-item" id="menu-minhas-notas">
+                                    <span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;<fmt:message key="menu.resultadoexercicios"/>
+                                </a>
+                            </div>
+
+                            <jsp:invoke fragment="rightmenu"/>
+                        </div>
+                    </c:when>
                     <c:otherwise>
                         <div class="col-md-9">            
                             <jsp:doBody/>
@@ -149,7 +173,7 @@
                                     <span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;<fmt:message key="menu.meusexercicios"/>
                                 </a>
                                 <a href="<c:url value='/'/>notas" class="list-group-item" id="menu-minhas-notas">
-                                    <span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;<fmt:message key="menu.minhasnotas"/>
+                                    <span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;<fmt:message key="menu.resultadoexercicios"/>
                                 </a>
                                 <a href="<c:url value='/'/>colegas" class="list-group-item" id="menu-colegas">
                                     <span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;<fmt:message key="menu.colegas"/>

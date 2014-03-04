@@ -7,6 +7,10 @@
 <html lang="pt">
     <head>
         <title>feeper - <jsp:invoke fragment="title"/></title>
+        <meta http-equiv="Content-Type" content="text/html">
+        
+        <!--[if IE]><link rel="shortcut icon" href="<c:url value='/resources/img/favicon.ico'/>"><![endif]-->
+        <link rel="icon" href="<c:url value='/resources/img/favicon.png'/>">
         
         <link href="<c:url value='/resources/css/bootstrap.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/css/util.css'/>" rel="stylesheet" type="text/css" />
@@ -28,6 +32,9 @@
         <script src="<c:url value='/resources/js/bootstrap.min.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/js/util.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/jquery/MvcGrid.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/jquery/funcoes.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/jquery/jquery.form.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/jquery/jquery.meio.mask.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/assets/google-code-prettify/prettify.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/fancybox/jquery.fancybox.pack.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/uploadify/jquery.uploadify.min.js'/>" type="text/javascript"></script>

@@ -60,6 +60,27 @@
                     'modal': true
                 });
                 
+                $('#file_upload').uploadify({
+                    'swf'           : '<c:url value='/resources/uploadify/uploadify.swf'/>',
+                    'uploader'      : '<c:url value='/'/>exercicios/uploadclass',
+                    'fileTypeDesc'  : 'Arquivos JAVA',
+                    'fileTypeExts'  : '*.java',
+                    'fileSizeLimit' : '500KB',
+                    'buttonText'    : '<fmt:message key="button.adicionarclasseexistente"/>',
+                    'multi'         : false,
+                    'fileObjName'   : 'filedata',
+                    'checkExisting' : false,
+                    'width'         : 154,
+                    'height'        : 22,
+                    'removeCompleted' : false,
+                    'queueID'       : 'fileQueue',
+                    'onUploadSuccess' : function(file, data, response) {
+                        adicionarClasse(data);
+                    },
+                    'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+                    }
+                });
+                
                 $("#panel-markedquestions button.close").click(function() {
                     $("#panel-markedquestions").hide("slide", "fast");
 	    	});
@@ -74,6 +95,7 @@
                     beforeSubmit: MostraCarregando,
                     success: function() {
                         RemoveCarregando();
+                        $("#panel-markedquestions .panel-body").animate({ scrollTop: $("#panel-markedquestions .panel-body")[0].scrollHeight}, 1000);
                     }
                 }; 
                 $('#frmQuestao').ajaxForm(ajaxFormOptions);
@@ -83,6 +105,7 @@
                     success: function(data) {
                         $("#anotacaoCodigoFonte").val(data[1]);
                         RemoveCarregando();
+                        $("#panel-markedannotations .panel-body").animate({ scrollTop: $("#panel-markedquestions .panel-body")[0].scrollHeight}, 1000);
                     }
                 }; 
                 $('#frmAnotacao').ajaxForm(ajaxFormOptions2);
@@ -114,20 +137,14 @@
         <h4><fmt:message key="label.exercicios.acoesexercicio"/></h4>
         <div class="list-group">
             <a href="#" class="list-group-item btn-codigo-enviar">
-                <span class="glyphicon glyphicon-send"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.enviar"/>
+                <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.enviar"/>
             </a>
-            <!--a href="#" class="list-group-item">
-                <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.validar"/>
-            </a-->
             <a href="#" class="list-group-item btn-codigo-download">
                 <span class="glyphicon glyphicon-save"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.baixar"/>
             </a>
             <!--a href="#" class="list-group-item">
-                <span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.excluir"/>
-            </a-->
-            <a href="#" class="list-group-item">
                 <span class="glyphicon glyphicon-eye-close"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.ocultarcomentarios"/>
-            </a>
+            </a-->
             <a href="#" class="list-group-item">
                 <span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.compartilhar"/>
             </a>
@@ -174,6 +191,8 @@
                         
                         ControlaBotoes();
                         RemoveCarregando();
+                        
+                        $('html, body').animate({ scrollTop: $("#lblFilename").offset().top }, 1000);
                     });
                 });
                 
@@ -256,6 +275,7 @@
 
                 $("#panel-markedquestions .panel-body").load("<c:url value='/'/>exercicios/showquestion/${Exercicio.getId()}/" + idCodigoFonte + "/" + row, function(){
                     RemoveCarregando();
+                    $("#panel-markedquestions .panel-body").animate({ scrollTop: $("#panel-markedquestions .panel-body")[0].scrollHeight}, 1000);
                 });
             }
             
@@ -274,20 +294,31 @@
                 $.get("<c:url value='/'/>exercicios/showannotation/${Exercicio.getId()}/" + idCodigoFonte + "/" + row, function(data){
                     $("#anotacaoCodigoFonte").val(data[1]).focus();
                     RemoveCarregando();
+                    $("#panel-markedannotations .panel-body").animate({ scrollTop: $("#panel-markedannotations .panel-body")[0].scrollHeight}, 1000);
                 });
             }
             
-            function adicionarClasse(){
-                var fileName = trataString($("#txtNomeClasse").val()) + ".java";
-                $("#lblFilename").html(fileName).show();
-                var content = newClassContent.replace(/#@#CLASSE#@#/gi, fileName).replace(/#n#/gi, "\n");
+            function adicionarClasse(content){
+                
+                if ($("#txtNomeClasse").val().length == 0)
+                {
+                    $("#txtNomeClasse").parent().addClass("has-error");
+                    return;
+                }
+                
+                var fileName = trataString($("#txtNomeClasse").val());
+                $("#lblFilename").html(fileName + ".java").show();
+                
+                if (content.length == 0)
+                    content = newClassContent.replace(/#@#CLASSE#@#/gi, fileName).replace(/#n#/gi, "\n");
                 
                 CreateEditor(content, false);
                 
                 $("#hdnEditor").val("");
                 $("#hdnIdCodigoFonte").val("0");
                 $("#hdnPrincipal").val("false");
-                $("#hdnNomeCodigoFonte").val($("#lblFilename").html());
+                $("#hdnNomeCodigoFonte").val(fileName + ".java");
+                $("#txtNomeClasse").val("");
                 ControlaBotoes();
                 FechaModal();
             }
@@ -428,8 +459,16 @@
                 <input type="text" class="form-control" id="txtNomeClasse" placeholder="<fmt:message key="label.exercicio.nomeclasseinforme"/>" maxlength="45">
                 <span class="input-group-addon">.java</span>
             </div>
-            <button type="button" class="btn btn-primary" onclick="adicionarClasse();"><fmt:message key="button.adicionar"/></button>
-            <button type="button" class="btn btn-default" onclick="cancelarClasse();"><fmt:message key="button.cancelar"/></button>
+            <div class="pull-left">
+                <button type="button" class="btn btn-primary btn-xs" onclick="adicionarClasse('');"><fmt:message key="button.adicionarnovaclasse"/></button>
+            </div>
+            <div class="pull-left" style="margin-left:3px">
+                <input type="file" name="file_upload" id="file_upload" />
+            </div>
+            <div class="pull-left" style="margin-left:3px">
+                <button type="button" class="btn btn-default btn-xs" onclick="cancelarClasse();"><fmt:message key="button.cancelar"/></button>
+            </div>
+            <div id="fileQueue" style="display:none;"></div>
         </div>
         
         <!--Modal exibida para adicionar perguntas-->
@@ -450,7 +489,7 @@
             </div>
   	</div>
                 
-        <!--Modal exibida para adicionar anotaÃÄ±es-->
+        <!--Modal exibida para adicionar anotaçõess-->
         <div class="panel panel-success shadow" id="panel-markedannotations" style="width:400px; display:none; position:fixed; top:120px; left:0px; z-index:100">
             <div class="panel-heading">
                 <h3 class="panel-title"><fmt:message key="label.exercicio.anotacoeslinha"/> #<span id="title-linenumber"></span>

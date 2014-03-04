@@ -136,6 +136,21 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
         }
     }
     
+    public CodigoFonte getById(int idExercicio, int idCodigoFonte)
+    {
+        try {
+            
+            SQLQuery query = query("select * from CodigoFonte where IdExercicio = :idExercicio and ID = :idCodigoFonte ").addEntity(CodigoFonte.class);
+            query.setInteger("idExercicio", idExercicio);
+            query.setInteger("idCodigoFonte", idCodigoFonte);
+            
+            return (CodigoFonte)query.list().get(0);
+            
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
     public void inserirCodigoPrincipal(int idExercicio, int idPessoa)
     {
         if (getPrincipalByIdExercicio(idExercicio, idPessoa) == null)
@@ -191,7 +206,7 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
             SQLQuery query = query("select " +
                                 "  M.IdPessoa, " +
                                 "  P.Nome, " +
-                                "  M.DataCadastro, " +
+                                "  GET_TIMEDURATION(M.DataCadastro) AS DataCadastro, " +
                                 "  M.Texto, " +
                                 "  MC.Publico, " +
                                 "  CFM.LinhaInicio " +
@@ -214,15 +229,65 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
                                 "  and CF.IdAutor = :idAutor " +
                                 "  and CFM.LinhaInicio = :linha " +
                                 "  and CFM.IdTipoMarcacao = :idTipoMarcacao " +
-                                "  and CFM.Ativo = 1");
+                                "  and CFM.Ativo = 1 " + 
+                                "order by M.ID");
             query.addScalar("IdPessoa", Hibernate.INTEGER);
             query.addScalar("Nome", Hibernate.STRING);
-            query.addScalar("DataCadastro", Hibernate.DATE);
+            query.addScalar("DataCadastro", Hibernate.STRING);
             query.addScalar("Texto", Hibernate.STRING);
             query.addScalar("Publico", Hibernate.BOOLEAN);
             query.addScalar("LinhaInicio", Hibernate.INTEGER);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAutor", idAutor);
+            query.setInteger("idCodigoFonte", idCodigoFonte);
+            query.setInteger("linha", linha);
+            query.setInteger("idTipoMarcacao", ETipoMarcacao.DUVIDA);
+            
+            return query.list();
+            
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    public List<Object> getMarcacaoLeitor(int idExercicio, int idCodigoFonte, int linha)
+    {
+        try {
+            
+            SQLQuery query = query("select " +
+                                "  M.IdPessoa, " +
+                                "  P.Nome, " +
+                                "  GET_TIMEDURATION(M.DataCadastro) AS DataCadastro, " +
+                                "  M.Texto, " +
+                                "  MC.Publico, " +
+                                "  CFM.LinhaInicio " +
+                                "from " +
+                                "  CodigoFonteMarcacao CFM " +
+                                "  inner join CodigoFonte CF " +
+                                "  on CF.ID = CFM.IdCodigoFonte " +
+                                "  inner join MensagemCabecalho MC " +
+                                "  on MC.IdCodigoFonteMarcacao = CFM.ID " +
+                                "  and MC.Ativo = 1 " +
+                                "  inner join Mensagem M " +
+                                "  on M.IdMensagemCabecalho = MC.ID " +
+                                "  and M.Ativo = 1 " +
+                                "  inner join Pessoa P " +
+                                "  on P.ID = M.IdPessoa " +
+                                "  and P.Ativo = 1 " +
+                                "where " +
+                                "  CF.ID = :idCodigoFonte " +
+                                "  and CF.IdExercicio = :idExercicio " +
+                                "  and CFM.LinhaInicio = :linha " +
+                                "  and CFM.IdTipoMarcacao = :idTipoMarcacao " +
+                                "  and CFM.Ativo = 1 " + 
+                                "order by M.ID");
+            query.addScalar("IdPessoa", Hibernate.INTEGER);
+            query.addScalar("Nome", Hibernate.STRING);
+            query.addScalar("DataCadastro", Hibernate.STRING);
+            query.addScalar("Texto", Hibernate.STRING);
+            query.addScalar("Publico", Hibernate.BOOLEAN);
+            query.addScalar("LinhaInicio", Hibernate.INTEGER);
+            query.setInteger("idExercicio", idExercicio);
             query.setInteger("idCodigoFonte", idCodigoFonte);
             query.setInteger("linha", linha);
             query.setInteger("idTipoMarcacao", ETipoMarcacao.DUVIDA);

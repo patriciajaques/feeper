@@ -64,4 +64,20 @@ public class TurmaService extends HibernateUtil<Turma> {
         return query.list();
     }
     
+    public boolean verificaProfessorDoAluno(int idProfessor, int idAluno)
+    {
+        try {
+            
+            SQLQuery query = query("select T.* from Turma T inner join TurmaPessoa TP on TP.IdTurma = T.ID\n" +
+                                    "where T.IdProfessor = :idProfessor and TP.IdPessoa = :idAluno and T.Ativo = 1").addEntity(Turma.class);
+            query.setInteger("idProfessor", idProfessor);
+            query.setInteger("idAluno", idAluno);
+            
+            return query.list().size() > 0;
+            
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
 }

@@ -2,6 +2,22 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%
+//listaMensagens[13]
+//0 - IdAutor
+//1 - Autor
+//2 - IdMensagemCabecalho
+//3 - Publico
+//4 - IdPessoa
+//5 - Nome
+//6 - LinhaInicio
+//7 - IdCodigoFonte
+//8 - Classe
+//9 - IdExercicio
+//10 - Exercicio
+//11 - DataCadastro
+//12 - Texto
+%>
 
 <t:master>
     <jsp:attribute name="title"><fmt:message key="title.mensagens"/></jsp:attribute>
@@ -10,6 +26,27 @@
         <script type="text/javascript">
             $(function(){
                 $("#menu-mensagens").addClass("active");
+                
+                $(".fancybox").click(function(event){
+                    var idExercicio = $(this).attr("data-idexercicio");
+                    var idCodigoFonte = $(this).attr("data-idcodigofonte");
+                    var linha = $(this).attr("data-linha");
+                    
+                    if (idExercicio === undefined || idCodigoFonte === undefined || linha === undefined) return;
+                    
+                    event.preventDefault ? event.preventDefault() : event.returnValue = false;
+                    $.fancybox({
+                        'openEffect': 'fade',
+                        'closeEffect': 'fade',
+                        'autoResize': false,
+                        'autoSize': false,
+                        'type': 'iframe',
+                        'arrows': false,
+                        'width': '90%',
+                        'height': '90%',
+                        'href': "<c:url value='/'/>codigos/show/" + idExercicio + "/" + idCodigoFonte + "/" + linha
+                    });
+                });
             });
         </script>
         
@@ -17,32 +54,19 @@
     <jsp:body>
         
         <h2><fmt:message key="label.mensagens"/></h2>
-        <blockquote>
-            <p>Pessoal estou com uma d˙vida no exercÌcio 1, n„o estou conseguindo montar uma lista encadeada. AlguÈm pode me ajudar?</p>
-            <small>F·bio Alves in <cite title="ExercÌcio 1">ExercÌcio 1</cite> - h· 1 minuto</small><br>
-            <p>
-                <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.curtir"/></button>
-                <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.responder"/></button>
-            </p>
-        </blockquote>
-
-        <blockquote>
-            <p>Pessoal estou com uma d˙vida no exercÌcio 1, n„o estou conseguindo montar uma lista encadeada. AlguÈm pode me ajudar?</p>
-            <small>F·bio Alves in <cite title="ExercÌcio 1">ExercÌcio 1</cite> - h· 1 minuto</small><br>
-            <p>
-                <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.curtir"/></button>
-                <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.responder"/></button>
-            </p>
-        </blockquote>
-
-        <blockquote>
-            <p>Pessoal estou com uma d˙vida no exercÌcio 1, n„o estou conseguindo montar uma lista encadeada. AlguÈm pode me ajudar?</p>
-            <small>F·bio Alves in <cite title="ExercÌcio 1">ExercÌcio 1</cite> - h· 1 minuto</small><br>
-            <p>
-                <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.curtir"/></button>
-                <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.responder"/></button>
-            </p>
-        </blockquote>
+        
+        <c:if test="${not empty listaMensagens}">
+            <c:forEach var="item" varStatus="status" items="${listaMensagens}">
+                <blockquote>
+                    <p>${item[12]}</p>
+                    <small>${item[1]} <fmt:message key="label.mensagens.em"/> <a href="#" class="fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}">${item[10]} / ${item[8]} (<fmt:message key="label.mensagens.linha"/> ${item[6]})</a> - <fmt:message key="label.mensagens.ha"/> ${item[11]}</small><br>
+                    <p>
+                        <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.curtir"/></button>
+                        <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.responder"/></button>
+                    </p>
+                </blockquote>
+            </c:forEach>
+        </c:if>
             
     </jsp:body>
 </t:master>

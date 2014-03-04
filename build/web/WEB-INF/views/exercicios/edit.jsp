@@ -30,7 +30,6 @@
                     'height'        : 34,
                     'removeCompleted' : false,
                     'onUploadSuccess' : function(file, data, response) {
-                        alert(data);
                         $("#idUploadTemp").val(data);
                     },
                     'onUploadError' : function(file, errorCode, errorMsg, errorString) {

@@ -102,6 +102,8 @@ public class ActionExecuteInterceptor extends HandlerInterceptorAdapter {
     
     private boolean validaAcesso(String view, Pessoa usuario)
     {
+        //System.out.println("View:" + view);
+        
         TelaService repoTela = new TelaService();
         TelaPerfilService repoTelaPerfil = new TelaPerfilService();
         
@@ -148,7 +150,7 @@ public class ActionExecuteInterceptor extends HandlerInterceptorAdapter {
         MensagemService repoMensagem = new MensagemService();
         NovidadeService repoNovidade = new NovidadeService();
         
-        contBadgeNovidades = repoNovidade.getCountMinhasNovidades(idPessoa);
+        //contBadgeNovidades = repoNovidade.getCountMinhasNovidades(idPessoa);
         contBadgeMensagens = repoMensagem.getCountMinhasMensagens(idPessoa);
         
         modelAndView.addObject("BadgeNovidades", contBadgeNovidades > 0 ? "<span class=\"badge badge-important\">"+ contBadgeNovidades +"</span>" : "");

@@ -6,6 +6,9 @@
     <head>
         <title>feeper - <fmt:message key="title.login"/></title>
         
+        <!--[if IE]><link rel="shortcut icon" href="<c:url value='/resources/img/favicon.ico'/>"><![endif]-->
+        <link rel="icon" href="<c:url value='/resources/img/favicon.png'/>">
+        
         <link href="<c:url value='/resources/css/bootstrap.css'/>" rel="stylesheet" type="text/css" />
         
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->

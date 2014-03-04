@@ -8,6 +8,7 @@ import feeper.entity.MeusExercicios;
 import feeper.entity.Pessoa;
 import feeper.entity.Turma;
 import feeper.entity.UploadTemp;
+import feeper.model.EPerfil;
 import feeper.service.CodigoFonteService;
 import feeper.model.EStatusResposta;
 import feeper.model.ETipoLog;
@@ -20,6 +21,7 @@ import feeper.model.ScalarResult;
 import feeper.model.Util;
 import feeper.service.CodigoFonteMarcacaoService;
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -651,7 +653,12 @@ public class ExerciciosController extends ApplicationController {
         Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
         
         CodigoFonteService repoCodigoFonte = new CodigoFonteService();
-        List<Object> dados = repoCodigoFonte.getMarcacaoAutor(idExercicio, pessoa.getId(), idCodigoFonte, linha);
+        
+        List<Object> dados;
+        if (pessoa.getIdPerfil() == EPerfil.ALUNO)
+            dados = repoCodigoFonte.getMarcacaoAutor(idExercicio, pessoa.getId(), idCodigoFonte, linha);
+        else
+            dados = repoCodigoFonte.getMarcacaoLeitor(idExercicio, idCodigoFonte, linha);
         
         model.addAttribute("lista", dados);
         model.addAttribute("idUsuarioLogado", pessoa.getId());
@@ -763,6 +770,18 @@ public class ExerciciosController extends ApplicationController {
         mav.setView(new RedirectView("/exercicios/showannotation/" + id + "/" + idCodigoFonte + "/" + linha, true, true, false));
         return mav;
         
+    }
+    
+    @RequestMapping(value="/uploadclass", method=RequestMethod.POST)
+    @ResponseBody
+    public String uploadclass(MultipartHttpServletRequest request) {
+        
+        try {
+            MultipartFile file = request.getFile("filedata");
+            return IOUtils.toString(file.getInputStream(), "UTF-8");
+        } catch (IOException ex) {
+            return "";
+        }
     }
     
 }

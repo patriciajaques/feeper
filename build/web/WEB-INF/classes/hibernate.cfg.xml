@@ -36,5 +36,6 @@
     <mapping resource="feeper/entity/Tela.hbm.xml"/>
     <mapping resource="feeper/entity/Perfil.hbm.xml"/>
     <mapping resource="feeper/entity/Resposta.hbm.xml"/>
+    <mapping resource="feeper/entity/RespostaCodigoFonte.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

@@ -6,6 +6,7 @@ package feeper.service;
 
 import feeper.entity.Mensagem;
 import feeper.model.HibernateUtil;
+import java.util.List;
 
 public class MensagemService extends HibernateUtil<Mensagem> {
     
@@ -15,7 +16,9 @@ public class MensagemService extends HibernateUtil<Mensagem> {
     
     public int getCountMinhasMensagens(int idPessoa)
     {
-        return 2;
+        MensagemCabecalhoService repoMensagemCabecalho = new MensagemCabecalhoService();
+        List<Object> lista = repoMensagemCabecalho.getMensagensDestinatario(idPessoa, true, true);
+        return lista.size();
     }
     
 }
