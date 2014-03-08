@@ -1,6 +1,0 @@
-<%@page language="java" contentType="text/html" pageEncoding="UTF-8"%>
-<input type="hidden" id="currentPage" name="currentPage" value="${currentPage}" />
-<input type="hidden" id="pageSize" name="pageSize" value="${pageSize}" />
-<input type="hidden" id="sortField" name="sortField" value="${sortField}" />
-<input type="hidden" id="sortDirection" name="sortDirection" value="${sortDirection}" />
-<input type="hidden" id="gridAction" name="gridAction" value="${gridAction}" />

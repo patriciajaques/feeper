@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 1, 2014 9:45:43 AM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="feeper.Data.entity.UploadTemp" table="UploadTemp" catalog="feeper">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="identity" />
+        </id>
+        <property name="Arquivo" type="binary" length="2000000">
+            <column name="Arquivo" />
+        </property>
+    </class>
+</hibernate-mapping>

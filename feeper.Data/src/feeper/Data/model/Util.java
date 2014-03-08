@@ -1,0 +1,185 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package feeper.Data.model;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Random;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import org.apache.commons.lang3.StringUtils;
+
+/**
+ *
+ * @author
+ * fabioalves
+ */
+public class Util {
+    
+    public static String criptoMD5(String value)
+    {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(value.getBytes());
+            byte[] digest = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) {
+                    sb.append(Integer.toHexString((int) (b & 0xff)));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException ex) {
+            return value;
+        }
+    }
+    
+    private static final String MAIUSCULAS = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z";
+    private static final String MINUSCULAS = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
+    private static final String NUMEROS = "0,1,2,3,4,5,6,7,8,9";
+    private static final String SIMBOLOS = "!,@,#,?";
+    
+    public static String gerarSenha(int tamanhoSenha)
+    {
+        String senhaGerada = "";
+        boolean valido = false;
+        String[] permitidos = String.format("%s,%s,%s,%s", MAIUSCULAS, MINUSCULAS, NUMEROS, SIMBOLOS).split(",");
+
+        do
+        {
+            Random rd = new Random();
+
+            String temp = "";
+            senhaGerada = "";
+
+            for (int i = 0; i < tamanhoSenha; i++)
+            {
+                temp = permitidos[rd.nextInt(permitidos.length)];
+                senhaGerada += temp;
+            }
+
+            valido = validarFormatoSenha(senhaGerada);
+        } while (!valido);
+
+        return senhaGerada;
+    }
+
+    public static boolean validarFormatoSenha(String senha)
+    {
+        String[] listaMaiusculas = MAIUSCULAS.split(",");
+        String[] listaMinusculas = MINUSCULAS.split(",");
+        String[] listaNumeros = NUMEROS.split(",");
+        String[] listaSimbolos = SIMBOLOS.split(",");
+
+        boolean temMaiuscula = false;
+        boolean temMinuscula = false;
+        boolean temNumero = false;
+        boolean temSimbolo = false;
+        
+        for (int i = 0; i < listaMaiusculas.length; i++)
+            if (senha.contains(listaMaiusculas[i]))
+            {
+                temMaiuscula = true;
+                break;
+            }
+        for (int i = 0; i < listaMinusculas.length; i++)
+            if (senha.contains(listaMinusculas[i]))
+            {
+                temMinuscula = true;
+                break;
+            }
+        for (int i = 0; i < listaNumeros.length; i++)
+            if (senha.contains(listaNumeros[i]))
+            {
+                temNumero = true;
+                break;
+            }
+        for (int i = 0; i < listaSimbolos.length; i++)
+            if (senha.contains(listaSimbolos[i]))
+            {
+                temSimbolo = true;
+                break;
+            }
+        
+        return (temMaiuscula && temMinuscula && temNumero && temSimbolo);
+    }
+    
+    public static byte[] zipFiles(List<byte[]> files, List<String> filenames) throws FileNotFoundException, IOException
+    {
+        byte[] buf = new byte[2048];
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ZipOutputStream out = new ZipOutputStream(baos);
+        
+        for (int i = 0; i < files.size(); i++) {
+            InputStream stream = new ByteArrayInputStream(files.get(i));
+            BufferedInputStream bis = new BufferedInputStream(stream);
+            
+            out.putNextEntry(new ZipEntry(filenames.get(i)));
+            int bytesRead;
+            
+            while ((bytesRead = bis.read(buf)) != -1) {
+                out.write(buf, 0, bytesRead);
+            }
+            
+            out.closeEntry();
+            bis.close();
+            stream.close();
+        }
+        out.flush();
+        baos.flush();
+        out.close();
+        baos.close();
+        
+        out.flush();
+        out.close();
+        
+        return baos.toByteArray();
+    }
+    
+    public static String prepareStringForSave(String text)
+    {
+        if (text == null || text.isEmpty()) return "";
+
+        return removeSpecialCharacters(removeAccent(text)).trim();
+    }
+
+    public static String removeSpecialCharacters(String text)
+    {
+        return text.replaceAll("[^a-zA-Z 0-9]", "");
+    }
+
+    public static String removeNumbers(String text)
+    {
+        return text.replaceAll("[^a-zA-Z ]", "");
+    }
+    
+    public static String removeAccent(String text)
+    {
+        return StringUtils.stripAccents(text);
+    }
+    
+    public static String truncateString(String value, int length, String comp)
+        {
+            try
+            {
+                if (value == null || value.isEmpty()) return "";
+                if (value.length() > length)
+                    return value.substring(0, length) + comp;
+                else
+                    return value;
+            }
+            catch (Exception e)
+            {
+                return value;
+            }
+        }
+    
+}

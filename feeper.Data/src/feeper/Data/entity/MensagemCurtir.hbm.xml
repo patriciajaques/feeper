@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 1, 2014 9:45:43 AM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="feeper.Data.entity.MensagemCurtir" table="MensagemCurtir" catalog="feeper">
+        <id name="id" type="java.lang.Long">
+            <column name="ID" />
+            <generator class="identity" />
+        </id>
+        <property name="idMensagemCabecalho" type="java.lang.Long">
+            <column name="IdMensagemCabecalho" />
+        </property>
+        <property name="idMensagemComentario" type="java.lang.Long">
+            <column name="IdMensagemComentario" />
+        </property>
+        <property name="idAutor" type="int">
+            <column name="IdAutor" not-null="true" />
+        </property>
+        <property name="dataCadastro" type="timestamp">
+            <column name="DataCadastro" length="19" not-null="true" />
+        </property>
+        <property name="ativo" type="boolean">
+            <column name="Ativo" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

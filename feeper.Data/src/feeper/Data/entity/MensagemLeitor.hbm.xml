@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 1, 2014 9:45:43 AM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="feeper.Data.entity.MensagemLeitor" table="MensagemLeitor" catalog="feeper">
+        <id name="id" type="java.lang.Long">
+            <column name="ID" />
+            <generator class="identity" />
+        </id>
+        <property name="idMensagemCabecalho" type="long">
+            <column name="IdMensagemCabecalho" not-null="true" />
+        </property>
+        <property name="idLeitor" type="int">
+            <column name="IdLeitor" not-null="true" />
+        </property>
+        <property name="tipoLeitor" type="char">
+            <column name="TipoLeitor" length="1" not-null="true">
+                <comment>'R': Remetente 'D': Destinat&#135;rio 'P': P&#156;blico</comment>
+            </column>
+        </property>
+        <property name="dataUltimaLeitura" type="timestamp">
+            <column name="DataUltimaLeitura" length="19" not-null="true" />
+        </property>
+        <property name="ativo" type="boolean">
+            <column name="Ativo" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

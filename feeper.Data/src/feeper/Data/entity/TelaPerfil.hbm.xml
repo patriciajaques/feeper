@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 4, 2014 10:16:36 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="feeper.Data.entity.TelaPerfil" table="TelaPerfil" catalog="feeper">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="identity" />
+        </id>
+        <property name="idTela" type="int">
+            <column name="IdTela" not-null="true" />
+        </property>
+        <property name="idPerfil" type="int">
+            <column name="IdPerfil" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
