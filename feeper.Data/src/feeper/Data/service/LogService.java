@@ -5,8 +5,11 @@
 package feeper.Data.service;
 
 import feeper.Data.entity.Log;
+import feeper.Data.entity.TipoLog;
 import feeper.Data.model.HibernateUtil;
 import java.util.Date;
+import java.util.List;
+import org.hibernate.SQLQuery;
 
 public class LogService extends HibernateUtil<Log> {
     
@@ -28,6 +31,16 @@ public class LogService extends HibernateUtil<Log> {
             insert(log);
             
         } catch (Exception e) {
+        }
+    }
+    
+    public List<TipoLog> getTipoLog()
+    {
+        try {
+            SQLQuery query = query("select * from TipoLog order by Nome").addEntity(TipoLog.class);
+            return query.list();
+        } catch (Exception e) {
+            return null;
         }
     }
     

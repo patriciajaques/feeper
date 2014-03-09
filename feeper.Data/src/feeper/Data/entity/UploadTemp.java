@@ -13,6 +13,7 @@ public class UploadTemp implements java.io.Serializable {
  
     private Integer id;
     private byte[] arquivo;
+    private String guid;
     
     public UploadTemp() {
     }
@@ -32,6 +33,14 @@ public class UploadTemp implements java.io.Serializable {
 
     public void setArquivo(byte[] arquivo) {
         this.arquivo = arquivo;
+    }
+
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
     }
     
 }

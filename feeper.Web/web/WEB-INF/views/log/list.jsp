@@ -4,9 +4,9 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <t:master>
-    <jsp:attribute name="title"><fmt:message key="title.log"/></jsp:attribute>
+    <jsp:attribute name="title"><fmt:message key="title.logs"/></jsp:attribute>
     <jsp:attribute name="header">
-        
+        <link href="<c:url value='/resources/jquery/themes/base/jquery.ui.all.css'/>" rel="stylesheet" type="text/css" />
         <script type="text/javascript">
             $(function(){
                 $("#menu-lista-logs").addClass("active");
@@ -32,6 +32,30 @@
                     setSearch();
                 });
                 
+                $('#dataInicio').datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    changeMonth: true,
+                    changeYear: true,
+                    showAnim: 'fadeIn',
+                    showOtherMonths: true,
+                    selectOtherMonths: true,
+                    onClose: function (selectedDate) {
+                        $('#dataFim').datepicker('option', 'minDate', selectedDate);
+                    }
+                });
+
+                $('#dataFim').datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    changeMonth: true,
+                    changeYear: true,
+                    showAnim: 'fadeIn',
+                    showOtherMonths: true,
+                    selectOtherMonths: true,
+                    onClose: function (selectedDate) {
+                        $('#dataInicio').datepicker('option', 'maxDate', selectedDate);
+                    }
+                });
+                
             });
         </script>
         
@@ -47,9 +71,6 @@
             <div class="alert alert-danger">${MSG_ERRO}</div>
         </c:if>
         
-        <button type="button" class="btn btn-primary btn-novo"><fmt:message key="button.novalog"/></button>
-        <br /><br />
-        
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title"><fmt:message key="label.filtropesquisa"/></h3>
@@ -63,9 +84,25 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="sr-only" for="nome"><fmt:message key="label.log.nome"/>:</label>
-                        <input type="text" class="form-control" id="nome" name="nome" placeholder="<fmt:message key="label.log.nomelog"/>" value="${nome}">
+                        <label class="sr-only" for="dataInicio"><fmt:message key="label.log.datainicio"/>:</label>
+                        <input type="text" class="form-control" id="dataInicio" name="dataInicio" placeholder="<fmt:message key="label.log.datainicio"/>" value="${dataInicio}">
                     </div>
+                    
+                    <div class="form-group">
+                        <label class="sr-only" for="dataFim"><fmt:message key="label.log.datafim"/>:</label>
+                        <input type="text" class="form-control" id="dataFim" name="dataFim" placeholder="<fmt:message key="label.log.datafim"/>" value="${dataFim}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <select class="form-control" id="idTipoLog" name="idTipoLog">
+                            <c:if test="${not empty listaTipoLog}">
+                                <c:forEach var="item" varStatus="status" items="${listaTipoLog}">
+                                    <option value="${item.getId()}" ${idTipoLog == item.getId() ? "selected" : ""}>${item.getNome()}</option>
+                                </c:forEach>
+                            </c:if>
+                        </select>
+                    </div>
+                    
                     <button type="submit" class="btn btn-primary btn-pesquisar"><fmt:message key="button.pesquisar"/></button>
                     <%@include file="/WEB-INF/jspf/paginador_campos.jspf" %>
                 </form>
@@ -84,7 +121,6 @@
                 <table class="table table-striped table-hover" style="margin-bottom: 0px;">
                     <thead>
                         <tr>
-                            <th>#</th>
                             <th><fmt:message key="label.log.pessoa"/></th>
                             <th><fmt:message key="label.log.mensagem"/></th>
                             <th><fmt:message key="label.log.tipolog"/></th>
@@ -95,17 +131,16 @@
                         <c:if test="${not empty listaLog}">
                             <c:forEach var="item" varStatus="status" items="${listaLog}">
                                 <tr>
-                                    <td>${item.getId()}</td>
-                                    <td>${item.getIdPessoa()}</td>
-                                    <td>${item.getMensagem()}</td>
-                                    <td>${item.getIdTipoLog()}</td>
-                                    <td>${item.getDataCadastro()}</td>
+                                    <td>${item[0]}</td>
+                                    <td>${item[1]}</td>
+                                    <td>${item[2]}</td>
+                                    <td><fmt:formatDate value="${item[3]}" pattern="dd/MM/yyyy HH:mm" /></td>
                                 </tr>
                             </c:forEach>
                         </c:if>
                         <c:if test="${empty listaLog}">
                             <tr>
-                                <td colspan="5"><fmt:message key="label.nenhumregistroencontrado"/></td>
+                                <td colspan="4"><fmt:message key="label.nenhumregistroencontrado"/></td>
                             </tr>
                         </c:if>
                     </tbody>

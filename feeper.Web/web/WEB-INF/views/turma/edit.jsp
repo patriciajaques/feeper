@@ -60,6 +60,16 @@
                     if (!confirm("<fmt:message key="label.confirmaexclusao"/>")) return;
                     document.location.href = "<c:url value='/'/>turma/deletealuno/" + idTurma + "/" + id;
                 });
+                
+                $('#dataEncerramento').datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    changeMonth: true,
+                    changeYear: true,
+                    showAnim: 'fadeIn',
+                    showOtherMonths: true,
+                    selectOtherMonths: true
+                });
+                
             });
             
             function AtualizaListagem()
@@ -83,25 +93,39 @@
             <div class="panel-body">
                 
                 <form role="form" action="<c:url value='/'/>${IsAdd != null && IsAdd ? "turma/saveadd" : "turma/saveedit/"}" method="POST">
+                    
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label for="nome"><fmt:message key="label.turma.nome"/>:</label>
+                                <input type="text" class="form-control" id="nome" name="nome" placeholder="<fmt:message key="label.turma.nomeinforme"/>" value="${turma.getNome()}">
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label for="professor"><fmt:message key="label.turma.professor"/>:</label>
+                                <input type="text" class="form-control" id="professor" name="professor" placeholder="<fmt:message key="label.turma.professorinforme"/>" value="${turma.getProfessor().getNome()}">
+                                <input type="hidden" id="idProfessor" name="idProfessor" value="${turma.getIdProfessor()}">
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="form-group">
+                                <label for="dataEncerramento"><fmt:message key="label.turma.dataencerramento"/>:</label>
+                                <input type="text" class="form-control" id="dataEncerramento" name="dataEncerramento" placeholder="<fmt:message key="label.turma.dataencerramentoinforme"/>" value="<fmt:formatDate value="${turma.getDataEncerramento()}" pattern="dd/MM/yyyy" />">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="ativo" ${IsAdd != null && IsAdd ? "checked" : turma.isAtivo() ? "checked" : ""}> <fmt:message key="label.turma.ativo"/>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <input type="hidden" id="id" name="id" value="${turma.getId()}">
-                    <div class="form-group">
-                        <label for="nome"><fmt:message key="label.turma.nome"/>:</label>
-                        <input type="text" class="form-control" id="nome" name="nome" placeholder="<fmt:message key="label.turma.nomeinforme"/>" value="${turma.getNome()}">
-                    </div>
-                    <div class="form-group">
-                        <label for="professor"><fmt:message key="label.turma.professor"/>:</label>
-                        <input type="text" class="form-control" id="professor" name="professor" placeholder="<fmt:message key="label.turma.professorinforme"/>" value="${turma.getProfessor().getNome()}">
-                        <input type="hidden" id="idProfessor" name="idProfessor" value="${turma.getIdProfessor()}">
-                    </div>
-                    <div class="form-group">
-                        <label for="dataEncerramento"><fmt:message key="label.turma.dataencerramento"/>:</label>
-                        <input type="text" class="form-control" id="dataEncerramento" name="dataEncerramento" placeholder="<fmt:message key="label.turma.dataencerramentoinforme"/>" value="<fmt:formatDate value="${turma.getDataEncerramento()}" pattern="dd/MM/yyyy" />">
-                    </div>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" name="ativo" ${IsAdd != null && IsAdd ? "checked" : turma.isAtivo() ? "checked" : ""}> <fmt:message key="label.turma.ativo"/>
-                        </label>
-                    </div>
                     <button type="submit" class="btn btn-primary"><fmt:message key="button.salvar"/></button>
                     <button type="button" class="btn btn-default btn-voltar"><fmt:message key="button.voltarlistagem"/></button>
                 </form>

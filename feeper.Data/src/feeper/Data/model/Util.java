@@ -4,18 +4,28 @@
  */
 package feeper.Data.model;
 
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.imageio.ImageIO;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -167,19 +177,82 @@ public class Util {
     }
     
     public static String truncateString(String value, int length, String comp)
+    {
+        try
         {
-            try
-            {
-                if (value == null || value.isEmpty()) return "";
-                if (value.length() > length)
-                    return value.substring(0, length) + comp;
-                else
-                    return value;
-            }
-            catch (Exception e)
-            {
+            if (value == null || value.isEmpty()) return "";
+            if (value.length() > length)
+                return value.substring(0, length) + comp;
+            else
                 return value;
-            }
         }
+        catch (Exception e)
+        {
+            return value;
+        }
+    }
+    
+    public static String formatDate(Date date, String format)
+    {
+        //String DATE_FORMAT_NOW = "yyyy-MM-dd";
+        //Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        String stringDate = sdf.format(date);
+        return stringDate;
+    }
+    
+    public static Date stringToData(String date)
+    {
+        try {
+            
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");  
+            return new Date(format.parse(date).getTime());
+            
+        } catch (Exception e) {
+            return new Date();
+        }
+    }
+    
+    public static void saveToPNG(byte[] source, String path, int width, int height)
+    {
+        try
+        {
+            ByteArrayInputStream bis = new ByteArrayInputStream(source);
+            BufferedImage original = ImageIO.read(bis);
+            int type = original.getType() == 0? BufferedImage.TYPE_INT_ARGB : original.getType();
+            BufferedImage resize = resizeImageWithHint(original, type, width, height);
+            ImageIO.write(resize, "png", new File(path));
+        }
+        catch (Exception e)
+        {
+        }
+    }
+    
+    private static BufferedImage resizeImage(BufferedImage originalImage, int type, int width, int height){
+	BufferedImage resizedImage = new BufferedImage(width, height, type);
+	Graphics2D g = resizedImage.createGraphics();
+	g.drawImage(originalImage, 0, 0, width, height, null);
+	g.dispose();
+ 
+	return resizedImage;
+    }
+ 
+    private static BufferedImage resizeImageWithHint(BufferedImage originalImage, int type, int width, int height){
+ 
+	BufferedImage resizedImage = new BufferedImage(width, height, type);
+	Graphics2D g = resizedImage.createGraphics();
+	g.drawImage(originalImage, 0, 0, width, height, null);
+	g.dispose();	
+	g.setComposite(AlphaComposite.Src);
+ 
+	g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+	RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	g.setRenderingHint(RenderingHints.KEY_RENDERING,
+	RenderingHints.VALUE_RENDER_QUALITY);
+	g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+	RenderingHints.VALUE_ANTIALIAS_ON);
+ 
+	return resizedImage;
+    }
     
 }

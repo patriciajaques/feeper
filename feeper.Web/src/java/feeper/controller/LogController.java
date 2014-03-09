@@ -1,10 +1,12 @@
 package feeper.controller;
 
-import feeper.Data.entity.Log;
+import feeper.Data.model.ScalarResult;
+import feeper.Data.model.Util;
 import feeper.Data.service.LogService;
 import feeper.model.PaginadorUtil;
 import java.util.Date;
 import java.util.List;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,15 +28,15 @@ public class LogController extends ApplicationController {
     @RequestMapping(method=RequestMethod.GET)
     public String list(Model model) {
         
-        return list("", 1, null, null, 1, 10, "id", "asc", "", model, null);
+        return list("", 1, "", "", 1, 10, "L.DataCadastro", "Desc", "", model, null);
     }
     
     @RequestMapping(method=RequestMethod.POST)
     public String list(
             @ModelAttribute("descricao") String descricao, 
-            @ModelAttribute("idTipoLog") int idTipoLog, 
-            @ModelAttribute("dataInicio") Date dataInicio, 
-            @ModelAttribute("dataFim") Date dataFim, 
+            @ModelAttribute("idTipoLog") Integer idTipoLog, 
+            @ModelAttribute("dataInicio") String dataInicio, 
+            @ModelAttribute("dataFim") String dataFim, 
             @ModelAttribute("currentPage") int currentPage,
             @ModelAttribute("pageSize") int pageSize,
             @ModelAttribute("sortField") String sortField, 
@@ -49,25 +51,53 @@ public class LogController extends ApplicationController {
 
         if (currentPage == 0) currentPage = 1;
         if (pageSize == 0) pageSize = 10;
-        if (sortField != null && !sortField.isEmpty()) sortField = "ID";
-        if (sortDirection != null && !sortDirection.isEmpty()) sortDirection = "Asc";
+        if (sortField != null && !sortField.isEmpty()) sortField = "L.DataCadastro";
+        if (sortDirection != null && !sortDirection.isEmpty()) sortDirection = "Desc";
         //-------------------------
         
-        PaginadorUtil<Log> paginador = new PaginadorUtil<Log>();
+    
+        //int idExercicio = Integer.parseInt(request.getParameter("idExercicio").toString());
         
-        String sql = "select * from Log where Mensagem like :p0 and IdTipoLog = :p1 and DataCadastro >= :p2 and DataCadastro <= :p3 ";
+//        String descricao = request.getParameter("descricao").toString();
+//        Integer idTipoLog = request.getParameter("idTipoLog").toString();
+//        Date dataInicio = request.getParameter("dataInicio").toString();
+//        Date dataFim = request.getParameter("dataFim").toString();
         
-        String[] params = new String[4];
-        params[0] = "%"+ descricao + "%";
-        params[1] = idTipoLog + "";
-        params[2] = dataInicio.toString();
-        params[3] = dataFim.toString();
+        PaginadorUtil<Object> paginador = new PaginadorUtil<Object>();
         
-        List<Log> lista = paginador.Execute(
-                                        Log.class, 
+        //String sql = "select * from Log where Mensagem like :p0 and IdTipoLog = :p1 and DataCadastro >= :p2 and DataCadastro <= :p3 ";
+        String sql = "select " +
+                    "  P.Nome, " +
+                    "  L.Mensagem, " +
+                    "  TL.Nome as TipoLog, " +
+                    "  L.DataCadastro " +
+                    "from " +
+                    "  Log L " +
+                    "  inner join TipoLog TL " +
+                    "  on TL.ID = L.IdTipoLog " +
+                    "  inner join Pessoa P " +
+                    "  on P.ID = L.IdPessoa " +
+                    "where 1=1 ";
+        
+        if (!descricao.isEmpty())
+            sql += " and L.Mensagem like '%"+ descricao + "%'";
+        if (!dataInicio.isEmpty())
+            sql += " and L.DataCadastro >= '"+ Util.formatDate(Util.stringToData(dataInicio), "yyyy-MM-dd") +" 00:00'";
+        if (!dataFim.isEmpty())
+            sql += " and L.DataCadastro <= '"+ Util.formatDate(Util.stringToData(dataFim), "yyyy-MM-dd") +" 23:59'";
+        if (idTipoLog != null)
+            sql += " and L.IdTipoLog = "+ idTipoLog;
+        
+        ScalarResult[] scalar = new ScalarResult[4];
+        scalar[0] = new ScalarResult("Nome", Hibernate.STRING);
+        scalar[1] = new ScalarResult("Mensagem", Hibernate.STRING);
+        scalar[2] = new ScalarResult("TipoLog", Hibernate.STRING);
+        scalar[3] = new ScalarResult("DataCadastro", Hibernate.TIMESTAMP);
+        
+        List<Object> lista = paginador.Execute(
                                         model, 
                                         sql, 
-                                        params, 
+                                        scalar,
                                         currentPage, 
                                         pageSize, 
                                         sortField, 
@@ -78,6 +108,9 @@ public class LogController extends ApplicationController {
         model.addAttribute("idTipoLog", idTipoLog);
         model.addAttribute("dataInicio", dataInicio);
         model.addAttribute("dataFim", dataFim);
+        
+        LogService repoLog = new LogService();
+        model.addAttribute("listaTipoLog", repoLog.getTipoLog());
         
         return "log/list";
     }

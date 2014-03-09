@@ -130,6 +130,7 @@ public class PaginadorUtil<T> {
         if (params != null)
             for (int i = 0; i < params.length; i++)
             {
+                if (params[i] == null) continue;
                 if (params[i] instanceof String)
                     exec.setString("p" + i, params[i].toString());
                 else if (params[i] instanceof Integer)

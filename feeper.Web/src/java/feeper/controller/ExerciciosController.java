@@ -20,6 +20,7 @@ import feeper.Data.service.CodigoFonteService;
 import feeper.Data.service.ExercicioService;
 import feeper.Data.service.ExercicioValidacaoService;
 import feeper.Data.service.RespostaService;
+import feeper.Data.service.UploadTempService;
 import feeper.model.PaginadorUtil;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -32,6 +33,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
@@ -152,8 +154,9 @@ public class ExerciciosController extends ApplicationController {
         }
         else
         {
-            HibernateUtil<UploadTemp> repo = new HibernateUtil<UploadTemp>(UploadTemp.class);
-            exercicio.setDescricao(repo.getById(Integer.parseInt(idUploadTemp)).getArquivo());
+            UploadTempService repoUploadTemp = new UploadTempService();
+            UploadTemp uploadTemp = repoUploadTemp.getByGuid(idUploadTemp);
+            exercicio.setDescricao(uploadTemp.getArquivo());
         }
         
         if (service.insert(exercicio))
@@ -296,12 +299,13 @@ public class ExerciciosController extends ApplicationController {
         
         try {
             UploadTemp uploadTemp = new UploadTemp();
+            uploadTemp.setGuid(UUID.randomUUID().toString());
             uploadTemp.setArquivo(file.getBytes());
-            HibernateUtil<UploadTemp> repo = new HibernateUtil<UploadTemp>(UploadTemp.class);
-            if (repo.insert(uploadTemp))
+            UploadTempService repoUploadTemp = new UploadTempService();
+            if (repoUploadTemp.insert(uploadTemp))
             {
                 log(usuarioLogado.getId(), "SUCESSO: ID: " + uploadTemp.getId() + " NOME: " + file.getOriginalFilename(), ETipoLog.UPLOAD_EXERCICIO);
-                return uploadTemp.getId().toString();
+                return uploadTemp.getGuid();
             }
             else
             {

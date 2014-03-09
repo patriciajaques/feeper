@@ -90,6 +90,7 @@
                                 <li id="menu-lista-turma"><a href="<c:url value='/'/>turma"><fmt:message key="menu.turmas"/></a></li>
                                 <li id="menu-lista-exercicio"><a href="<c:url value='/'/>exercicios"><fmt:message key="menu.exercicios"/></a></li>
                                 <li id="menu-lista-conquistas"><a href="<c:url value='/'/>conquistas"><fmt:message key="menu.conquistas"/></a></li>
+                                <li id="menu-lista-logs"><a href="<c:url value='/'/>log"><fmt:message key="menu.logs"/></a></li>
                             </c:when>
                             <c:otherwise>
                                 <li id="menu-novidades"><a href="<c:url value='/'/>novidades"><fmt:message key="menu.novidades"/> ${BadgeNovidades}</a></li>
