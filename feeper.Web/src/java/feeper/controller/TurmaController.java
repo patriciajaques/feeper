@@ -3,6 +3,7 @@ package feeper.controller;
 import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.Turma;
 import feeper.Data.model.ETipoLog;
+import feeper.Data.service.TurmaPessoaService;
 import feeper.Data.service.TurmaService;
 import feeper.model.PaginadorUtil;
 import java.util.Date;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -177,19 +179,22 @@ public class TurmaController extends ApplicationController {
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/turma", true, true, false));
         
-        Turma turma = service.getById(id);
-        
         Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
-        if (service.delete(turma))
-        {
-            log(usuarioLogado.getId(), "ERRO: ID: " + turma.getId(), ETipoLog.EXCLUIR_TURMA);
-            flash.addFlashAttribute("MSG_SUCESSO", "Registro excluído com sucesso");
-        }
-        else
-        {
-            log(usuarioLogado.getId(), "ERRO: ID: " + turma.getId(), ETipoLog.EXCLUIR_TURMA);
-            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao excluir o registro");
-        }
+        
+        Turma turma = service.getById(id);
+        TurmaPessoaService repoTurmaPessoa = new TurmaPessoaService();
+                
+        if (repoTurmaPessoa.deleteAllByIdTurma(id))
+            if (service.delete(turma))
+            {
+                log(usuarioLogado.getId(), "ERRO: ID: " + turma.getId(), ETipoLog.EXCLUIR_TURMA);
+                flash.addFlashAttribute("MSG_SUCESSO", "Registro excluído com sucesso");
+            }
+            else
+            {
+                log(usuarioLogado.getId(), "ERRO: ID: " + turma.getId(), ETipoLog.EXCLUIR_TURMA);
+                flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao excluir o registro");
+            }
         
         return mav;
     }
@@ -224,6 +229,67 @@ public class TurmaController extends ApplicationController {
         
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/", true, true, false));
+        return mav;
+    }
+    
+    @RequestMapping(value="/deletealuno/{idTurma}/{idAluno}", method=RequestMethod.GET)
+    public ModelAndView deletealuno(
+            @PathVariable int idTurma, 
+            @PathVariable int idAluno, 
+            Model model,
+            HttpSession session,
+            final RedirectAttributes flash) {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setView(new RedirectView("/turma/edit/" + idTurma, true, true, false));
+        
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
+
+        TurmaService turmaService = new TurmaService();
+        if (turmaService.removeAluno(idTurma, idAluno))
+        {
+            log(usuarioLogado.getId(), "SUCESSO: ID TURMA: " + idTurma + " ID ALUNO: " + idAluno, ETipoLog.ALTERAR_TURMA);
+            flash.addFlashAttribute("MSG_SUCESSO", "Registro inserido com sucesso");
+        }
+        else
+        {
+            log(usuarioLogado.getId(), "ERRO: ID TURMA: " + idTurma + " ID ALUNO: " + idAluno, ETipoLog.ALTERAR_TURMA);
+            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao inserir o registro");
+        }
+        
+        return mav;
+    }
+    
+    @RequestMapping(value="/addaluno/{idTurma}", method=RequestMethod.GET)
+    public String addaluno(
+            @PathVariable int idTurma, 
+            Model model) {
+        
+        model.addAttribute("idTurma", idTurma);
+        model.addAttribute("IsAdd", false);
+        
+        return "turma/addaluno";
+    }
+    
+    @RequestMapping(value="/saveaddaluno", method=RequestMethod.POST)
+    public ModelAndView saveaddaluno(
+            @ModelAttribute("id") int idPessoa, 
+            @ModelAttribute("idTurma") int idTurma, 
+            HttpSession session,
+            BindingResult result) {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setView(new RedirectView("/closemodal", true, true, false));
+        
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
+        
+        if (idPessoa > 0)
+        {
+            TurmaPessoaService turmaPessoaService = new TurmaPessoaService();
+            turmaPessoaService.insertIfNotExist(idTurma, idPessoa);
+            log(usuarioLogado.getId(), "SUCESSO: ID: " + idPessoa, ETipoLog.ALTERAR_TURMA);
+        }
+
         return mav;
     }
     

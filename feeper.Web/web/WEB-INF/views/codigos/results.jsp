@@ -36,9 +36,9 @@
                                     <button type="button" class="btn btn-default btn-download-pacote" data-id="${item[0]}" data-idaluno="${idAluno}"><fmt:message key="button.download"/></button>
                                 </div>
                             </td>
-                            <td><fmt:formatDate value="${item[6]}" pattern="dd/MM/yyyy HH:mm" /></td>
-                            <td>${item[8]}</td>
-                            <td>${item[9]}</td>
+                            <td style="font-size: 12px;"><fmt:formatDate value="${item[6]}" pattern="dd/MM/yyyy HH:mm" /></td>
+                            <td style="font-size: 12px;">${item[8]}</td>
+                            <td style="font-size: 12px;">${item[9]}</td>
                         </tr>
                     </c:forEach>
                 </c:if>

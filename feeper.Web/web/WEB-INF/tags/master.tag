@@ -86,8 +86,8 @@
                     <ul class="nav navbar-nav">
                         <c:choose>
                             <c:when test="${UsuarioLogado.getIdPerfil() == 1}">
-                                <li id="menu-lista-turma"><a href="<c:url value='/'/>turma"><fmt:message key="menu.turmas"/></a></li>
                                 <li id="menu-lista-pessoas"><a href="<c:url value='/'/>pessoa"><fmt:message key="menu.pessoas"/></a></li>
+                                <li id="menu-lista-turma"><a href="<c:url value='/'/>turma"><fmt:message key="menu.turmas"/></a></li>
                                 <li id="menu-lista-exercicio"><a href="<c:url value='/'/>exercicios"><fmt:message key="menu.exercicios"/></a></li>
                                 <li id="menu-lista-conquistas"><a href="<c:url value='/'/>conquistas"><fmt:message key="menu.conquistas"/></a></li>
                             </c:when>

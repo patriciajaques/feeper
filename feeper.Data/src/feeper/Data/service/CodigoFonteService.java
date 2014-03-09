@@ -104,13 +104,14 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
     {
         try {
             
-            SQLQuery query = query("select ID, Fonte, Classe, Principal, '' AS Marcacao, '' AS Anotacao from CodigoFonte where IdExercicio = :idExercicio and IdAutor = :idAutor and ID = :idCodigoFonte ");
+            SQLQuery query = query("select ID, Fonte, Classe, Principal, '' AS Marcacao, '' AS Anotacao, Favorito from CodigoFonte where IdExercicio = :idExercicio and IdAutor = :idAutor and ID = :idCodigoFonte ");
             query.addScalar("ID", Hibernate.INTEGER);
             query.addScalar("Fonte", Hibernate.STRING);
             query.addScalar("Classe", Hibernate.STRING);
             query.addScalar("Principal", Hibernate.BOOLEAN);
             query.addScalar("Marcacao", Hibernate.STRING);
             query.addScalar("Anotacao", Hibernate.STRING);
+            query.addScalar("Favorito", Hibernate.BOOLEAN);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAutor", idAutor);
             query.setInteger("idCodigoFonte", idCodigoFonte);
@@ -184,7 +185,7 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
                                 "  and CFM.LinhaInicio = :linha " +
                                 "  and CFM.IdTipoMarcacao = :idTipoMarcacao " +
                                 "  and CFM.Ativo = 1");
-            query.addScalar("DataCadastro", Hibernate.DATE);
+            query.addScalar("DataCadastro", Hibernate.TIMESTAMP);
             query.addScalar("Anotacao", Hibernate.STRING);
             query.addScalar("LinhaInicio", Hibernate.INTEGER);
             query.setInteger("idExercicio", idExercicio);
@@ -374,6 +375,7 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
                 
                 mensagemLeitor = new MensagemLeitor();
                 mensagemLeitor.setAtivo(true);
+                mensagemLeitor.setDataUltimaLeitura(new Date());
                 mensagemLeitor.setIdLeitor(idAutor);
                 mensagemLeitor.setIdMensagemCabecalho(mensagemCabecalho.getId());
                 mensagemLeitor.setTipoLeitor(ETipoLeitor.REMETENTE);
@@ -393,6 +395,19 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
             
         } catch (Exception e) {
             return false;
+        }
+    }
+    
+    public List<CodigoFonte> getMeusCodigosFavoritos(int idPessoa)
+    {
+        try {
+            
+            SQLQuery query = query("select * from CodigoFonte where IdAutor = :idPessoa and Favorito = 1 order by DataCadastro desc").addEntity(CodigoFonte.class);
+            query.setInteger("idPessoa", idPessoa);
+            return query.list();
+            
+        } catch (Exception e) {
+            return null;
         }
     }
     

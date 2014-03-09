@@ -16,6 +16,7 @@ public class CodigoFonte  implements java.io.Serializable {
      private String fonteAnterior;
      private Date dataCadastro;
      private boolean principal;
+     private boolean favorito;
      private int idExercicio;
      private String classe;
      private Pessoa autor;
@@ -87,6 +88,14 @@ public class CodigoFonte  implements java.io.Serializable {
 
     public void setPrincipal(boolean principal) {
         this.principal = principal;
+    }
+    
+    public boolean isFavorito() {
+        return favorito;
+    }
+
+    public void setFavorito(boolean favorito) {
+        this.favorito = favorito;
     }
 
     public int getIdExercicio() {

@@ -17,7 +17,13 @@
             $(function(){
                 $("#menu-minhas-notas").addClass("active");
                 
-                $(".btn-exercicio").click(function(){
+                MostraCarregando();
+                $("#grade-resultados").load("<c:url value='/'/>notas/results", function(){
+                    RemoveCarregando();
+                    $(".th-exercicio").tooltip();
+                });
+                
+                $("#grade-resultados").on('click', '.btn-exercicio', function(){
                     var idExercicio = $(this).attr("data-idexercicio");
                     var idAluno = $(this).attr("data-idaluno");
                     
@@ -30,7 +36,7 @@
                         var url = "<c:url value='/'/>codigos/results/" + idExercicio + "/" + idAluno;
                         $(this).parent().parent().after("<tr><td colspan='11' style='border-top:2px solid #999; border-bottom:2px solid #999; display:none' id='panelResults" + idExercicio + "_" + idAluno + "'></td></tr>");
                     
-                        MostraCarregando()
+                        MostraCarregando();
                         $("#panelResults" + idExercicio + "_" + idAluno).slideDown("fast").load(url, function(){
                             RemoveCarregando();
                         });
@@ -77,7 +83,9 @@
                                 });
                                 
                                 $("#panelCodes" + id + "_" + idAluno).on('click', '.btn-download', function(){
-                        
+                                    var id = $(this).attr("data-id");
+                                    var idAluno = $(this).attr("data-idaluno");
+                                    document.location.href = "<c:url value='/'/>codigos/downloadfileversion/" + id + "/" + idAluno;
                                 });
                             }
                             else{
@@ -88,7 +96,9 @@
                         });
                         
                         $("#panelResults" + idExercicio + "_" + idAluno).on('click', '.btn-download-pacote', function(){
-                        
+                            var id = $(this).attr("data-id");
+                            var idAluno = $(this).attr("data-idaluno");
+                            document.location.href = "<c:url value='/'/>codigos/downloadpkgversion/" + id + "/" + idAluno;
                         });
                     }
                     else{
@@ -106,147 +116,7 @@
         
         <h2>${TurmaSelecionada.getNome()} - <fmt:message key="label.notas.resultadoexercicios"/></h2>
         
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <table class="table table-striped" style="margin-bottom: 0px;">
-                    <thead>
-                        <tr>
-                            <th><fmt:message key="label.notas.aluno"/></th>
-                            <th style="text-align: center;">#1</th>
-                            <th style="text-align: center;">#2</th>
-                            <th style="text-align: center;">#3</th>
-                            <th style="text-align: center;">#4</th>
-                            <th style="text-align: center;">#5</th>
-                            <th style="text-align: center;">#6</th>
-                            <th style="text-align: center;">#7</th>
-                            <th style="text-align: center;">#8</th>
-                            <th style="text-align: center;">#9</th>
-                            <th style="text-align: center;">#10</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Fulano Siclano</td>
-                            <td style="text-align: center;">
-                                <button type="button" class="btn btn-success btn-xs btn-exercicio" data-toggle="tooltip" data-placement="top" title="Nome do Exercício" data-idexercicio="3" data-idaluno="3"><span class="glyphicon glyphicon-ok"></span></button>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="btn btn-success btn-xs btn-exercicio" data-toggle="tooltip" data-placement="top" title="Nome do Exercício" data-idexercicio="2" data-idaluno="3"><span class="glyphicon glyphicon-ok"></span></button>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="btn btn-success btn-xs btn-exercicio"><span class="glyphicon glyphicon-ok"></span></button>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="btn btn-danger btn-xs btn-exercicio"><span class="glyphicon glyphicon-remove"></span></button>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="btn btn-info btn-xs btn-exercicio"><span class="glyphicon glyphicon-time"></span></button>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="btn btn-info btn-xs btn-exercicio"><span class="glyphicon glyphicon-time"></span></button>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="btn btn-warning btn-xs btn-exercicio"><span class="glyphicon glyphicon-warning-sign"></span></button>
-                            </td>
-                            <td style="text-align: center;">&nbsp;</td>
-                            <td style="text-align: center;">&nbsp;</td>
-                            <td style="text-align: center;">&nbsp;</td>
-                        </tr>
-                        <tr>
-                            <td>Beltrano da Silva</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                        </tr>
-                        <tr>
-                            <td>Fulano Siclano</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                        </tr>
-                        <tr>
-                            <td>Beltrano da Silva</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                        </tr>
-                        <tr>
-                            <td>Fulano Siclano</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                        </tr>
-                        <tr>
-                            <td>Beltrano da Silva</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                        </tr>
-                        <tr>
-                            <td>Fulano Siclano</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                        </tr>
-                        <tr>
-                            <td>Beltrano da Silva</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                            <td style="text-align: center;">X</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <div id="grade-resultados"></div>
             
     </jsp:body>
 </t:master>

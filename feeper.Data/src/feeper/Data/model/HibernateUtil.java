@@ -77,7 +77,25 @@ public class HibernateUtil<T> {
         try {
             session = getSession();
             //transacao = session.beginTransaction();
-            query = session.createQuery("Select "+colunasResultado+" From "+objClass.getName()+" Where "+colunaFiltro+" like :like ");
+            query = session.createQuery("Select "+colunasResultado+" From "+objClass.getName()+" Where "+colunaFiltro+" like :like order by " + colunasResultado);
+            query.setParameter("like", "%" + filtro + "%");
+            lista = query.list();
+        } catch (HibernateException e) { 
+            //transacao.rollback();
+            System.err.println(e.fillInStackTrace());
+        } finally {
+            //sessao.close();
+            return lista;
+        }
+    }
+    
+    public List<Object> search(String colunaFiltro, String filtro, String where, String colunasResultado){
+        List<Object> lista = null;
+        Query query = null;
+        try {
+            session = getSession();
+            //transacao = session.beginTransaction();
+            query = session.createQuery("Select "+colunasResultado+" From "+objClass.getName()+" Where "+colunaFiltro+" like :like " + where + " order by " + colunasResultado);
             query.setParameter("like", "%" + filtro + "%");
             lista = query.list();
         } catch (HibernateException e) { 
@@ -150,6 +168,7 @@ public class HibernateUtil<T> {
             System.err.println(e.fillInStackTrace());
             return false;
         } finally {
+            //session.clear();
             session.close();
         }
     }
@@ -160,14 +179,17 @@ public class HibernateUtil<T> {
             session = getSession();
             transaction = session.beginTransaction();
             session.saveOrUpdate(obj);
-            session.refresh(obj);
+            
             transaction.commit();
+            
+            session.refresh(obj);
             return true;
         } catch (HibernateException e) { 
             transaction.rollback();
             System.err.println(e.fillInStackTrace());
             return false;
         } finally {
+            //session.clear();
             session.close();
         }
     }
@@ -189,6 +211,7 @@ public class HibernateUtil<T> {
             System.err.println(e.fillInStackTrace());
             return false;
         } finally {
+            //session.clear();
             session.close();
         }
     }
@@ -210,6 +233,7 @@ public class HibernateUtil<T> {
             System.err.println(e.fillInStackTrace());
             return false;
         } finally {
+            //session.clear();
             session.close();
         }
     }

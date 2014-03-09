@@ -12,6 +12,7 @@ import feeper.Data.model.EPerfil;
 import feeper.Data.model.EStatusResposta;
 import feeper.Data.model.ETipoLog;
 import feeper.Data.model.HibernateUtil;
+import feeper.Data.model.IntegerResult;
 import feeper.Data.model.ScalarResult;
 import feeper.Data.model.Util;
 import feeper.Data.service.CodigoFonteMarcacaoService;
@@ -20,12 +21,19 @@ import feeper.Data.service.ExercicioService;
 import feeper.Data.service.ExercicioValidacaoService;
 import feeper.Data.service.RespostaService;
 import feeper.model.PaginadorUtil;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -395,8 +403,7 @@ public class ExerciciosController extends ApplicationController {
         Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
         Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
         
-        ExercicioService repoExercicio = new ExercicioService();
-        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), id);
+        Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
         
         if (exercicio != null)
         {
@@ -445,8 +452,7 @@ public class ExerciciosController extends ApplicationController {
         Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
         
         CodigoFonteService repoCodigoFonte = new CodigoFonteService();
-        ExercicioService repoExercicio = new ExercicioService();
-        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), id);
+        Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
         
         if (exercicio != null)
         {
@@ -454,16 +460,30 @@ public class ExerciciosController extends ApplicationController {
             if (listaCodigoFonte != null && listaCodigoFonte.size() > 0)
             {
                 RespostaService repoResposta = new RespostaService();
-                
-                Resposta resposta = new Resposta();
-                resposta.setDataCadastro(new Date());
-                resposta.setIdAutor(pessoa.getId());
-                resposta.setIdExercicio(exercicio.getId());
-                resposta.setIdStatus(EStatusResposta.AGUARDANDO);
-                if (repoResposta.insert(resposta))
+                IntegerResult idResposta = new IntegerResult();
+                if (repoResposta.salvarResposta(pessoa.getId(), exercicio.getId(), idResposta))
+                {
                     log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId(), ETipoLog.CODIGO_ENVIADO);
+                    
+                    if (idResposta.getResult() > 0)
+                    {
+                        try {
+                            // Make connection and initialize streams
+                            Socket socket = new Socket("127.0.0.1", 3029);
+                            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                            PrintStream out = new PrintStream(socket.getOutputStream(), true);
+
+                            out.println(idResposta.getResult());
+                            out.println("10000");
+                        } catch (UnknownHostException ex) {
+                        } catch (IOException ex) {
+                        }
+                    }
+                }
                 else
+                {
                     log(pessoa.getId(), "ERRO: ID EXERCICIO: " + exercicio.getId(), ETipoLog.CODIGO_ENVIADO);
+                }
             }
         }
         mav.setView(new RedirectView("/exercicios/responder/" + id, true, true, false));
@@ -480,8 +500,7 @@ public class ExerciciosController extends ApplicationController {
         Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
         Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
         
-        ExercicioService repoExercicio = new ExercicioService();
-        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), id);
+        Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
         
         if (exercicio != null)
         {
@@ -526,13 +545,14 @@ public class ExerciciosController extends ApplicationController {
         
         if (idCodigoFonte == 0)
         {
-            Object[] dados = new Object[5];
+            Object[] dados = new Object[7];
             dados[0] = 0;
             dados[1] = CodigoFonteService.CODIGO_PADRAO_PRINCIPAL;
             dados[2] = "Solution.java";
             dados[3] = true;
             dados[4] = "";
             dados[5] = "";
+            dados[6] = false;
             
             return dados;
         }
@@ -564,8 +584,7 @@ public class ExerciciosController extends ApplicationController {
         Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
         
         CodigoFonteService repoCodigoFonte = new CodigoFonteService();
-        ExercicioService repoExercicio = new ExercicioService();
-        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), id);
+        Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
         
         if (exercicio != null)
         {
@@ -683,8 +702,7 @@ public class ExerciciosController extends ApplicationController {
         Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
         
         CodigoFonteService repoCodigoFonte = new CodigoFonteService();
-        ExercicioService repoExercicio = new ExercicioService();
-        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), id);
+        Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
         
         if (exercicio != null)
         {
@@ -745,8 +763,7 @@ public class ExerciciosController extends ApplicationController {
         Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
         
         CodigoFonteService repoCodigoFonte = new CodigoFonteService();
-        ExercicioService repoExercicio = new ExercicioService();
-        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), id);
+        Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
         
         if (exercicio != null)
         {
@@ -784,6 +801,28 @@ public class ExerciciosController extends ApplicationController {
         } catch (IOException ex) {
             return "";
         }
+    }
+    
+    @RequestMapping(value="/getstatus/{idExercicio}", method=RequestMethod.GET)
+    @ResponseBody
+    public int getstatus(
+            @PathVariable int idExercicio,
+            HttpSession session) {
+        
+        Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
+        Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
+        
+        CodigoFonteService repoCodigoFonte = new CodigoFonteService();
+        Exercicio exercicio = service.getMeuExercicio(turma.getId(), idExercicio);
+        
+        if (exercicio != null)
+        {
+            RespostaService repoResposta = new RespostaService();
+            Resposta resposta = repoResposta.getLastByIdExercicio(exercicio.getId(), pessoa.getId());
+            return resposta.getIdStatus();
+        }
+        
+        return 0;
     }
     
 }

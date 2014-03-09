@@ -1,6 +1,7 @@
 package feeper.controller;
 
 import feeper.Data.entity.Pessoa;
+import feeper.Data.model.EPerfil;
 import feeper.Data.model.ETipoLog;
 import feeper.Data.service.PessoaService;
 import feeper.Data.service.TurmaService;
@@ -53,7 +54,7 @@ public class LoginController extends ApplicationController {
             if (pessoa.getTurmas().size() > 0)
                 session.setAttribute("TurmaSelecionada", pessoa.getTurmas().get(0));
             
-            mav.setView(new RedirectView("/", true, true, false));
+            mav.setView(new RedirectView("/", true, true, false));                
         }
         return mav;
     }

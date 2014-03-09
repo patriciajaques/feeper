@@ -3,14 +3,18 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<t:master.modal>
+<t:master>
     <jsp:attribute name="title"><fmt:message key="title.pessoa"/></jsp:attribute>
     <jsp:attribute name="header">
         
+        <link href="<c:url value='/resources/jquery/themes/base/jquery.ui.all.css'/>" rel="stylesheet" type="text/css" />
+        
         <script type="text/javascript">
             $(function(){
-                $("#btn-fechar").click(function(){
-                   self.parent.FechaModal(); 
+                $("#menu-lista-pessoas").addClass("active");
+            
+                $(".btn-voltar").click(function(){
+                   document.location.href = "<c:url value='/'/>pessoa";
                 });
             });
         </script>
@@ -28,8 +32,6 @@
 
         <form role="form" action="<c:url value='/'/>${IsAdd != null && IsAdd ? "pessoa/saveadd" : "pessoa/saveedit/"}" method="POST">
             <input type="hidden" id="id" name="id" value="${pessoa.getId()}">
-            <input type="hidden" id="idTurma" name="idTurma" value="${IdTurma}">
-            <input type="hidden" id="tipoPessoa" name="tipoPessoa" value="${pessoa.getTipoPessoa()}">
             <div class="form-group">
                 <label for="nome"><fmt:message key="label.pessoa.nome"/>:</label>
                 <input type="text" class="form-control" id="nome" name="nome" placeholder="<fmt:message key="label.pessoa.informenome"/>" value="${pessoa.getNome()}">
@@ -38,14 +40,22 @@
                 <label for="email"><fmt:message key="label.pessoa.email"/></label>
                 <input type="text" class="form-control" id="email" name="email" placeholder="<fmt:message key="label.pessoa.informeemail"/>" value="${pessoa.getEmail()}">
             </div>
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-primary ${pessoa.getIdPerfil() == 3 ? "active" : ""}">
+                    <input type="radio" name="idPerfil" id="idPerfilAluno" value="3"> <fmt:message key="label.pessoa.aluno"/>
+                </label>
+                <label class="btn btn-primary ${pessoa.getIdPerfil() == 2 ? "active" : ""}">
+                    <input type="radio" name="idPerfil" id="idPerfilProfessor" value="2"> <fmt:message key="label.pessoa.professor"/>
+                </label>
+            </div>
             <div class="checkbox">
                 <label>
                     <input type="checkbox" name="ativo" ${IsAdd != null && IsAdd ? "checked" : pessoa.isAtivo() ? "checked" : ""}> <fmt:message key="label.pessoa.ativo"/>
                 </label>
             </div>
             <button type="submit" class="btn btn-primary"><fmt:message key="button.salvar"/></button>
-            <button type="button" class="btn btn-default" id="btn-fechar"><fmt:message key="button.fechar"/></button>
+            <button type="button" class="btn btn-default btn-voltar"><fmt:message key="button.voltarlistagem"/></button>
         </form>
         
     </jsp:body>
-</t:master.modal>
+</t:master>

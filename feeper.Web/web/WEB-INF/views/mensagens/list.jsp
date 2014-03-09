@@ -3,7 +3,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
-//listaMensagens[13]
+//listaMensagensDestinatario[13]
 //0 - IdAutor
 //1 - Autor
 //2 - IdMensagemCabecalho
@@ -55,13 +55,23 @@
         
         <h2><fmt:message key="label.mensagens"/></h2>
         
-        <c:if test="${not empty listaMensagens}">
-            <c:forEach var="item" varStatus="status" items="${listaMensagens}">
+        <c:if test="${not empty listaMensagensDestinatario}">
+            <c:forEach var="item" varStatus="status" items="${listaMensagensDestinatario}">
                 <blockquote>
                     <p>${item[12]}</p>
                     <small>${item[1]} <fmt:message key="label.mensagens.em"/> <a href="#" class="fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}">${item[10]} / ${item[8]} (<fmt:message key="label.mensagens.linha"/> ${item[6]})</a> - <fmt:message key="label.mensagens.ha"/> ${item[11]}</small><br>
                     <p>
-                        <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.curtir"/></button>
+                        <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.responder"/></button>
+                    </p>
+                </blockquote>
+            </c:forEach>
+        </c:if>
+        <c:if test="${not empty listaMensagensRemetente}">
+            <c:forEach var="item" varStatus="status" items="${listaMensagensRemetente}">
+                <blockquote>
+                    <p>${item[12]}</p>
+                    <small>${item[1]} <fmt:message key="label.mensagens.em"/> <a href="#" class="fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}">${item[10]} / ${item[8]} (<fmt:message key="label.mensagens.linha"/> ${item[6]})</a> - <fmt:message key="label.mensagens.ha"/> ${item[11]}</small><br>
+                    <p>
                         <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.responder"/></button>
                     </p>
                 </blockquote>

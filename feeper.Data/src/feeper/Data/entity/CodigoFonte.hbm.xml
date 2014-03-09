@@ -23,6 +23,9 @@
         <property name="principal" type="boolean">
             <column name="Principal" not-null="true" />
         </property>
+        <property name="favorito" type="boolean">
+            <column name="Favorito" />
+        </property>
         <property name="idExercicio" type="int">
             <column name="IdExercicio" not-null="true" />
         </property>

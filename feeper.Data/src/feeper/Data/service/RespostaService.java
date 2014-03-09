@@ -4,12 +4,15 @@
  */
 package feeper.Data.service;
 
+import feeper.Data.entity.CodigoFonte;
 import feeper.Data.entity.Resposta;
 import feeper.Data.entity.RespostaCodigoFonte;
 import feeper.Data.model.EStatusResposta;
 import feeper.Data.model.ETipoLog;
 //import feeper.Data.entity.RespostaCodigoFonte;
 import feeper.Data.model.HibernateUtil;
+import feeper.Data.model.IntegerResult;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.Hibernate;
 import org.hibernate.SQLQuery;
@@ -88,7 +91,7 @@ public class RespostaService extends HibernateUtil<Resposta> {
             query.addScalar("IdExercicio", Hibernate.INTEGER);
             query.addScalar("Exercicio", Hibernate.STRING);
             query.addScalar("DataCadastroString", Hibernate.STRING);
-            query.addScalar("DataCadastro", Hibernate.DATE);
+            query.addScalar("DataCadastro", Hibernate.TIMESTAMP);
             query.addScalar("IdStatus", Hibernate.INTEGER);
             query.addScalar("Status", Hibernate.STRING);
             query.addScalar("Mensagem", Hibernate.STRING);
@@ -127,6 +130,42 @@ public class RespostaService extends HibernateUtil<Resposta> {
             
         } catch (Exception e) {
             return null;
+        }
+    }
+    
+    public boolean salvarResposta(int idPessoa, int idExercicio, IntegerResult idResposta)
+    {
+        try {
+
+            Resposta resposta = new Resposta();
+            resposta.setDataCadastro(new Date());
+            resposta.setIdAutor(idPessoa);
+            resposta.setIdExercicio(idExercicio);
+            resposta.setIdStatus(EStatusResposta.AGUARDANDO);
+            
+            if (insert(resposta))
+            {
+                RespostaCodigoFonteService repoRespostaCodigoFonte = new RespostaCodigoFonteService();
+                CodigoFonteService repoCodigoFonte = new CodigoFonteService();
+                List<CodigoFonte> listaFontes = repoCodigoFonte.getAllByIdExercicio(idExercicio, idPessoa);
+                
+                for (CodigoFonte fonte : listaFontes) {
+                    RespostaCodigoFonte respostaCodigoFonte = new RespostaCodigoFonte();
+                    respostaCodigoFonte.setClasse(fonte.getClasse());
+                    respostaCodigoFonte.setFonte(fonte.getFonte());
+                    respostaCodigoFonte.setPrincipal(fonte.isPrincipal());
+                    respostaCodigoFonte.setIdResposta(resposta.getId());
+                    if (!repoRespostaCodigoFonte.insert(respostaCodigoFonte))
+                        return false;
+                }
+                idResposta.setResult(resposta.getId());
+                return true;
+            }
+            
+            return false;
+            
+        } catch (Exception e) {
+            return false;
         }
     }
     

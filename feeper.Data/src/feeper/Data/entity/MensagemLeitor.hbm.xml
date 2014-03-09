@@ -16,11 +16,11 @@
         </property>
         <property name="tipoLeitor" type="char">
             <column name="TipoLeitor" length="1" not-null="true">
-                <comment>'R': Remetente 'D': Destinat&#135;rio 'P': P&#156;blico</comment>
+                <comment>'R': Remetente 'D': Destinatario 'P': Publico</comment>
             </column>
         </property>
         <property name="dataUltimaLeitura" type="timestamp">
-            <column name="DataUltimaLeitura" length="19" not-null="true" />
+            <column name="DataUltimaLeitura" length="19" />
         </property>
         <property name="ativo" type="boolean">
             <column name="Ativo" not-null="true" />

@@ -5,6 +5,7 @@
 package feeper.Data.service;
 
 import feeper.Data.entity.MensagemCabecalho;
+import feeper.Data.model.ETipoLeitor;
 import feeper.Data.model.HibernateUtil;
 import java.util.List;
 import org.hibernate.Hibernate;
@@ -33,7 +34,17 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
         }
     }
     
+    public List<Object> getMensagensRemetente(int idPessoa, boolean apenasNovas, boolean agrupadas)
+    {
+        return getMensagens(idPessoa, ETipoLeitor.REMETENTE, apenasNovas, agrupadas);
+    }
+    
     public List<Object> getMensagensDestinatario(int idPessoa, boolean apenasNovas, boolean agrupadas)
+    {
+        return getMensagens(idPessoa, ETipoLeitor.DESTINATARIO, apenasNovas, agrupadas);
+    }
+    
+    public List<Object> getMensagens(int idPessoa, char tipoLeitor, boolean apenasNovas, boolean agrupadas)
     {
         try {
             
@@ -63,7 +74,7 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
                         "  on ML.IdMensagemCabecalho = MC.ID " +
                         "  and ML.IdLeitor = :idPessoa " +
                         "  and ML.Ativo = 1 " +
-                        "  and ML.TipoLeitor = 'D' " +
+                        "  and ML.TipoLeitor = :tipoLeitor " +
                         "  inner join Mensagem M " +
                         "  on M.IdMensagemCabecalho = MC.ID " +
                         "  and M.Ativo = 1 " +
@@ -82,8 +93,7 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
                         "  on PA.ID = CFM.IdAutor " +
                         "  and PA.Ativo = 1 " +
                         "where " +
-                        "  MC.ID = 1 " +
-                        "  and MC.Ativo = 1 ";
+                        "  MC.Ativo = 1 ";
             
             if (apenasNovas)
                 sql += "  and M.DataCadastro >= IFNULL(ML.DataUltimaLeitura, M.DataCadastro) ";
@@ -108,6 +118,7 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
             query.addScalar("Texto", Hibernate.STRING);
             
             query.setInteger("idPessoa", idPessoa);
+            query.setCharacter("tipoLeitor", tipoLeitor);
             
             return query.list();
         }

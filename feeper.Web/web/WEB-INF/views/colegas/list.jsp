@@ -16,100 +16,42 @@
     </jsp:attribute>
     <jsp:body>
         
-        <h2>ProgramaÁ„o I</h2>
+        <h2>${TurmaSelecionada.getNome()} - <fmt:message key="label.colegas"/></h2>
         
         <br>
         <h4><fmt:message key="label.professor"/></h4>
         <ul class="mosaico">
             <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
+                <c:choose>
+                    <c:when test="${TurmaSelecionada.getProfessor().isPossuiFoto()}">
+                        <img src="<c:url value='/resources/img/photo/photo-${TurmaSelecionada.getProfessor().getId()}.png'/>" style="width:45px; height:45px;" alt="${TurmaSelecionada.getProfessor().getNome()}" class="img-circle">
+                    </c:when>
+                    <c:otherwise>
+                        <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="${TurmaSelecionada.getProfessor().getNome()}" class="img-circle">
+                    </c:otherwise>
+                </c:choose>
+                <span class="quebrar-linha" style="margin-top:5px;">${TurmaSelecionada.getProfessor().getNome()}</span>
             </li>
         </ul>
         
         <br>
         <h4><fmt:message key="label.colegas"/></h4>
         <ul class="mosaico">
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
-            <li>
-                <img src="<c:url value='/resources/img/foto.png'/>" alt="..." class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;">F·bio Pacheco Alves</span>
-            </li>
+            <c:if test="${not empty listaTurma}">
+                <c:forEach var="item" varStatus="status" items="${listaTurma}">
+                    <li>
+                        <c:choose>
+                            <c:when test="${item.isPossuiFoto()}">
+                                <img src="<c:url value='/resources/img/photo/photo-${item.getId()}.png'/>" style="width:45px; height:45px;" alt="${item.getNome()}" class="img-circle">
+                            </c:when>
+                            <c:otherwise>
+                                <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="${item.getNome()}" class="img-circle">
+                            </c:otherwise>
+                        </c:choose>
+                        <span class="quebrar-linha" style="margin-top:5px;">${item.getNome()}</span>
+                    </li>
+                </c:forEach>
+            </c:if>
         </ul>
             
     </jsp:body>

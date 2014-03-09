@@ -61,4 +61,19 @@ public class TurmaPessoaService extends HibernateUtil<TurmaPessoa> {
         }
     }
     
+    public boolean deleteAllByIdTurma(int idTurma)
+    {
+        try {
+            
+            SQLQuery query = query("delete from TurmaPessoa where IdTurma = :idTurma ");
+            query.setInteger("idTurma", idTurma);
+            query.executeUpdate();
+            
+            return true;
+            
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
 }

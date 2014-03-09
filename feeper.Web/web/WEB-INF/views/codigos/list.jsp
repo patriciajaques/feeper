@@ -10,82 +10,52 @@
         <script type="text/javascript">
             $(function(){
                 $("#menu-meus-codigos-favoritos").addClass("active");
+                
+                $(".btn-remover-favorito").click(function(){
+                    var id = $(this).attr("data-id");
+                    var idExercicio = $(this).attr("data-idexercicio");
+                    if (id === undefined || idExercicio === undefined) return;
+                    
+                    MostraCarregando();
+                    $.get("<c:url value='/'/>codigos/savefavorite/"+ idExercicio +"/"+ id, function(data){
+                        RemoveCarregando();
+                        if (data != "erro")
+                            $("#panelCodigoFonte"+ id +"_"+ idExercicio).slideUp("fast").remove();
+                    });
+                });
+                
             });
         </script>
         
     </jsp:attribute>
     <jsp:body>
         
-        <h2>ProgramaÁ„o I - <fmt:message key="label.codigosfavoritos"/></h2>
+        <h2><fmt:message key="label.codigosfavoritos"/></h2>
         
-        <ul class="pagination pagination-sm">
-          <li><a href="#">´</a></li>
-          <li class="active"><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li><a href="#">ª</a></li>
-        </ul>
+        <c:if test="${not empty MSG_SUCESSO}">
+            <div class="alert alert-success">${MSG_SUCESSO}</div>
+        </c:if>
+        <c:if test="${not empty MSG_ERRO}">
+            <div class="alert alert-danger">${MSG_ERRO}</div>
+        </c:if>
         
-        <h4>Calcular a mÈdia de um array</h4>
+        <%@include file="/WEB-INF/jspf/paginador.jspf" %>
         
+        <c:if test="${not empty listaCodigo}">
+            <c:forEach var="item" varStatus="status" items="${listaCodigo}">
+                <div id="panelCodigoFonte${item.getId()}_${item.getIdExercicio()}" style="margin-bottom:25px;">
+                    <h4>${item.getExercicio().getNome()} > ${item.getClasse()}</h4>
 <pre class="pre-scrollable">
-public static double CalculaMedia(ArrayList&lt;Integer&gt; lista)
-{
-    int n = lista.size()
-    int soma = 0;
-
-    for(int i = 0; i< n; i++)
-    {
-        soma += lista.get(i);
-    }
-    return soma / n;
-}
+${item.getFonte()}
 </pre>
-        
-        <button type="button" class="btn btn-primary btn-xs">
-            <span class="glyphicon glyphicon-trash"></span> <fmt:message key="button.removerfavorito"/>
-        </button>
-        
-        <br><br>
-        
-        <h4>Calcular o desvio padr„o de uma lista</h4>
-        
-<pre class="pre-scrollable">
-public static double CalculaDesvio(ArrayList&lt;Integer&gt; lista)
-{
-    double media = CalculaMedia(lista);
-    double desvioLinhas = 0;
-    int n = lista.size();
-
-    for(int i = 0; i< n; i++)
-    {
-        double valorDaLinha = (lista.get(i) - media);
-        desvioLinhas += valorDaLinha * valorDaLinha;
-    }
-
-    double divisao = desvioLinhas / (n - 1);
-    double raiz = Math.sqrt(divisao);
-    return raiz;
-}
-</pre>
-        
-        <button type="button" class="btn btn-primary btn-xs">
-            <span class="glyphicon glyphicon-trash"></span> <fmt:message key="button.removerfavorito"/>
-        </button>
-        
-        <br><br>
-        
-        <ul class="pagination pagination-sm">
-          <li><a href="#">´</a></li>
-          <li class="active"><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li><a href="#">ª</a></li>
-        </ul>
+                    <button type="button" class="btn btn-primary btn-xs btn-remover-favorito" data-id="${item.getId()}" data-idexercicio="${item.getIdExercicio()}">
+                        <span class="glyphicon glyphicon-trash"></span> <fmt:message key="button.removerfavorito"/>
+                    </button>
+                </div>
+            </c:forEach>
+        </c:if>
+                
+        <%@include file="/WEB-INF/jspf/paginador.jspf" %>
             
     </jsp:body>
 </t:master>

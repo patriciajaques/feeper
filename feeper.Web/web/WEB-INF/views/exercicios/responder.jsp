@@ -142,15 +142,6 @@
             <a href="#" class="list-group-item btn-codigo-download">
                 <span class="glyphicon glyphicon-save"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.baixar"/>
             </a>
-            <!--a href="#" class="list-group-item">
-                <span class="glyphicon glyphicon-eye-close"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.ocultarcomentarios"/>
-            </a-->
-            <a href="#" class="list-group-item">
-                <span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.compartilhar"/>
-            </a>
-            <a href="#" class="list-group-item btn-codigo-favorito">
-                <span class="glyphicon glyphicon-star-empty"></span>&nbsp;&nbsp;<fmt:message key="menu.codigo.favorito"/>
-            </a>
         </div>
     </jsp:attribute>
         
@@ -189,10 +180,25 @@
                         var content = data[1].replace(/#'#/gi, '"');
                         CreateEditor(content, data[0] != "0", data[4], data[5]);
                         
+                        if (data[6])
+                            $(".btn-codigo-favorito").html("<span class=\"glyphicon glyphicon-star\"></span> <fmt:message key="button.desmarcarfavorito"/>");
+                        else
+                            $(".btn-codigo-favorito").html("<span class=\"glyphicon glyphicon-star-empty\"></span> <fmt:message key="button.marcarfavorito"/>");
+                        
                         ControlaBotoes();
                         RemoveCarregando();
                         
                         $('html, body').animate({ scrollTop: $("#lblFilename").offset().top }, 1000);
+                    });
+                });
+                
+                $(".btn-codigo-favorito").click(function(){
+                    var id = $("#hdnIdCodigoFonte").val();
+                    $.get("<c:url value='/'/>codigos/savefavorite/${Exercicio.getId()}/" + id, function(data){
+                        if (data != "erro" && data == "true")
+                            $(".btn-codigo-favorito").html("<span class=\"glyphicon glyphicon-star\"></span> <fmt:message key="button.desmarcarfavorito"/>");
+                        else if (data != "erro" && data == "false")
+                            $(".btn-codigo-favorito").html("<span class=\"glyphicon glyphicon-star-empty\"></span> <fmt:message key="button.marcarfavorito"/>");
                     });
                 });
                 
@@ -338,6 +344,15 @@
                 }
             }
             
+            var intervalLookingStatus;
+            function lookingForNewStatus()
+            {
+                $.get("<c:url value='/'/>exercicios/getstatus/${Exercicio.getId()}", function(data){
+                    if (data !== undefined && data != 0 && data != 5)
+                        document.location.href = "<c:url value='/'/>exercicios/responder/${Exercicio.getId()}";
+                });
+            }
+            
             function ControlaBotoes()
             {
                 var idCodigoFonte = $("#hdnIdCodigoFonte").val();
@@ -346,22 +361,22 @@
                 
                 if (editor == null)
                 {
-                    $(".btn-registrar-duvida, .btn-registrar-anotacao, .btn-salvar-codigo, .btn-excluir-codigo, .btn-habilitar-edicao").slideUp("fast");
+                    $(".btn-registrar-duvida, .btn-registrar-anotacao, .btn-salvar-codigo, .btn-excluir-codigo, .btn-habilitar-edicao, .btn-codigo-favorito").slideUp("fast");
                     return;
                 }
                 else
                 {
-                    $(".btn-registrar-duvida, .btn-registrar-anotacao, .btn-salvar-codigo, .btn-excluir-codigo, .btn-habilitar-edicao").slideDown("fast");
+                    $(".btn-registrar-duvida, .btn-registrar-anotacao, .btn-salvar-codigo, .btn-excluir-codigo, .btn-habilitar-edicao, .btn-codigo-favorito").slideDown("fast");
                 }
                 if (editorReadOnly)
                 {
                     $(".btn-salvar-codigo").prop("disabled", "disabled");
-                    $(".btn-habilitar-edicao").slideDown("fast");
+                    $(".btn-habilitar-edicao, .btn-codigo-favorito").prop("disabled", "");
                 }
                 else
                 {
                     $(".btn-salvar-codigo").prop("disabled", "");
-                    $(".btn-habilitar-edicao").slideUp("fast");
+                    $(".btn-habilitar-edicao, .btn-codigo-favorito").prop("disabled", "disabled");
                 }
                 if (principal == "true")
                 {
@@ -399,10 +414,10 @@
         <c:if test="${Resposta != null}">
             <c:choose>
                 <c:when test="${Resposta.getIdStatus() == 1}">
-                    <div class="alert alert-danger"><fmt:message key="label.exercicios.status.errocompilacao"/><br>${Resposta.getMensagem()}</div>
+                    <div class="alert alert-danger"><fmt:message key="label.exercicios.status.errocompilacao"/></div>
                 </c:when>
                 <c:when test="${Resposta.getIdStatus() == 2}">
-                    <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errosaidainvalida"/></div>
+                    <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errosaidainvalida"/><br>${Resposta.getMensagem()}</div>
                 </c:when>
                 <c:when test="${Resposta.getIdStatus() == 3}">
                     <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errotempolimite"/></div>
@@ -415,6 +430,11 @@
                 </c:when>
             </c:choose>
             <small><fmt:message key="label.exercicios.dataultimaresposta"/> <fmt:formatDate value="${Resposta.getDataCadastro()}" pattern="dd/MM/yyyy HH:mm" /></small>
+        </c:if>
+        <c:if test="${Resposta != null && Resposta.getIdStatus() == 5}">
+            <script type="text/javascript">
+                intervalLookingStatus = setInterval(function(){lookingForNewStatus()}, 5000);
+            </script>
         </c:if>
             
         <h3><fmt:message key="label.exercicios.classes"/></h3>
@@ -437,20 +457,23 @@
         <h3 id="lblFilename"></h3>
         <div id="panelEditor"></div>
 
-        <button type="button" class="btn btn-default btn-habilitar-edicao" style="display:none;">
-            <span class="glyphicon glyphicon-lock"></span> <fmt:message key="button.habilitaredicao"/>
-        </button>
-        <button type="button" class="btn btn-primary btn-salvar-codigo" style="display:none;">
+        <button type="button" class="btn btn-primary btn-sm btn-salvar-codigo" style="display:none;">
             <span class="glyphicon glyphicon-save"></span> <fmt:message key="button.salvar"/>
         </button>
-        <button type="button" class="btn btn-default btn-excluir-codigo" style="display:none;">
+        <button type="button" class="btn btn-default btn-sm btn-habilitar-edicao" style="display:none;">
+            <span class="glyphicon glyphicon-lock"></span> <fmt:message key="button.habilitaredicao"/>
+        </button>
+        <button type="button" class="btn btn-default btn-sm btn-excluir-codigo" style="display:none;">
             <span class="glyphicon glyphicon-trash"></span> <fmt:message key="button.excluir"/>
         </button>
-        <button type="button" class="btn btn-default btn-registrar-duvida" style="display:none;">
+        <button type="button" class="btn btn-default btn-sm btn-registrar-duvida" style="display:none;">
             <span class="glyphicon glyphicon-comment"></span> <fmt:message key="button.registrarduvida"/>
         </button>
-        <button type="button" class="btn btn-default btn-registrar-anotacao" style="display:none;">
+        <button type="button" class="btn btn-default btn-sm btn-registrar-anotacao" style="display:none;">
             <span class="glyphicon glyphicon-eye-open"></span> <fmt:message key="button.registraranotacao"/>
+        </button>
+        <button type="button" class="btn btn-default btn-sm btn-codigo-favorito" style="display:none;">
+            <span class="glyphicon glyphicon-star-empty"></span> <fmt:message key="menu.codigo.favorito"/>
         </button>
         
         <!--Modal exibida para adicionar novas classes-->

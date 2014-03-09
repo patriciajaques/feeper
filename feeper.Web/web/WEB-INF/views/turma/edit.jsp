@@ -14,13 +14,16 @@
                 $("#menu-lista-turma").addClass("active");
                 
                 $("#btn-novo-aluno").click(function(){
-                    var url = "<c:url value='/'/>pessoa/addaluno/${turma.getId()}";
-                    modalAluno(url);
-                });
-                
-                $("#btn-novo-aluno-existente").click(function(){
-                    var url = "<c:url value='/'/>pessoa/listaluno/${turma.getId()}";
-                    modalAluno(url);
+                    $.fancybox({
+                        'autoSize': false,
+                        'openEffect': 'fade',
+                        'closeEffect': 'fade',
+                        'width': 500,
+                        'height': 350,
+                        'href': "<c:url value='/'/>turma/addaluno/${turma.getId()}",
+                        'type': 'iframe',
+                        'modal': true
+                    });
                 });
                 
                 $(".btn-voltar").click(function(){
@@ -30,7 +33,7 @@
                 $("#professor").autocomplete({
                     source: function (request, response) {
                         $.ajax({
-                            url: '<c:url value='/'/>pessoa/search/' + $("#professor").val(),
+                            url: '<c:url value='/'/>pessoa/search/2/' + $("#professor").val(),
                             type: 'GET',
                             dataType: 'json'
                         }).done(function (data) {
@@ -50,45 +53,14 @@
                     }
                 });
                 
-                $(".btn-editar").click(function(){
-                    var id = $(this).attr("data-id");
-                    if (id === undefined) return;
-                    var url = "<c:url value='/'/>pessoa/editaluno/" + id;
-                    modalAluno(url);
-                });
-                
                 $(".btn-excluir").click(function(){
                     var id = $(this).attr("data-id");
-                    if (id === undefined) return;
+                    var idTurma = $(this).attr("data-idturma");
+                    if (id === undefined || idTurma === undefined) return;
                     if (!confirm("<fmt:message key="label.confirmaexclusao"/>")) return;
-                    $.getJSON("<c:url value='/'/>pessoa/deleteturmaaluno/" + id, function( data ) {
-                        alert(data);
-                        if (data === "err")
-                        {
-                            $("#msgErro").html("<fmt:message key="label.turma.erroremoveraluno"/>").slideDown("fast");
-                        }
-                        else
-                        {
-                            $("#msgSucesso").html("<fmt:message key="label.turma.sucessoremoveraluno"/>").slideDown("fast");
-                            $("#trAluno" + id).remove();
-                        }
-                    });
+                    document.location.href = "<c:url value='/'/>turma/deletealuno/" + idTurma + "/" + id;
                 });
             });
-            
-            function modalAluno(url)
-            {
-                $.fancybox({
-                    'autoSize': false,
-                    'openEffect': 'fade',
-                    'closeEffect': 'fade',
-                    'width': 500,
-                    'height': 350,
-                    'href': url,
-                    'type': 'iframe',
-                    'modal': true
-                });
-            }
             
             function AtualizaListagem()
             {
@@ -143,8 +115,7 @@
             <div class="alert alert-success" id="msgSucesso" style="display:none"></div>
             <div class="alert alert-danger" id="msgErro" style="display:none"></div>
             
-            <button type="button" id="btn-novo-aluno" class="btn btn-primary"><fmt:message key="button.novoaluno"/></button>
-            <button type="button" id="btn-novo-aluno-existente" class="btn btn-primary"><fmt:message key="button.novoalunoexistente"/></button>
+            <button type="button" id="btn-novo-aluno" class="btn btn-primary"><fmt:message key="button.adicionaraluno"/></button>
             <button type="button" id="btn-enviar-convites" class="btn btn-default"><fmt:message key="button.enviarconvitealunos"/></button>
             <br /><br />
             
@@ -166,11 +137,10 @@
                         <tbody>
                             <c:if test="${not empty turma.getAlunos()}">
                                 <c:forEach var="item" varStatus="status" items="${turma.getAlunos()}">
-                                    <tr id="trAluno${turma.getId()}@${item.getId()}">
+                                    <tr id="trAluno${turma.getId()}_${item.getId()}">
                                         <td>
                                             <div class="btn-group btn-group-xs">
-                                                <button type="button" class="btn btn-default btn-editar" data-id="${turma.getId()}@${item.getId()}"><fmt:message key="button.editar"/></button>
-                                                <button type="button" class="btn btn-default btn-excluir" data-id="${turma.getId()}@${item.getId()}"><fmt:message key="button.excluir"/></button>
+                                                <button type="button" class="btn btn-default btn-excluir" data-idturma="${turma.getId()}" data-id="${item.getId()}"><fmt:message key="button.excluir"/></button>
                                             </div>
                                         </td>
                                         <td>${item.getId()}</td>
@@ -181,7 +151,7 @@
                             </c:if>
                             <c:if test="${empty turma.getAlunos()}">
                                 <tr>
-                                    <td colspan="4"><fmt:message key="label.nenhumregistroencontrado"/></td>
+                                    <td colspan="4" style="text-align: center"><fmt:message key="label.nenhumregistroencontrado"/></td>
                                 </tr>
                             </c:if>
                         </tbody>

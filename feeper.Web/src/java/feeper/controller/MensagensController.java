@@ -2,6 +2,7 @@ package feeper.controller;
 
 import feeper.Data.entity.Pessoa;
 import feeper.Data.service.MensagemCabecalhoService;
+import feeper.Data.service.MensagemLeitorService;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -20,9 +21,19 @@ public class MensagensController extends ApplicationController {
         
         Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
         MensagemCabecalhoService repoMensagemCabecalho = new MensagemCabecalhoService();
-        List<Object> lista = repoMensagemCabecalho.getMensagensDestinatario(usuarioLogado.getId(), false, true);
         
-        model.addAttribute("listaMensagens", lista);
+        //Mensagens recebidas como destinatário
+        List<Object> listaDestinatario = repoMensagemCabecalho.getMensagensDestinatario(usuarioLogado.getId(), false, true);
+        model.addAttribute("listaMensagensDestinatario", listaDestinatario);
+        
+        MensagemLeitorService repoMensagemLeitor = new MensagemLeitorService();
+        repoMensagemLeitor.atualizarDataLeitura(usuarioLogado.getId(), 'D');
+        
+        //Mensagens enviadas como remetente
+        List<Object> listaRemetente = repoMensagemCabecalho.getMensagensRemetente(usuarioLogado.getId(), false, true);
+        model.addAttribute("listaMensagensRemetente", listaRemetente);
+        
+        repoMensagemLeitor.atualizarDataLeitura(usuarioLogado.getId(), 'R');
         
         return "mensagens/list";
     }
