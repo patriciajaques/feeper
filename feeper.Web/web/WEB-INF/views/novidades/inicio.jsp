@@ -4,7 +4,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <t:master>
-    <jsp:attribute name="title"><fmt:message key="title.turmas"/></jsp:attribute>
+    <jsp:attribute name="title"><fmt:message key="title.inicio"/></jsp:attribute>
     <jsp:attribute name="header"></jsp:attribute>
     <jsp:body></jsp:body>
 </t:master>

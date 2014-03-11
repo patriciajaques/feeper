@@ -64,10 +64,33 @@
             }
             
             $(function(){
-               try {
+               
+               $("#feedback-button").fancybox({
+                    'autoSize': true,
+                    'autoResize': true,
+                    'openEffect': 'fade',
+                    'closeEffect': 'fade',
+                    'modal': false
+               });
+               
+               var ajaxFormOptions = { 
+                    beforeSubmit: MostraCarregando,
+                    clearForm: true,
+                    success: function(data) {
+                        RemoveCarregando();                
+                        if (data == "ok")
+                            $("#msg-feedback-sucesso").slideDown("fast");
+                        else
+                            $("#msg-feedback-erro").slideDown("fast");
+                    }
+                }; 
+                $('#frmFeedback').ajaxForm(ajaxFormOptions);
+                
+                try {
                    parent.FechaModal();
                } catch (e) { }
                SessionTimeout.schedulePopup(9, '< c:url value='/'/>timeout', '<fmt:message key="label.mensagemsessiontimeout"/>'); 
+               
             });
         </script>
         
@@ -190,6 +213,26 @@
         
         <jsp:invoke fragment="footer"/>
         <p style="text-align: center; margin-top: 50px;"><small><fmt:message key="author"/></small></p>
+        
+        <a id="feedback-button" href="#divFeedback">
+            <img src="<c:url value='/resources/img/feedback.png'/>" alt="feedback" />
+        </a>
+        <div id="divFeedback" style="display: none; width: 400px;">
+            <div class="alert alert-success" id="msg-feedback-sucesso" style="display:none;"><fmt:message key="label.feedback.msgsucesso"/></div>
+            <div class="alert alert-danger" id="msg-feedback-erro" style="display:none;"><fmt:message key="label.feedback.msgerro"/></div>
+            <form role="form" action="<c:url value='/'/>feedback" id="frmFeedback" method="POST">
+                <h4><fmt:message key="label.feedback.informativo"/></h4>
+                <div class="form-group">
+                    <label class="sr-only" for="email"><fmt:message key="label.feedback.email"/></label>
+                    <input type="text" class="form-control" id="email" name="email" placeholder="<fmt:message key="label.feedback.email"/>">
+                </div>
+                <div class="form-group">
+                    <label class="sr-only" for="mensagem"><fmt:message key="label.feedback.mensagem"/></label>
+                    <textarea class="form-control" rows="3" id="mensagem" name="mensagem" placeholder="<fmt:message key="label.feedback.mensagem"/>"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary"><fmt:message key="button.enviarfeedback"/></button>
+            </form>
+        </div>
         
     </body>
 </html>

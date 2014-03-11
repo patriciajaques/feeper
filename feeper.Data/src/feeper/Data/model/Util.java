@@ -13,19 +13,25 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -228,7 +234,7 @@ public class Util {
         }
     }
     
-    private static BufferedImage resizeImage(BufferedImage originalImage, int type, int width, int height){
+    public static BufferedImage resizeImage(BufferedImage originalImage, int type, int width, int height){
 	BufferedImage resizedImage = new BufferedImage(width, height, type);
 	Graphics2D g = resizedImage.createGraphics();
 	g.drawImage(originalImage, 0, 0, width, height, null);
@@ -237,7 +243,7 @@ public class Util {
 	return resizedImage;
     }
  
-    private static BufferedImage resizeImageWithHint(BufferedImage originalImage, int type, int width, int height){
+    public static BufferedImage resizeImageWithHint(BufferedImage originalImage, int type, int width, int height){
  
 	BufferedImage resizedImage = new BufferedImage(width, height, type);
 	Graphics2D g = resizedImage.createGraphics();
@@ -253,6 +259,52 @@ public class Util {
 	RenderingHints.VALUE_ANTIALIAS_ON);
  
 	return resizedImage;
+    }
+    
+    public static boolean sendMail(String subject, String body)
+    {
+        return sendMail("", subject, body);
+    }
+    public static boolean sendMail(String to, String subject, String body)
+    {
+        try {
+            
+            body = body.replace("\n", "<br>");
+            
+            final String username = "feeper.box@gmail.com";
+            final String password = "kx8f33p3r";
+
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.port", "587");
+
+            Session session = Session.getInstance(props,
+              new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(username, password);
+                    }
+              });
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("feeper.box@gmail.com"));
+
+            if (to.isEmpty())
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("feeper.box@gmail.com"));
+            else
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+
+            message.setSubject("[feeper] " + subject);
+            message.setContent(body,"text/html");
+
+            Transport.send(message);
+
+            return true;
+            
+        } catch (MessagingException e) {
+            return false;
+        }
     }
     
 }

@@ -7,6 +7,7 @@ import feeper.model.DontValidateAccess;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,6 +42,31 @@ public class ApplicationController {
     @ResponseBody
     public String trataString(@PathVariable String text) {
         return Util.prepareStringForSave(text);
+    }
+    
+    @DontValidateAccess
+    @RequestMapping(value="/feedback", method=RequestMethod.POST)
+    @ResponseBody
+    public String feedback(
+            @ModelAttribute("email") String email,
+            @ModelAttribute("mensagem") String mensagem) {
+        
+        try {
+            
+            if (mensagem.isEmpty())
+                return "erro1";
+            
+            StringBuilder sb = new StringBuilder();
+            sb.append("<p>Novo feedback recebido!</p><p>E-mail: ").append(email).append("<br>Mensagem: ").append(mensagem).append("</p>");
+            
+            if (Util.sendMail("feedback", sb.toString()))
+                return "ok";
+            else
+                return "erro2";
+            
+        } catch (Exception e) {
+            return "erro3";
+        }
     }
     
     public void log(int idPessoa, String msg, int idTipoLog)
