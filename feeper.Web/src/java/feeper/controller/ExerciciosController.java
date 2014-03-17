@@ -823,6 +823,10 @@ public class ExerciciosController extends ApplicationController {
         {
             RespostaService repoResposta = new RespostaService();
             Resposta resposta = repoResposta.getLastByIdExercicio(exercicio.getId(), pessoa.getId());
+            
+            List<Resposta> re = repoResposta.getAll();
+            Resposta aaa = re.get(re.size()-1);
+            
             return resposta.getIdStatus();
         }
         

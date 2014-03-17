@@ -144,6 +144,8 @@ public class ActionExecuteInterceptor extends HandlerInterceptorAdapter {
 
     private void carregaBadges(ModelAndView modelAndView, HttpSession session) {
         
+        if (modelAndView == null || session == null) return;
+        
         int idPessoa = ((Pessoa)session.getAttribute("UsuarioLogado")).getId();
         int contBadgeNovidades = 0;
         int contBadgeMensagens = 0;

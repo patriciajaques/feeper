@@ -35,6 +35,7 @@ public class RespostaService extends HibernateUtil<Resposta> {
             SQLQuery query = query("select * from Resposta where IdExercicio = :idExercicio and IdAutor = :idAutor order by ID desc limit 1").addEntity(Resposta.class);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAutor", idAutor);
+            
             return (Resposta)query.list().get(0);
         } catch (Exception e) {
             return null;
