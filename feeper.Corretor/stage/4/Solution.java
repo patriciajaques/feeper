@@ -9,6 +9,8 @@ class Solution
 {
     public static void main (String[] args) throws java.lang.Exception
     {
-        System.out.println(1111);
+        InputStreamReader ir = new InputStreamReader(System.in);
+        BufferedReader in = new BufferedReader(ir);
+        System.out.println(in.readLine());
     }
 }
