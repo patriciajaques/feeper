@@ -162,15 +162,11 @@ window.SessionTimeout = (function () {
 
     var showPopup = function () {
         $.fancybox({
-            'transitionIn': 'none',
-            'transitionOut': 'none',
+            'autoSize': true,
+            'autoResize': true,
+            'openEffect': 'fade',
+            'closeEffect': 'fade',
             'modal': true,
-            'showNavArrows': false,
-            'autoScale': false,
-            'autoDimensions': false,
-            'centerOnScroll': true,
-            'width': 350,
-            'height': 130,
             'content': _divMsg
         });
         _timeLeft = 60;

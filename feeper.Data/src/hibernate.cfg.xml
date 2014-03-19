@@ -4,15 +4,16 @@
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/feeper?zeroDateTimeBehavior=convertToNull</property>
+    <property name="hibernate.connection.url">jdbc:mysql://mysql-feeper.jelasticlw.com.br/feeper</property>
     <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.password">2Uhl7YhwFH</property>
     <property name="hibernate.show_sql">true</property>
     <property name="hibernate.query.factory_class">org.hibernate.hql.ast.ASTQueryTranslatorFactory</property>
     <property name="hibernate.current_session_context_class">jta</property>
     <property name="hibernate.cache.use_second_level_cache">false</property>
     <property name="hibernate.cache.use_query_cache">false</property>
-    <!-- Disable the second-level cache  -->
-    <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+    <property name="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+    <property name="hibernate.connection.release_mode">after_statement</property>
     <mapping resource="feeper/Data/entity/Conquista.hbm.xml"/>
     <mapping resource="feeper/Data/entity/Mensagem.hbm.xml"/>
     <mapping resource="feeper/Data/entity/Exercicio.hbm.xml"/>
