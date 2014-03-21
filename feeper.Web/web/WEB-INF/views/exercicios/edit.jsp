@@ -8,7 +8,8 @@
     <jsp:attribute name="header">
         
         <script type="text/javascript">
-            var trTemplate = "<tr id=\"trLinhaNova#id#\" class=\"linha-validacao\"><td><div class=\"btn-group btn-group-xs\"><button type=\"button\" class=\"btn btn-default btn-excluir\" data-source=\"0\" data-id=\"#id#\"><fmt:message key="button.excluir"/></button></div></td><td><textarea class=\"form-control\" rows=\"3\" id=\"entrada#id#\" name=\"entrada#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"saida#id#\" name=\"saida#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"mensagem#id#\" name=\"mensagem#id#\"></textarea></td></tr>";
+            var trTemplate = "<tr id=\"trLinhaNova#id#\" class=\"linha-validacao\"><td><div class=\"btn-group btn-group-xs\"><button type=\"button\" class=\"btn btn-default btn-excluir\" data-context=\"frmSaveValidacao\" data-source=\"0\" data-id=\"#id#\"><fmt:message key="button.excluir"/></button></div></td><td><textarea class=\"form-control\" rows=\"3\" id=\"entrada#id#\" name=\"entrada#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"saida#id#\" name=\"saida#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"mensagem#id#\" name=\"mensagem#id#\"></textarea></td></tr>";
+            var trTemplateClasse = "<tr id=\"trLinhaNova#id#\" class=\"linha-validacao\"><td><div class=\"btn-group btn-group-xs\"><button type=\"button\" class=\"btn btn-default btn-excluir\" data-context=\"frmSaveClasseValidacao\" data-source=\"0\" data-id=\"#id#\"><fmt:message key="button.excluir"/></button></div></td><td><textarea class=\"form-control\" rows=\"3\" id=\"fonte#id#\" name=\"fonte#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"saida#id#\" name=\"saida#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"mensagemCompilacao#id#\" name=\"mensagemCompilacao#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"mensagem#id#\" name=\"mensagem#id#\"></textarea></td></tr>";
     
             $(function(){
                 $("#menu-lista-exercicio").addClass("active");
@@ -48,21 +49,90 @@
                 });
                 
                 $(document).on("click", ".btn-excluir", function(){
+                    var context = $(this).attr("data-context");
                     var id = $(this).attr("data-id");
                     if (id === undefined) return;
                     var source = parseInt($(this).attr("data-source"));
                     var trId = (source === 1) ? "#trLinha" + id : "#trLinhaNova" + id;
-                    $(trId).remove();
+                    $("#"+ context + " " + trId).remove();
                 });
                 
                 $(".btn-nova-linha").click(function(){
-                    var cont = parseInt($("#contador").val()) + 1;
-                    var linha = trTemplate.replace(/#id#/gi, cont);
-                    $("#tbody-validacoes").append(linha);
-                    $("#contador").val(cont);
+                    novaLinha($(this));
+                });
+                
+                $(".btn-nova-classe").click(function(){
+                    var obj = $(this);
+                    $.fancybox({
+                        'autoSize': true,
+                        'openEffect': 'fade',
+                        'closeEffect': 'fade',
+                        'modal': true,
+                        'href': '#divNovaClasse'
+                    });
                 });
                 
             });
+            
+            function novaLinha(obj)
+            {
+                var context = $(obj).attr("data-context");
+                var cont = parseInt($("#"+ context + " #contador").val()) + 1;
+                var linha = context == "frmSaveValidacao" ?
+                                trTemplate.replace(/#id#/gi, cont) :
+                                trTemplateClasse.replace(/#id#/gi, cont);
+
+                $("#"+ context + " #tbody-validacoes").append(linha);
+                $("#"+ context + " #contador").val(cont);
+                return cont;
+            }
+            
+            function adicionarClasse()
+            {
+                if ($("#classe").val().length == 0 || $("#classe").val().length == 0) return;
+                var obj = $(".btn-nova-classe").get(0);
+                var context = $(obj).attr("data-context");
+                var classe = $("#classe").val();
+                var atributos = $("#atributos").val().split("\n");
+                
+                //Nova linha para testar a classe. ex: Classe x = new Classe();
+                var cont = novaLinha(obj);
+                var newClasse = classe + " x = new " + classe + "();";
+                $("#"+ context + " #fonte" + cont).val(newClasse);
+                $("#"+ context + " #saida" + cont).val("");
+                $("#"+ context + " #mensagemCompilacao" + cont).val("<fmt:message key="label.exercicio.mensagemvalidacao.nomeclasse"/>");
+                $("#"+ context + " #mensagem" + cont).val("");
+
+                for (i = 0; i < atributos.length; i++)
+                {
+                    //Linha para testar o método SET
+                    cont = novaLinha(obj);
+                    var fonte = newClasse + "\n" + "x.set" + atributos[i] + "(123);";
+                    
+                    $("#"+ context + " #fonte" + cont).val(fonte);
+                    $("#"+ context + " #saida" + cont).val("");
+                    $("#"+ context + " #mensagemCompilacao" + cont).val("<fmt:message key="label.exercicio.mensagemvalidacao.metodoset"/>");
+                    $("#"+ context + " #mensagem" + cont).val("");
+                    
+                    //Linha para testar o método GET
+                    cont = novaLinha(obj);
+                    fonte = fonte + "\n" + "System.out.println(x.get" + atributos[i] + "());";
+                    
+                    $("#"+ context + " #fonte" + cont).val(fonte);
+                    $("#"+ context + " #saida" + cont).val("123");
+                    $("#"+ context + " #mensagemCompilacao" + cont).val("<fmt:message key="label.exercicio.mensagemvalidacao.metodoget"/>");
+                    $("#"+ context + " #mensagem" + cont).val("<fmt:message key="label.exercicio.mensagemvalidacao.retornoget"/>");
+                }
+                
+                cancelarClasse();
+            }
+            
+            function cancelarClasse()
+            {
+                $("#atributos").val("");            
+                $("#classe").val("");            
+                $.fancybox.close(true);
+            }
         </script>
         
     </jsp:attribute>
@@ -133,12 +203,12 @@
 
             <h2><fmt:message key="label.exercicios.cadastrarentradassaidas"/></h2>
             
-            <form role="form" action="<c:url value='/'/>exercicios/savevalidacao" method="POST">
+            <form role="form" id="frmSaveValidacao" action="<c:url value='/'/>exercicios/savevalidacao" method="POST">
                 <input type="hidden" id="idExercicio" name="idExercicio" value="${exercicio.getId()}">
                 <input type="hidden" id="contador" name="contador" value="${exercicio.getValidacoes().size()}">
                 
                 
-                <button type="button" class="btn btn-primary btn-nova-linha"><fmt:message key="button.novalinha"/></button>
+                <button type="button" class="btn btn-primary btn-nova-linha" data-context="frmSaveValidacao"><fmt:message key="button.novalinha"/></button>
                 <button type="submit" class="btn btn-primary"><fmt:message key="button.salvarvalidacao"/></button>
                 <br /><br />
 
@@ -154,7 +224,7 @@
                                     <th><fmt:message key="label.exercicios.acoes"/></th>
                                     <th><fmt:message key="label.exercicios.entrada"/></th>
                                     <th><fmt:message key="label.exercicios.saida"/></th>
-                                    <th><fmt:message key="label.exercicios.mensagemperzonalizada"/></th>
+                                    <th><fmt:message key="label.exercicios.mensagempersonalizada"/></th>
                                 </tr>
                             </thead>
                             <tbody id="tbody-validacoes">
@@ -164,7 +234,7 @@
                                             <td>
                                                 <div class="btn-group btn-group-xs">
                                                     <input type="hidden" id="idValidacao${status.index + 1}" name="idValidacao${status.index + 1}" value="${item.getId()}">
-                                                    <button type="button" class="btn btn-default btn-excluir" data-source="1" data-id="${item.getId()}"><fmt:message key="button.excluir"/></button>
+                                                    <button type="button" class="btn btn-default btn-excluir" data-context="frmSaveValidacao" data-source="1" data-id="${item.getId()}"><fmt:message key="button.excluir"/></button>
                                                 </div>
                                             </td>
                                             <td>
@@ -184,10 +254,81 @@
 
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary btn-nova-linha"><fmt:message key="button.novalinha"/></button>
+                <button type="button" class="btn btn-primary btn-nova-linha" data-context="frmSaveValidacao"><fmt:message key="button.novalinha"/></button>
                 <button type="submit" class="btn btn-primary"><fmt:message key="button.salvarvalidacao"/></button>
             </form>
             <br><br>
+            
+            <h2><fmt:message key="label.exercicios.cadastrarclassesteste"/></h2>
+            
+            <form role="form" id="frmSaveClasseValidacao" action="<c:url value='/'/>exercicios/saveclassevalidacao" method="POST">
+                <input type="hidden" id="idExercicio" name="idExercicio" value="${exercicio.getId()}">
+                <input type="hidden" id="contador" name="contador" value="${exercicio.getClassesValidacao().size()}">
+                
+                
+                <button type="button" class="btn btn-primary btn-nova-linha" data-context="frmSaveClasseValidacao"><fmt:message key="button.novalinha"/></button>
+                <button type="button" class="btn btn-primary btn-nova-classe" data-context="frmSaveClasseValidacao"><fmt:message key="button.novaclasse"/></button>
+                <button type="submit" class="btn btn-primary"><fmt:message key="button.salvarvalidacao"/></button>
+                <br /><br />
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><fmt:message key="label.registroscadastrados"/></h3>
+                    </div>
+                    <div class="panel-body">
+
+                        <table class="table table-striped table-hover" style="margin-bottom: 0px;">
+                            <thead>
+                                <tr>
+                                    <th><fmt:message key="label.exercicios.acoes"/></th>
+                                    <th><fmt:message key="label.exercicios.classeteste"/></th>
+                                    <th><fmt:message key="label.exercicios.saida"/></th>
+                                    <th><fmt:message key="label.exercicios.mensagemcompilacao"/></th>
+                                    <th><fmt:message key="label.exercicios.mensagempersonalizada"/></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-validacoes">
+                                <c:if test="${not empty exercicio.getClassesValidacao()}">
+                                    <c:forEach var="item" varStatus="status" items="${exercicio.getClassesValidacao()}">
+                                        <tr id="trLinha${item.getId()}" class="linha-validacao">
+                                            <td>
+                                                <div class="btn-group btn-group-xs">
+                                                    <input type="hidden" id="idClasseValidacao${status.index + 1}" name="idClasseValidacao${status.index + 1}" value="${item.getId()}">
+                                                    <button type="button" class="btn btn-default btn-excluir" data-context="frmSaveClasseValidacao" data-source="1" data-id="${item.getId()}"><fmt:message key="button.excluir"/></button>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <textarea class="form-control" rows="3" id="fonte${status.index + 1}" name="fonte${status.index + 1}">${item.getFonte()}</textarea>
+                                            </td>
+                                            <td>
+                                                <textarea class="form-control" rows="3" id="saida${status.index + 1}" name="saida${status.index + 1}">${item.getSaida()}</textarea>
+                                            </td>
+                                            <td>
+                                                <textarea class="form-control" rows="3" id="mensagemCompilacao${status.index + 1}" name="mensagemCompilacao${status.index + 1}">${item.getMensagemCompilacao()}</textarea>
+                                            </td>
+                                            <td>
+                                                <textarea class="form-control" rows="3" id="mensagem${status.index + 1}" name="mensagem${status.index + 1}">${item.getMensagem()}</textarea>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:if>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary btn-nova-linha" data-context="frmSaveClasseValidacao"><fmt:message key="button.novalinha"/></button>
+                <button type="submit" class="btn btn-primary"><fmt:message key="button.salvarvalidacao"/></button>
+            </form>
+            <br><br>
+            
+            <!--Modal exibida para adicionar novas classes-->
+            <div style="display:none;" id="divNovaClasse">
+                <input type="text" class="form-control" id="classe" name="classe" placeholder="<fmt:message key="label.exercicio.nomeclasseinforme"/>" maxlength="45">
+                <textarea class="form-control" rows="5" id="atributos" name="atributos" placeholder="<fmt:message key="label.exercicio.atributoclasseinforme"/>"></textarea>
+                <button type="button" class="btn btn-primary btn-xs" onclick="adicionarClasse();"><fmt:message key="button.adicionarnovaclasse"/></button>
+                <button type="button" class="btn btn-default btn-xs" onclick="cancelarClasse();"><fmt:message key="button.cancelar"/></button>
+            </div>
             
         </c:if>
                 

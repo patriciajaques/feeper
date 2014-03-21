@@ -2,6 +2,7 @@ package feeper.controller;
 
 import feeper.Data.entity.CodigoFonte;
 import feeper.Data.entity.Exercicio;
+import feeper.Data.entity.ExercicioClasseValidacao;
 import feeper.Data.entity.ExercicioValidacao;
 import feeper.Data.entity.MeusExercicios;
 import feeper.Data.entity.Pessoa;
@@ -17,6 +18,7 @@ import feeper.Data.model.ScalarResult;
 import feeper.Data.model.Util;
 import feeper.Data.service.CodigoFonteMarcacaoService;
 import feeper.Data.service.CodigoFonteService;
+import feeper.Data.service.ExercicioClasseValidacaoService;
 import feeper.Data.service.ExercicioService;
 import feeper.Data.service.ExercicioValidacaoService;
 import feeper.Data.service.RespostaService;
@@ -178,6 +180,7 @@ public class ExerciciosController extends ApplicationController {
         
         Exercicio exercicio = service.getById(id);
         exercicio.setValidacoes(service.getValidacoes(id));
+        exercicio.setClassesValidacao(service.getClassesValidacao(id));
         
         model.addAttribute(exercicio);
         model.addAttribute("IsAdd", false);
@@ -221,13 +224,13 @@ public class ExerciciosController extends ApplicationController {
     @RequestMapping(value="/savevalidacao", method=RequestMethod.POST)
     public ModelAndView savevalidacao(HttpServletRequest request, HttpSession session) {
         
-        ModelAndView mav = new ModelAndView();
-        mav.setView(new RedirectView("/exercicios", true, true, false));
-        
         int idExercicio = Integer.parseInt(request.getParameter("idExercicio").toString());
         int contador = Integer.parseInt(request.getParameter("contador").toString());
         ExercicioValidacaoService repo = new ExercicioValidacaoService();
         StringBuilder idsExistentes = new StringBuilder("0");
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setView(new RedirectView("/exercicios/edit/" + idExercicio, true, true, false));
         
         for (int i = 1; i <= contador; i++) {
             
@@ -258,6 +261,52 @@ public class ExerciciosController extends ApplicationController {
         
         Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
         log(usuarioLogado.getId(), "SUCESSO: VALIDACAO: ID: " + idExercicio, ETipoLog.ALTERAR_EXERCICIO);
+        
+        return mav;
+    }
+    
+    @RequestMapping(value="/saveclassevalidacao", method=RequestMethod.POST)
+    public ModelAndView saveclassevalidacao(HttpServletRequest request, HttpSession session) {
+        
+        int idExercicio = Integer.parseInt(request.getParameter("idExercicio").toString());
+        int contador = Integer.parseInt(request.getParameter("contador").toString());
+        ExercicioClasseValidacaoService repo = new ExercicioClasseValidacaoService();
+        StringBuilder idsExistentes = new StringBuilder("0");
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setView(new RedirectView("/exercicios/edit/" + idExercicio, true, true, false));
+        
+        for (int i = 1; i <= contador; i++) {
+            
+            int idClasseValidacao = request.getParameter("idClasseValidacao" + i) == null ? 0 : Integer.parseInt(request.getParameter("idClasseValidacao" + i).toString());
+            String fonte = request.getParameter("fonte" + i) == null ? "" : request.getParameter("fonte" + i).toString();
+            String saida = request.getParameter("saida" + i) == null ? "" : request.getParameter("saida" + i).toString();
+            String mensagem = request.getParameter("mensagem" + i) == null ? "" : request.getParameter("mensagem" + i).toString();
+            String mensagemCompilacao = request.getParameter("mensagemCompilacao" + i) == null ? "" : request.getParameter("mensagemCompilacao" + i).toString();
+            
+            if (fonte.isEmpty()) continue;
+            
+            ExercicioClasseValidacao entity = new ExercicioClasseValidacao();
+            
+            if (idClasseValidacao != 0)
+                entity.setId(idClasseValidacao);
+            entity.setIdExercicio(idExercicio);
+            entity.setFonte(fonte);
+            entity.setSaida(saida);
+            entity.setMensagem(mensagem);
+            entity.setMensagemCompilacao(mensagemCompilacao);
+            entity.setDataCadastro(new Date());
+            entity.setAtivo(true);
+            
+            repo.insertOrUpdate(entity);
+            
+            idsExistentes.append(",").append(entity.getId());
+        }
+        
+        repo.deleteNotIn(idExercicio, idsExistentes.toString());
+        
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
+        log(usuarioLogado.getId(), "SUCESSO: CLASSE VALIDACAO: ID: " + idExercicio, ETipoLog.ALTERAR_EXERCICIO);
         
         return mav;
     }

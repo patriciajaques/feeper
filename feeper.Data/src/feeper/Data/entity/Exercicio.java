@@ -21,6 +21,7 @@ public class Exercicio  implements java.io.Serializable {
     private String descricaoHtml;
     private Pessoa autor;
     private List<ExercicioValidacao> validacoes;
+    private List<ExercicioClasseValidacao> classesValidacao;
 
 
     public Exercicio() {
@@ -108,7 +109,13 @@ public class Exercicio  implements java.io.Serializable {
     public void setValidacoes(List<ExercicioValidacao> validacoes) {
         this.validacoes = validacoes;
     }
+    public List<ExercicioClasseValidacao> getClassesValidacao() {
+        return classesValidacao;
+    }
 
+    public void setClassesValidacao(List<ExercicioClasseValidacao> classesValidacao) {
+        this.classesValidacao = classesValidacao;
+    }
 
 
 

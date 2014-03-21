@@ -199,16 +199,6 @@ public class TurmaController extends ApplicationController {
         return mav;
     }
     
-    @RequestMapping(value="/details/{id}", method=RequestMethod.GET)
-    public String details(@PathVariable int id, Model model) {
-        
-        Turma turma = new Turma();
-        turma.setNome("Programação 1");
-        
-        model.addAttribute(turma);
-        return "turma/details";
-    }
-    
     @RequestMapping(value="/change/{id}", method=RequestMethod.GET)
     public ModelAndView change(@PathVariable int id, HttpServletRequest request) {
         

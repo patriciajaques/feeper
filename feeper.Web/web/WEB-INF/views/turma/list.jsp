@@ -98,6 +98,7 @@
                                         <div class="btn-group btn-group-xs">
                                             <button type="button" class="btn btn-default btn-editar" data-id="${item.getId()}"><fmt:message key="button.editar"/></button>
                                             <button type="button" class="btn btn-default btn-excluir" data-id="${item.getId()}"><fmt:message key="button.excluir"/></button>
+                                            <button type="button" class="btn btn-default btn-excluir" data-id="${item.getId()}"><fmt:message key="button.excluir"/></button>
                                         </div>
                                     </td>
                                     <td>${item.getId()}</td>

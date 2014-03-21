@@ -7,7 +7,6 @@ package feeper.Data.service;
 import feeper.Data.entity.ExercicioValidacao;
 import feeper.Data.model.HibernateUtil;
 import java.math.BigInteger;
-import java.util.Date;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
