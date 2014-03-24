@@ -1,0 +1,80 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package feeper.Data.service;
+
+import feeper.Data.entity.TurmaExercicio;
+import feeper.Data.entity.TurmaExercicio;
+import feeper.Data.model.HibernateUtil;
+import java.math.BigInteger;
+import java.util.List;
+import org.hibernate.SQLQuery;
+
+/**
+ *
+ * @author
+ * fabioalves
+ */
+public class TurmaExercicioService extends HibernateUtil<TurmaExercicio> {
+    
+    public TurmaExercicioService() {
+        super(TurmaExercicio.class);
+    }
+    
+    public List<TurmaExercicio> getByIdTurma(int idTurma)
+    {
+        SQLQuery query = query("select * from TurmaExercicio where IdTurma = :idTurma").addEntity(TurmaExercicio.class);
+        query.setInteger("idTurma", idTurma);
+        return query.list();
+    }
+    
+    public List<TurmaExercicio> getByIdExercicio(int idExercicio)
+    {
+        SQLQuery query = query("select * from TurmaExercicio where IdExercicio = :idExercicio").addEntity(TurmaExercicio.class);
+        query.setInteger("idExercicio", idExercicio);
+        return query.list();
+    }
+    
+    public boolean existsByIdTurmaIdExercicio(int idTurma, int idExercicio)
+    {
+        SQLQuery query = query("select count(*) from TurmaExercicio where IdTurma = :idTurma and IdExercicio = :idExercicio");
+        query.setInteger("idTurma", idTurma);
+        query.setInteger("idExercicio", idExercicio);
+        Object result = query.uniqueResult();
+        return result != null && ((BigInteger)result).intValue() >= 1;
+    }
+    
+    public boolean insertIfNotExist(int idTurma, int idExercicio)
+    {
+        try {
+            if (!existsByIdTurmaIdExercicio(idTurma, idExercicio))
+            {
+                SQLQuery query = query("insert into TurmaExercicio (IdTurma, IdExercicio) values ( :idTurma , :idExercicio )");
+                query.setInteger("idTurma", idTurma);
+                query.setInteger("idExercicio", idExercicio);
+
+                query.executeUpdate();
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    public boolean deleteAllByIdTurma(int idTurma)
+    {
+        try {
+            
+            SQLQuery query = query("delete from TurmaExercicio where IdTurma = :idTurma ");
+            query.setInteger("idTurma", idTurma);
+            query.executeUpdate();
+            
+            return true;
+            
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+}

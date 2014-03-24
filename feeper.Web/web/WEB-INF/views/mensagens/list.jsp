@@ -61,7 +61,7 @@
                     <p>${item[12]}</p>
                     <small>${item[1]} <fmt:message key="label.mensagens.em"/> <a href="#" class="fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}">${item[10]} / ${item[8]} (<fmt:message key="label.mensagens.linha"/> ${item[6]})</a> - <fmt:message key="label.mensagens.ha"/> ${item[11]}</small><br>
                     <p>
-                        <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.responder"/></button>
+                        <button type="button" class="btn btn-primary btn-xs fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}"><fmt:message key="button.responder"/></button>
                     </p>
                 </blockquote>
             </c:forEach>
@@ -72,7 +72,7 @@
                     <p>${item[12]}</p>
                     <small>${item[1]} <fmt:message key="label.mensagens.em"/> <a href="#" class="fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}">${item[10]} / ${item[8]} (<fmt:message key="label.mensagens.linha"/> ${item[6]})</a> - <fmt:message key="label.mensagens.ha"/> ${item[11]}</small><br>
                     <p>
-                        <button type="button" class="btn btn-primary btn-xs"><fmt:message key="button.responder"/></button>
+                        <button type="button" class="btn btn-primary btn-xs fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}"><fmt:message key="button.responder"/></button>
                     </p>
                 </blockquote>
             </c:forEach>

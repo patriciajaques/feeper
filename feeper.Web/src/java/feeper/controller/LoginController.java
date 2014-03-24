@@ -6,6 +6,7 @@ import feeper.Data.model.ETipoLog;
 import feeper.Data.service.PessoaService;
 import feeper.Data.service.TurmaService;
 import feeper.model.DontValidateAccess;
+import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -26,7 +27,9 @@ public class LoginController extends ApplicationController {
     }
     
     @RequestMapping(value="/validate", method=RequestMethod.POST)
-    public ModelAndView validate(HttpServletRequest request, final RedirectAttributes flash) {
+    public ModelAndView validate(
+            HttpServletRequest request
+            , final RedirectAttributes flash) {
         
         ModelAndView mav = new ModelAndView();
         
@@ -43,6 +46,9 @@ public class LoginController extends ApplicationController {
         else
         {
             log(pessoa.getId(), "IP: " + request.getRemoteAddr(), ETipoLog.LOGIN);
+            
+            pessoa.setDataUltimoAcesso(new Date());
+            repoPessoa.update(pessoa);
             
             TurmaService repoTurma = new TurmaService();
             
@@ -67,6 +73,38 @@ public class LoginController extends ApplicationController {
             session.invalidate();
         
         return "redirect:/";
+    }
+    
+    @RequestMapping(value="/esqueciminhasenha", method=RequestMethod.GET)
+    public String esqueciminhasenha(HttpServletRequest request) {
+        return "login/esqueciminhasenha";
+    }
+    
+    @RequestMapping(value="/validateesqueciminhasenha", method=RequestMethod.POST)
+    public ModelAndView validateesqueciminhasenha(
+            HttpServletRequest request
+            , final RedirectAttributes flash) {
+        
+        ModelAndView mav = new ModelAndView();
+        
+        String email = request.getParameter("email");
+        
+        PessoaService repoPessoa = new PessoaService();
+        Pessoa pessoa = repoPessoa.validaLogin(email);
+        if (pessoa == null || pessoa.getId() == 0)
+        {
+            mav.setView(new RedirectView("/esqueciminhasenha", true, true, false));
+            flash.addFlashAttribute("MSG_ERRO", "E-mail inválido!");
+        }
+        else
+        {
+            log(pessoa.getId(), "IP: " + request.getRemoteAddr(), ETipoLog.LOGIN);
+            
+            
+            
+            mav.setView(new RedirectView("/login", true, true, false));                
+        }
+        return mav;
     }
     
 }

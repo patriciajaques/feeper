@@ -318,6 +318,7 @@
                     </div>
                 </div>
                 <button type="button" class="btn btn-primary btn-nova-linha" data-context="frmSaveClasseValidacao"><fmt:message key="button.novalinha"/></button>
+                <button type="button" class="btn btn-primary btn-nova-classe" data-context="frmSaveClasseValidacao"><fmt:message key="button.novaclasse"/></button>
                 <button type="submit" class="btn btn-primary"><fmt:message key="button.salvarvalidacao"/></button>
             </form>
             <br><br>

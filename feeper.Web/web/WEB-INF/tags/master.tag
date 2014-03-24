@@ -116,12 +116,12 @@
                                 <li id="menu-lista-logs"><a href="<c:url value='/'/>log"><fmt:message key="menu.logs"/></a></li>
                             </c:when>
                             <c:otherwise>
-                                <li id="menu-novidades"><a href="<c:url value='/'/>novidades"><fmt:message key="menu.novidades"/> ${BadgeNovidades}</a></li>
                                 <li id="menu-mensagens"><a href="<c:url value='/'/>mensagens"><fmt:message key="menu.mensagens"/> ${BadgeMensagens}</a></li>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="menu.turmas"/> <b class="caret"></b></a>
                                     <ul class="dropdown-menu">${MinhasTurmas}</ul>
                                 </li>
+                                <li><p class="navbar-text"><b>${TurmaSelecionada.getNome()}</b></p></li>
                             </c:otherwise>
                         </c:choose>
                         
@@ -172,11 +172,14 @@
                         <div class="col-md-3">
                             <h4>${TurmaSelecionada.getNome()}</h4>
                             <div class="list-group">
+                                <a href="<c:url value='/'/>turma/edit/${TurmaSelecionada.getId()}" class="list-group-item" id="menu-minha-turma">
+                                    <span class="glyphicon glyphicon-wrench"></span>&nbsp;&nbsp;<fmt:message key="menu.minhaturma"/>
+                                </a>
                                 <a href="<c:url value='/'/>exercicios" class="list-group-item" id="menu-lista-exercicios">
                                     <span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;<fmt:message key="menu.exercicios"/>
                                 </a>
                                 <a href="<c:url value='/'/>notas" class="list-group-item" id="menu-minhas-notas">
-                                    <span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;<fmt:message key="menu.resultadoexercicios"/>
+                                    <span class="glyphicon glyphicon-th"></span>&nbsp;&nbsp;<fmt:message key="menu.resultadoexercicios"/>
                                 </a>
                             </div>
 

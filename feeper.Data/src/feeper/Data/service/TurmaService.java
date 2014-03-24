@@ -4,9 +4,11 @@
  */
 package feeper.Data.service;
 
+import feeper.Data.entity.Exercicio;
 import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.Turma;
 import feeper.Data.model.HibernateUtil;
+import feeper.Data.model.Util;
 import java.util.List;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -25,11 +27,81 @@ public class TurmaService extends HibernateUtil<Turma> {
         super(Turma.class);
     }
     
+    public List<Object> getExercicios(int idTurma)
+    {
+        SQLQuery query = query("select E.ID, E.Nome, TE.Visivel from TurmaExercicio TE inner join Exercicio E on E.ID = TE.IdExercicio where E.Ativo = 1 and TE.IdTurma = :idTurma order by E.Nome");
+        
+        query.addScalar("ID", Hibernate.INTEGER);
+        query.addScalar("Nome", Hibernate.STRING);
+        query.addScalar("Visivel", Hibernate.BOOLEAN);
+        
+        query.setInteger("idTurma", idTurma);
+        
+        return query.list();
+    }
+    
+    public List<Exercicio> getExerciciosNotIn(int idTurma)
+    {
+        SQLQuery query = query("select E.* from Exercicio E where not exists (\n" +
+                                "	select 1 from TurmaExercicio TE where TE.IdExercicio = E.ID and TE.IdTurma = :idTurma \n" +
+                                ") and E.Ativo = 1").addEntity(Exercicio.class);
+        
+        query.setInteger("idTurma", idTurma);
+        
+        return query.list();
+    }
+    
     public List<Pessoa> getAlunos(int idTurma)
     {
         SQLQuery query = query("select P.* from TurmaPessoa TP inner join Pessoa P on P.ID = TP.IdPessoa where P.Ativo = 1 and TP.IdTurma = :idTurma order by P.Nome").addEntity(Pessoa.class);
         query.setInteger("idTurma", idTurma);
         return query.list();
+    }
+    
+    public boolean removeExercicio(int idTurma, int idExercicio)
+    {
+        Transaction transaction_;
+        Session session_;
+        
+        session_ = getSession();
+        transaction_ = session_.beginTransaction();
+        
+        try {
+            
+            SQLQuery query = session_.createSQLQuery("delete from TurmaExercicio where IdTurma = "+ idTurma +" and IdExercicio = "+ idExercicio);
+            
+            query.executeUpdate();
+            return true;
+            
+        } catch (HibernateException e) { 
+            transaction_.rollback();
+            return false;
+        } finally {
+            session_.close();
+        }
+    }
+    
+    public boolean visibilidadeExercicio(int idTurma, int idExercicio)
+    {
+        Transaction transaction_;
+        Session session_;
+        
+        session_ = getSession();
+        transaction_ = session_.beginTransaction();
+        
+        try {
+            
+            SQLQuery query = session_.createSQLQuery("update TurmaExercicio set Visivel = NOT(Visivel) where IdTurma = " + idTurma + " and IdExercicio = " + idExercicio);
+            
+            query.executeUpdate();
+            return true;
+            
+        } catch (HibernateException e) { 
+            transaction_.rollback();
+            return false;
+        } finally {
+            session_.close();
+        }
     }
     
     public boolean removeAluno(int idTurma, int idAluno)
@@ -200,6 +272,26 @@ public class TurmaService extends HibernateUtil<Turma> {
             
         } catch (Exception e) {
             return null;
+        }
+    }
+    
+    public boolean enviarConvites(int idTurma)
+    {
+        try {
+            
+            PessoaService repoPessoa = new PessoaService();
+            
+            SQLQuery query = query("select P.* from TurmaPessoa TP inner join Pessoa P on P.ID = TP.IdPessoa and TP.IdTurma = :idTurma ").addEntity(Pessoa.class);
+            List<Pessoa> alunos = query.list();
+            
+            for (Pessoa aluno : alunos) {
+                
+                repoPessoa.enviarConvite(aluno);
+                
+            }
+            
+        } catch (Exception e) {
+            return false;
         }
     }
     

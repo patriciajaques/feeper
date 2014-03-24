@@ -20,7 +20,7 @@
         
         <c:if test="${not isVersion}">
         <!--Modal exibida para adicionar perguntas-->
-        <div class="panel panel-success shadow" id="panel-markedquestions" style="width:400px; display:none; position:fixed; top:120px; left:0px; z-index:100">
+        <div class="panel panel-success shadow" id="panel-markedquestions" style="width:400px; display:none; margin-top: 10px;">
             <div class="panel-heading">
                 <h3 class="panel-title"><fmt:message key="label.exercicio.marcacoeslinha"/> #<span id="title-linenumber"></span>
                     <button type="button" class="close pull-right" aria-hidden="true">&times;</button></h3>
@@ -154,6 +154,7 @@
                 row++;
                 $("#panel-markedquestions #title-linenumber").html(row);
                 $("#panel-markedquestions").show("slide", "fast");
+                $('html, body').animate({ scrollTop: $("#panel-markedquestions").offset().top }, 1000);
 
                 //MostraCarregando();
 

@@ -87,6 +87,7 @@
                             <th>#</th>
                             <th><fmt:message key="label.exercicios.nomeexercicio"/></th>
                             <th><fmt:message key="label.exercicios.autor"/></th>
+                            <th><fmt:message key="label.exercicios.ativo"/></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -102,12 +103,20 @@
                                     <td>${item.getId()}</td>
                                     <td>${item.getNome()}</td>
                                     <td>${item.getAutor().getNome()}</td>
+                                    <td>
+                                        <c:if test="${not item.isAtivo()}">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </c:if>
+                                        <c:if test="${item.isAtivo()}">
+                                            <span class="glyphicon glyphicon-ok"></span>
+                                        </c:if>
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </c:if>
                         <c:if test="${empty listaExercicios}">
                             <tr>
-                                <td colspan="4"><fmt:message key="label.nenhumregistroencontrado"/></td>
+                                <td colspan="5"><fmt:message key="label.nenhumregistroencontrado"/></td>
                             </tr>
                         </c:if>
                     </tbody>

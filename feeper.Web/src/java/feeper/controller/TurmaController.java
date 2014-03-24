@@ -1,8 +1,10 @@
 package feeper.controller;
 
+import feeper.Data.entity.Exercicio;
 import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.Turma;
 import feeper.Data.model.ETipoLog;
+import feeper.Data.service.TurmaExercicioService;
 import feeper.Data.service.TurmaPessoaService;
 import feeper.Data.service.TurmaService;
 import feeper.model.PaginadorUtil;
@@ -130,6 +132,7 @@ public class TurmaController extends ApplicationController {
         
         Turma turma = service.getById(id);
         turma.setAlunos(service.getAlunos(id));
+        turma.setExercicios(service.getExercicios(id));
         
         model.addAttribute(turma);
         model.addAttribute("IsAdd", false);
@@ -235,16 +238,15 @@ public class TurmaController extends ApplicationController {
         
         Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
 
-        TurmaService turmaService = new TurmaService();
-        if (turmaService.removeAluno(idTurma, idAluno))
+        if (service.removeAluno(idTurma, idAluno))
         {
             log(usuarioLogado.getId(), "SUCESSO: ID TURMA: " + idTurma + " ID ALUNO: " + idAluno, ETipoLog.ALTERAR_TURMA);
-            flash.addFlashAttribute("MSG_SUCESSO", "Registro inserido com sucesso");
+            flash.addFlashAttribute("MSG_SUCESSO", "Registro removido com sucesso");
         }
         else
         {
             log(usuarioLogado.getId(), "ERRO: ID TURMA: " + idTurma + " ID ALUNO: " + idAluno, ETipoLog.ALTERAR_TURMA);
-            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao inserir o registro");
+            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao remover o registro");
         }
         
         return mav;
@@ -277,9 +279,123 @@ public class TurmaController extends ApplicationController {
         {
             TurmaPessoaService turmaPessoaService = new TurmaPessoaService();
             turmaPessoaService.insertIfNotExist(idTurma, idPessoa);
-            log(usuarioLogado.getId(), "SUCESSO: ID: " + idPessoa, ETipoLog.ALTERAR_TURMA);
+            log(usuarioLogado.getId(), "SUCESSO: ID PESSOA: " + idPessoa, ETipoLog.ALTERAR_TURMA);
         }
 
+        return mav;
+    }
+    
+    @RequestMapping(value="/deleteexercicio/{idTurma}/{idExercicio}", method=RequestMethod.GET)
+    public ModelAndView deleteexercicio(
+            @PathVariable int idTurma, 
+            @PathVariable int idExercicio, 
+            Model model,
+            HttpSession session,
+            final RedirectAttributes flash) {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setView(new RedirectView("/turma/edit/" + idTurma, true, true, false));
+        
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
+
+        if (service.removeExercicio(idTurma, idExercicio))
+        {
+            log(usuarioLogado.getId(), "SUCESSO: ID TURMA: " + idTurma + " ID EXERCICIO: " + idExercicio, ETipoLog.ALTERAR_TURMA);
+            flash.addFlashAttribute("MSG_SUCESSO", "Registro removido com sucesso");
+        }
+        else
+        {
+            log(usuarioLogado.getId(), "ERRO: ID TURMA: " + idTurma + " ID EXERCICIO: " + idExercicio, ETipoLog.ALTERAR_TURMA);
+            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao remover o registro");
+        }
+        
+        return mav;
+    }
+    
+    @RequestMapping(value="/addexercicio/{idTurma}", method=RequestMethod.GET)
+    public String addexercicio(
+            @PathVariable int idTurma, 
+            Model model) {
+        
+        List<Exercicio> lista = service.getExerciciosNotIn(idTurma);
+        
+        model.addAttribute("idTurma", idTurma);
+        model.addAttribute("lista", lista);
+        
+        
+        return "turma/addexercicio";
+    }
+    
+    @RequestMapping(value="/saveaddexercicio", method=RequestMethod.POST)
+    public ModelAndView saveaddexercicio(
+            @ModelAttribute("idTurma") int idTurma, 
+            HttpSession session,
+            BindingResult result,
+            HttpServletRequest request) {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setView(new RedirectView("/closemodal", true, true, false));
+        
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
+        TurmaExercicioService turmaExercicioService = new TurmaExercicioService();
+        
+        String[] idsExercicio = request.getParameterValues("chkExercicio");
+        for (int i = 0; i < idsExercicio.length; i++) {
+            int id = Integer.parseInt(idsExercicio[i]);
+            if (id > 0)
+            {
+                turmaExercicioService.insertIfNotExist(idTurma, id);
+                log(usuarioLogado.getId(), "SUCESSO: ID EXERCICIO: " + id, ETipoLog.ALTERAR_TURMA);
+            }
+        }
+        
+        return mav;
+    }
+    
+    @RequestMapping(value="/exerciciovisivel/{idTurma}/{idExercicio}", method=RequestMethod.GET)
+    @ResponseBody
+    public String exerciciovisivel(
+            @PathVariable int idTurma, 
+            @PathVariable int idExercicio, 
+            HttpSession session) {
+        
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
+
+        if (service.visibilidadeExercicio(idTurma, idExercicio))
+        {
+            log(usuarioLogado.getId(), "SUCESSO: ID TURMA: " + idTurma + " ID EXERCICIO: " + idExercicio, ETipoLog.ALTERAR_TURMA);
+            return "ok";
+        }
+        else
+        {
+            log(usuarioLogado.getId(), "ERRO: ID TURMA: " + idTurma + " ID EXERCICIO: " + idExercicio, ETipoLog.ALTERAR_TURMA);
+            return "erro";
+        }
+    }
+    
+    @RequestMapping(value="/enviarconvites/{idTurma}", method=RequestMethod.GET)
+    public ModelAndView enviarconvites(
+            @PathVariable int idTurma, 
+            Model model,
+            HttpSession session,
+            final RedirectAttributes flash) {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setView(new RedirectView("/turma/edit/" + idTurma, true, true, false));
+        
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
+
+        if (service.enviarConvites(idTurma))
+        {
+            log(usuarioLogado.getId(), "SUCESSO: ID TURMA: " + idTurma, ETipoLog.ALTERAR_TURMA);
+            flash.addFlashAttribute("MSG_SUCESSO", "Convites enviados com sucesso");
+        }
+        else
+        {
+            log(usuarioLogado.getId(), "ERRO: ID TURMA: " + idTurma, ETipoLog.ALTERAR_TURMA);
+            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao enviar os convites");
+        }
+        
         return mav;
     }
     

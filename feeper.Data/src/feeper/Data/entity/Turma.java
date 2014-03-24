@@ -20,7 +20,7 @@ public class Turma  implements java.io.Serializable {
     private Integer idProfessor;
     private Pessoa professor;
     private List<Pessoa> alunos;
-
+    private List<Object> exercicios;
 
     public Turma() {
     }
@@ -96,6 +96,14 @@ public class Turma  implements java.io.Serializable {
 
     public void setAlunos(List<Pessoa> alunos) {
         this.alunos = alunos;
+    }
+    
+    public List<Object> getExercicios() {
+        return exercicios;
+    }
+
+    public void setExercicios(List<Object> exercicios) {
+        this.exercicios = exercicios;
     }
 
 }
