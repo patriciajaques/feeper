@@ -148,6 +148,13 @@
         </c:choose>
         </h2>
         
+        <c:if test="${not empty MSG_SUCESSO}">
+            <div class="alert alert-success">${MSG_SUCESSO}</div>
+        </c:if>
+        <c:if test="${not empty MSG_ERRO}">
+            <div class="alert alert-danger">${MSG_ERRO}</div>
+        </c:if>
+        
         <div class="panel panel-default">
             <div class="panel-body">
 

@@ -2,13 +2,11 @@ package feeper.controller;
 
 import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.UploadTemp;
-import feeper.Data.model.EPerfil;
 import feeper.Data.model.ETipoLog;
 import feeper.Data.model.HibernateUtil;
+import feeper.Data.model.StringResult;
 import feeper.Data.model.Util;
 import feeper.Data.service.PessoaService;
-import feeper.Data.service.TurmaPessoaService;
-import feeper.Data.service.TurmaService;
 import feeper.Data.service.UploadTempService;
 import feeper.model.PaginadorUtil;
 import java.io.IOException;
@@ -16,7 +14,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import javax.servlet.http.HttpSession;
-import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -211,9 +208,10 @@ public class PessoaController extends ApplicationController {
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/pessoa/perfil", true, true, false));
         
-        if (!senha.equals(confirmar))
+        StringResult msgSaida = new StringResult();
+        if (service.validaSenha(senha, confirmar, msgSaida))
         {
-            flash.addFlashAttribute("MSG_ERRO", "Senhas digitadas não conferem!");
+            flash.addFlashAttribute("MSG_ERRO", msgSaida.getResult());
             return mav;
         }
         
@@ -239,7 +237,6 @@ public class PessoaController extends ApplicationController {
                     path,
                     45,
                     45);
-            
         }
    
         if (service.update(pessoaBanco))

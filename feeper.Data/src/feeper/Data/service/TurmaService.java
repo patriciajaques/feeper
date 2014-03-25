@@ -282,13 +282,15 @@ public class TurmaService extends HibernateUtil<Turma> {
             PessoaService repoPessoa = new PessoaService();
             
             SQLQuery query = query("select P.* from TurmaPessoa TP inner join Pessoa P on P.ID = TP.IdPessoa and TP.IdTurma = :idTurma ").addEntity(Pessoa.class);
+            query.setInteger("idTurma", idTurma);
             List<Pessoa> alunos = query.list();
             
+            boolean retorno = false;
+            
             for (Pessoa aluno : alunos) {
-                
-                repoPessoa.enviarConvite(aluno);
-                
+                retorno = repoPessoa.enviarConvite(aluno);
             }
+            return retorno;
             
         } catch (Exception e) {
             return false;

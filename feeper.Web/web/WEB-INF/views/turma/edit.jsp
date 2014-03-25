@@ -66,7 +66,7 @@
                     }
                 });
                 
-                $(".btn-enviar-convites").click(function(){
+                $("#btn-enviar-convites").click(function(){
                     if (!confirm("<fmt:message key="label.confirmaenviodosconvites"/>")) return;
                     document.location.href = "<c:url value='/'/>turma/enviarconvites/${turma.getId()}";
                 });
@@ -140,6 +140,13 @@
                 <fmt:message key="label.turma.editar"/>
             </c:otherwise>
         </c:choose></h2>
+        
+        <c:if test="${not empty MSG_SUCESSO}">
+            <div class="alert alert-success">${MSG_SUCESSO}</div>
+        </c:if>
+        <c:if test="${not empty MSG_ERRO}">
+            <div class="alert alert-danger">${MSG_ERRO}</div>
+        </c:if>
         
         <div class="panel panel-default">
             <div class="panel-body">

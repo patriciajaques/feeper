@@ -51,42 +51,48 @@
             .form-signin .form-control:focus {
                 z-index: 2;
             }
-            .form-signin input[type="email"] {
+            .form-signin #email {
                 margin-bottom: -1px;
                 border-bottom-right-radius: 0;
                 border-bottom-left-radius: 0;
             }
-            .form-signin input[type="password"] {
+            .form-signin #senha {
+                margin-bottom: -1px;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+            .form-signin #confirmar {
                 margin-bottom: 10px;
                 border-top-left-radius: 0;
                 border-top-right-radius: 0;
             }
-            
-            
         </style>
     </head>
     <body>
         
         <div class="container">
             
-            <form class="form-signin" role="form" action="<c:url value='/'/>login/validate" method="POST">
+            <form class="form-signin" role="form" action="<c:url value='/'/>senha/salvartrocarsenha" method="POST">
                 <div class="panel panel-primary">
                     <div class="panel-body"><a href="<c:url value='/'/>" title="<fmt:message key="label.feeper"/>"><img src="<c:url value='/resources/img/logo_p.png'/>" style="width:75px; margin-left: 95px;" /></a></div>
                 </div>
                 
                 <br>
                 
-                <h2 class="form-signin-heading"><fmt:message key="label.facalogin"/></h2>
+                <h2 class="form-signin-heading"><fmt:message key="label.trocarsenha"/></h2>
                 <c:if test="${not empty MSG_SUCESSO}">
                     <div class="alert alert-success">${MSG_SUCESSO}</div>
                 </c:if>
                 <c:if test="${not empty MSG_ERRO}">
                     <div class="alert alert-danger">${MSG_ERRO}</div>
                 </c:if>
-                <input type="email" class="form-control" placeholder="<fmt:message key="label.email"/>" required autofocus id="email" name="email">
+                <input type="email" class="form-control" placeholder="<fmt:message key="label.email"/>" id="email" name="email" disabled="disabled" value="${PessoaTrocaSenha.getEmail()}">
                 <input type="password" class="form-control" placeholder="<fmt:message key="label.senha"/>" required id="senha" name="senha">
-                <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="button.entrar"/></button>
-                <a href="<c:url value='/'/>senha/esqueciminhasenha" class="btn btn-default btn-block" role="button"><fmt:message key="button.esqueciminhasenha"/></a>
+                <input type="password" class="form-control" placeholder="<fmt:message key="label.confirmarsenha"/>" required id="confirmar" name="confirmar">
+                <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="button.validar"/></button>
+                <a href="<c:url value='/'/>" class="btn btn-default btn-block" role="button"><fmt:message key="button.voltarparalogin"/></a>
             </form>
 
         </div>

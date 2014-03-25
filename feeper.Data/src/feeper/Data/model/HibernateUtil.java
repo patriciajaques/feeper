@@ -7,6 +7,7 @@ package feeper.Data.model;
 import java.util.List;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -14,6 +15,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.type.NullableType;
+import org.hibernate.type.Type;
  
 public class HibernateUtil<T> {
     private static SessionFactory sessionFactory;
@@ -120,6 +123,40 @@ public class HibernateUtil<T> {
             session = getSession();
             //transacao = session.beginTransaction();
             query = session.createQuery("From "+objClass.getName());
+            lista = query.list();
+        } catch (HibernateException e) { 
+            //transacao.rollback();
+            System.err.println(e.fillInStackTrace());
+        } finally {
+            //sessao.close();
+            return lista;
+        }
+    }
+    
+    public List<T> getByColumn(String column, String value){
+        return getByColumn(column, value, Hibernate.STRING);
+    }
+    public List<T> getByColumn(String column, int value){
+        return getByColumn(column, value, Hibernate.INTEGER);
+    }
+    private List<T> getByColumn(String column, Object value, Type type)
+    {
+        List<T> lista = null;
+        Query query = null;
+        try {
+            session = getSession();
+            //transacao = session.beginTransaction();
+            query = session.createQuery("From "+objClass.getName()+" Where "+column+" = :p ");
+            
+            if (type == Hibernate.INTEGER)
+            {
+                query.setInteger("p", Integer.parseInt(value.toString()));
+            }
+            else if (type == Hibernate.STRING)
+            {
+                query.setString("p", value.toString());
+            }
+            
             lista = query.list();
         } catch (HibernateException e) { 
             //transacao.rollback();

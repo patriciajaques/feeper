@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 1, 2014 9:45:43 AM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="feeper.Data.entity.FilaNovaSenha" table="FilaNovaSenha" catalog="feeper">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="identity" />
+        </id>
+        <property name="idPessoa" type="int">
+            <column name="IdPessoa" not-null="true" />
+        </property>
+        <property name="chave" type="string">
+            <column name="Chave" length="36" not-null="true" />
+        </property>
+        <property name="dataCadastro" type="timestamp">
+            <column name="DataCadastro" length="19" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

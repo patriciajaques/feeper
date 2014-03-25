@@ -51,29 +51,8 @@
             .form-signin .form-control:focus {
                 z-index: 2;
             }
-            .form-signin input[type="email"] {
-                margin-bottom: -1px;
-                border-bottom-right-radius: 0;
-                border-bottom-left-radius: 0;
-            }
-            .form-signin input[type="password"] {
+            .form-signin #email {
                 margin-bottom: 10px;
-                border-top-left-radius: 0;
-                border-top-right-radius: 0;
-            }
-            
-            .citation {
-                text-align: justify;
-                padding: 15px;
-                margin: 0 auto;
-                max-width: 500px;
-            }
-            
-            .presentation {
-                margin: 0 auto;
-                width: 448px; 
-                height: 320px; 
-                padding: 10px;
             }
         </style>
     </head>
@@ -81,9 +60,9 @@
         
         <div class="container">
             
-            <form class="form-signin" role="form" action="<c:url value='/'/>login/validateesqueciminhasenha" method="POST">
+            <form class="form-signin" role="form" action="<c:url value='/'/>senha/confirmaresqueciminhasenha" method="POST">
                 <div class="panel panel-primary">
-                    <div class="panel-body"><img src="<c:url value='/resources/img/logo_p.png'/>" style="width:75px; margin-left: 95px;" /></div>
+                    <div class="panel-body"><a href="<c:url value='/'/>" title="<fmt:message key="label.feeper"/>"><img src="<c:url value='/resources/img/logo_p.png'/>" style="width:75px; margin-left: 95px;" /></a></div>
                 </div>
                 
                 <br>
@@ -97,26 +76,9 @@
                 </c:if>
                 <input type="email" class="form-control" placeholder="<fmt:message key="label.email"/>" required autofocus id="email" name="email">
                 <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="button.validar"/></button>
+                <a href="<c:url value='/'/>" class="btn btn-default btn-block" role="button"><fmt:message key="button.voltarparalogin"/></a>
             </form>
 
-            <br>
-            
-            <blockquote>
-                <p class="citation"><fmt:message key="label.boasvindas.descricao"/></p>
-            </blockquote>
-            
-            <br>
-
-            <div class="panel panel-default presentation">
-                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="width:428px;">
-                    <div class="carousel-inner">
-                        <div class="item active"><img src="<c:url value='/resources/img/print1.png'/>" width="428" height="300" alt=""></div>
-                        <div class="item"><img src="<c:url value='/resources/img/print2.png'/>" width="428" height="300" alt=""></div>
-                        <div class="item"><img src="<c:url value='/resources/img/print3.png'/>" width="428" height="300" alt=""></div>
-                    </div>
-                </div>
-            </div>
-                    
         </div>
         
         <p style="text-align: center; margin-top: 50px;"><small><fmt:message key="author"/></small></p>

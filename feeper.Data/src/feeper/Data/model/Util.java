@@ -60,13 +60,13 @@ public class Util {
     private static final String MAIUSCULAS = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z";
     private static final String MINUSCULAS = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
     private static final String NUMEROS = "0,1,2,3,4,5,6,7,8,9";
-    private static final String SIMBOLOS = "!,@,#,?";
+    //private static final String SIMBOLOS = "!,@,#,?";
     
     public static String gerarSenha(int tamanhoSenha)
     {
         String senhaGerada = "";
         boolean valido = false;
-        String[] permitidos = String.format("%s,%s,%s,%s", MAIUSCULAS, MINUSCULAS, NUMEROS, SIMBOLOS).split(",");
+        String[] permitidos = String.format("%s,%s,%s", MAIUSCULAS, MINUSCULAS, NUMEROS).split(",");
 
         do
         {
@@ -92,12 +92,12 @@ public class Util {
         String[] listaMaiusculas = MAIUSCULAS.split(",");
         String[] listaMinusculas = MINUSCULAS.split(",");
         String[] listaNumeros = NUMEROS.split(",");
-        String[] listaSimbolos = SIMBOLOS.split(",");
+        //String[] listaSimbolos = SIMBOLOS.split(",");
 
         boolean temMaiuscula = false;
         boolean temMinuscula = false;
         boolean temNumero = false;
-        boolean temSimbolo = false;
+        //boolean temSimbolo = false;
         
         for (int i = 0; i < listaMaiusculas.length; i++)
             if (senha.contains(listaMaiusculas[i]))
@@ -117,14 +117,14 @@ public class Util {
                 temNumero = true;
                 break;
             }
-        for (int i = 0; i < listaSimbolos.length; i++)
-            if (senha.contains(listaSimbolos[i]))
-            {
-                temSimbolo = true;
-                break;
-            }
+//        for (int i = 0; i < listaSimbolos.length; i++)
+//            if (senha.contains(listaSimbolos[i]))
+//            {
+//                temSimbolo = true;
+//                break;
+//            }
         
-        return (temMaiuscula && temMinuscula && temNumero && temSimbolo);
+        return (temMaiuscula && temMinuscula && temNumero);
     }
     
     public static byte[] zipFiles(List<byte[]> files, List<String> filenames) throws FileNotFoundException, IOException
@@ -270,6 +270,23 @@ public class Util {
         try {
             
             body = body.replace("\n", "<br>");
+            String html = "<!DOCTYPE html>\n" +
+                            "<html>\n" +
+                            "<head>\n" +
+                            "	<style>\n" +
+                            "   body { background-color: #ffffff; font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif; font-size: 14px; color: #333333; font-weight: 300; line-height: 1.25; }\n" +
+                            "	.logo { padding: 15px; background-color: #ffffff; border: 1px solid #428BCA; }\n" +
+                            "	</style>\n" +
+                            "</head>\n" +
+                            "<body>\n" +
+                            "	<div class=\"logo\">\n" +
+                            "       <a href=\"http://feeper.jelasticlw.com.br\"><img src=\"http://feeper.jelasticlw.com.br/resources/img/logo_p.png\"></a>\n" +
+                            "	</div>" +
+                            body +
+                            "	<p>Atenciosamente,<br>Equipe <i>feeper</i></p>\n" +
+                            "	\n" +
+                            "</body>\n" +
+                            "</html>";
             
             final String username = "feeper.box@gmail.com";
             final String password = "kx8f33p3r";
@@ -296,7 +313,7 @@ public class Util {
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 
             message.setSubject("[feeper] " + subject);
-            message.setContent(body,"text/html");
+            message.setContent(html,"text/html");
 
             Transport.send(message);
 
