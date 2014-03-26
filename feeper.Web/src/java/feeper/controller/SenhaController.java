@@ -56,7 +56,7 @@ public class SenhaController extends ApplicationController {
             
             FilaNovaSenhaService repoFila = new FilaNovaSenhaService();
             if (repoFila.enviaEmailChave(pessoa.getId()))
-                flash.addFlashAttribute("MSG_ERRO", "Enviamos com sucesso uma mensagem para seu endereço de e-mail! Verifique-a e siga os passos da mensagem.");
+                flash.addFlashAttribute("MSG_SUCESSO", "Enviamos com sucesso uma mensagem para seu endereço de e-mail! Verifique-a e siga os passos da mensagem.");
             else
                 flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao enviar o e-mail para a troca de senha");
             
