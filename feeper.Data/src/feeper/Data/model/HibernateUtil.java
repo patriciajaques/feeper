@@ -19,34 +19,53 @@ import org.hibernate.type.NullableType;
 import org.hibernate.type.Type;
  
 public class HibernateUtil<T> {
-    private static SessionFactory sessionFactory;
+    //private static SessionFactory sessionFactory;
     private static Session session;
     private static Transaction transaction;
     private Class objClass;
     
+    private static SessionFactory sessionFactory;
+    
+    static {
+        try {
+            // Create the SessionFactory from standard (hibernate.cfg.xml) 
+            // config file.
+            sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            // Log the exception. 
+            System.err.println("Initial SessionFactory creation failed." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+    }
+    
+    public static SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+    
     public HibernateUtil(Class objClass){
-        beginSession();
+        //beginSession();
         this.objClass = objClass;
     }
      
     /**
      * Inicia a SessionFactory
      */
-    private void beginSession(){        
-        if(sessionFactory == null)
-            try {
-                sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
-            } catch (Exception e){
-                System.err.println(e.fillInStackTrace());
-            }
-    }
+//    private void beginSession(){        
+//        if(sessionFactory == null)
+//            try {
+//                sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+//            } catch (Exception e){
+//                System.err.println(e.fillInStackTrace());
+//            }
+//    }
      
-    /**
-     * Retorna uma nova sessão
-     * @return Session
-     */
+    public void closeSession(){
+        sessionFactory.close();
+        sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+    }
+    
     public Session getSession(){
-        Session session = sessionFactory.openSession();
+        session = sessionFactory.openSession();
         session.setCacheMode(CacheMode.IGNORE);
         return session;
     }

@@ -10,9 +10,7 @@ import feeper.Data.entity.Resposta;
 import feeper.Data.entity.Turma;
 import feeper.Data.entity.UploadTemp;
 import feeper.Data.model.EPerfil;
-import feeper.Data.model.EStatusResposta;
 import feeper.Data.model.ETipoLog;
-import feeper.Data.model.HibernateUtil;
 import feeper.Data.model.IntegerResult;
 import feeper.Data.model.ScalarResult;
 import feeper.Data.model.Util;
@@ -24,20 +22,15 @@ import feeper.Data.service.ExercicioValidacaoService;
 import feeper.Data.service.RespostaService;
 import feeper.Data.service.UploadTempService;
 import feeper.model.PaginadorUtil;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -451,6 +444,8 @@ public class ExerciciosController extends ApplicationController {
             Model model,
             HttpServletRequest request) {
         
+        service.closeSession();
+        
         ModelAndView mav = new ModelAndView();
         HttpSession session = request.getSession(false);
         Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
@@ -520,16 +515,37 @@ public class ExerciciosController extends ApplicationController {
                     
                     if (idResposta.getResult() > 0)
                     {
+//                        try {
+//                            // Make connection and initialize streams
+//                            Socket socket = new Socket("127.0.0.1", 3029);
+//                            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//                            PrintStream out = new PrintStream(socket.getOutputStream(), true);
+//
+//                            out.println(idResposta.getResult());
+//                            out.println("10000");
+//                        } catch (UnknownHostException ex) {
+//                        } catch (IOException ex) {
+//                        }
                         try {
-                            // Make connection and initialize streams
-                            Socket socket = new Socket("127.0.0.1", 3029);
-                            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                            PrintStream out = new PrintStream(socket.getOutputStream(), true);
-
-                            out.println(idResposta.getResult());
-                            out.println("10000");
-                        } catch (UnknownHostException ex) {
-                        } catch (IOException ex) {
+//                            URL url = new URL("http://127.0.0.1/servlet/special?name=CmdLineApplication"); 
+//                            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream())); 
+//                            String retorno = in.readLine();
+                            
+                            URL urlServlet = new URL("http://localhost:8080/feeper/OnlineJudge?r=" + idResposta.getResult());
+                            //URL urlServlet = new URL("http://feeper.jelasticlw.com.br/OnlineJudge?r=" + idResposta.getResult());
+                            HttpURLConnection servletConnection = (HttpURLConnection) urlServlet.openConnection();
+                            servletConnection.setRequestMethod("POST");
+                            servletConnection.setDoOutput(true);
+                            InputStream response = servletConnection.getInputStream();
+                            
+//                            String encoding = Base64Encoder.encode ("feeper:srv8f33p3r");
+//                            HttpPost httppost = new HttpPost("http://feeper.jelasticlw.com.br/OnlineJudge?r=" + idResposta.getResult());
+//                            httppost.setHeader("Authorization", "Basic " + encoding);
+//                            System.out.println("executing request " + httppost.getRequestLine());
+//                            HttpResponse response = httpclient.execute(httppost);
+//                            HttpEntity entity = response.getEntity();
+                            
+                        } catch (Exception e) {
                         }
                     }
                 }
@@ -871,11 +887,10 @@ public class ExerciciosController extends ApplicationController {
         if (exercicio != null)
         {
             RespostaService repoResposta = new RespostaService();
+            repoResposta.closeSession();
+            
             Resposta resposta = repoResposta.getLastByIdExercicio(exercicio.getId(), pessoa.getId());
-            
-            List<Resposta> re = repoResposta.getAll();
-            Resposta aaa = re.get(re.size()-1);
-            
+                       
             return resposta.getIdStatus();
         }
         
