@@ -14,6 +14,7 @@ import feeper.Data.model.HibernateUtil;
 import feeper.Data.model.IntegerResult;
 import java.util.Date;
 import java.util.List;
+import org.hibernate.CacheMode;
 import org.hibernate.Hibernate;
 import org.hibernate.SQLQuery;
 
@@ -35,7 +36,7 @@ public class RespostaService extends HibernateUtil<Resposta> {
             SQLQuery query = query("select * from Resposta where IdExercicio = :idExercicio and IdAutor = :idAutor order by ID desc limit 1").addEntity(Resposta.class);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAutor", idAutor);
-            
+           
             return (Resposta)query.list().get(0);
         } catch (Exception e) {
             return null;
