@@ -444,7 +444,7 @@ public class ExerciciosController extends ApplicationController {
             Model model,
             HttpServletRequest request) {
         
-        service.closeSession();
+        //service.closeSession();
         
         ModelAndView mav = new ModelAndView();
         HttpSession session = request.getSession(false);
@@ -515,24 +515,9 @@ public class ExerciciosController extends ApplicationController {
                     
                     if (idResposta.getResult() > 0)
                     {
-//                        try {
-//                            // Make connection and initialize streams
-//                            Socket socket = new Socket("127.0.0.1", 3029);
-//                            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//                            PrintStream out = new PrintStream(socket.getOutputStream(), true);
-//
-//                            out.println(idResposta.getResult());
-//                            out.println("10000");
-//                        } catch (UnknownHostException ex) {
-//                        } catch (IOException ex) {
-//                        }
                         try {
-//                            URL url = new URL("http://127.0.0.1/servlet/special?name=CmdLineApplication"); 
-//                            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream())); 
-//                            String retorno = in.readLine();
-                            
-                            URL urlServlet = new URL("http://localhost:8080/feeper/OnlineJudge?r=" + idResposta.getResult());
-                            //URL urlServlet = new URL("http://feeper.jelasticlw.com.br/OnlineJudge?r=" + idResposta.getResult());
+                            //URL urlServlet = new URL("http://localhost:8080/feeper/OnlineJudge?r=" + idResposta.getResult());
+                            URL urlServlet = new URL("http://feeper.jelasticlw.com.br/OnlineJudge?r=" + idResposta.getResult());
                             HttpURLConnection servletConnection = (HttpURLConnection) urlServlet.openConnection();
                             servletConnection.setRequestMethod("POST");
                             servletConnection.setDoOutput(true);
@@ -887,7 +872,7 @@ public class ExerciciosController extends ApplicationController {
         if (exercicio != null)
         {
             RespostaService repoResposta = new RespostaService();
-            repoResposta.closeSession();
+            //repoResposta.closeSession();
             
             Resposta resposta = repoResposta.getLastByIdExercicio(exercicio.getId(), pessoa.getId());
                        

@@ -2,23 +2,22 @@
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
-    <!--property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
     <property name="hibernate.connection.url">jdbc:mysql://mysql-feeper.jelasticlw.com.br/feeper</property>
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">2Uhl7YhwFH</property>
     <property name="hibernate.show_sql">true</property>
     <property name="hibernate.query.factory_class">org.hibernate.hql.ast.ASTQueryTranslatorFactory</property>
-    <property name="hibernate.current_session_context_class">jta</property-->
+    <property name="hibernate.current_session_context_class">jta</property>
     
-    <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+    <!--property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/feeper</property>
     <property name="hibernate.connection.username">root</property>
-    <property name="hibernate.connection.password">root</property>
     <property name="hibernate.show_sql">true</property>
     <property name="hibernate.query.factory_class">org.hibernate.hql.ast.ASTQueryTranslatorFactory</property>
-    <property name="hibernate.current_session_context_class">jta</property>
+    <property name="hibernate.current_session_context_class">jta</property-->
     
     <mapping resource="feeper/Data/entity/Conquista.hbm.xml"/>
     <mapping resource="feeper/Data/entity/Mensagem.hbm.xml"/>

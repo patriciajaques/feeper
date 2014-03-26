@@ -23,14 +23,14 @@
         <ul class="mosaico">
             <li>
                 <c:choose>
-                    <c:when test="${TurmaSelecionada.getProfessor().isPossuiFoto()}">
-                        <img src="<c:url value='/resources/img/photo/photo-${TurmaSelecionada.getProfessor().getId()}.png'/>" style="width:45px; height:45px;" alt="${TurmaSelecionada.getProfessor().getNome()}" class="img-circle">
+                    <c:when test="${professor.isPossuiFoto()}">
+                        <img src="<c:url value='/resources/img/photo/photo-${professor.getId()}.png'/>" style="width:45px; height:45px;" alt="${professor.getNome()}" class="img-circle">
                     </c:when>
                     <c:otherwise>
-                        <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="${TurmaSelecionada.getProfessor().getNome()}" class="img-circle">
+                        <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="${professor.getNome()}" class="img-circle">
                     </c:otherwise>
                 </c:choose>
-                <span class="quebrar-linha" style="margin-top:5px;">${TurmaSelecionada.getProfessor().getNome()}</span>
+                <span class="quebrar-linha" style="margin-top:5px;">${professor.getNome()}</span>
             </li>
         </ul>
         

@@ -2,6 +2,7 @@ package feeper.controller;
 
 import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.Turma;
+import feeper.Data.service.PessoaService;
 import feeper.Data.service.TurmaService;
 import java.util.List;
 import javax.servlet.http.HttpSession;
@@ -22,7 +23,11 @@ public class ColegasController extends ApplicationController {
         TurmaService repoTurma = new TurmaService();
         List<Pessoa> lista = repoTurma.getAlunos(turma.getId());
         
+        PessoaService repoPessoa = new PessoaService();
+        Pessoa professor = repoPessoa.getById(turma.getIdProfessor());
+        
         model.addAttribute("listaTurma", lista);
+        model.addAttribute("professor", professor);
         
         return "colegas/list";
     }

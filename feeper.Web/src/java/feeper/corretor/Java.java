@@ -84,4 +84,28 @@ public class Java extends Language {
             e.printStackTrace();
         }
     }
+    
+    public void executeTestClass() {
+        try {
+            // create the execution script
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dir + "/run.sh", false)));
+            out.write("cd \"" + dir +"\"\n");
+            out.write("chroot .\n");
+            out.write("java Solution > out.txt");
+            out.close();
+            Runtime r = Runtime.getRuntime();
+            Process p = r.exec("chmod +x " + dir + "/run.sh");
+            p.waitFor();
+            p = r.exec(dir + "/run.sh"); // execute the script
+            TimedShell shell = new TimedShell(this, p, 3000);
+            shell.start();
+            p.waitFor();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
