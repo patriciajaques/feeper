@@ -45,7 +45,7 @@ public class Java extends Language {
             // create the compiler script
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dir + "/compile.sh", false)));
             out.write("cd \"" + dir +"\"\n");
-            out.write("javac *.java 2> err.txt");
+            out.write("/usr/java/latest/bin/javac *.java 2> err.txt");
             out.close();
             Runtime r = Runtime.getRuntime();
             Process p = r.exec("chmod +x " + dir + "/compile.sh");
@@ -67,7 +67,7 @@ public class Java extends Language {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dir + "/run.sh", false)));
             out.write("cd \"" + dir +"\"\n");
             out.write("chroot .\n");
-            out.write("java Solution < in.txt > out.txt");
+            out.write("/usr/java/latest/bin/java Solution < in.txt > out.txt");
             out.close();
             Runtime r = Runtime.getRuntime();
             Process p = r.exec("chmod +x " + dir + "/run.sh");
@@ -91,7 +91,7 @@ public class Java extends Language {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dir + "/run.sh", false)));
             out.write("cd \"" + dir +"\"\n");
             out.write("chroot .\n");
-            out.write("java Solution > out.txt");
+            out.write("/usr/java/latest/bin/java Solution > out.txt");
             out.close();
             Runtime r = Runtime.getRuntime();
             Process p = r.exec("chmod +x " + dir + "/run.sh");
