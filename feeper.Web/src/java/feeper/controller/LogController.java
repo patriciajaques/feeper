@@ -4,7 +4,6 @@ import feeper.Data.model.ScalarResult;
 import feeper.Data.model.Util;
 import feeper.Data.service.LogService;
 import feeper.model.PaginadorUtil;
-import java.util.Date;
 import java.util.List;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Controller;

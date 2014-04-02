@@ -110,6 +110,10 @@
                 }; 
                 $('#frmAnotacao').ajaxForm(ajaxFormOptions2);
                 
+                <c:if test="${idRespostaEncoded != null}">
+                    $.get("<c:url value='/'/>OnlineJudge?r=${idRespostaEncoded}");
+                </c:if>
+                
             });
             
             function cancelarClasse(){
@@ -414,7 +418,7 @@
         <c:if test="${Resposta != null}">
             <c:choose>
                 <c:when test="${Resposta.getIdStatus() == 1}">
-                    <div class="alert alert-danger"><fmt:message key="label.exercicios.status.errocompilacao"/></div>
+                    <div class="alert alert-danger"><fmt:message key="label.exercicios.status.errocompilacao"/><br>${Resposta.getMensagem()}</div>
                 </c:when>
                 <c:when test="${Resposta.getIdStatus() == 2}">
                     <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errosaidainvalida"/><br>${Resposta.getMensagem()}</div>

@@ -4,7 +4,6 @@ import feeper.Data.entity.CodigoFonte;
 import feeper.Data.entity.Exercicio;
 import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.RespostaCodigoFonte;
-import feeper.Data.entity.Turma;
 import feeper.Data.model.EPerfil;
 import feeper.Data.model.ETipoLog;
 import feeper.Data.model.Util;

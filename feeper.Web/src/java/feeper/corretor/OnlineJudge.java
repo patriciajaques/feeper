@@ -32,23 +32,37 @@ public class OnlineJudge extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        response.setContentType("text/plain");
-        PrintWriter out = response.getWriter();
+//        response.setContentType("text/plain");
+//        PrintWriter out = response.getWriter();
+//        
+//        // Get Authorization header
+//        String auth = request.getHeader("Authorization");
+//
+//        // Do we allow that user?
+//        if (!allowUser(auth)) {
+//            // Not allowed, so report he's unauthorized
+//            response.setHeader("WWW-Authenticate", "BASIC realm=\"users\"");
+//            response.sendError(response.SC_UNAUTHORIZED);
+//            // Could offer to add him to the allowed user list
+//        }
+//        else {
+//            // Allowed, so show him the secret stuff
+//            try {
+//                int idResposta = Integer.parseInt(request.getParameter("r").toString());
+//                int timeout = 10000;
+//
+//                Correcao c = new Correcao(idResposta, timeout);
+//                Thread t = new Thread(c);
+//                t.start();
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
         
-        // Get Authorization header
-        String auth = request.getHeader("Authorization");
-
-        // Do we allow that user?
-        if (!allowUser(auth)) {
-            // Not allowed, so report he's unauthorized
-            response.setHeader("WWW-Authenticate", "BASIC realm=\"users\"");
-            response.sendError(response.SC_UNAUTHORIZED);
-            // Could offer to add him to the allowed user list
-        }
-        else {
-            // Allowed, so show him the secret stuff
             try {
-                int idResposta = Integer.parseInt(request.getParameter("r").toString());
+                String idRespostaDecoded = Base64Decoder.decode(request.getParameter("r").toString());
+                int idResposta = Integer.parseInt(idRespostaDecoded);
                 int timeout = 10000;
 
                 Correcao c = new Correcao(idResposta, timeout);
@@ -58,7 +72,6 @@ public class OnlineJudge extends HttpServlet {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

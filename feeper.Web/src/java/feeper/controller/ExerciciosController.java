@@ -1,6 +1,5 @@
 package feeper.controller;
 
-import com.oreilly.servlet.Base64Encoder;
 import feeper.Data.entity.CodigoFonte;
 import feeper.Data.entity.Exercicio;
 import feeper.Data.entity.ExercicioClasseValidacao;
@@ -30,21 +29,25 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.NTCredentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.hibernate.Hibernate;
-import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -58,6 +61,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
+import com.oreilly.servlet.Base64Encoder;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import org.hibernate.validator.internal.util.privilegedactions.GetMethod;
 
 @Controller
 @RequestMapping(value="/exercicios")
@@ -519,7 +526,8 @@ public class ExerciciosController extends ApplicationController {
     @RequestMapping(value="/saveresponder", method=RequestMethod.POST)
     public ModelAndView saveresponder(
             Model model,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            final RedirectAttributes flash) {
         
         int id = Integer.parseInt(request.getParameter("hdnIdExercicio").toString());
         
@@ -546,17 +554,32 @@ public class ExerciciosController extends ApplicationController {
                     if (idResposta.getResult() > 0)
                     {
                         try {
-                            CredentialsProvider credsProvider = new BasicCredentialsProvider();
-                            credsProvider.setCredentials(
-                                new AuthScope("localhost", AuthScope.ANY_PORT),
-                                new UsernamePasswordCredentials("feeper", "srv8f33p3r"));
-                            CloseableHttpClient httpclient = HttpClients.custom()
-                                .setDefaultCredentialsProvider(credsProvider)
-                                .build();
-                            HttpGet httpget = new HttpGet("http://feeper.jelasticlw.com.br/OnlineJudge?r=" + idResposta.getResult());
-                            CloseableHttpResponse response = httpclient.execute(httpget);
+//                            CredentialsProvider credsProvider = new BasicCredentialsProvider();
+//                            credsProvider.setCredentials(
+//                                AuthScope.ANY,
+//                                new UsernamePasswordCredentials("feeper", Base64Encoder.encode("srv8f33p3r")));
+//                            CloseableHttpClient httpclient = HttpClients.custom()
+//                                .setDefaultCredentialsProvider(credsProvider)
+//                                .build();
+//                            HttpGet httpget = new HttpGet("http://feeper.jelasticlw.com.br/OnlineJudge?r=" + idResposta.getResult());
+//                            CloseableHttpResponse response = httpclient.execute(httpget);
+                            
+                            String idRespostaEncoded = Base64Encoder.encode(Integer.toString(idResposta.getResult()));
+                            log(pessoa.getId(), "ONLINEJUDGE ID RESPOSTA: " + idResposta.getResult() + " ENCODED: " + idRespostaEncoded, ETipoLog.CODIGO_ENVIADO);
+                            
+//                            URL urlServlet = new URL("http://feeper.jelasticlw.com.br/OnlineJudge?r=" + idRespostaEncoded);
+//                            HttpURLConnection servletConnection = (HttpURLConnection) urlServlet.openConnection();
+//                            servletConnection.setRequestMethod("GET");
+//                            servletConnection.setDoOutput(true);
+//                            InputStream response = servletConnection.getInputStream();
+                            
+                            flash.addFlashAttribute("idRespostaEncoded", idRespostaEncoded);
+                            
+                            //HttpGet httpget = new HttpGet("http://feeper.jelasticlw.com.br/OnlineJudge?r=" + idRespostaEncoded);
+                            //CloseableHttpResponse response = HttpClients.createDefault().execute(httpget);
                             
                         } catch (Exception e) {
+                            log(pessoa.getId(), "ERRO: ONLINEJUDGE ID RESPOSTA: " + idResposta.getResult() + " MESSAGE: " + e.getMessage(), ETipoLog.CODIGO_ENVIADO);
                         }
                     }
                 }

@@ -1,7 +1,6 @@
 package feeper.controller;
 
 import feeper.Data.entity.Pessoa;
-import feeper.Data.model.EPerfil;
 import feeper.Data.model.ETipoLog;
 import feeper.Data.service.PessoaService;
 import feeper.Data.service.TurmaService;
