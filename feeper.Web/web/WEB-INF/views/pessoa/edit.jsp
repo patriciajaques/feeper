@@ -59,7 +59,7 @@
                     </div>
                     <div class="radio-inline">
                         <label>
-                            <input type="radio" name="idPerfil" id="idPerfilAluno" value="3" ${IsAdd != null && IsAdd ? "checked" : pessoa.getIdPerfil() == 2 ? "checked" : ""}>
+                            <input type="radio" name="idPerfil" id="idPerfilAluno" value="3" ${IsAdd != null && IsAdd ? "checked" : pessoa.getIdPerfil() == 3 ? "checked" : ""}>
                             <fmt:message key="label.pessoa.aluno"/>
                         </label>
                     </div>

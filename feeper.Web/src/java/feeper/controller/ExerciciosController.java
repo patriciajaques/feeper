@@ -397,7 +397,7 @@ public class ExerciciosController extends ApplicationController {
                     "  E.ID,  " +
                     "  E.Nome, " +
                     "  E.Descricao, " +
-                    "  E.DescricaoHtml, " +
+                    "  TRUNCATE_TEXT(REMOVE_HTML_TAGS(E.DescricaoHtml), 100) AS DescricaoHtml, " +
                     "  T.Nome AS Turma, " +
                     "  (select MAX(DataCadastro) from Resposta R " +
                     "  where R.IdExercicio = E.ID and R.IdAutor = :p0 ) AS DataUltimaAlteracao " +
@@ -412,7 +412,7 @@ public class ExerciciosController extends ApplicationController {
                     "  and TE.IdTurma = :p1 " +
                     "  and T.Ativo = 1";
         
-        Integer[] params = new Integer[3];
+        Integer[] params = new Integer[2];
         params[0] = pessoa.getId();
         params[1] = turma.getId();
         
