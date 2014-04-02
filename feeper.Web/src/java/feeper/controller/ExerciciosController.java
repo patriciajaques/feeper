@@ -1,5 +1,6 @@
 package feeper.controller;
 
+import com.oreilly.servlet.Base64Encoder;
 import feeper.Data.entity.CodigoFonte;
 import feeper.Data.entity.Exercicio;
 import feeper.Data.entity.ExercicioClasseValidacao;
@@ -25,8 +26,6 @@ import feeper.model.PaginadorUtil;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +34,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.hibernate.Hibernate;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -215,8 +224,12 @@ public class ExerciciosController extends ApplicationController {
     }
     
     @RequestMapping(value="/savevalidacao", method=RequestMethod.POST)
-    public ModelAndView savevalidacao(HttpServletRequest request, HttpSession session) {
+    public ModelAndView savevalidacao(
+            HttpServletRequest request, 
+            HttpSession session,
+            final RedirectAttributes flash) {
         
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
         int idExercicio = Integer.parseInt(request.getParameter("idExercicio").toString());
         int contador = Integer.parseInt(request.getParameter("contador").toString());
         ExercicioValidacaoService repo = new ExercicioValidacaoService();
@@ -225,42 +238,53 @@ public class ExerciciosController extends ApplicationController {
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/exercicios/edit/" + idExercicio, true, true, false));
         
-        for (int i = 1; i <= contador; i++) {
+        try {
             
-            int idValidacao = request.getParameter("idValidacao" + i) == null ? 0 : Integer.parseInt(request.getParameter("idValidacao" + i).toString());
-            String entrada = request.getParameter("entrada" + i) == null ? "" : request.getParameter("entrada" + i).toString();
-            String saida = request.getParameter("saida" + i) == null ? "" : request.getParameter("saida" + i).toString();
-            String mensagem = request.getParameter("mensagem" + i) == null ? "" : request.getParameter("mensagem" + i).toString();
-            
-            if (entrada.isEmpty() && saida.isEmpty() && mensagem.isEmpty()) continue;
-            
-            ExercicioValidacao entity = new ExercicioValidacao();
-            
-            if (idValidacao != 0)
-                entity.setId(idValidacao);
-            entity.setIdExercicio(idExercicio);
-            entity.setEntrada(entrada);
-            entity.setSaida(saida);
-            entity.setMensagem(mensagem);
-            entity.setDataCadastro(new Date());
-            entity.setAtivo(true);
-            
-            repo.insertOrUpdate(entity);
-            
-            idsExistentes.append(",").append(entity.getId());
+            for (int i = 1; i <= contador; i++) {
+
+                int idValidacao = request.getParameter("idValidacao" + i) == null ? 0 : Integer.parseInt(request.getParameter("idValidacao" + i).toString());
+                String entrada = request.getParameter("entrada" + i) == null ? "" : request.getParameter("entrada" + i).toString();
+                String saida = request.getParameter("saida" + i) == null ? "" : request.getParameter("saida" + i).toString();
+                String mensagem = request.getParameter("mensagem" + i) == null ? "" : request.getParameter("mensagem" + i).toString();
+
+                if (entrada.isEmpty() && saida.isEmpty() && mensagem.isEmpty()) continue;
+
+                ExercicioValidacao entity = new ExercicioValidacao();
+
+                if (idValidacao != 0)
+                    entity.setId(idValidacao);
+                entity.setIdExercicio(idExercicio);
+                entity.setEntrada(entrada);
+                entity.setSaida(saida);
+                entity.setMensagem(mensagem);
+                entity.setDataCadastro(new Date());
+                entity.setAtivo(true);
+
+                repo.insertOrUpdate(entity);
+
+                idsExistentes.append(",").append(entity.getId());
+            }
+
+            repo.deleteNotIn(idExercicio, idsExistentes.toString());
+
+            log(usuarioLogado.getId(), "SUCESSO: VALIDACAO: ID: " + idExercicio, ETipoLog.ALTERAR_EXERCICIO);
+            flash.addFlashAttribute("MSG_SUCESSO", "Validações salvas com sucesso!");
+        
+        } catch (Exception e) {
+            log(usuarioLogado.getId(), "ERRO: VALIDACAO: ID: " + idExercicio, ETipoLog.ALTERAR_EXERCICIO);
+            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao salvar as validações");
         }
-        
-        repo.deleteNotIn(idExercicio, idsExistentes.toString());
-        
-        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
-        log(usuarioLogado.getId(), "SUCESSO: VALIDACAO: ID: " + idExercicio, ETipoLog.ALTERAR_EXERCICIO);
         
         return mav;
     }
     
     @RequestMapping(value="/saveclassevalidacao", method=RequestMethod.POST)
-    public ModelAndView saveclassevalidacao(HttpServletRequest request, HttpSession session) {
+    public ModelAndView saveclassevalidacao(
+            HttpServletRequest request, 
+            HttpSession session,
+            final RedirectAttributes flash) {
         
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
         int idExercicio = Integer.parseInt(request.getParameter("idExercicio").toString());
         int contador = Integer.parseInt(request.getParameter("contador").toString());
         ExercicioClasseValidacaoService repo = new ExercicioClasseValidacaoService();
@@ -269,38 +293,44 @@ public class ExerciciosController extends ApplicationController {
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/exercicios/edit/" + idExercicio, true, true, false));
         
-        for (int i = 1; i <= contador; i++) {
+        try {
             
-            int idClasseValidacao = request.getParameter("idClasseValidacao" + i) == null ? 0 : Integer.parseInt(request.getParameter("idClasseValidacao" + i).toString());
-            String fonte = request.getParameter("fonte" + i) == null ? "" : request.getParameter("fonte" + i).toString();
-            String saida = request.getParameter("saida" + i) == null ? "" : request.getParameter("saida" + i).toString();
-            String mensagem = request.getParameter("mensagem" + i) == null ? "" : request.getParameter("mensagem" + i).toString();
-            String mensagemCompilacao = request.getParameter("mensagemCompilacao" + i) == null ? "" : request.getParameter("mensagemCompilacao" + i).toString();
-            
-            if (fonte.isEmpty()) continue;
-            
-            ExercicioClasseValidacao entity = new ExercicioClasseValidacao();
-            
-            if (idClasseValidacao != 0)
-                entity.setId(idClasseValidacao);
-            entity.setIdExercicio(idExercicio);
-            entity.setFonte(fonte);
-            entity.setSaida(saida);
-            entity.setMensagem(mensagem);
-            entity.setMensagemCompilacao(mensagemCompilacao);
-            entity.setDataCadastro(new Date());
-            entity.setAtivo(true);
-            
-            repo.insertOrUpdate(entity);
-            
-            idsExistentes.append(",").append(entity.getId());
+            for (int i = 1; i <= contador; i++) {
+
+                int idClasseValidacao = request.getParameter("idClasseValidacao" + i) == null ? 0 : Integer.parseInt(request.getParameter("idClasseValidacao" + i).toString());
+                String fonte = request.getParameter("fonte" + i) == null ? "" : request.getParameter("fonte" + i).toString();
+                String saida = request.getParameter("saida" + i) == null ? "" : request.getParameter("saida" + i).toString();
+                String mensagem = request.getParameter("mensagem" + i) == null ? "" : request.getParameter("mensagem" + i).toString();
+                String mensagemCompilacao = request.getParameter("mensagemCompilacao" + i) == null ? "" : request.getParameter("mensagemCompilacao" + i).toString();
+
+                if (fonte.isEmpty()) continue;
+
+                ExercicioClasseValidacao entity = new ExercicioClasseValidacao();
+
+                if (idClasseValidacao != 0)
+                    entity.setId(idClasseValidacao);
+                entity.setIdExercicio(idExercicio);
+                entity.setFonte(fonte);
+                entity.setSaida(saida);
+                entity.setMensagem(mensagem);
+                entity.setMensagemCompilacao(mensagemCompilacao);
+                entity.setDataCadastro(new Date());
+                entity.setAtivo(true);
+
+                repo.insertOrUpdate(entity);
+
+                idsExistentes.append(",").append(entity.getId());
+            }
+
+            repo.deleteNotIn(idExercicio, idsExistentes.toString());
+
+            log(usuarioLogado.getId(), "SUCESSO: CLASSE VALIDACAO: ID: " + idExercicio, ETipoLog.ALTERAR_EXERCICIO);
+            flash.addFlashAttribute("MSG_SUCESSO", "Classes de validação salvas com sucesso!");
+        
+        } catch (Exception e) {
+            log(usuarioLogado.getId(), "ERRO: CLASSE VALIDACAO: ID: " + idExercicio, ETipoLog.ALTERAR_EXERCICIO);
+            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao salvar as classes de validação");
         }
-        
-        repo.deleteNotIn(idExercicio, idsExistentes.toString());
-        
-        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
-        log(usuarioLogado.getId(), "SUCESSO: CLASSE VALIDACAO: ID: " + idExercicio, ETipoLog.ALTERAR_EXERCICIO);
-        
         return mav;
     }
     
@@ -516,19 +546,15 @@ public class ExerciciosController extends ApplicationController {
                     if (idResposta.getResult() > 0)
                     {
                         try {
-                            //URL urlServlet = new URL("http://localhost:8080/feeper/OnlineJudge?r=" + idResposta.getResult());
-                            URL urlServlet = new URL("http://feeper.jelasticlw.com.br/OnlineJudge?r=" + idResposta.getResult());
-                            HttpURLConnection servletConnection = (HttpURLConnection) urlServlet.openConnection();
-                            servletConnection.setRequestMethod("POST");
-                            servletConnection.setDoOutput(true);
-                            InputStream response = servletConnection.getInputStream();
-                            
-//                            String encoding = Base64Encoder.encode ("feeper:srv8f33p3r");
-//                            HttpPost httppost = new HttpPost("http://feeper.jelasticlw.com.br/OnlineJudge?r=" + idResposta.getResult());
-//                            httppost.setHeader("Authorization", "Basic " + encoding);
-//                            System.out.println("executing request " + httppost.getRequestLine());
-//                            HttpResponse response = httpclient.execute(httppost);
-//                            HttpEntity entity = response.getEntity();
+                            CredentialsProvider credsProvider = new BasicCredentialsProvider();
+                            credsProvider.setCredentials(
+                                new AuthScope("localhost", AuthScope.ANY_PORT),
+                                new UsernamePasswordCredentials("feeper", "srv8f33p3r"));
+                            CloseableHttpClient httpclient = HttpClients.custom()
+                                .setDefaultCredentialsProvider(credsProvider)
+                                .build();
+                            HttpGet httpget = new HttpGet("http://feeper.jelasticlw.com.br/OnlineJudge?r=" + idResposta.getResult());
+                            CloseableHttpResponse response = httpclient.execute(httpget);
                             
                         } catch (Exception e) {
                         }

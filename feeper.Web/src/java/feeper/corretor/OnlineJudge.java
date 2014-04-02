@@ -32,17 +32,32 @@ public class OnlineJudge extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        try {
-            
-            int idResposta = Integer.parseInt(request.getParameter("r").toString());
-            int timeout = 10000;
-            
-            Correcao c = new Correcao(idResposta, timeout);
-            Thread t = new Thread(c);
-            t.start();
-            
-        } catch (Exception e) {
-            e.printStackTrace();
+        response.setContentType("text/plain");
+        PrintWriter out = response.getWriter();
+        
+        // Get Authorization header
+        String auth = request.getHeader("Authorization");
+
+        // Do we allow that user?
+        if (!allowUser(auth)) {
+            // Not allowed, so report he's unauthorized
+            response.setHeader("WWW-Authenticate", "BASIC realm=\"users\"");
+            response.sendError(response.SC_UNAUTHORIZED);
+            // Could offer to add him to the allowed user list
+        }
+        else {
+            // Allowed, so show him the secret stuff
+            try {
+                int idResposta = Integer.parseInt(request.getParameter("r").toString());
+                int timeout = 10000;
+
+                Correcao c = new Correcao(idResposta, timeout);
+                Thread t = new Thread(c);
+                t.start();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -72,24 +87,6 @@ public class OnlineJudge extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-//        response.setContentType("text/plain");
-//        PrintWriter out = response.getWriter();
-//        
-//        // Get Authorization header
-//        String auth = request.getHeader("Authorization");
-//
-//        // Do we allow that user?
-//        if (!allowUser(auth)) {
-//            // Not allowed, so report he's unauthorized
-//            response.setHeader("WWW-Authenticate", "BASIC realm=\"users\"");
-//            response.sendError(response.SC_UNAUTHORIZED);
-//            // Could offer to add him to the allowed user list
-//        }
-//        else {
-//            // Allowed, so show him the secret stuff
-//            processRequest(request, response);
-//        }
         processRequest(request, response);
     }
     
