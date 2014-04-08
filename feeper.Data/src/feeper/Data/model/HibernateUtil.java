@@ -58,11 +58,6 @@ public class HibernateUtil<T> {
 //                System.err.println(e.fillInStackTrace());
 //            }
 //    }
-     
-    public void closeSession(){
-        sessionFactory.close();
-        sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
-    }
     
     public Session getSession(){
         session = sessionFactory.openSession();
