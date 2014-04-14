@@ -409,12 +409,6 @@
         
         <h3>${Exercicio.getNome()}</h3>
         
-        <div class="panel panel-default">
-            <div class="panel-body">
-                ${Exercicio.getDescricaoHtml()}
-            </div>
-        </div>
-            
         <c:if test="${Resposta != null}">
             <c:choose>
                 <c:when test="${Resposta.getIdStatus() == 1}">
@@ -440,6 +434,12 @@
                 intervalLookingStatus = setInterval(function(){lookingForNewStatus()}, 5000);
             </script>
         </c:if>
+            
+        <div class="panel panel-default">
+            <div class="panel-body">
+                ${Exercicio.getDescricaoHtml()}
+            </div>
+        </div>
             
         <h3><fmt:message key="label.exercicios.classes"/></h3>
         <div class="list-group">

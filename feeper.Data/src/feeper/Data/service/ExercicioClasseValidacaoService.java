@@ -50,6 +50,7 @@ public class ExercicioClasseValidacaoService extends HibernateUtil<ExercicioClas
             SQLQuery query = session_.createSQLQuery("delete from ExercicioClasseValidacao where ID not in ("+ concatIds +") and IdExercicio = "+ idExercicio);
             
             query.executeUpdate();
+            transaction_.commit();
             
             return true;
         } catch (HibernateException e) { 

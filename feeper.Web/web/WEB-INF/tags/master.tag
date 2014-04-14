@@ -89,7 +89,7 @@
                 try {
                    parent.FechaModal();
                } catch (e) { }
-               SessionTimeout.schedulePopup(9, '< c:url value='/'/>timeout', '<fmt:message key="label.mensagemsessiontimeout"/>'); 
+               SessionTimeout.schedulePopup(29, '< c:url value='/'/>timeout', '<fmt:message key="label.mensagemsessiontimeout"/>'); 
                
             });
         </script>

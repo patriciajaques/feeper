@@ -71,6 +71,7 @@ public class TurmaService extends HibernateUtil<Turma> {
             SQLQuery query = session_.createSQLQuery("delete from TurmaExercicio where IdTurma = "+ idTurma +" and IdExercicio = "+ idExercicio);
             
             query.executeUpdate();
+            transaction_.commit();
             return true;
             
         } catch (HibernateException e) { 
@@ -94,6 +95,7 @@ public class TurmaService extends HibernateUtil<Turma> {
             SQLQuery query = session_.createSQLQuery("update TurmaExercicio set Visivel = NOT(Visivel) where IdTurma = " + idTurma + " and IdExercicio = " + idExercicio);
             
             query.executeUpdate();
+            transaction_.commit();
             return true;
             
         } catch (HibernateException e) { 
@@ -117,6 +119,7 @@ public class TurmaService extends HibernateUtil<Turma> {
             SQLQuery query = session_.createSQLQuery("delete from TurmaPessoa where IdTurma = "+ idTurma +" and IdPessoa = "+ idAluno);
             
             query.executeUpdate();
+            transaction_.commit();
             return true;
             
         } catch (HibernateException e) { 

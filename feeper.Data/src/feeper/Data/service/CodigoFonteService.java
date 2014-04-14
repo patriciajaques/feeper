@@ -90,6 +90,7 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
             SQLQuery query = session_.createSQLQuery("delete from CodigoFonte where ID not in ("+ concatIds +") and IdExercicio = "+ idExercicio +" and IdAutor = " + idAutor);
             
             query.executeUpdate();
+            transaction_.commit();
             
             return true;
         } catch (HibernateException e) { 

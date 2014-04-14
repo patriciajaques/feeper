@@ -69,6 +69,12 @@
                             <fmt:message key="label.pessoa.professor"/>
                         </label>
                     </div>
+                    <div class="radio-inline">
+                        <label>
+                            <input type="radio" name="idPerfil" id="idPerfilAdmin" value="1" ${IsAdd != null && IsAdd ? "checked" : pessoa.getIdPerfil() == 1 ? "checked" : ""}>
+                            <fmt:message key="label.pessoa.administrador"/>
+                        </label>
+                    </div>
                     <div class="checkbox">
                         <label>
                             <input type="checkbox" name="ativo" ${IsAdd != null && IsAdd ? "checked" : pessoa.isAtivo() ? "checked" : ""}> <fmt:message key="label.pessoa.ativo"/>
