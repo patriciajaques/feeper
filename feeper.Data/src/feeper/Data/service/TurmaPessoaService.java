@@ -9,6 +9,8 @@ import feeper.Data.model.HibernateUtil;
 import java.math.BigInteger;
 import java.util.List;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -46,6 +48,12 @@ public class TurmaPessoaService extends HibernateUtil<TurmaPessoa> {
     
     public boolean insertIfNotExist(int idTurma, int idPessoa)
     {
+        Transaction transaction_;
+        Session session_;
+        
+        session_ = currentSession();
+        transaction_ = session_.beginTransaction();
+        
         try {
             if (!existsByIdTurmaIdPessoa(idTurma, idPessoa))
             {
@@ -55,24 +63,42 @@ public class TurmaPessoaService extends HibernateUtil<TurmaPessoa> {
 
                 query.executeUpdate();
             }
+            session_.flush();
+            transaction_.commit();
+            
             return true;
         } catch (Exception e) {
+            transaction_.rollback();
             return false;
+        } finally {
+            closeSession();
         }
     }
     
     public boolean deleteAllByIdTurma(int idTurma)
     {
+        Transaction transaction_;
+        Session session_;
+        
+        session_ = currentSession();
+        transaction_ = session_.beginTransaction();
+        
         try {
             
             SQLQuery query = query("delete from TurmaPessoa where IdTurma = :idTurma ");
             query.setInteger("idTurma", idTurma);
             query.executeUpdate();
             
+            session_.flush();
+            transaction_.commit();
+            
             return true;
             
         } catch (Exception e) {
+            transaction_.rollback();
             return false;
+        } finally {
+            closeSession();
         }
     }
     

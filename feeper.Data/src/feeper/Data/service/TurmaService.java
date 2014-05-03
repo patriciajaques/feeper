@@ -63,7 +63,7 @@ public class TurmaService extends HibernateUtil<Turma> {
         Transaction transaction_;
         Session session_;
         
-        session_ = getSession();
+        session_ = currentSession();
         transaction_ = session_.beginTransaction();
         
         try {
@@ -78,7 +78,7 @@ public class TurmaService extends HibernateUtil<Turma> {
             transaction_.rollback();
             return false;
         } finally {
-            session_.close();
+            closeSession();
         }
     }
     
@@ -87,7 +87,7 @@ public class TurmaService extends HibernateUtil<Turma> {
         Transaction transaction_;
         Session session_;
         
-        session_ = getSession();
+        session_ = currentSession();
         transaction_ = session_.beginTransaction();
         
         try {
@@ -102,7 +102,7 @@ public class TurmaService extends HibernateUtil<Turma> {
             transaction_.rollback();
             return false;
         } finally {
-            session_.close();
+            closeSession();
         }
     }
     
@@ -111,7 +111,7 @@ public class TurmaService extends HibernateUtil<Turma> {
         Transaction transaction_;
         Session session_;
         
-        session_ = getSession();
+        session_ = currentSession();
         transaction_ = session_.beginTransaction();
         
         try {
@@ -126,7 +126,7 @@ public class TurmaService extends HibernateUtil<Turma> {
             transaction_.rollback();
             return false;
         } finally {
-            session_.close();
+            closeSession();
         }
     }
     

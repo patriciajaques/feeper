@@ -1,5 +1,6 @@
 package feeper.controller;
 
+import com.oreilly.servlet.Base64Encoder;
 import feeper.Data.entity.CodigoFonte;
 import feeper.Data.entity.Exercicio;
 import feeper.Data.entity.ExercicioClasseValidacao;
@@ -29,24 +30,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.NTCredentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -61,10 +48,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import com.oreilly.servlet.Base64Encoder;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import org.hibernate.validator.internal.util.privilegedactions.GetMethod;
 
 @Controller
 @RequestMapping(value="/exercicios")
@@ -500,17 +483,17 @@ public class ExerciciosController extends ApplicationController {
                 RespostaService repoResposta = new RespostaService();
                 Resposta resposta = repoResposta.getLastByIdExercicio(exercicio.getId(), pessoa.getId());
                 mav.addObject("Resposta", resposta);
-                
-//                CodigoFonteMarcacaoService repoCodigoFonteMarcacao = new CodigoFonteMarcacaoService();
-//                mav.addObject("LinhasDuvida", repoCodigoFonteMarcacao.getLinhasDuvida(listaCodigoFonte.get(0).getId()));
             }
             else
             {
-                CodigoFonte codigoFontePrincipal = new CodigoFonte();
-                codigoFontePrincipal.setClasse("Solution.java");
-                codigoFontePrincipal.setId(0);
-                listaCodigoFonte = new ArrayList<CodigoFonte>();
-                listaCodigoFonte.add(codigoFontePrincipal);
+                if (service.getValidacoes(id).size() > 0)
+                {
+                    CodigoFonte codigoFontePrincipal = new CodigoFonte();
+                    codigoFontePrincipal.setClasse("Solution.java");
+                    codigoFontePrincipal.setId(0);
+                    listaCodigoFonte = new ArrayList<CodigoFonte>();
+                    listaCodigoFonte.add(codigoFontePrincipal);
+                }
             }
             mav.addObject("Exercicio", exercicio);
             mav.addObject("ListaCodigoFonte", listaCodigoFonte);
@@ -709,7 +692,8 @@ public class ExerciciosController extends ApplicationController {
                     }
                     else
                     {
-                        if (!principal) repoCodigoFonte.inserirCodigoPrincipal(exercicio.getId(), pessoa.getId());
+                        if (!principal && service.getValidacoes(id).size() > 0)
+                            repoCodigoFonte.inserirCodigoPrincipal(exercicio.getId(), pessoa.getId());
                         entity.setIdAutor(pessoa.getId());
                         entity.setIdExercicio(exercicio.getId());
                     }
@@ -900,7 +884,8 @@ public class ExerciciosController extends ApplicationController {
         
         try {
             MultipartFile file = request.getFile("filedata");
-            return IOUtils.toString(file.getInputStream(), "UTF-8");
+            String fileName = Util.prepareStringForSave(Util.removeExtension(file.getOriginalFilename()));
+            return fileName + "#@#" + IOUtils.toString(file.getInputStream(), "UTF-8");
         } catch (IOException ex) {
             return "";
         }

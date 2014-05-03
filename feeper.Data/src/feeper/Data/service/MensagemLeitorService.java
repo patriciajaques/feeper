@@ -6,8 +6,12 @@ package feeper.Data.service;
 
 import feeper.Data.entity.MensagemLeitor;
 import feeper.Data.model.HibernateUtil;
+import static feeper.Data.model.HibernateUtil.closeSession;
 import java.util.Date;
+import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -22,19 +26,26 @@ public class MensagemLeitorService extends HibernateUtil<MensagemLeitor> {
     
     public boolean atualizarDataLeitura(int idLeitor, char tipoLeitor)
     {
+        Transaction transaction_;
+        Session session_;
+        
+        session_ = currentSession();
+        transaction_ = session_.beginTransaction();
+        
         try {
-            
-            SQLQuery query = query("update MensagemLeitor set DataUltimaLeitura = :dataAtual where DataUltimaLeitura is null and IdLeitor = :idLeitor and TipoLeitor = :tipoLeitor ");
-            query.setInteger("idLeitor", idLeitor);
-            query.setCharacter("tipoLeitor", tipoLeitor);
-            query.setDate("dataAtual", new Date());
-            
+            SQLQuery query = query("update MensagemLeitor set DataUltimaLeitura = NOW() where IdLeitor = " + idLeitor + " and TipoLeitor = '" + tipoLeitor + "'");
             query.executeUpdate();
             
-            return true;
+            session_.flush();
+            transaction_.commit();
+            Boolean aa = transaction_.wasCommitted();
             
-        } catch (Exception e) {
+            return true;
+        } catch (HibernateException e) { 
+            transaction_.rollback();
             return false;
+        } finally {
+            closeSession();
         }
     }
     

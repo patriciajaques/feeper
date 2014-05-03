@@ -234,6 +234,14 @@ public class Util {
         }
     }
     
+    public static String removeExtension(String filename)
+    {
+        int lastIndexOf = filename.lastIndexOf(".");
+        if (lastIndexOf > -1)
+            return filename.substring(0, lastIndexOf);
+        return filename;
+    }
+    
     public static BufferedImage resizeImage(BufferedImage originalImage, int type, int width, int height){
 	BufferedImage resizedImage = new BufferedImage(width, height, type);
 	Graphics2D g = resizedImage.createGraphics();

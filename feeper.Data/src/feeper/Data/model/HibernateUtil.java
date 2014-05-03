@@ -6,7 +6,6 @@ package feeper.Data.model;
 
 import java.util.List;
 import org.hibernate.CacheMode;
-import org.hibernate.FlushMode;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -14,61 +13,53 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.AnnotationConfiguration;
-import org.hibernate.type.NullableType;
+import org.hibernate.cfg.Configuration;
 import org.hibernate.type.Type;
  
 public class HibernateUtil<T> {
-    //private static SessionFactory sessionFactory;
+    public static final ThreadLocal MAP = new ThreadLocal();    
+    private static final SessionFactory SESSION_FACTORY;
+    
     private static Session session;
     private static Transaction transaction;
     private Class objClass;
     
-    private static SessionFactory sessionFactory;
+    
     
     static {
         try {
-            // Create the SessionFactory from standard (hibernate.cfg.xml) 
-            // config file.
-            sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+            SESSION_FACTORY = new Configuration().configure().buildSessionFactory();
         } catch (Throwable ex) {
-            // Log the exception. 
             System.err.println("Initial SessionFactory creation failed." + ex);
             throw new ExceptionInInitializerError(ex);
         }
     }
     
-    public static SessionFactory getSessionFactory() {
-        return sessionFactory;
+    public static Session currentSession() throws HibernateException {
+        Session s = (Session)MAP.get();
+        // Open a new Session, if this Thread has none yet
+        if (s == null) {
+            s = SESSION_FACTORY.openSession();
+            MAP.set(s);
+        }
+        return s;
+    }
+
+    public static void closeSession() throws HibernateException {
+        Session s = (Session)MAP.get();
+        MAP.set(null);
+        if (s != null) {
+            s.close();
+        }
     }
     
     public HibernateUtil(Class objClass){
-        //beginSession();
         this.objClass = objClass;
     }
      
-    /**
-     * Inicia a SessionFactory
-     */
-//    private void beginSession(){        
-//        if(sessionFactory == null)
-//            try {
-//                sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
-//            } catch (Exception e){
-//                System.err.println(e.fillInStackTrace());
-//            }
-//    }
-    
-    public Session getSession(){
-        session = sessionFactory.openSession();
-        session.setCacheMode(CacheMode.IGNORE);
-        return session;
-    }
-    
     public SQLQuery query(String sqlQuery)
     {
-        session = getSession();
-        session.setCacheMode(CacheMode.IGNORE);
+        session = currentSession();
         return session.createSQLQuery(sqlQuery);
     }
     
@@ -76,7 +67,7 @@ public class HibernateUtil<T> {
         List<T> lista = null;
         Query query = null;
         try {
-            session = getSession();
+            session = currentSession();
             //transacao = session.beginTransaction();
             query = session.createQuery("From "+objClass.getName()+" Where "+coluna+" like '%"+dado+"%'");
             lista = query.list();
@@ -93,7 +84,7 @@ public class HibernateUtil<T> {
         List<Object> lista = null;
         Query query = null;
         try {
-            session = getSession();
+            session = currentSession();
             //transacao = session.beginTransaction();
             query = session.createQuery("Select "+colunasResultado+" From "+objClass.getName()+" Where "+colunaFiltro+" like :like order by " + colunasResultado);
             query.setParameter("like", "%" + filtro + "%");
@@ -111,7 +102,7 @@ public class HibernateUtil<T> {
         List<Object> lista = null;
         Query query = null;
         try {
-            session = getSession();
+            session = currentSession();
             //transacao = session.beginTransaction();
             query = session.createQuery("Select "+colunasResultado+" From "+objClass.getName()+" Where "+colunaFiltro+" like :like " + where + " order by " + colunasResultado);
             query.setParameter("like", "%" + filtro + "%");
@@ -125,16 +116,11 @@ public class HibernateUtil<T> {
         }
     }
 
-    /**
-     * Retorna todos os registros da tabela (classe) informada
-     * @param objClass
-     * @return List<Object>
-     */
     public List<T> getAll(){
         List<T> lista = null;
         Query query = null;
         try {
-            session = getSession();
+            session = currentSession();
             //transacao = session.beginTransaction();
             query = session.createQuery("From "+objClass.getName());
             lista = query.list();
@@ -158,7 +144,7 @@ public class HibernateUtil<T> {
         List<T> lista = null;
         Query query = null;
         try {
-            session = getSession();
+            session = currentSession();
             //transacao = session.beginTransaction();
             query = session.createQuery("From "+objClass.getName()+" Where "+column+" = :p ");
             
@@ -181,16 +167,10 @@ public class HibernateUtil<T> {
         }
     }
      
-    /**
-     * Retorna apenas um objeto referente a classe e id informados
-     * @param objClass
-     * @param id
-     * @return Object
-     */
     public T getById(Integer id){
         T objGet = null;
         try {
-            session = getSession();
+            session = currentSession();
             //transacao = session.beginTransaction();
             objGet = (T)session.get(objClass, id);
         } catch (HibernateException e) { 
@@ -202,14 +182,10 @@ public class HibernateUtil<T> {
         }
     }
      
-    /**
-     * Persiste o objeto passado por parâmetro
-     * @param obj 
-     */
     public boolean insert(T obj){
         if (obj == null) return false;
         try{
-            session = getSession();
+            session = currentSession();
             transaction = session.beginTransaction();
             session.save(obj);
             session.refresh(obj);
@@ -221,14 +197,14 @@ public class HibernateUtil<T> {
             return false;
         } finally {
             //session.clear();
-            session.close();
+            closeSession();
         }
     }
     
     public boolean insertOrUpdate(T obj){
         if (obj == null) return false;
         try{
-            session = getSession();
+            session = currentSession();
             transaction = session.beginTransaction();
             session.saveOrUpdate(obj);
             
@@ -242,18 +218,14 @@ public class HibernateUtil<T> {
             return false;
         } finally {
             //session.clear();
-            session.close();
+            closeSession();
         }
     }
      
-    /**
-     * Atualiza o objeto passado por parâmetro
-     * @param obj 
-     */
     public boolean update(T obj){
         if (obj == null) return false;
         try{
-            session = getSession();
+            session = currentSession();
             transaction = session.beginTransaction();
             //session.update(obj);
             session.merge(obj);
@@ -265,18 +237,14 @@ public class HibernateUtil<T> {
             return false;
         } finally {
             //session.clear();
-            session.close();
+            closeSession();
         }
     }
      
-    /**
-     * Exclui o objeto passado por parâmetro
-     * @param obj 
-     */
     public boolean delete(T obj){
         if (obj == null) return false;
         try{
-            session = getSession();
+            session = currentSession();
             transaction = session.beginTransaction();
             session.delete(obj);
             transaction.commit();
@@ -287,7 +255,7 @@ public class HibernateUtil<T> {
             return false;
         } finally {
             //session.clear();
-            session.close();
+            closeSession();
         }
     }
     

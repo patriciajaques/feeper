@@ -43,7 +43,7 @@ public class ExercicioClasseValidacaoService extends HibernateUtil<ExercicioClas
         Transaction transaction_;
         Session session_;
         
-        session_ = getSession();
+        session_ = currentSession();
         transaction_ = session_.beginTransaction();
         
         try {
@@ -57,7 +57,7 @@ public class ExercicioClasseValidacaoService extends HibernateUtil<ExercicioClas
             transaction_.rollback();
             return false;
         } finally {
-            session_.close();
+            closeSession();
         }
     }
     

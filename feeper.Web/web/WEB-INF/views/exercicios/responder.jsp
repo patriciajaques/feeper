@@ -74,7 +74,9 @@
                     'height'        : 22,
                     'removeCompleted' : false,
                     'queueID'       : 'fileQueue',
+                    'itemTemplate'  : '<div style="margin-top:40px;" id="\${fileID}"><div class="uploadify-progress"><div class="uploadify-progress-bar"><!--Progress Bar--></div></div></div>',
                     'onUploadSuccess' : function(file, data, response) {
+                        $("#fileQueue").html("");
                         adicionarClasse(data);
                     },
                     'onUploadError' : function(file, errorCode, errorMsg, errorString) {
@@ -310,17 +312,21 @@
             
             function adicionarClasse(content){
                 
-                if ($("#txtNomeClasse").val().length == 0)
-                {
-                    $("#txtNomeClasse").parent().addClass("has-error");
-                    return;
-                }
-                
-                var fileName = trataString($("#txtNomeClasse").val());
-                $("#lblFilename").html(fileName + ".java").show();
-                
                 if (content.length == 0)
+                {
+                    if ($("#txtNomeClasse").val().length == 0)
+                    {
+                        $("#txtNomeClasse").parent().addClass("has-error");
+                        return;
+                    }
+                    var fileName = trataString($("#txtNomeClasse").val());
                     content = newClassContent.replace(/#@#CLASSE#@#/gi, fileName).replace(/#n#/gi, "\n");
+                }
+                else
+                {
+                    var fileName = content.split("#@#")[0];
+                    content = content.replace(fileName + "#@#", "");
+                }
                 
                 CreateEditor(content, false);
                 
@@ -329,6 +335,7 @@
                 $("#hdnPrincipal").val("false");
                 $("#hdnNomeCodigoFonte").val(fileName + ".java");
                 $("#txtNomeClasse").val("");
+                $("#lblFilename").html(fileName + ".java").show();
                 ControlaBotoes();
                 FechaModal();
             }
@@ -376,11 +383,13 @@
                 {
                     $(".btn-salvar-codigo").prop("disabled", "disabled");
                     $(".btn-habilitar-edicao, .btn-codigo-favorito").prop("disabled", "");
+                    $(".ace_content").css("background-color", "#f3f3f3");
                 }
                 else
                 {
                     $(".btn-salvar-codigo").prop("disabled", "");
                     $(".btn-habilitar-edicao, .btn-codigo-favorito").prop("disabled", "disabled");
+                    $(".ace_content").css("background-color", "");
                 }
                 if (principal == "true")
                 {
@@ -495,7 +504,7 @@
             <div class="pull-left" style="margin-left:3px">
                 <button type="button" class="btn btn-default btn-xs" onclick="cancelarClasse();"><fmt:message key="button.cancelar"/></button>
             </div>
-            <div id="fileQueue" style="display:none;"></div>
+            <div id="fileQueue" style="display:block;"></div>
         </div>
         
         <!--Modal exibida para adicionar perguntas-->
