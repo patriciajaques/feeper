@@ -15,6 +15,7 @@ public class MensagemCabecalho  implements java.io.Serializable {
      private boolean publico;
      private Date dataCadastro;
      private boolean ativo;
+     private Integer idRespostaCodigoFonteMarcacao;
 
     public MensagemCabecalho() {
     }
@@ -68,7 +69,13 @@ public class MensagemCabecalho  implements java.io.Serializable {
         this.ativo = ativo;
     }
 
-
+    public Integer getIdRespostaCodigoFonteMarcacao() {
+        return this.idRespostaCodigoFonteMarcacao;
+    }
+    
+    public void setIdRespostaCodigoFonteMarcacao(Integer idRespostaCodigoFonteMarcacao) {
+        this.idRespostaCodigoFonteMarcacao = idRespostaCodigoFonteMarcacao;
+    }
 
 
 }

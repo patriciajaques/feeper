@@ -3,13 +3,17 @@ package feeper.controller;
 import feeper.Data.entity.CodigoFonte;
 import feeper.Data.entity.Exercicio;
 import feeper.Data.entity.Pessoa;
+import feeper.Data.entity.Resposta;
 import feeper.Data.entity.RespostaCodigoFonte;
+import feeper.Data.entity.Turma;
 import feeper.Data.model.EPerfil;
 import feeper.Data.model.ETipoLog;
 import feeper.Data.model.Util;
 import feeper.Data.service.CodigoFonteMarcacaoService;
 import feeper.Data.service.CodigoFonteService;
 import feeper.Data.service.ExercicioService;
+import feeper.Data.service.RespostaCodigoFonteMarcacaoService;
+import feeper.Data.service.RespostaCodigoFonteService;
 import feeper.Data.service.RespostaService;
 import feeper.Data.service.TurmaService;
 import feeper.model.PaginadorUtil;
@@ -274,12 +278,28 @@ public class CodigosController extends ApplicationController {
             }
         }
         
-        RespostaCodigoFonte codigoFonte = repoResposta.getRespostaCodigoFonte(idRespostaCodigoFonte);
+        RespostaCodigoFonte respostaCodigoFonte = repoResposta.getRespostaCodigoFonte(idRespostaCodigoFonte);
+        Resposta resposta = repoResposta.getById(respostaCodigoFonte.getIdResposta());
         
-        mav.setViewName("codigos/show");
-        
-        mav.addObject("CodigoFonte", codigoFonte);
+        mav.setViewName("codigos/showversion");
+        mav.addObject("idExercicio", resposta.getIdExercicio());
+        mav.addObject("idCodigoFonte", respostaCodigoFonte.getId());
+        mav.addObject("CodigoFonte", respostaCodigoFonte);
         mav.addObject("isVersion", true);
+        
+        RespostaCodigoFonteMarcacaoService repoRespostaCodigoFonteMarcacao = new RespostaCodigoFonteMarcacaoService();
+        List<Object> listaDuvidas = repoRespostaCodigoFonteMarcacao.getLinhasDuvida(idRespostaCodigoFonte);
+        
+        String duvidas = "";
+        
+        for (Object item : listaDuvidas) {
+            if (duvidas.length() == 0)
+                duvidas = duvidas.concat(item.toString());
+            else
+                duvidas = duvidas.concat(",").concat(item.toString());
+        }
+        
+        mav.addObject("questions", "[" + duvidas + "]");
         
         return mav;
     }
@@ -416,6 +436,148 @@ public class CodigosController extends ApplicationController {
             return "erro";
         }
             
+    }
+    
+    @RequestMapping(value="/showversionquestion/{idExercicio}/{idRespostaCodigoFonte}/{linha}", method=RequestMethod.GET)
+    public String showversionquestion(
+            @PathVariable int idExercicio, 
+            @PathVariable int idRespostaCodigoFonte, 
+            @PathVariable int linha, 
+            Model model, 
+            HttpServletRequest request) {
+        
+        HttpSession session = request.getSession(false);
+        Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
+        
+        RespostaCodigoFonteService repoRespostaCodigoFonte = new RespostaCodigoFonteService();
+        
+        List<Object> dados;
+        if (pessoa.getIdPerfil() == EPerfil.ALUNO)
+            dados = repoRespostaCodigoFonte.getMarcacaoAutor(idExercicio, pessoa.getId(), idRespostaCodigoFonte, linha);
+        else
+            dados = repoRespostaCodigoFonte.getMarcacaoLeitor(idExercicio, idRespostaCodigoFonte, linha);
+        
+        model.addAttribute("lista", dados);
+        model.addAttribute("idUsuarioLogado", pessoa.getId());
+        
+        return "exercicios/mensagens";
+    }
+    
+    @RequestMapping(value="/saveversionquestion", method=RequestMethod.POST)
+    public ModelAndView saveversionquestion(
+            @ModelAttribute("hdnQuestaoIdExercicio") int id, 
+            @ModelAttribute("hdnQuestaoIdRespostaCodigoFonte") int idRespostaCodigoFonte, 
+            @ModelAttribute("hdnQuestaoLinha") int linha, 
+            HttpSession session,
+            HttpServletRequest request,
+            BindingResult result) {
+        
+        ModelAndView mav = new ModelAndView();
+        
+        Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
+        Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
+        
+        RespostaCodigoFonteService repoRespostaCodigoFonte = new RespostaCodigoFonteService();
+        ExercicioService repoExercicio = new ExercicioService();
+        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), id);
+        
+        if (exercicio != null)
+        {
+            try
+            {
+                String questao = request.getParameter("questaoRespostaCodigoFonte") == null ? "" : request.getParameter("questaoRespostaCodigoFonte").toString();
+
+                if (!questao.isEmpty())
+                {
+                    int idRemetente = pessoa.getId();
+                    int idDestinatario = turma.getIdProfessor();
+                    
+                    if (pessoa.getIdPerfil() == EPerfil.PROFESSOR)
+                    {
+                        //Buscar o id do aluno
+                        RespostaService repoResposta = new RespostaService();
+                        RespostaCodigoFonte respostaCodigoFonte = repoRespostaCodigoFonte.getById(idRespostaCodigoFonte);
+                        Resposta resposta = repoResposta.getById(respostaCodigoFonte.getIdResposta());
+                        idDestinatario = resposta.getIdAutor();
+                    }
+                    
+                    if (repoRespostaCodigoFonte.inserirPergunta(id, idRemetente, idRespostaCodigoFonte, linha, idDestinatario, questao))
+                        log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId() + " ID RESPOSTACODIGOFONTE: " + idRespostaCodigoFonte + " LINHA: " + linha, ETipoLog.REALIZAR_PERGUNTA);
+                    else
+                        log(pessoa.getId(), "ERRO: ID EXERCICIO: " + exercicio.getId() + " ID RESPOSTACODIGOFONTE: " + idRespostaCodigoFonte + " LINHA: " + linha, ETipoLog.REALIZAR_PERGUNTA);
+                }
+            }
+            catch(Exception e) {
+                log(pessoa.getId(), "ERRO: ID EXERCICIO: " + exercicio.getId(), ETipoLog.REALIZAR_PERGUNTA);
+            }
+        
+        }
+        
+        mav.setView(new RedirectView("/codigos/showversionquestion/" + id + "/" + idRespostaCodigoFonte + "/" + linha, true, true, false));
+        return mav;
+        
+    }
+    
+    @RequestMapping(value="/showversionannotation/{idExercicio}/{idRespostaCodigoFonte}/{linha}", method=RequestMethod.GET)
+    @ResponseBody
+    public Object showversionannotation(
+            @PathVariable int idExercicio, 
+            @PathVariable int idRespostaCodigoFonte, 
+            @PathVariable int linha, 
+            Model model, 
+            HttpServletRequest request) {
+        
+        HttpSession session = request.getSession(false);
+        Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
+        
+        RespostaCodigoFonteService repoRespostaCodigoFonte = new RespostaCodigoFonteService();
+        Object dados = repoRespostaCodigoFonte.getAnotacao(idExercicio, idRespostaCodigoFonte, linha);
+        
+        return dados != null ? dados : "";
+    }
+    
+    @RequestMapping(value="/saveversionannotation", method=RequestMethod.POST)
+    public ModelAndView saveversionannotation(
+            @ModelAttribute("hdnAnotacaoIdExercicio") int id, 
+            @ModelAttribute("hdnAnotacaoIdRespostaCodigoFonte") int idRespostaCodigoFonte, 
+            @ModelAttribute("hdnAnotacaoLinha") int linha, 
+            HttpSession session,
+            HttpServletRequest request,
+            BindingResult result) {
+        
+        ModelAndView mav = new ModelAndView();
+        
+        Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
+        Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
+        
+        RespostaCodigoFonteService repoRespostaCodigoFonte = new RespostaCodigoFonteService();
+        ExercicioService repoExercicio = new ExercicioService();
+        Exercicio exercicio = repoExercicio.getMeuExercicio(turma.getId(), id);
+        
+        if (exercicio != null)
+        {
+            try
+            {
+                String anotacao = request.getParameter("anotacaoRespostaCodigoFonte") == null ? "" : request.getParameter("anotacaoRespostaCodigoFonte").toString();
+                //boolean publico = request.getParameter("chkPublico") == null ? false : request.getParameter("chkPublico").toString().equals("1");
+
+                if (!anotacao.isEmpty())
+                {
+                    if (repoRespostaCodigoFonte.inserirAnotacao(id, pessoa.getId(), idRespostaCodigoFonte, linha, anotacao))
+                        log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId() + " ID RESPOSTACODIGOFONTE: " + idRespostaCodigoFonte + " LINHA: " + linha, ETipoLog.CODIGO_COMENTADO);
+                    else
+                        log(pessoa.getId(), "ERRO: ID EXERCICIO: " + exercicio.getId() + " ID RESPOSTACODIGOFONTE: " + idRespostaCodigoFonte + " LINHA: " + linha, ETipoLog.CODIGO_COMENTADO);
+                }
+            }
+            catch(Exception e) {
+                log(pessoa.getId(), "ERRO: ID EXERCICIO: " + exercicio.getId(), ETipoLog.CODIGO_COMENTADO);
+            }
+        
+        }
+        
+        mav.setView(new RedirectView("/codigos/showversionannotation/" + id + "/" + idRespostaCodigoFonte + "/" + linha, true, true, false));
+        return mav;
+        
     }
     
 }

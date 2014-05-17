@@ -51,6 +51,7 @@
     <mapping resource="feeper/Data/entity/Perfil.hbm.xml"/>
     <mapping resource="feeper/Data/entity/Resposta.hbm.xml"/>
     <mapping resource="feeper/Data/entity/RespostaCodigoFonte.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/RespostaCodigoFonteMarcacao.hbm.xml"/>
     <mapping resource="feeper/Data/entity/FilaNovaSenha.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

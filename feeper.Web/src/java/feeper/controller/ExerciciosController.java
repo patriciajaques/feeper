@@ -8,6 +8,7 @@ import feeper.Data.entity.ExercicioValidacao;
 import feeper.Data.entity.MeusExercicios;
 import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.Resposta;
+import feeper.Data.entity.RespostaCodigoFonte;
 import feeper.Data.entity.Turma;
 import feeper.Data.entity.UploadTemp;
 import feeper.Data.model.EPerfil;
@@ -800,7 +801,17 @@ public class ExerciciosController extends ApplicationController {
 
                 if (!questao.isEmpty())
                 {
-                    if (repoCodigoFonte.inserirPergunta(id, pessoa.getId(), idCodigoFonte, linha, false, turma.getIdProfessor(), questao))
+                    int idRemetente = pessoa.getId();
+                    int idDestinatario = turma.getIdProfessor();
+                    
+                    if (pessoa.getIdPerfil() == EPerfil.PROFESSOR)
+                    {
+                        //Buscar o id do aluno
+                        CodigoFonte codigoFonte = repoCodigoFonte.getById(id, idCodigoFonte);
+                        idDestinatario = codigoFonte.getIdAutor();
+                    }
+                    
+                    if (repoCodigoFonte.inserirPergunta(id, idRemetente, idCodigoFonte, linha, false, idDestinatario, questao))
                         log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId() + " ID CODIGOFONTE: " + idCodigoFonte + " LINHA: " + linha, ETipoLog.REALIZAR_PERGUNTA);
                     else
                         log(pessoa.getId(), "ERRO: ID EXERCICIO: " + exercicio.getId() + " ID CODIGOFONTE: " + idCodigoFonte + " LINHA: " + linha, ETipoLog.REALIZAR_PERGUNTA);

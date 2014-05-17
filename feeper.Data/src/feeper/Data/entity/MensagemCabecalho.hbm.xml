@@ -20,5 +20,8 @@
         <property name="ativo" type="boolean">
             <column name="Ativo" not-null="true" />
         </property>
+        <property name="idRespostaCodigoFonteMarcacao" type="java.lang.Integer">
+            <column name="IdRespostaCodigoFonteMarcacao" />
+        </property>
     </class>
 </hibernate-mapping>

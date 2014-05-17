@@ -9,6 +9,7 @@ import feeper.Data.entity.CodigoFonteMarcacao;
 import feeper.Data.entity.Mensagem;
 import feeper.Data.entity.MensagemCabecalho;
 import feeper.Data.entity.MensagemLeitor;
+import feeper.Data.entity.RespostaCodigoFonteMarcacao;
 import feeper.Data.model.ETipoLeitor;
 import feeper.Data.model.ETipoMarcacao;
 import feeper.Data.model.HibernateUtil;
@@ -339,8 +340,10 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
         try {
             
             CodigoFonteMarcacaoService repoCodigoFonteMarcacao = new CodigoFonteMarcacaoService();
-            CodigoFonteMarcacao codigoFonteMarcacao = repoCodigoFonteMarcacao.getByIdCodigoFonte(idCodigoFonte, linha, ETipoMarcacao.DUVIDA);
+            MensagemCabecalhoService repoMensagemCabecalho = new MensagemCabecalhoService();
+            MensagemLeitorService repoMensagemLeitor = new MensagemLeitorService();
             
+            CodigoFonteMarcacao codigoFonteMarcacao = repoCodigoFonteMarcacao.getByIdCodigoFonte(idCodigoFonte, linha, ETipoMarcacao.DUVIDA);
             if (codigoFonteMarcacao == null)
             {
                 codigoFonteMarcacao = new CodigoFonteMarcacao();
@@ -354,9 +357,7 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
                 repoCodigoFonteMarcacao.insert(codigoFonteMarcacao);
             }
             
-            MensagemCabecalhoService repoMensagemCabecalho = new MensagemCabecalhoService();
             MensagemCabecalho mensagemCabecalho = repoMensagemCabecalho.getByIdCodigoFonteMarcacao(codigoFonteMarcacao.getId());
-            
             if (mensagemCabecalho == null)
             {
                 mensagemCabecalho = new MensagemCabecalho();
@@ -366,7 +367,6 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
                 mensagemCabecalho.setPublico(publico);
                 repoMensagemCabecalho.insert(mensagemCabecalho);
                 
-                MensagemLeitorService repoMensagemLeitor = new MensagemLeitorService();
                 MensagemLeitor mensagemLeitor = new MensagemLeitor();
                 mensagemLeitor.setAtivo(true);
                 mensagemLeitor.setIdLeitor(idLeitor);
@@ -381,6 +381,11 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
                 mensagemLeitor.setIdMensagemCabecalho(mensagemCabecalho.getId());
                 mensagemLeitor.setTipoLeitor(ETipoLeitor.REMETENTE);
                 repoMensagemLeitor.insert(mensagemLeitor);
+            }
+            else
+            {
+                repoMensagemLeitor.atualizarDataLeitura(idAutor, ETipoLeitor.REMETENTE);
+                repoMensagemLeitor.atualizarDataLeitura(idAutor, ETipoLeitor.DESTINATARIO);
             }
             
             MensagemService repoMensagem = new MensagemService();

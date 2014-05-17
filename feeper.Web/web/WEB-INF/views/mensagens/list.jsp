@@ -3,7 +3,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
-//listaMensagensDestinatario[13]
+//lista[17]
 //0 - IdAutor
 //1 - Autor
 //2 - IdMensagemCabecalho
@@ -15,8 +15,12 @@
 //8 - Classe
 //9 - IdExercicio
 //10 - Exercicio
-//11 - DataCadastro
-//12 - Texto
+//11 - IdAluno
+//12 - Resposta
+//13 - DataCadastro
+//14 - DataCadastroOrder
+//15 - NovaMensagem
+//16 - Texto
 %>
 
 <t:master>
@@ -31,8 +35,16 @@
                     var idExercicio = $(this).attr("data-idexercicio");
                     var idCodigoFonte = $(this).attr("data-idcodigofonte");
                     var linha = $(this).attr("data-linha");
+                    var resposta = $(this).attr("data-resposta");
+                    var aluno = $(this).attr("data-aluno");
+                    var url = "";
                     
-                    if (idExercicio === undefined || idCodigoFonte === undefined || linha === undefined) return;
+                    if (idExercicio === undefined || idCodigoFonte === undefined || linha === undefined || resposta === undefined || aluno === undefined) return;
+                    
+                    if (resposta == "true")
+                        url = "<c:url value='/'/>codigos/showversion/" + idCodigoFonte + "/" + aluno
+                    else
+                        url = "<c:url value='/'/>codigos/show/" + idExercicio + "/" + idCodigoFonte + "/" + linha
                     
                     event.preventDefault ? event.preventDefault() : event.returnValue = false;
                     $.fancybox({
@@ -44,9 +56,13 @@
                         'arrows': false,
                         'width': '90%',
                         'height': '90%',
-                        'href': "<c:url value='/'/>codigos/show/" + idExercicio + "/" + idCodigoFonte + "/" + linha
+                        'href': url
                     });
                 });
+                
+                $(".new-message").animate({
+                    'border-left-color': '#428BCA'
+                }, 2000);
             });
         </script>
         
@@ -55,24 +71,13 @@
         
         <h2><fmt:message key="label.mensagens"/></h2>
         
-        <c:if test="${not empty listaMensagensDestinatario}">
-            <c:forEach var="item" varStatus="status" items="${listaMensagensDestinatario}">
-                <blockquote>
-                    <p>${item[12]}</p>
-                    <small>${item[1]} <fmt:message key="label.mensagens.em"/> <a href="#" class="fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}">${item[10]} / ${item[8]} (<fmt:message key="label.mensagens.linha"/> ${item[6]})</a> - <fmt:message key="label.mensagens.ha"/> ${item[11]}</small><br>
+        <c:if test="${not empty listaMensagens}">
+            <c:forEach var="item" varStatus="status" items="${listaMensagens}">
+                <blockquote class="${item[15] == 1 ? "new-message" : "old-message"}">
+                    <p>${item[16]}</p>
+                    <small>${item[1]} <fmt:message key="label.mensagens.em"/> <a href="#" class="fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}" data-resposta="${item[12]}" data-aluno="${item[11]}">${item[10]} / ${item[8]} (<fmt:message key="label.mensagens.linha"/> ${item[6]})</a> - <fmt:message key="label.mensagens.ha"/> ${item[13]}</small><br>
                     <p>
-                        <button type="button" class="btn btn-primary btn-xs fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}"><fmt:message key="button.responder"/></button>
-                    </p>
-                </blockquote>
-            </c:forEach>
-        </c:if>
-        <c:if test="${not empty listaMensagensRemetente}">
-            <c:forEach var="item" varStatus="status" items="${listaMensagensRemetente}">
-                <blockquote>
-                    <p>${item[12]}</p>
-                    <small>${item[1]} <fmt:message key="label.mensagens.em"/> <a href="#" class="fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}">${item[10]} / ${item[8]} (<fmt:message key="label.mensagens.linha"/> ${item[6]})</a> - <fmt:message key="label.mensagens.ha"/> ${item[11]}</small><br>
-                    <p>
-                        <button type="button" class="btn btn-primary btn-xs fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}"><fmt:message key="button.responder"/></button>
+                        <button type="button" class="btn btn-primary btn-xs fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}" data-resposta="${item[12]}" data-aluno="${item[11]}"><fmt:message key="button.responder"/></button>
                     </p>
                 </blockquote>
             </c:forEach>

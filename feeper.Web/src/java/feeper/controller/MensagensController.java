@@ -1,6 +1,7 @@
 package feeper.controller;
 
 import feeper.Data.entity.Pessoa;
+import feeper.Data.model.ETipoLeitor;
 import feeper.Data.service.MensagemCabecalhoService;
 import feeper.Data.service.MensagemLeitorService;
 import java.util.List;
@@ -22,18 +23,12 @@ public class MensagensController extends ApplicationController {
         Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
         MensagemCabecalhoService repoMensagemCabecalho = new MensagemCabecalhoService();
         
-        //Mensagens recebidas como destinatário
-        List<Object> listaDestinatario = repoMensagemCabecalho.getMensagensDestinatario(usuarioLogado.getId(), false, true);
-        model.addAttribute("listaMensagensDestinatario", listaDestinatario);
+        List<Object> lista = repoMensagemCabecalho.getMensagens(usuarioLogado.getId(), 'A', false, true);
+        model.addAttribute("listaMensagens", lista);
         
         MensagemLeitorService repoMensagemLeitor = new MensagemLeitorService();
-        repoMensagemLeitor.atualizarDataLeitura(usuarioLogado.getId(), 'D');
-        
-        //Mensagens enviadas como remetente
-        List<Object> listaRemetente = repoMensagemCabecalho.getMensagensRemetente(usuarioLogado.getId(), false, true);
-        model.addAttribute("listaMensagensRemetente", listaRemetente);
-        
-        repoMensagemLeitor.atualizarDataLeitura(usuarioLogado.getId(), 'R');
+        repoMensagemLeitor.atualizarDataLeitura(usuarioLogado.getId(), ETipoLeitor.DESTINATARIO);
+        repoMensagemLeitor.atualizarDataLeitura(usuarioLogado.getId(), ETipoLeitor.REMETENTE);
         
         return "mensagens/list";
     }
