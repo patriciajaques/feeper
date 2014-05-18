@@ -18,6 +18,7 @@ public class ExercicioClasseValidacao  implements java.io.Serializable {
      private String mensagem;
      private Date dataCadastro;
      private boolean ativo;
+     private Integer ordem;
 
     public ExercicioClasseValidacao() {
     }
@@ -95,6 +96,13 @@ public class ExercicioClasseValidacao  implements java.io.Serializable {
     
     public void setMensagemCompilacao(String mensagemCompilacao) {
         this.mensagemCompilacao = mensagemCompilacao;
+    }
+    public Integer getOrdem() {
+        return this.ordem;
+    }
+    
+    public void setOrdem(Integer ordem) {
+        this.ordem = ordem;
     }
 
 }

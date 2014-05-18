@@ -206,7 +206,6 @@ public class Util {
     public static String formatDate(Date date, String format)
     {
         //String DATE_FORMAT_NOW = "yyyy-MM-dd";
-        //Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         String stringDate = sdf.format(date);
         return stringDate;

@@ -234,6 +234,7 @@ public class ExerciciosController extends ApplicationController {
             for (int i = 1; i <= contador; i++) {
 
                 int idValidacao = request.getParameter("idValidacao" + i) == null ? 0 : Integer.parseInt(request.getParameter("idValidacao" + i).toString());
+                int ordem = request.getParameter("ordem" + i) == null ? 0 : Integer.parseInt(request.getParameter("ordem" + i).toString());
                 String entrada = request.getParameter("entrada" + i) == null ? "" : request.getParameter("entrada" + i).toString();
                 String saida = request.getParameter("saida" + i) == null ? "" : request.getParameter("saida" + i).toString();
                 String mensagem = request.getParameter("mensagem" + i) == null ? "" : request.getParameter("mensagem" + i).toString();
@@ -250,6 +251,7 @@ public class ExerciciosController extends ApplicationController {
                 entity.setMensagem(mensagem);
                 entity.setDataCadastro(new Date());
                 entity.setAtivo(true);
+                entity.setOrdem(ordem);
 
                 repo.insertOrUpdate(entity);
 
@@ -289,6 +291,7 @@ public class ExerciciosController extends ApplicationController {
             for (int i = 1; i <= contador; i++) {
 
                 int idClasseValidacao = request.getParameter("idClasseValidacao" + i) == null ? 0 : Integer.parseInt(request.getParameter("idClasseValidacao" + i).toString());
+                int ordem = request.getParameter("ordemClasse" + i) == null ? 0 : Integer.parseInt(request.getParameter("ordemClasse" + i).toString());
                 String fonte = request.getParameter("fonte" + i) == null ? "" : request.getParameter("fonte" + i).toString();
                 String saida = request.getParameter("saida" + i) == null ? "" : request.getParameter("saida" + i).toString();
                 String mensagem = request.getParameter("mensagem" + i) == null ? "" : request.getParameter("mensagem" + i).toString();
@@ -307,6 +310,7 @@ public class ExerciciosController extends ApplicationController {
                 entity.setMensagemCompilacao(mensagemCompilacao);
                 entity.setDataCadastro(new Date());
                 entity.setAtivo(true);
+                entity.setOrdem(ordem);
 
                 repo.insertOrUpdate(entity);
 
@@ -790,7 +794,7 @@ public class ExerciciosController extends ApplicationController {
                         idDestinatario = codigoFonte.getIdAutor();
                     }
                     
-                    if (repoCodigoFonte.inserirPergunta(id, idRemetente, idCodigoFonte, linha, false, idDestinatario, questao))
+                    if (repoCodigoFonte.inserirPergunta(id, idRemetente, pessoa.getNome(), idCodigoFonte, linha, false, idDestinatario, questao))
                         log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId() + " ID CODIGOFONTE: " + idCodigoFonte + " LINHA: " + linha, ETipoLog.REALIZAR_PERGUNTA);
                     else
                         log(pessoa.getId(), "ERRO: ID EXERCICIO: " + exercicio.getId() + " ID CODIGOFONTE: " + idCodigoFonte + " LINHA: " + linha, ETipoLog.REALIZAR_PERGUNTA);

@@ -496,7 +496,7 @@ public class CodigosController extends ApplicationController {
                         idDestinatario = resposta.getIdAutor();
                     }
                     
-                    if (repoRespostaCodigoFonte.inserirPergunta(id, idRemetente, idRespostaCodigoFonte, linha, idDestinatario, questao))
+                    if (repoRespostaCodigoFonte.inserirPergunta(id, idRemetente, pessoa.getNome(), idRespostaCodigoFonte, linha, idDestinatario, questao))
                         log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId() + " ID RESPOSTACODIGOFONTE: " + idRespostaCodigoFonte + " LINHA: " + linha, ETipoLog.REALIZAR_PERGUNTA);
                     else
                         log(pessoa.getId(), "ERRO: ID EXERCICIO: " + exercicio.getId() + " ID RESPOSTACODIGOFONTE: " + idRespostaCodigoFonte + " LINHA: " + linha, ETipoLog.REALIZAR_PERGUNTA);

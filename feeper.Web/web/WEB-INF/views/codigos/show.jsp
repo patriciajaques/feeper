@@ -145,7 +145,6 @@
                 $('#frmQuestao').ajaxForm(ajaxFormOptions);
                 
                 var ajaxFormOptions2 = { 
-                    beforeSubmit: MostraCarregando,
                     success: function(data) {
                         $("#anotacaoCodigoFonte").val(data[1]);
                         $("#panel-markedannotations .panel-body").animate({ scrollTop: $("#panel-markedannotations .panel-body")[0].scrollHeight}, 1000);
@@ -163,13 +162,10 @@
                 $("#panel-markedquestions").show("slide", "fast");
                 $('html, body').animate({ scrollTop: $("#panel-markedquestions").offset().top }, 1000);
 
-                //MostraCarregando();
-
                 $("#hdnQuestaoIdCodigoFonte").val(${idCodigoFonte});
                 $("#hdnQuestaoLinha").val(row);
 
                 $("#panel-markedquestions .panel-body").load("<c:url value='/'/>exercicios/showquestion/${idExercicio}/${idCodigoFonte}/" + row, function(){
-                    //RemoveCarregando();
                     $("#panel-markedquestions .panel-body").animate({ scrollTop: $("#panel-markedquestions .panel-body")[0].scrollHeight}, 1000);
                 });
             }
@@ -180,14 +176,11 @@
                 $("#panel-markedannotations #title-linenumber").html(row);
                 $("#panel-markedannotations").show("slide", "fast");
 
-                //MostraCarregando();
-
                 $("#hdnAnotacaoIdCodigoFonte").val(${idCodigoFonte});
                 $("#hdnAnotacaoLinha").val(row);
 
                 $.get("<c:url value='/'/>exercicios/showannotation/${idExercicio}/${idCodigoFonte}/" + row, function(data){
                     $("#anotacaoCodigoFonte").val(data[1]).focus();
-                    //RemoveCarregando();
                     $("#panel-markedannotations .panel-body").animate({ scrollTop: $("#panel-markedannotations .panel-body")[0].scrollHeight}, 1000);
                 });
             }

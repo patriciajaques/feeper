@@ -61,7 +61,8 @@
                 });
                 
                 $(".new-message").animate({
-                    'border-left-color': '#428BCA'
+                    'border-left-color': '#5BC0DE',
+                    'background-color': '#F4F8FA'
                 }, 2000);
             });
         </script>

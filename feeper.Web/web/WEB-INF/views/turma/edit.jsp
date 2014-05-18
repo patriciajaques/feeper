@@ -78,6 +78,13 @@
                     document.location.href = "<c:url value='/'/>turma/deletealuno/${turma.getId()}/" + id;
                 });
                 
+                $(".btn-convite").click(function(){
+                    var id = $(this).attr("data-id");
+                    if (id === undefined) return;
+                    if (!confirm("<fmt:message key="label.confirmaenvioconvite"/>")) return;
+                    document.location.href = "<c:url value='/'/>turma/enviarconvite/${turma.getId()}/" + id;
+                });
+                
                 $(".btn-excluir-exercicio").click(function(){
                     var id = $(this).attr("data-id");
                     if (id === undefined) return;
@@ -224,6 +231,7 @@
                                         <td>
                                             <div class="btn-group btn-group-xs">
                                                 <button type="button" class="btn btn-default btn-excluir" data-id="${item.getId()}"><fmt:message key="button.excluir"/></button>
+                                                <button type="button" class="btn btn-default btn-convite" data-id="${item.getId()}"><fmt:message key="button.enviarconvite"/></button>
                                             </div>
                                         </td>
                                         <td><c:out value="${item.getId()}"/></td>

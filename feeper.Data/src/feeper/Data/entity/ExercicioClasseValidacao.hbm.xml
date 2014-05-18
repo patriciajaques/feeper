@@ -29,5 +29,8 @@
         <property name="ativo" type="boolean">
             <column name="Ativo" not-null="true" />
         </property>
+        <property name="ordem" type="java.lang.Integer">
+            <column name="Ordem" />
+        </property>
     </class>
 </hibernate-mapping>

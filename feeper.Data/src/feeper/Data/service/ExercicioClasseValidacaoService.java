@@ -26,7 +26,7 @@ public class ExercicioClasseValidacaoService extends HibernateUtil<ExercicioClas
     
     public List<ExercicioClasseValidacao> getByIdExercicio(int idExercicio)
     {
-        SQLQuery query = query("select * from ExercicioClasseValidacao where IdExercicio = :idExercicio").addEntity(ExercicioClasseValidacao.class);
+        SQLQuery query = query("select * from ExercicioClasseValidacao where IdExercicio = :idExercicio order by Ordem, ID").addEntity(ExercicioClasseValidacao.class);
         query.setInteger("idExercicio", idExercicio);
         return query.list();
     }

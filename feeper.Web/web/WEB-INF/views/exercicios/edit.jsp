@@ -6,10 +6,12 @@
 <t:master>
     <jsp:attribute name="title"><fmt:message key="title.exercicios"/></jsp:attribute>
     <jsp:attribute name="header">
-        
+        <style>
+            .ui-state-highlight { height: 91px; }
+        </style>
         <script type="text/javascript">
-            var trTemplate = "<tr id=\"trLinhaNova#id#\" class=\"linha-validacao\"><td><div class=\"btn-group btn-group-xs\"><button type=\"button\" class=\"btn btn-default btn-excluir\" data-context=\"frmSaveValidacao\" data-source=\"0\" data-id=\"#id#\"><fmt:message key="button.excluir"/></button></div></td><td><textarea class=\"form-control\" rows=\"3\" id=\"entrada#id#\" name=\"entrada#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"saida#id#\" name=\"saida#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"mensagem#id#\" name=\"mensagem#id#\"></textarea></td></tr>";
-            var trTemplateClasse = "<tr id=\"trLinhaNova#id#\" class=\"linha-validacao\"><td><div class=\"btn-group btn-group-xs\"><button type=\"button\" class=\"btn btn-default btn-excluir\" data-context=\"frmSaveClasseValidacao\" data-source=\"0\" data-id=\"#id#\"><fmt:message key="button.excluir"/></button></div></td><td><textarea class=\"form-control\" rows=\"3\" id=\"fonte#id#\" name=\"fonte#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"saida#id#\" name=\"saida#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"mensagemCompilacao#id#\" name=\"mensagemCompilacao#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"mensagem#id#\" name=\"mensagem#id#\"></textarea></td></tr>";
+            var trTemplate = "<tr id=\"trLinhaNova#id#\" class=\"linha-validacao\"><td><div class=\"btn-group btn-group-xs\"><input type=\"hidden\" class=\"field-ordem\" id=\"ordem#id#\" name=\"ordem#id#\" value=\"#id#\"><button type=\"button\" class=\"btn btn-primary btn-ordem disabled\">#id#</button><button type=\"button\" class=\"btn btn-default btn-excluir\" data-context=\"frmSaveValidacao\" data-source=\"0\" data-id=\"#id#\"><fmt:message key="button.excluir"/></button></div></td><td><textarea class=\"form-control\" rows=\"3\" id=\"entrada#id#\" name=\"entrada#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"saida#id#\" name=\"saida#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"mensagem#id#\" name=\"mensagem#id#\"></textarea></td></tr>";
+            var trTemplateClasse = "<tr id=\"trLinhaNova#id#\" class=\"linha-validacao\"><td><div class=\"btn-group btn-group-xs\"><input type=\"hidden\" class=\"field-ordem\" id=\"ordemClasse#id#\" name=\"ordemClasse#id#\" value=\"#id#\"><button type=\"button\" class=\"btn btn-primary btn-ordem disabled\">#id#</button><button type=\"button\" class=\"btn btn-default btn-excluir\" data-context=\"frmSaveClasseValidacao\" data-source=\"0\" data-id=\"#id#\"><fmt:message key="button.excluir"/></button></div></td><td><textarea class=\"form-control\" rows=\"3\" id=\"fonte#id#\" name=\"fonte#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"saida#id#\" name=\"saida#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"mensagemCompilacao#id#\" name=\"mensagemCompilacao#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"mensagem#id#\" name=\"mensagem#id#\"></textarea></td></tr>";
     
             $(function(){
                 $("#menu-lista-exercicio").addClass("active");
@@ -55,6 +57,7 @@
                     var source = parseInt($(this).attr("data-source"));
                     var trId = (source === 1) ? "#trLinha" + id : "#trLinhaNova" + id;
                     $("#"+ context + " " + trId).remove();
+                    atualizaOrdem($("#"+ context + " #tbody-validacoes"));
                 });
                 
                 $(".btn-nova-linha").click(function(){
@@ -72,7 +75,33 @@
                     });
                 });
                 
+                $("#frmSaveValidacao #tbody-validacoes").sortable({
+                    placeholder: "ui-state-highlight",
+                    update: function() {
+                        atualizaOrdem($(this));
+                    }
+                });
+                $("#frmSaveValidacao #tbody-validacoes").disableSelection();
+                
+                $("#frmSaveClasseValidacao #tbody-validacoes").sortable({
+                    placeholder: "ui-state-highlight",
+                    update: function() {
+                        atualizaOrdem($(this));
+                    }
+                });
+                $("#frmSaveClasseValidacao #tbody-validacoes").disableSelection();
+                
             });
+            
+            function atualizaOrdem(obj)
+            {
+                $(obj).find(".field-ordem").each(function(index){
+                   $(this).val(index + 1);
+                });
+                $(obj).find(".btn-ordem").each(function(index){
+                   $(this).html(index + 1);
+                });
+            }
             
             function novaLinha(obj)
             {
@@ -84,6 +113,7 @@
 
                 $("#"+ context + " #tbody-validacoes").append(linha);
                 $("#"+ context + " #contador").val(cont);
+                atualizaOrdem($("#"+ context + " #tbody-validacoes"));
                 return cont;
             }
             
@@ -241,6 +271,8 @@
                                             <td>
                                                 <div class="btn-group btn-group-xs">
                                                     <input type="hidden" id="idValidacao${status.index + 1}" name="idValidacao${status.index + 1}" value="${item.getId()}">
+                                                    <input type="hidden" class="field-ordem" id="ordem${status.index + 1}" name="ordem${status.index + 1}" value="${item.getOrdem()}">
+                                                    <button type="button" class="btn btn-primary btn-ordem disabled">${item.getOrdem() == null ? 0 : item.getOrdem()}</button>
                                                     <button type="button" class="btn btn-default btn-excluir" data-context="frmSaveValidacao" data-source="1" data-id="${item.getId()}"><fmt:message key="button.excluir"/></button>
                                                 </div>
                                             </td>
@@ -301,6 +333,8 @@
                                             <td>
                                                 <div class="btn-group btn-group-xs">
                                                     <input type="hidden" id="idClasseValidacao${status.index + 1}" name="idClasseValidacao${status.index + 1}" value="${item.getId()}">
+                                                    <input type="hidden" class="field-ordem" id="ordemClasse${status.index + 1}" name="ordemClasse${status.index + 1}" value="${item.getOrdem()}">
+                                                    <button type="button" class="btn btn-primary btn-ordem disabled">${item.getOrdem() == null ? 0 : item.getOrdem()}</button>
                                                     <button type="button" class="btn btn-default btn-excluir" data-context="frmSaveClasseValidacao" data-source="1" data-id="${item.getId()}"><fmt:message key="button.excluir"/></button>
                                                 </div>
                                             </td>

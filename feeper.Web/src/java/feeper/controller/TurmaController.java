@@ -3,7 +3,9 @@ package feeper.controller;
 import feeper.Data.entity.Exercicio;
 import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.Turma;
+import feeper.Data.model.EPerfil;
 import feeper.Data.model.ETipoLog;
+import feeper.Data.service.PessoaService;
 import feeper.Data.service.TurmaExercicioService;
 import feeper.Data.service.TurmaPessoaService;
 import feeper.Data.service.TurmaService;
@@ -266,7 +268,9 @@ public class TurmaController extends ApplicationController {
     @RequestMapping(value="/saveaddaluno", method=RequestMethod.POST)
     public ModelAndView saveaddaluno(
             @ModelAttribute("id") int idPessoa, 
-            @ModelAttribute("idTurma") int idTurma, 
+            @ModelAttribute("idTurma") int idTurma,
+            @ModelAttribute("nome") String nome,
+            @ModelAttribute("email") String email,
             HttpSession session,
             BindingResult result) {
         
@@ -275,13 +279,37 @@ public class TurmaController extends ApplicationController {
         
         Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
         
+        if (idPessoa == 0)
+        {
+            PessoaService pessoaService = new PessoaService();
+            Pessoa novoAluno = pessoaService.getByEmail(email);
+            if (novoAluno == null)
+            {
+                novoAluno = new Pessoa();
+                novoAluno.setAtivo(true);
+                novoAluno.setDataCadastro(new Date());
+                novoAluno.setEmail(email);
+                novoAluno.setIdPerfil(EPerfil.ALUNO);
+                novoAluno.setNome(nome);
+                novoAluno.setPossuiFoto(false);
+                novoAluno.setSenha("");
+            
+                if (pessoaService.insert(novoAluno))
+                    idPessoa = novoAluno.getId();
+            }
+            else
+            {
+                idPessoa = novoAluno.getId();
+            }
+        }
+        
         if (idPessoa > 0)
         {
             TurmaPessoaService turmaPessoaService = new TurmaPessoaService();
             turmaPessoaService.insertIfNotExist(idTurma, idPessoa);
             log(usuarioLogado.getId(), "SUCESSO: ID PESSOA: " + idPessoa, ETipoLog.ALTERAR_TURMA);
         }
-
+        
         return mav;
     }
     
@@ -394,6 +422,35 @@ public class TurmaController extends ApplicationController {
         {
             log(usuarioLogado.getId(), "ERRO: ID TURMA: " + idTurma, ETipoLog.ALTERAR_TURMA);
             flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao enviar os convites");
+        }
+        
+        return mav;
+    }
+    
+    @RequestMapping(value="/enviarconvite/{idTurma}/{idAluno}", method=RequestMethod.GET)
+    public ModelAndView enviarconvite(
+            @PathVariable int idTurma, 
+            @PathVariable int idAluno, 
+            Model model,
+            HttpSession session,
+            final RedirectAttributes flash) {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setView(new RedirectView("/turma/edit/" + idTurma, true, true, false));
+        
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
+        PessoaService pessoaService = new PessoaService();
+        Pessoa aluno = pessoaService.getById(idAluno);
+
+        if (pessoaService.enviarConvite(aluno))
+        {
+            log(usuarioLogado.getId(), "SUCESSO: ID TURMA: " + idTurma, ETipoLog.ALTERAR_TURMA);
+            flash.addFlashAttribute("MSG_SUCESSO", "Convite individual enviado com sucesso");
+        }
+        else
+        {
+            log(usuarioLogado.getId(), "ERRO: ID TURMA: " + idTurma, ETipoLog.ALTERAR_TURMA);
+            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao enviar o convite");
         }
         
         return mav;

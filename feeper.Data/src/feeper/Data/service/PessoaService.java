@@ -83,7 +83,6 @@ public class PessoaService extends HibernateUtil<Pessoa> {
                 htmlEmailComSenha = htmlEmailComSenha.replaceAll("#EMAIL#", aluno.getEmail());
                 htmlEmailComSenha = htmlEmailComSenha.replaceAll("#SENHA#", novaSenha);
                 return Util.sendMail(aluno.getEmail(), "Bem vindo ao feeper!", htmlEmailComSenha);
-                //return Util.sendMail("Bem vindo ao feeper!", htmlEmailComSenha);
             }
         }
         else
@@ -91,7 +90,6 @@ public class PessoaService extends HibernateUtil<Pessoa> {
             htmlEmailSemSenha = htmlEmailSemSenha.replaceAll("#NOME#", aluno.getNome());
             htmlEmailSemSenha = htmlEmailSemSenha.replaceAll("#EMAIL#", aluno.getEmail());
             return Util.sendMail(aluno.getEmail(), "Bem vindo ao feeper!", htmlEmailSemSenha);
-            //return Util.sendMail("Bem vindo ao feeper!", htmlEmailSemSenha);
         }
         return true;
     }
@@ -116,6 +114,15 @@ public class PessoaService extends HibernateUtil<Pessoa> {
         }
 
         return true;
+    }
+    
+    public Pessoa getByEmail(String email)
+    {
+        try {
+            return getByColumn("Email", email).get(0);    
+        } catch (Exception e) {
+            return null;
+        }
     }
     
 }

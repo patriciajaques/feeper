@@ -7,6 +7,7 @@ package feeper.Data.service;
 import feeper.Data.entity.MensagemLeitor;
 import feeper.Data.model.HibernateUtil;
 import static feeper.Data.model.HibernateUtil.closeSession;
+import feeper.Data.model.Util;
 import java.util.Date;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
@@ -24,7 +25,7 @@ public class MensagemLeitorService extends HibernateUtil<MensagemLeitor> {
         super(MensagemLeitor.class);
     }
     
-    public boolean atualizarDataLeitura(int idLeitor, char tipoLeitor)
+    public boolean atualizarDataLeitura(int idLeitor, char tipoLeitor, Date dataLeitura)
     {
         Transaction transaction_;
         Session session_;
@@ -33,7 +34,7 @@ public class MensagemLeitorService extends HibernateUtil<MensagemLeitor> {
         transaction_ = session_.beginTransaction();
         
         try {
-            SQLQuery query = query("update MensagemLeitor set DataUltimaLeitura = NOW() where IdLeitor = " + idLeitor + " and TipoLeitor = '" + tipoLeitor + "'");
+            SQLQuery query = query("update MensagemLeitor set DataUltimaLeitura = '" + Util.formatDate(dataLeitura, "yyyy/MM/dd HH:mm:ss") + "' where IdLeitor = " + idLeitor + " and TipoLeitor = '" + tipoLeitor + "'");
             query.executeUpdate();
             
             session_.flush();

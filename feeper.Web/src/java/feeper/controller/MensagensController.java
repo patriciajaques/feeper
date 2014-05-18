@@ -4,6 +4,7 @@ import feeper.Data.entity.Pessoa;
 import feeper.Data.model.ETipoLeitor;
 import feeper.Data.service.MensagemCabecalhoService;
 import feeper.Data.service.MensagemLeitorService;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -26,9 +27,10 @@ public class MensagensController extends ApplicationController {
         List<Object> lista = repoMensagemCabecalho.getMensagens(usuarioLogado.getId(), 'A', false, true);
         model.addAttribute("listaMensagens", lista);
         
+        Date dataLeitura = new Date();
         MensagemLeitorService repoMensagemLeitor = new MensagemLeitorService();
-        repoMensagemLeitor.atualizarDataLeitura(usuarioLogado.getId(), ETipoLeitor.DESTINATARIO);
-        repoMensagemLeitor.atualizarDataLeitura(usuarioLogado.getId(), ETipoLeitor.REMETENTE);
+        repoMensagemLeitor.atualizarDataLeitura(usuarioLogado.getId(), ETipoLeitor.DESTINATARIO, dataLeitura);
+        repoMensagemLeitor.atualizarDataLeitura(usuarioLogado.getId(), ETipoLeitor.REMETENTE, dataLeitura);
         
         return "mensagens/list";
     }

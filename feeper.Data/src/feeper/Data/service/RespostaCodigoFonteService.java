@@ -7,11 +7,13 @@ package feeper.Data.service;
 import feeper.Data.entity.Mensagem;
 import feeper.Data.entity.MensagemCabecalho;
 import feeper.Data.entity.MensagemLeitor;
+import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.RespostaCodigoFonte;
 import feeper.Data.entity.RespostaCodigoFonteMarcacao;
 import feeper.Data.model.ETipoLeitor;
 import feeper.Data.model.ETipoMarcacao;
 import feeper.Data.model.HibernateUtil;
+import feeper.Data.model.Util;
 import java.util.Date;
 import java.util.List;
 import org.hibernate.Hibernate;
@@ -200,9 +202,11 @@ public class RespostaCodigoFonteService extends HibernateUtil<RespostaCodigoFont
         }
     }
     
-    public boolean inserirPergunta(int idExercicio, int idAutor, int idRespostaCodigoFonte, int linha, int idLeitor, String texto)
+    public boolean inserirPergunta(int idExercicio, int idAutor, String nomeAutor, int idRespostaCodigoFonte, int linha, int idLeitor, String texto)
     {
         try {
+            
+            Date dataPergunta = new Date();
             
             RespostaCodigoFonteMarcacaoService repoRespostaCodigoFonteMarcacao = new RespostaCodigoFonteMarcacaoService();
             MensagemCabecalhoService repoMensagemCabecalho = new MensagemCabecalhoService();
@@ -213,7 +217,7 @@ public class RespostaCodigoFonteService extends HibernateUtil<RespostaCodigoFont
             {
                 respostaCodigoFonteMarcacao = new RespostaCodigoFonteMarcacao();
                 respostaCodigoFonteMarcacao.setAtivo(true);
-                respostaCodigoFonteMarcacao.setDataCadastro(new Date());
+                respostaCodigoFonteMarcacao.setDataCadastro(dataPergunta);
                 respostaCodigoFonteMarcacao.setIdAutor(idAutor);
                 respostaCodigoFonteMarcacao.setIdRespostaCodigoFonte(idRespostaCodigoFonte);
                 respostaCodigoFonteMarcacao.setIdTipoMarcacao(ETipoMarcacao.DUVIDA);
@@ -227,7 +231,7 @@ public class RespostaCodigoFonteService extends HibernateUtil<RespostaCodigoFont
             {
                 mensagemCabecalho = new MensagemCabecalho();
                 mensagemCabecalho.setAtivo(true);
-                mensagemCabecalho.setDataCadastro(new Date());
+                mensagemCabecalho.setDataCadastro(dataPergunta);
                 mensagemCabecalho.setIdRespostaCodigoFonteMarcacao(respostaCodigoFonteMarcacao.getId());
                 mensagemCabecalho.setPublico(false);
                 repoMensagemCabecalho.insert(mensagemCabecalho);
@@ -241,7 +245,7 @@ public class RespostaCodigoFonteService extends HibernateUtil<RespostaCodigoFont
                 
                 mensagemLeitor = new MensagemLeitor();
                 mensagemLeitor.setAtivo(true);
-                mensagemLeitor.setDataUltimaLeitura(new Date());
+                mensagemLeitor.setDataUltimaLeitura(dataPergunta);
                 mensagemLeitor.setIdLeitor(idAutor);
                 mensagemLeitor.setIdMensagemCabecalho(mensagemCabecalho.getId());
                 mensagemLeitor.setTipoLeitor(ETipoLeitor.REMETENTE);
@@ -249,18 +253,29 @@ public class RespostaCodigoFonteService extends HibernateUtil<RespostaCodigoFont
             }
             else
             {
-                repoMensagemLeitor.atualizarDataLeitura(idAutor, ETipoLeitor.REMETENTE);
-                repoMensagemLeitor.atualizarDataLeitura(idAutor, ETipoLeitor.DESTINATARIO);
+                repoMensagemLeitor.atualizarDataLeitura(idAutor, ETipoLeitor.REMETENTE, dataPergunta);
+                repoMensagemLeitor.atualizarDataLeitura(idAutor, ETipoLeitor.DESTINATARIO, dataPergunta);
             }
             
             MensagemService repoMensagem = new MensagemService();
             Mensagem mensagem = new Mensagem();
             mensagem.setAtivo(true);
-            mensagem.setDataCadastro(new Date());
+            mensagem.setDataCadastro(dataPergunta);
             mensagem.setIdMensagemCabecalho(mensagemCabecalho.getId());
             mensagem.setIdPessoa(idAutor);
             mensagem.setTexto(texto);
             repoMensagem.insert(mensagem);
+            
+            PessoaService pessoaService = new PessoaService();
+            Pessoa destinatario = pessoaService.getById(idLeitor);
+            
+            String html = "<p>Olá #NOME#,</p>\n" +
+                        "<p>Você recebeu uma nova mensagem de #AUTOR#.<br>Acesse o <i>feeper</i> para visualizá-la.</p>\n" +
+                        "<p>Endereço: <a href=\"http://feeper.jelasticlw.com.br\">http://feeper.jelasticlw.com.br</a></p>";
+            html = html.replaceAll("#NOME#", destinatario.getNome());
+            html = html.replaceAll("#AUTOR#", nomeAutor);
+            
+            Util.sendMail(destinatario.getEmail(), "Nova mensagem recebida!", html);
             
             return true;
             

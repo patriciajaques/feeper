@@ -19,14 +19,14 @@ public class ExercicioService extends HibernateUtil<Exercicio> {
     
     public List<ExercicioValidacao> getValidacoes(int idExercicio)
     {
-        SQLQuery query = query("select EV.* from ExercicioValidacao EV inner join Exercicio E on E.ID = EV.IdExercicio where E.ID = :idExercicio").addEntity(ExercicioValidacao.class);
+        SQLQuery query = query("select EV.* from ExercicioValidacao EV inner join Exercicio E on E.ID = EV.IdExercicio where E.ID = :idExercicio order by EV.Ordem").addEntity(ExercicioValidacao.class);
         query.setInteger("idExercicio", idExercicio);
         return query.list();
     }
     
     public List<ExercicioClasseValidacao> getClassesValidacao(int idExercicio)
     {
-        SQLQuery query = query("select EV.* from ExercicioClasseValidacao EV inner join Exercicio E on E.ID = EV.IdExercicio where E.ID = :idExercicio").addEntity(ExercicioClasseValidacao.class);
+        SQLQuery query = query("select EV.* from ExercicioClasseValidacao EV inner join Exercicio E on E.ID = EV.IdExercicio where E.ID = :idExercicio order by EV.Ordem").addEntity(ExercicioClasseValidacao.class);
         query.setInteger("idExercicio", idExercicio);
         return query.list();
     }
