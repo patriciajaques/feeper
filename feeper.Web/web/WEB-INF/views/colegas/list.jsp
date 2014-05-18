@@ -16,7 +16,7 @@
     </jsp:attribute>
     <jsp:body>
         
-        <h2>${TurmaSelecionada.getNome()} - <fmt:message key="label.colegas"/></h2>
+        <h2><c:out value="${TurmaSelecionada.getNome()}"/> - <fmt:message key="label.colegas"/></h2>
         
         <br>
         <h4><fmt:message key="label.professor"/></h4>
@@ -24,13 +24,13 @@
             <li>
                 <c:choose>
                     <c:when test="${professor.isPossuiFoto()}">
-                        <img src="<c:url value='/resources/img/photo/photo-${professor.getId()}.png'/>" style="width:45px; height:45px;" alt="${professor.getNome()}" class="img-circle">
+                        <img src="<c:url value='/resources/img/photo/photo-${professor.getId()}.png'/>" style="width:45px; height:45px;" alt="<c:out value="${professor.getNome()}"/>" class="img-circle">
                     </c:when>
                     <c:otherwise>
-                        <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="${professor.getNome()}" class="img-circle">
+                        <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="<c:out value="${professor.getNome()}"/>" class="img-circle">
                     </c:otherwise>
                 </c:choose>
-                <span class="quebrar-linha" style="margin-top:5px;">${professor.getNome()}</span>
+                <span class="quebrar-linha" style="margin-top:5px;"><c:out value="${professor.getNome()}"/></span>
             </li>
         </ul>
         
@@ -42,13 +42,13 @@
                     <li>
                         <c:choose>
                             <c:when test="${item.isPossuiFoto()}">
-                                <img src="<c:url value='/resources/img/photo/photo-${item.getId()}.png'/>" style="width:45px; height:45px;" alt="${item.getNome()}" class="img-circle">
+                                <img src="<c:url value='/resources/img/photo/photo-${item.getId()}.png'/>" style="width:45px; height:45px;" alt="<c:out value="${item.getNome()}"/>" class="img-circle">
                             </c:when>
                             <c:otherwise>
-                                <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="${item.getNome()}" class="img-circle">
+                                <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="<c:out value="${item.getNome()}"/>" class="img-circle">
                             </c:otherwise>
                         </c:choose>
-                        <span class="quebrar-linha" style="margin-top:5px;">${item.getNome()}</span>
+                        <span class="quebrar-linha" style="margin-top:5px;"><c:out value="${item.getNome()}"/></span>
                     </li>
                 </c:forEach>
             </c:if>

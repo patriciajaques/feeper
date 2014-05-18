@@ -414,17 +414,17 @@
         
     <jsp:body>
         
-        <h2>${TurmaSelecionada.getNome()}</h2>
+        <h2><c:out value="${TurmaSelecionada.getNome()}"/></h2>
         
-        <h3>${Exercicio.getNome()}</h3>
+        <h3><c:out value="${Exercicio.getNome()}"/></h3>
         
         <c:if test="${Resposta != null}">
             <c:choose>
                 <c:when test="${Resposta.getIdStatus() == 1}">
-                    <div class="alert alert-danger"><fmt:message key="label.exercicios.status.errocompilacao"/><br>${Resposta.getMensagem()}</div>
+                    <div class="alert alert-danger"><fmt:message key="label.exercicios.status.errocompilacao"/><br><c:out value="${Resposta.getMensagem()}"/></div>
                 </c:when>
                 <c:when test="${Resposta.getIdStatus() == 2}">
-                    <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errosaidainvalida"/><br>${Resposta.getMensagem()}</div>
+                    <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errosaidainvalida"/><br><c:out value="${Resposta.getMensagem()}"/></div>
                 </c:when>
                 <c:when test="${Resposta.getIdStatus() == 3}">
                     <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errotempolimite"/></div>
@@ -446,7 +446,7 @@
             
         <div class="panel panel-default">
             <div class="panel-body">
-                ${Exercicio.getDescricaoHtml()}
+                <c:out value="${Exercicio.getDescricaoHtml()}"/>
             </div>
         </div>
             
@@ -454,7 +454,7 @@
         <div class="list-group">
             <c:if test="${not empty ListaCodigoFonte}">
                 <c:forEach var="item" varStatus="status" items="${ListaCodigoFonte}">
-                    <a href="#" class="list-group-item btn-show-code" data-id="${item.getId()}"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;${item.getClasse()}</a>
+                    <a href="#" class="list-group-item btn-show-code" data-id="${item.getId()}"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<c:out value="${item.getClasse()}"/></a>
                 </c:forEach>
             </c:if>
             <a href="#divNovaClasse" class="list-group-item btn-nova-classe"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;<fmt:message key="label.exercicios.novaclasse"/></a>

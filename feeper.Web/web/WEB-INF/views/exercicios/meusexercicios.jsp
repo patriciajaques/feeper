@@ -30,7 +30,7 @@
     </jsp:attribute>
     <jsp:body>
         
-        <h2>${TurmaSelecionada.getNome()} - <fmt:message key="label.exercicios"/></h2>
+        <h2><c:out value="${TurmaSelecionada.getNome()}"/> - <fmt:message key="label.exercicios"/></h2>
         
         <form class="form-inline" role="form" method="POST" id="frm-paged">
             <%@include file="/WEB-INF/jspf/paginador_campos.jspf" %>
@@ -41,8 +41,8 @@
         <c:if test="${not empty listaExercicios}">
             <c:forEach var="item" varStatus="status" items="${listaExercicios}">
                 <blockquote>
-                    <p><b>${item[1]}:</b> ${item[3]}</p>
-                    <small class="pull-left">${item[4]}</small>
+                    <p><b><c:out value="${item[1]}"/>:</b> <c:out value="${item[3]}"/></p>
+                    <small class="pull-left"><c:out value="${item[4]}"/></small>
                     <small class="pull-right"><fmt:message key="label.exercicios.dataultimaresposta"/> <fmt:formatDate value="${item[5]}" pattern="dd/MM/yyyy HH:mm" /></small>
                     <br>
                     <p><button type="button" class="btn btn-primary btn-xs btn-responder" data-id="${item[0]}"><fmt:message key="button.responder"/></button></p>

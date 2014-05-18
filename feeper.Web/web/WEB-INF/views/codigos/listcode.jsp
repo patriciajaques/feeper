@@ -20,7 +20,7 @@
                                     <button type="button" class="btn btn-default btn-download" data-id="${item.getId()}" data-idaluno="${idAluno}"><fmt:message key="button.download"/></button>
                                 </div>
                             </td>
-                            <td>${item.getClasse()}</td>
+                            <td><c:out value="${item.getClasse()}"/></td>
                         </tr>
                     </c:forEach>
                 </c:if>

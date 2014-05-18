@@ -40,18 +40,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @Controller
 @RequestMapping(value="/codigos")
 public class CodigosController extends ApplicationController {
-    
-//    @RequestMapping(method=RequestMethod.GET)
-//    public String list(HttpSession session, Model model) {
-//        
-//        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
-//        CodigoFonteService repo = new CodigoFonteService();
-//        List<CodigoFonte> lista = repo.getMeusCodigosFavoritos(usuarioLogado.getId());
-//        model.addAttribute("lista", lista);
-//        
-//        return "codigos/list";
-//    }
-    
+       
     @RequestMapping(method=RequestMethod.GET)
     public String list(
             Model model, 

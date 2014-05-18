@@ -1,6 +1,6 @@
 <%@tag description="MasterPage" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@attribute name="title" fragment="true" %>
 <%@attribute name="header" fragment="true" %>
 <%@attribute name="footer" fragment="true" %>
@@ -121,7 +121,7 @@
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="menu.turmas"/> <b class="caret"></b></a>
                                     <ul class="dropdown-menu">${MinhasTurmas}</ul>
                                 </li>
-                                <li><p class="navbar-text"><b>${TurmaSelecionada.getNome()}</b></p></li>
+                                <li><p class="navbar-text"><b><c:out value="${TurmaSelecionada.getNome()}"/></b></p></li>
                             </c:otherwise>
                         </c:choose>
                         
@@ -130,16 +130,16 @@
                         <li style="margin-top: 3px">
                             <c:choose>
                                 <c:when test="${UsuarioLogado.isPossuiFoto()}">
-                                    <img src="<c:url value='/resources/img/photo/photo-${UsuarioLogado.getId()}.png'/>" style="width:45px; height:45px;" alt="${UsuarioLogado.getNome()}" class="img-circle">
+                                    <img src="<c:url value='/resources/img/photo/photo-${UsuarioLogado.getId()}.png'/>" style="width:45px; height:45px;" alt="<c:out value="${UsuarioLogado.getNome()}"/>" class="img-circle">
                                 </c:when>
                                 <c:otherwise>
-                                    <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="${UsuarioLogado.getNome()}" class="img-circle">
+                                    <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="<c:out value="${UsuarioLogado.getNome()}"/>" class="img-circle">
                                 </c:otherwise>
                             </c:choose>
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                ${UsuarioLogado.getNome()} <b class="caret"></b>
+                                <c:out value="${UsuarioLogado.getNome()}"/> <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
                                 
@@ -170,7 +170,7 @@
                             <jsp:doBody/>
                         </div>
                         <div class="col-md-3">
-                            <h4>${TurmaSelecionada.getNome()}</h4>
+                            <h4><c:out value="${TurmaSelecionada.getNome()}"/></h4>
                             <div class="list-group">
                                 <a href="<c:url value='/'/>turma/edit/${TurmaSelecionada.getId()}" class="list-group-item" id="menu-minha-turma">
                                     <span class="glyphicon glyphicon-wrench"></span>&nbsp;&nbsp;<fmt:message key="menu.minhaturma"/>
@@ -191,7 +191,7 @@
                             <jsp:doBody/>
                         </div>
                         <div class="col-md-3">
-                            <h4>${TurmaSelecionada.getNome()}</h4>
+                            <h4><c:out value="${TurmaSelecionada.getNome()}"/></h4>
                             <div class="list-group">
                                 <a href="<c:url value='/'/>codigos" class="list-group-item" id="menu-meus-codigos-favoritos">
                                     <span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;<fmt:message key="menu.codigosfavoritos"/>

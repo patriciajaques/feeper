@@ -54,8 +54,8 @@
                                         <td>
                                             <input type="checkbox" class="chk-exercicio" name="chkExercicio" value="${item.getId()}">
                                         </td>
-                                        <td>${item.getId()}</td>
-                                        <td>${item.getNome()}</td>
+                                        <td><c:out value="${item.getId()}"/></td>
+                                        <td><c:out value="${item.getNome()}"/></td>
                                     </tr>
                                 </c:forEach>
                             </c:if>

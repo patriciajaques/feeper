@@ -114,7 +114,7 @@
     </jsp:attribute>
     <jsp:body>
         
-        <h2>${TurmaSelecionada.getNome()} - <fmt:message key="label.notas.resultadoexercicios"/></h2>
+        <h2><c:out value="${TurmaSelecionada.getNome()}"/> - <fmt:message key="label.notas.resultadoexercicios"/></h2>
         
         <div id="grade-resultados"></div>
             

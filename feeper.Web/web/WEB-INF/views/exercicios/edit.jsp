@@ -189,7 +189,7 @@
                                     <fmt:message key="label.exercicios.descricaoinforme"/>
                                 </c:when>
                                 <c:otherwise>
-                                    ${exercicio.getDescricaoHtml()}
+                                    <c:out value="${exercicio.getDescricaoHtml()}"/>
                                 </c:otherwise>
                             </c:choose>
                         </textarea>

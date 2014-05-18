@@ -44,9 +44,9 @@
         <c:if test="${not empty listaCodigo}">
             <c:forEach var="item" varStatus="status" items="${listaCodigo}">
                 <div id="panelCodigoFonte${item.getId()}_${item.getIdExercicio()}" style="margin-bottom:25px;">
-                    <h4>${item.getExercicio().getNome()} > ${item.getClasse()}</h4>
+                    <h4><c:out value="${item.getExercicio().getNome()}"/> > <c:out value="${item.getClasse()}"/></h4>
 <pre class="pre-scrollable">
-${item.getFonte()}
+<c:out value="${item.getFonte()}"/>
 </pre>
                     <button type="button" class="btn btn-primary btn-xs btn-remover-favorito" data-id="${item.getId()}" data-idexercicio="${item.getIdExercicio()}">
                         <span class="glyphicon glyphicon-trash"></span> <fmt:message key="button.removerfavorito"/>

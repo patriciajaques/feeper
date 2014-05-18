@@ -96,9 +96,9 @@
                                             <button type="button" class="btn btn-default btn-excluir" data-id="${item.getId()}" disabled="disabled"><fmt:message key="button.excluir"/></button>
                                         </div>
                                     </td>
-                                    <td>${item.getId()}</td>
-                                    <td>${item.getNome()}</td>
-                                    <td>${item.getEmail()}</td>
+                                    <td><c:out value="${item.getId()}"/></td>
+                                    <td><c:out value="${item.getNome()}"/></td>
+                                    <td><c:out value="${item.getEmail()}"/></td>
                                     <td>
                                         <c:if test="${not item.isAtivo()}">
                                             <span class="glyphicon glyphicon-remove"></span>

@@ -27,7 +27,7 @@ if (lista != null && lista.size() > 0 && listaExercicios != null && listaExercic
                     <%
                     int contagemExercicio = 0;
                     for (Exercicio item : listaExercicios) {
-                        %><th style="text-align: center;"><div class="th-exercicio" data-toggle="tooltip" data-placement="top" title="<%=item.getNome()%>">#<%=++contagemExercicio%></div></th><%
+                        %><th style="text-align: center;"><div class="th-exercicio" data-toggle="tooltip" data-placement="top" title="<c:out value="<%=item.getNome()%>"/>">#<%=++contagemExercicio%></div></th><%
                     }
                     %>
                 </tr>
@@ -43,7 +43,7 @@ if (lista != null && lista.size() > 0 && listaExercicios != null && listaExercic
                         %></tr><%
                         }
                         idPessoaAux = Integer.parseInt(item[0].toString());
-                        %><tr><td><%=item[1]%></td><%
+                        %><tr><td><c:out value="<%=item[1]%>"/></td><%
                     }
                     Integer idStatus = (Integer)item[5];
                     String botao = "";

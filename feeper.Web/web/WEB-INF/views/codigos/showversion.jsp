@@ -8,11 +8,18 @@
     <jsp:attribute name="header"></jsp:attribute>
     <jsp:body>
         
-        <h3 id="lblFilename">${CodigoFonte.getClasse()}</h3>
-        <div id="editor">${CodigoFonte.getFonte()}</div>
+        <h3 id="lblFilename"><c:out value="${CodigoFonte.getClasse()}"/></h3>
+        <div id="editor"><c:out value="${CodigoFonte.getFonte()}"/></div>
         
         <button type="button" class="btn btn-default btn-registrar-duvida">
-            <span class="glyphicon glyphicon-comment"></span> <fmt:message key="button.registrarduvida"/>
+            <c:choose>
+                <c:when test="${UsuarioLogado.getIdPerfil() == 2}">
+                    <span class="glyphicon glyphicon-comment"></span> <fmt:message key="button.registrarcomentario"/>
+                </c:when>
+                <c:when test="${UsuarioLogado.getIdPerfil() == 3}">
+                    <span class="glyphicon glyphicon-comment"></span> <fmt:message key="button.registrarduvida"/>
+                </c:when>
+            </c:choose>
         </button>
         
         <button type="button" class="btn btn-default btn-fechar"><fmt:message key="button.fechar"/></button>

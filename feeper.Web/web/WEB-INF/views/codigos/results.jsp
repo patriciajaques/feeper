@@ -14,7 +14,7 @@
 //8 - Status
 //9 - Mensagem  
 %>
-<h5 style="margin-top: 0px;">${nomeExercicio}</h5>
+<h5 style="margin-top: 0px;"><c:out value="${nomeExercicio}"/></h5>
 <div class="panel panel-default" style="margin-bottom: 0px;">
     <div class="panel-body">
         <table class="table table-striped" style="margin-bottom: 0px;">
@@ -37,8 +37,8 @@
                                 </div>
                             </td>
                             <td style="font-size: 12px;"><fmt:formatDate value="${item[6]}" pattern="dd/MM/yyyy HH:mm" /></td>
-                            <td style="font-size: 12px;">${item[8]}</td>
-                            <td style="font-size: 12px;">${item[9]}</td>
+                            <td style="font-size: 12px;"><c:out value="${item[8]}"/></td>
+                            <td style="font-size: 12px;"><c:out value="${item[9]}"/></td>
                         </tr>
                     </c:forEach>
                 </c:if>

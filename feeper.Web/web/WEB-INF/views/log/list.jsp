@@ -131,9 +131,9 @@
                         <c:if test="${not empty listaLog}">
                             <c:forEach var="item" varStatus="status" items="${listaLog}">
                                 <tr>
-                                    <td>${item[0]}</td>
-                                    <td>${item[1]}</td>
-                                    <td>${item[2]}</td>
+                                    <td><c:out value="${item[0]}"/></td>
+                                    <td><c:out value="${item[1]}"/></td>
+                                    <td><c:out value="${item[2]}"/></td>
                                     <td><fmt:formatDate value="${item[3]}" pattern="dd/MM/yyyy HH:mm" /></td>
                                 </tr>
                             </c:forEach>

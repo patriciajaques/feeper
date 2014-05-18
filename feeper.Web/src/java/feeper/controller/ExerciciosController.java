@@ -538,30 +538,9 @@ public class ExerciciosController extends ApplicationController {
                     if (idResposta.getResult() > 0)
                     {
                         try {
-//                            CredentialsProvider credsProvider = new BasicCredentialsProvider();
-//                            credsProvider.setCredentials(
-//                                AuthScope.ANY,
-//                                new UsernamePasswordCredentials("feeper", Base64Encoder.encode("srv8f33p3r")));
-//                            CloseableHttpClient httpclient = HttpClients.custom()
-//                                .setDefaultCredentialsProvider(credsProvider)
-//                                .build();
-//                            HttpGet httpget = new HttpGet("http://feeper.jelasticlw.com.br/OnlineJudge?r=" + idResposta.getResult());
-//                            CloseableHttpResponse response = httpclient.execute(httpget);
-                            
                             String idRespostaEncoded = Base64Encoder.encode(Integer.toString(idResposta.getResult()));
                             log(pessoa.getId(), "ONLINEJUDGE ID RESPOSTA: " + idResposta.getResult() + " ENCODED: " + idRespostaEncoded, ETipoLog.CODIGO_ENVIADO);
-                            
-//                            URL urlServlet = new URL("http://feeper.jelasticlw.com.br/OnlineJudge?r=" + idRespostaEncoded);
-//                            HttpURLConnection servletConnection = (HttpURLConnection) urlServlet.openConnection();
-//                            servletConnection.setRequestMethod("GET");
-//                            servletConnection.setDoOutput(true);
-//                            InputStream response = servletConnection.getInputStream();
-                            
                             flash.addFlashAttribute("idRespostaEncoded", idRespostaEncoded);
-                            
-                            //HttpGet httpget = new HttpGet("http://feeper.jelasticlw.com.br/OnlineJudge?r=" + idRespostaEncoded);
-                            //CloseableHttpResponse response = HttpClients.createDefault().execute(httpget);
-                            
                         } catch (Exception e) {
                             log(pessoa.getId(), "ERRO: ONLINEJUDGE ID RESPOSTA: " + idResposta.getResult() + " MESSAGE: " + e.getMessage(), ETipoLog.CODIGO_ENVIADO);
                         }
@@ -701,7 +680,7 @@ public class ExerciciosController extends ApplicationController {
                     entity.setClasse(Util.removeAccent(classe));
                     entity.setPrincipal(principal);
                     entity.setDataCadastro(new Date());
-                    entity.setFonte(fonte);
+                    entity.setFonte(Util.prepareCodeForSave(fonte));
 
                     repoCodigoFonte.insertOrUpdate(entity);
                     
@@ -896,7 +875,7 @@ public class ExerciciosController extends ApplicationController {
         try {
             MultipartFile file = request.getFile("filedata");
             String fileName = Util.prepareStringForSave(Util.removeExtension(file.getOriginalFilename()));
-            return fileName + "#@#" + IOUtils.toString(file.getInputStream(), "UTF-8");
+            return fileName + "#@#" + Util.prepareCodeForSave(IOUtils.toString(file.getInputStream(), "UTF-8"));
         } catch (IOException ex) {
             return "";
         }

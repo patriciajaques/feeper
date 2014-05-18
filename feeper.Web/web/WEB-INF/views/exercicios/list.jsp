@@ -101,8 +101,8 @@
                                         </div>
                                     </td>
                                     <td>${item.getId()}</td>
-                                    <td>${item.getNome()}</td>
-                                    <td>${item.getAutor().getNome()}</td>
+                                    <td><c:out value="${item.getNome()}"/></td>
+                                    <td><c:out value="${item.getAutor().getNome()}"/></td>
                                     <td>
                                         <c:if test="${not item.isAtivo()}">
                                             <span class="glyphicon glyphicon-remove"></span>

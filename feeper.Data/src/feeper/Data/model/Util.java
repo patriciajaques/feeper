@@ -160,6 +160,11 @@ public class Util {
         return baos.toByteArray();
     }
     
+    public static String prepareCodeForSave(String code)
+    {
+        return code.replace(">", " >").replace("<", "< ").replace("  >", " >").replace("<  ", "< ");
+    }
+    
     public static String prepareStringForSave(String text)
     {
         if (text == null || text.isEmpty()) return "";

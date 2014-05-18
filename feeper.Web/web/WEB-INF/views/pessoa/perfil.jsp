@@ -53,10 +53,10 @@
                 
                 <c:choose>
                     <c:when test="${pessoa.isPossuiFoto()}">
-                        <img src="<c:url value='/resources/img/photo/photo-${pessoa.getId()}.png'/>" style="width:45px; height:45px;" alt="${pessoa.getNome()}" class="img-circle">
+                        <img src="<c:url value='/resources/img/photo/photo-${pessoa.getId()}.png'/>" style="width:45px; height:45px;" alt="<c:out value="${pessoa.getNome()}"/>" class="img-circle">
                     </c:when>
                     <c:otherwise>
-                        <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="${pessoa.getNome()}" class="img-circle">
+                        <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="<c:out value="${pessoa.getNome()}"/>" class="img-circle">
                     </c:otherwise>
                 </c:choose>
                         

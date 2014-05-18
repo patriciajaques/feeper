@@ -74,8 +74,8 @@
         <c:if test="${not empty listaMensagens}">
             <c:forEach var="item" varStatus="status" items="${listaMensagens}">
                 <blockquote class="${item[15] == 1 ? "new-message" : "old-message"}">
-                    <p>${item[16]}</p>
-                    <small>${item[1]} <fmt:message key="label.mensagens.em"/> <a href="#" class="fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}" data-resposta="${item[12]}" data-aluno="${item[11]}">${item[10]} / ${item[8]} (<fmt:message key="label.mensagens.linha"/> ${item[6]})</a> - <fmt:message key="label.mensagens.ha"/> ${item[13]}</small><br>
+                    <p><c:out value="${item[16]}"/></p>
+                    <small><c:out value="${item[1]}"/> <fmt:message key="label.mensagens.em"/> <a href="#" class="fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}" data-resposta="${item[12]}" data-aluno="${item[11]}"><c:out value="${item[10]}"/> / <c:out value="${item[8]}"/> (<fmt:message key="label.mensagens.linha"/> ${item[6]})</a> - <fmt:message key="label.mensagens.ha"/> ${item[13]}</small><br>
                     <p>
                         <button type="button" class="btn btn-primary btn-xs fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}" data-resposta="${item[12]}" data-aluno="${item[11]}"><fmt:message key="button.responder"/></button>
                     </p>

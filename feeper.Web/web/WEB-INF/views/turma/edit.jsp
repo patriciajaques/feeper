@@ -226,9 +226,9 @@
                                                 <button type="button" class="btn btn-default btn-excluir" data-id="${item.getId()}"><fmt:message key="button.excluir"/></button>
                                             </div>
                                         </td>
-                                        <td>${item.getId()}</td>
-                                        <td>${item.getNome()}</td>
-                                        <td>${item.getEmail()}</td>
+                                        <td><c:out value="${item.getId()}"/></td>
+                                        <td><c:out value="${item.getNome()}"/></td>
+                                        <td><c:out value="${item.getEmail()}"/></td>
                                     </tr>
                                 </c:forEach>
                             </c:if>
@@ -283,8 +283,8 @@
                                                 </button>
                                             </div>
                                         </td>
-                                        <td>${item[0]}</td>
-                                        <td>${item[1]}</td>
+                                        <td><c:out value="${item[0]}"/></td>
+                                        <td><c:out value="${item[1]}"/></td>
                                         <td>
                                             <c:if test="${not item[2]}">
                                                 <span class="glyphicon glyphicon-remove" id="spExercicio${turma.getId()}_${item[0]}"></span>
