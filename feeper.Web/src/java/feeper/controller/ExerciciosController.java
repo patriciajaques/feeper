@@ -630,7 +630,7 @@ public class ExerciciosController extends ApplicationController {
         CodigoFonteMarcacaoService repoCodigoFonteMarcacao = new CodigoFonteMarcacaoService();
         Object[] dados = (Object[])repoCodigoFonte.getByIdExercicio(idExercicio, pessoa.getId(), idCodigoFonte);
         
-        dados[1] = dados[1].toString().replaceAll("\"", "#'#");
+        dados[1] = Util.prepareCodeForSave(dados[1].toString().replaceAll("\"", "#'#"));
         dados[4] = repoCodigoFonteMarcacao.getLinhasDuvida(idCodigoFonte);
         dados[5] = repoCodigoFonteMarcacao.getLinhasAnotacao(idCodigoFonte);
         
