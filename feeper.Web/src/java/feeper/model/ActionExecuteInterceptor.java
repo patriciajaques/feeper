@@ -147,15 +147,15 @@ public class ActionExecuteInterceptor extends HandlerInterceptorAdapter {
         if (modelAndView == null || session == null) return;
         
         int idPessoa = ((Pessoa)session.getAttribute("UsuarioLogado")).getId();
-        int contBadgeNovidades = 0;
+        //int contBadgeNovidades = 0;
         int contBadgeMensagens = 0;
         MensagemService repoMensagem = new MensagemService();
-        NovidadeService repoNovidade = new NovidadeService();
+        //NovidadeService repoNovidade = new NovidadeService();
         
         //contBadgeNovidades = repoNovidade.getCountMinhasNovidades(idPessoa);
         contBadgeMensagens = repoMensagem.getCountMinhasMensagens(idPessoa);
         
-        modelAndView.addObject("BadgeNovidades", contBadgeNovidades > 0 ? "<span class=\"badge badge-important\">"+ contBadgeNovidades +"</span>" : "");
+        //modelAndView.addObject("BadgeNovidades", contBadgeNovidades > 0 ? "<span class=\"badge badge-important\">"+ contBadgeNovidades +"</span>" : "");
         modelAndView.addObject("BadgeMensagens", contBadgeMensagens > 0 ? "<span class=\"badge badge-important\">"+ contBadgeMensagens +"</span>" : "");
     }
     

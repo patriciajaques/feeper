@@ -17,9 +17,8 @@ public class MensagemService extends HibernateUtil<Mensagem> {
     public int getCountMinhasMensagens(int idPessoa)
     {
         MensagemCabecalhoService repoMensagemCabecalho = new MensagemCabecalhoService();
-        List<Object> listaDestinatario = repoMensagemCabecalho.getMensagensDestinatario(idPessoa, true, true);
-        List<Object> listaRemetente = repoMensagemCabecalho.getMensagensRemetente(idPessoa, true, true);
-        return listaDestinatario.size() + listaRemetente.size();
+        List<Object> lista = repoMensagemCabecalho.getMensagens(idPessoa, 'A', true, true);
+        return lista.size();
     }
     
 }

@@ -78,12 +78,12 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
             if (agrupadas)
                 sql +=  "  GET_TIMEDURATION(MAX(M.DataCadastro)) AS DataCadastro, " +
                         "  MAX(M.DataCadastro) AS DataCadastroOrder, " +
-                        "  CASE WHEN MAX(M.DataCadastro) > IFNULL(ML.DataUltimaLeitura, MAX(M.DataCadastro)) THEN 1 ELSE 0 END AS NovaMensagem, " +
+                        "  CASE WHEN MAX(M.DataCadastro) >= IFNULL(ML.DataUltimaLeitura, MAX(M.DataCadastro)) THEN 1 ELSE 0 END AS NovaMensagem, " +
                         "  (SELECT Texto FROM Mensagem WHERE ID = MIN(M.ID)) AS Texto ";
             else
                 sql +=  "  GET_TIMEDURATION(M.DataCadastro) AS DataCadastro, " +
                         "  M.DataCadastro AS DataCadastroOrder, " +
-                        "  CASE WHEN M.DataCadastro > IFNULL(ML.DataUltimaLeitura, M.DataCadastro) THEN 1 ELSE 0 END AS NovaMensagem, " +
+                        "  CASE WHEN M.DataCadastro >= IFNULL(ML.DataUltimaLeitura, M.DataCadastro) THEN 1 ELSE 0 END AS NovaMensagem, " +
                         "  M.Texto ";
                     
             sql +=      "from " +
@@ -116,7 +116,7 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
                         "  MC.Ativo = 1 ";
             
             if (apenasNovas)
-                sql += "  and M.DataCadastro > IFNULL(ML.DataUltimaLeitura, M.DataCadastro) ";
+                sql += "  and M.DataCadastro >= IFNULL(ML.DataUltimaLeitura, M.DataCadastro) ";
             
             if (agrupadas)
                 sql += "group by MC.ID ";
@@ -139,12 +139,12 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
             if (agrupadas)
                 sql +=  "  GET_TIMEDURATION(MAX(M.DataCadastro)) AS DataCadastro, " +
                         "  MAX(M.DataCadastro) AS DataCadastroOrder, " +
-                        "  CASE WHEN MAX(M.DataCadastro) > IFNULL(ML.DataUltimaLeitura, MAX(M.DataCadastro)) THEN 1 ELSE 0 END AS NovaMensagem, " +
+                        "  CASE WHEN MAX(M.DataCadastro) >= IFNULL(ML.DataUltimaLeitura, MAX(M.DataCadastro)) THEN 1 ELSE 0 END AS NovaMensagem, " +
                         "  (SELECT Texto FROM Mensagem WHERE ID = MIN(M.ID)) AS Texto ";
             else
                 sql +=  "  GET_TIMEDURATION(M.DataCadastro) AS DataCadastro, " +
                         "  M.DataCadastro AS DataCadastroOrder, " +
-                        "  CASE WHEN M.DataCadastro > IFNULL(ML.DataUltimaLeitura, M.DataCadastro) THEN 1 ELSE 0 END AS NovaMensagem, " +
+                        "  CASE WHEN M.DataCadastro >= IFNULL(ML.DataUltimaLeitura, M.DataCadastro) THEN 1 ELSE 0 END AS NovaMensagem, " +
                         "  M.Texto ";
                     
             sql +=      "from " +
@@ -179,7 +179,7 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
                         "  MC.Ativo = 1 ";
             
             if (apenasNovas)
-                sql += "  and M.DataCadastro > IFNULL(ML.DataUltimaLeitura, M.DataCadastro) ";
+                sql += "  and M.DataCadastro >= IFNULL(ML.DataUltimaLeitura, M.DataCadastro) ";
             
             
             if (agrupadas)

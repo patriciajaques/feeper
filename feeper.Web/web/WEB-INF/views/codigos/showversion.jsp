@@ -128,14 +128,22 @@
                 var ajaxFormOptions = { 
                     target: '#pnlMensagens',
                     clearForm: true,
+                    beforeSubmit: function() {
+                        $.fancybox.showLoading();
+                    },
                     success: function() {
+                        $.fancybox.hideLoading();                
                         $("#panel-markedquestions .panel-body").animate({ scrollTop: $("#panel-markedquestions .panel-body")[0].scrollHeight}, 1000);
                     }
                 }; 
                 $('#frmQuestao').ajaxForm(ajaxFormOptions);
                 
                 var ajaxFormOptions2 = { 
+                    beforeSubmit: function() {
+                        $.fancybox.showLoading();
+                    },
                     success: function(data) {
+                        $.fancybox.hideLoading();
                         $("#anotacaoRespostaCodigoFonte").val(data[1]);
                         $("#panel-markedannotations .panel-body").animate({ scrollTop: $("#panel-markedannotations .panel-body")[0].scrollHeight}, 1000);
                     }

@@ -446,7 +446,7 @@
             
         <div class="panel panel-default">
             <div class="panel-body">
-                <c:out value="${Exercicio.getDescricaoHtml()}"/>
+                ${Exercicio.getDescricaoHtml()}
             </div>
         </div>
             
