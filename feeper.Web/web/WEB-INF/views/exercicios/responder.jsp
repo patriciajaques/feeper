@@ -232,9 +232,9 @@
                     $("#editor").remove();
                 } catch (e) {}
                 
-                var newEditorElement = $('<div id="editor">' + source + '</div>');
-                $("#panelEditor").append(newEditorElement);
+                $("#panelEditor").append($('<div id="editor"></div>'));
                 editor = ace.edit("editor");
+                editor.session.setValue(source);
                 editor.container.style.opacity = "";
                 editor.setOptions({
                     maxLines: 30,

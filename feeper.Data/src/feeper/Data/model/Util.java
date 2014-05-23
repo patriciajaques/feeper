@@ -160,7 +160,7 @@ public class Util {
         return baos.toByteArray();
     }
     
-    public static String prepareCodeForSave(String code)
+    public static String prepareCodeForSave_OLD(String code)
     {
         return code.replace(">", " >").replace("<", "< ").replace("  >", " >").replace("<  ", "< ");
     }

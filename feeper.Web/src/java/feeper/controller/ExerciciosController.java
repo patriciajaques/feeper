@@ -634,7 +634,8 @@ public class ExerciciosController extends ApplicationController {
         CodigoFonteMarcacaoService repoCodigoFonteMarcacao = new CodigoFonteMarcacaoService();
         Object[] dados = (Object[])repoCodigoFonte.getByIdExercicio(idExercicio, pessoa.getId(), idCodigoFonte);
         
-        dados[1] = Util.prepareCodeForSave(dados[1].toString().replaceAll("\"", "#'#"));
+        //dados[1] = Util.prepareCodeForSave(dados[1].toString().replaceAll("\"", "#'#"));
+        dados[1] = dados[1].toString().replaceAll("\"", "#'#");
         dados[4] = repoCodigoFonteMarcacao.getLinhasDuvida(idCodigoFonte);
         dados[5] = repoCodigoFonteMarcacao.getLinhasAnotacao(idCodigoFonte);
         
@@ -684,7 +685,8 @@ public class ExerciciosController extends ApplicationController {
                     entity.setClasse(Util.removeAccent(classe));
                     entity.setPrincipal(principal);
                     entity.setDataCadastro(new Date());
-                    entity.setFonte(Util.prepareCodeForSave(fonte));
+                    //entity.setFonte(Util.prepareCodeForSave(fonte));
+                    entity.setFonte(fonte);
 
                     repoCodigoFonte.insertOrUpdate(entity);
                     
@@ -879,7 +881,8 @@ public class ExerciciosController extends ApplicationController {
         try {
             MultipartFile file = request.getFile("filedata");
             String fileName = Util.prepareStringForSave(Util.removeExtension(file.getOriginalFilename()));
-            return fileName + "#@#" + Util.prepareCodeForSave(IOUtils.toString(file.getInputStream(), "UTF-8"));
+            //return fileName + "#@#" + Util.prepareCodeForSave(IOUtils.toString(file.getInputStream(), "UTF-8"));
+            return fileName + "#@#" + IOUtils.toString(file.getInputStream(), "UTF-8");
         } catch (IOException ex) {
             return "";
         }

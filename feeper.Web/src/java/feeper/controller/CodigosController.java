@@ -126,7 +126,8 @@ public class CodigosController extends ApplicationController {
         }
         
         String fonte = codigoFonte.getFonte();
-        codigoFonte.setFonte(Util.prepareCodeForSave(fonte));
+        //codigoFonte.setFonte(Util.prepareCodeForSave(fonte));
+        codigoFonte.setFonte(fonte);
         
         mav.setViewName("codigos/show");
         mav.addObject("CodigoFonte", codigoFonte);
@@ -274,7 +275,8 @@ public class CodigosController extends ApplicationController {
         Resposta resposta = repoResposta.getById(respostaCodigoFonte.getIdResposta());
         
         String fonte = respostaCodigoFonte.getFonte();
-        respostaCodigoFonte.setFonte(Util.prepareCodeForSave(fonte));
+        //respostaCodigoFonte.setFonte(Util.prepareCodeForSave(fonte));
+        respostaCodigoFonte.setFonte(fonte);
         
         mav.setViewName("codigos/showversion");
         mav.addObject("idExercicio", resposta.getIdExercicio());
