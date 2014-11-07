@@ -10,6 +10,10 @@ import feeper.Data.model.HibernateUtil;
 import java.util.List;
 import org.hibernate.Hibernate;
 import org.hibernate.SQLQuery;
+import org.hibernate.type.BooleanType;
+import org.hibernate.type.DateType;
+import org.hibernate.type.IntegerType;
+import org.hibernate.type.StringType;
 
 /**
  *
@@ -189,23 +193,23 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
             
             SQLQuery query = query(sql);
             
-            query.addScalar("IdAutor", Hibernate.INTEGER);
-            query.addScalar("Autor", Hibernate.STRING);
-            query.addScalar("IdMensagemCabecalho", Hibernate.INTEGER);
-            query.addScalar("Publico", Hibernate.BOOLEAN);
-            query.addScalar("IdPessoa", Hibernate.INTEGER);
-            query.addScalar("Nome", Hibernate.STRING);
-            query.addScalar("LinhaInicio", Hibernate.INTEGER);
-            query.addScalar("IdCodigoFonte", Hibernate.INTEGER);
-            query.addScalar("Classe", Hibernate.STRING);
-            query.addScalar("IdExercicio", Hibernate.INTEGER);
-            query.addScalar("Exercicio", Hibernate.STRING);
-            query.addScalar("IdAluno", Hibernate.INTEGER);
-            query.addScalar("Resposta", Hibernate.BOOLEAN);
-            query.addScalar("DataCadastro", Hibernate.STRING);
-            query.addScalar("DataCadastroOrder", Hibernate.DATE);
-            query.addScalar("NovaMensagem", Hibernate.INTEGER);
-            query.addScalar("Texto", Hibernate.STRING);
+            query.addScalar("IdAutor", IntegerType.INSTANCE);
+            query.addScalar("Autor", StringType.INSTANCE);
+            query.addScalar("IdMensagemCabecalho", IntegerType.INSTANCE);
+            query.addScalar("Publico", BooleanType.INSTANCE);
+            query.addScalar("IdPessoa", IntegerType.INSTANCE);
+            query.addScalar("Nome", StringType.INSTANCE);
+            query.addScalar("LinhaInicio", IntegerType.INSTANCE);
+            query.addScalar("IdCodigoFonte", IntegerType.INSTANCE);
+            query.addScalar("Classe", StringType.INSTANCE);
+            query.addScalar("IdExercicio", IntegerType.INSTANCE);
+            query.addScalar("Exercicio", StringType.INSTANCE);
+            query.addScalar("IdAluno", IntegerType.INSTANCE);
+            query.addScalar("Resposta", BooleanType.INSTANCE);
+            query.addScalar("DataCadastro", StringType.INSTANCE);
+            query.addScalar("DataCadastroOrder", DateType.INSTANCE);
+            query.addScalar("NovaMensagem", IntegerType.INSTANCE);
+            query.addScalar("Texto", StringType.INSTANCE);
             
             query.setInteger("idPessoa", idPessoa);
             

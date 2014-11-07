@@ -14,6 +14,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.type.IntegerType;
+import org.hibernate.type.StringType;
 import org.hibernate.type.Type;
  
 public class HibernateUtil<T> {
@@ -134,10 +136,10 @@ public class HibernateUtil<T> {
     }
     
     public List<T> getByColumn(String column, String value){
-        return getByColumn(column, value, Hibernate.STRING);
+        return getByColumn(column, value, StringType.INSTANCE);
     }
     public List<T> getByColumn(String column, int value){
-        return getByColumn(column, value, Hibernate.INTEGER);
+        return getByColumn(column, value, IntegerType.INSTANCE);
     }
     private List<T> getByColumn(String column, Object value, Type type)
     {
@@ -148,11 +150,11 @@ public class HibernateUtil<T> {
             //transacao = session.beginTransaction();
             query = session.createQuery("From "+objClass.getName()+" Where "+column+" = :p ");
             
-            if (type == Hibernate.INTEGER)
+            if (type == IntegerType.INSTANCE)
             {
                 query.setInteger("p", Integer.parseInt(value.toString()));
             }
-            else if (type == Hibernate.STRING)
+            else if (type == StringType.INSTANCE)
             {
                 query.setString("p", value.toString());
             }

@@ -17,61 +17,58 @@ import org.springframework.web.servlet.view.RedirectView;
 
 @DontValidateAccess
 @Controller
-@RequestMapping(value="/login")
+@RequestMapping(value = "/login")
 public class LoginController extends ApplicationController {
-    
-    @RequestMapping(method=RequestMethod.GET)
+
+    @RequestMapping(method = RequestMethod.GET)
     public String list() {
         return "login/login";
     }
-    
-    @RequestMapping(value="/validate", method=RequestMethod.POST)
-    public ModelAndView validate(
-            HttpServletRequest request
-            , final RedirectAttributes flash) {
-        
+
+    @RequestMapping(value = "/validate", method = RequestMethod.POST)
+    public ModelAndView validate(HttpServletRequest request, final RedirectAttributes flash) {
+
         ModelAndView mav = new ModelAndView();
-        
+
         String email = request.getParameter("email");
         String senha = request.getParameter("senha");
-        
+
         PessoaService repoPessoa = new PessoaService();
         Pessoa pessoa = repoPessoa.validaLoginSenha(email, senha);
-        if (pessoa == null || pessoa.getId() == 0)
-        {
+        if (pessoa == null || pessoa.getId() == 0) {
             mav.setView(new RedirectView("/login", true, true, false));
             flash.addFlashAttribute("MSG_ERRO", "Dados inválidos!");
-        }
-        else
-        {
+        } else {
             log(pessoa.getId(), "IP: " + request.getRemoteAddr(), ETipoLog.LOGIN);
-            
+
             pessoa.setDataUltimoAcesso(new Date());
             repoPessoa.update(pessoa);
-            
+
             TurmaService repoTurma = new TurmaService();
-            
+
             pessoa.setTurmas(repoTurma.getTurmasByIdPessoa(pessoa.getId()));
-            
+
             HttpSession session = request.getSession(true);
             session.setAttribute("UsuarioLogado", pessoa);
-            
-            if (pessoa.getTurmas().size() > 0)
+
+            if (pessoa.getTurmas().size() > 0) {
                 session.setAttribute("TurmaSelecionada", pessoa.getTurmas().get(0));
-            
-            mav.setView(new RedirectView("/", true, true, false));                
+            }
+
+            mav.setView(new RedirectView("/", true, true, false));
         }
         return mav;
     }
-    
-    @RequestMapping(value="/logout", method=RequestMethod.GET)
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public String logout(HttpServletRequest request) {
-        
+
         HttpSession session = request.getSession(false);
-        if (session != null)
+        if (session != null) {
             session.invalidate();
-        
+        }
+
         return "redirect:/";
     }
-    
+
 }

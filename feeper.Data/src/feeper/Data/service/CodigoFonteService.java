@@ -10,11 +10,9 @@ import feeper.Data.entity.Mensagem;
 import feeper.Data.entity.MensagemCabecalho;
 import feeper.Data.entity.MensagemLeitor;
 import feeper.Data.entity.Pessoa;
-import feeper.Data.entity.RespostaCodigoFonteMarcacao;
 import feeper.Data.model.ETipoLeitor;
 import feeper.Data.model.ETipoMarcacao;
 import feeper.Data.model.HibernateUtil;
-import feeper.Data.model.MarcacaoMensagem;
 import feeper.Data.model.Util;
 import java.util.Date;
 import java.util.List;
@@ -23,42 +21,45 @@ import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.type.BooleanType;
+import org.hibernate.type.IntegerType;
+import org.hibernate.type.StringType;
+import org.hibernate.type.TimestampType;
 
 public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
-    
-    public static final String CODIGO_PADRAO_PRINCIPAL = "/* package qualquer; // Não coloque nome no package */\n" +
-                                                        "\n" +
-                                                        "import java.util.*;\n" +
-                                                        "import java.lang.*;\n" +
-                                                        "import java.io.*;\n" +
-                                                        "\n" +
-                                                        "/* O nome da classe deve ser \"Solution\" */\n" +
-                                                        "class Solution\n" +
-                                                        "{\n" +
-                                                        "    public static void main (String[] args) throws java.lang.Exception\n" +
-                                                        "    {\n" +
-                                                        "        // Coloque aqui o seu código\n" +
-                                                        "    }\n" +
-                                                        "}";
-    public static final String CODIGO_PADRAO_CLASSE = "/* package qualquer; // Não coloque nome no package */\n" +
-                                                        "\n" +
-                                                        "import java.util.*;\n" +
-                                                        "import java.lang.*;\n" +
-                                                        "import java.io.*;\n" +
-                                                        "\n" +
-                                                        "class #@#CLASSE#@#\n" +
-                                                        "{\n" +
-                                                        "   // Coloque aqui o seu código\n" +
-                                                        "}";
-    
+
+    public static final String CODIGO_PADRAO_PRINCIPAL = "/* package qualquer; // Não coloque nome no package */\n"
+            + "\n"
+            + "import java.util.*;\n"
+            + "import java.lang.*;\n"
+            + "import java.io.*;\n"
+            + "\n"
+            + "/* O nome da classe deve ser \"Solution\" */\n"
+            + "class Solution\n"
+            + "{\n"
+            + "    public static void main (String[] args) throws java.lang.Exception\n"
+            + "    {\n"
+            + "        // Coloque aqui o seu código\n"
+            + "    }\n"
+            + "}";
+    public static final String CODIGO_PADRAO_CLASSE = "/* package qualquer; // Não coloque nome no package */\n"
+            + "\n"
+            + "import java.util.*;\n"
+            + "import java.lang.*;\n"
+            + "import java.io.*;\n"
+            + "\n"
+            + "class #@#CLASSE#@#\n"
+            + "{\n"
+            + "   // Coloque aqui o seu código\n"
+            + "}";
+
     public CodigoFonteService() {
         super(CodigoFonte.class);
     }
-    
-    public List<CodigoFonte> getAllByIdExercicio(int idExercicio, int idAutor)
-    {
+
+    public List<CodigoFonte> getAllByIdExercicio(int idExercicio, int idAutor) {
         try {
-            
+
             SQLQuery query = query("select * from CodigoFonte where IdExercicio = :idExercicio and IdAutor = :idAutor order by Principal desc ").addEntity(CodigoFonte.class);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAutor", idAutor);
@@ -67,55 +68,52 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
             return null;
         }
     }
-    
-    public CodigoFonte getPrincipalByIdExercicio(int idExercicio, int idAutor)
-    {
+
+    public CodigoFonte getPrincipalByIdExercicio(int idExercicio, int idAutor) {
         try {
-            
+
             SQLQuery query = query("select * from CodigoFonte where IdExercicio = :idExercicio and IdAutor = :idAutor and Principal = 1").addEntity(CodigoFonte.class);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAutor", idAutor);
-            return (CodigoFonte)query.list().get(0);
+            return (CodigoFonte) query.list().get(0);
         } catch (Exception e) {
             return null;
         }
     }
-    
-    public boolean deleteNotIn(int idExercicio, int idAutor, String concatIds)
-    {
+
+    public boolean deleteNotIn(int idExercicio, int idAutor, String concatIds) {
         Transaction transaction_;
         Session session_;
-        
+
         session_ = currentSession();
         transaction_ = session_.beginTransaction();
-        
+
         try {
-            SQLQuery query = session_.createSQLQuery("delete from CodigoFonte where ID not in ("+ concatIds +") and IdExercicio = "+ idExercicio +" and IdAutor = " + idAutor);
-            
+            SQLQuery query = session_.createSQLQuery("delete from CodigoFonte where ID not in (" + concatIds + ") and IdExercicio = " + idExercicio + " and IdAutor = " + idAutor);
+
             query.executeUpdate();
             transaction_.commit();
-            
+
             return true;
-        } catch (HibernateException e) { 
+        } catch (HibernateException e) {
             transaction_.rollback();
             return false;
         } finally {
             closeSession();
         }
     }
-    
-    public Object getByIdExercicio(int idExercicio, int idAutor, int idCodigoFonte)
-    {
+
+    public Object getByIdExercicio(int idExercicio, int idAutor, int idCodigoFonte) {
         try {
-            
+
             SQLQuery query = query("select ID, Fonte, Classe, Principal, '' AS Marcacao, '' AS Anotacao, Favorito from CodigoFonte where IdExercicio = :idExercicio and IdAutor = :idAutor and ID = :idCodigoFonte ");
-            query.addScalar("ID", Hibernate.INTEGER);
-            query.addScalar("Fonte", Hibernate.STRING);
-            query.addScalar("Classe", Hibernate.STRING);
-            query.addScalar("Principal", Hibernate.BOOLEAN);
-            query.addScalar("Marcacao", Hibernate.STRING);
-            query.addScalar("Anotacao", Hibernate.STRING);
-            query.addScalar("Favorito", Hibernate.BOOLEAN);
+            query.addScalar("ID", IntegerType.INSTANCE);
+            query.addScalar("Fonte", StringType.INSTANCE);
+            query.addScalar("Classe", StringType.INSTANCE);
+            query.addScalar("Principal", BooleanType.INSTANCE);
+            query.addScalar("Marcacao", StringType.INSTANCE);
+            query.addScalar("Anotacao", StringType.INSTANCE);
+            query.addScalar("Favorito", BooleanType.INSTANCE);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAutor", idAutor);
             query.setInteger("idCodigoFonte", idCodigoFonte);
@@ -124,42 +122,38 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
             return "";
         }
     }
-    
-    public CodigoFonte getById(int idExercicio, int idAutor, int idCodigoFonte)
-    {
+
+    public CodigoFonte getById(int idExercicio, int idAutor, int idCodigoFonte) {
         try {
-            
+
             SQLQuery query = query("select * from CodigoFonte where IdExercicio = :idExercicio and IdAutor = :idAutor and ID = :idCodigoFonte ").addEntity(CodigoFonte.class);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAutor", idAutor);
             query.setInteger("idCodigoFonte", idCodigoFonte);
-            
-            return (CodigoFonte)query.list().get(0);
-            
+
+            return (CodigoFonte) query.list().get(0);
+
         } catch (Exception e) {
             return null;
         }
     }
-    
-    public CodigoFonte getById(int idExercicio, int idCodigoFonte)
-    {
+
+    public CodigoFonte getById(int idExercicio, int idCodigoFonte) {
         try {
-            
+
             SQLQuery query = query("select * from CodigoFonte where IdExercicio = :idExercicio and ID = :idCodigoFonte ").addEntity(CodigoFonte.class);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idCodigoFonte", idCodigoFonte);
-            
-            return (CodigoFonte)query.list().get(0);
-            
+
+            return (CodigoFonte) query.list().get(0);
+
         } catch (Exception e) {
             return null;
         }
     }
-    
-    public void inserirCodigoPrincipal(int idExercicio, int idPessoa)
-    {
-        if (getPrincipalByIdExercicio(idExercicio, idPessoa) == null)
-        {
+
+    public void inserirCodigoPrincipal(int idExercicio, int idPessoa) {
+        if (getPrincipalByIdExercicio(idExercicio, idPessoa) == null) {
             CodigoFonte entity = new CodigoFonte();
             entity.setIdAutor(idPessoa);
             entity.setIdExercicio(idExercicio);
@@ -170,149 +164,144 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
             insert(entity);
         }
     }
-    
-    public Object getAnotacao(int idExercicio, int idCodigoFonte, int linha)
-    {
+
+    public Object getAnotacao(int idExercicio, int idCodigoFonte, int linha) {
         try {
-            
-            SQLQuery query = query("select " +
-                                "  CFM.DataCadastro, " +
-                                "  CFM.Anotacao, " +
-                                "  CFM.LinhaInicio " +
-                                "from " +
-                                "  CodigoFonteMarcacao CFM " +
-                                "  inner join CodigoFonte CF " +
-                                "  on CF.ID = CFM.IdCodigoFonte " +
-                                "where " +
-                                "  CF.ID = :idCodigoFonte " +
-                                "  and CF.IdExercicio = :idExercicio " +
-                                "  and CFM.LinhaInicio = :linha " +
-                                "  and CFM.IdTipoMarcacao = :idTipoMarcacao " +
-                                "  and CFM.Ativo = 1");
-            query.addScalar("DataCadastro", Hibernate.TIMESTAMP);
-            query.addScalar("Anotacao", Hibernate.STRING);
-            query.addScalar("LinhaInicio", Hibernate.INTEGER);
+
+            SQLQuery query = query("select "
+                    + "  CFM.DataCadastro, "
+                    + "  CFM.Anotacao, "
+                    + "  CFM.LinhaInicio "
+                    + "from "
+                    + "  CodigoFonteMarcacao CFM "
+                    + "  inner join CodigoFonte CF "
+                    + "  on CF.ID = CFM.IdCodigoFonte "
+                    + "where "
+                    + "  CF.ID = :idCodigoFonte "
+                    + "  and CF.IdExercicio = :idExercicio "
+                    + "  and CFM.LinhaInicio = :linha "
+                    + "  and CFM.IdTipoMarcacao = :idTipoMarcacao "
+                    + "  and CFM.Ativo = 1");
+            query.addScalar("DataCadastro", TimestampType.INSTANCE);
+            query.addScalar("Anotacao", StringType.INSTANCE);
+            query.addScalar("LinhaInicio", IntegerType.INSTANCE);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idCodigoFonte", idCodigoFonte);
             query.setInteger("linha", linha);
             query.setInteger("idTipoMarcacao", ETipoMarcacao.ANOTACAO);
-            
+
             return query.list().get(0);
-            
+
         } catch (Exception e) {
             return null;
         }
     }
-    
-    public List<Object> getMarcacaoAutor(int idExercicio, int idAutor, int idCodigoFonte, int linha)
-    {
+
+    public List<Object> getMarcacaoAutor(int idExercicio, int idAutor, int idCodigoFonte, int linha) {
         try {
-            
-            SQLQuery query = query("select " +
-                                "  M.IdPessoa, " +
-                                "  P.Nome, " +
-                                "  GET_TIMEDURATION(M.DataCadastro) AS DataCadastro, " +
-                                "  M.Texto, " +
-                                "  MC.Publico, " +
-                                "  CFM.LinhaInicio " +
-                                "from " +
-                                "  CodigoFonteMarcacao CFM " +
-                                "  inner join CodigoFonte CF " +
-                                "  on CF.ID = CFM.IdCodigoFonte " +
-                                "  inner join MensagemCabecalho MC " +
-                                "  on MC.IdCodigoFonteMarcacao = CFM.ID " +
-                                "  and MC.Ativo = 1 " +
-                                "  inner join Mensagem M " +
-                                "  on M.IdMensagemCabecalho = MC.ID " +
-                                "  and M.Ativo = 1 " +
-                                "  inner join Pessoa P " +
-                                "  on P.ID = M.IdPessoa " +
-                                "  and P.Ativo = 1 " +
-                                "where " +
-                                "  CF.ID = :idCodigoFonte " +
-                                "  and CF.IdExercicio = :idExercicio " +
-                                "  and CF.IdAutor = :idAutor " +
-                                "  and CFM.LinhaInicio = :linha " +
-                                "  and CFM.IdTipoMarcacao = :idTipoMarcacao " +
-                                "  and CFM.Ativo = 1 " + 
-                                "order by M.ID");
-            query.addScalar("IdPessoa", Hibernate.INTEGER);
-            query.addScalar("Nome", Hibernate.STRING);
-            query.addScalar("DataCadastro", Hibernate.STRING);
-            query.addScalar("Texto", Hibernate.STRING);
-            query.addScalar("Publico", Hibernate.BOOLEAN);
-            query.addScalar("LinhaInicio", Hibernate.INTEGER);
+
+            SQLQuery query = query("select "
+                    + "  M.IdPessoa, "
+                    + "  P.Nome, "
+                    + "  GET_TIMEDURATION(M.DataCadastro) AS DataCadastro, "
+                    + "  M.Texto, "
+                    + "  MC.Publico, "
+                    + "  CFM.LinhaInicio "
+                    + "from "
+                    + "  CodigoFonteMarcacao CFM "
+                    + "  inner join CodigoFonte CF "
+                    + "  on CF.ID = CFM.IdCodigoFonte "
+                    + "  inner join MensagemCabecalho MC "
+                    + "  on MC.IdCodigoFonteMarcacao = CFM.ID "
+                    + "  and MC.Ativo = 1 "
+                    + "  inner join Mensagem M "
+                    + "  on M.IdMensagemCabecalho = MC.ID "
+                    + "  and M.Ativo = 1 "
+                    + "  inner join Pessoa P "
+                    + "  on P.ID = M.IdPessoa "
+                    + "  and P.Ativo = 1 "
+                    + "where "
+                    + "  CF.ID = :idCodigoFonte "
+                    + "  and CF.IdExercicio = :idExercicio "
+                    + "  and CF.IdAutor = :idAutor "
+                    + "  and CFM.LinhaInicio = :linha "
+                    + "  and CFM.IdTipoMarcacao = :idTipoMarcacao "
+                    + "  and CFM.Ativo = 1 "
+                    + "order by M.ID");
+            query.addScalar("IdPessoa", IntegerType.INSTANCE);
+            query.addScalar("Nome", StringType.INSTANCE);
+            query.addScalar("DataCadastro", StringType.INSTANCE);
+            query.addScalar("Texto", StringType.INSTANCE);
+            query.addScalar("Publico", BooleanType.INSTANCE);
+            query.addScalar("LinhaInicio", IntegerType.INSTANCE);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAutor", idAutor);
             query.setInteger("idCodigoFonte", idCodigoFonte);
             query.setInteger("linha", linha);
             query.setInteger("idTipoMarcacao", ETipoMarcacao.DUVIDA);
-            
+
             return query.list();
-            
+
         } catch (Exception e) {
             return null;
         }
     }
-    
-    public List<Object> getMarcacaoLeitor(int idExercicio, int idCodigoFonte, int linha)
-    {
+
+    public List<Object> getMarcacaoLeitor(int idExercicio, int idCodigoFonte, int linha) {
         try {
-            
-            SQLQuery query = query("select " +
-                                "  M.IdPessoa, " +
-                                "  P.Nome, " +
-                                "  GET_TIMEDURATION(M.DataCadastro) AS DataCadastro, " +
-                                "  M.Texto, " +
-                                "  MC.Publico, " +
-                                "  CFM.LinhaInicio " +
-                                "from " +
-                                "  CodigoFonteMarcacao CFM " +
-                                "  inner join CodigoFonte CF " +
-                                "  on CF.ID = CFM.IdCodigoFonte " +
-                                "  inner join MensagemCabecalho MC " +
-                                "  on MC.IdCodigoFonteMarcacao = CFM.ID " +
-                                "  and MC.Ativo = 1 " +
-                                "  inner join Mensagem M " +
-                                "  on M.IdMensagemCabecalho = MC.ID " +
-                                "  and M.Ativo = 1 " +
-                                "  inner join Pessoa P " +
-                                "  on P.ID = M.IdPessoa " +
-                                "  and P.Ativo = 1 " +
-                                "where " +
-                                "  CF.ID = :idCodigoFonte " +
-                                "  and CF.IdExercicio = :idExercicio " +
-                                "  and CFM.LinhaInicio = :linha " +
-                                "  and CFM.IdTipoMarcacao = :idTipoMarcacao " +
-                                "  and CFM.Ativo = 1 " + 
-                                "order by M.ID");
-            query.addScalar("IdPessoa", Hibernate.INTEGER);
-            query.addScalar("Nome", Hibernate.STRING);
-            query.addScalar("DataCadastro", Hibernate.STRING);
-            query.addScalar("Texto", Hibernate.STRING);
-            query.addScalar("Publico", Hibernate.BOOLEAN);
-            query.addScalar("LinhaInicio", Hibernate.INTEGER);
+
+            SQLQuery query = query("select "
+                    + "  M.IdPessoa, "
+                    + "  P.Nome, "
+                    + "  GET_TIMEDURATION(M.DataCadastro) AS DataCadastro, "
+                    + "  M.Texto, "
+                    + "  MC.Publico, "
+                    + "  CFM.LinhaInicio "
+                    + "from "
+                    + "  CodigoFonteMarcacao CFM "
+                    + "  inner join CodigoFonte CF "
+                    + "  on CF.ID = CFM.IdCodigoFonte "
+                    + "  inner join MensagemCabecalho MC "
+                    + "  on MC.IdCodigoFonteMarcacao = CFM.ID "
+                    + "  and MC.Ativo = 1 "
+                    + "  inner join Mensagem M "
+                    + "  on M.IdMensagemCabecalho = MC.ID "
+                    + "  and M.Ativo = 1 "
+                    + "  inner join Pessoa P "
+                    + "  on P.ID = M.IdPessoa "
+                    + "  and P.Ativo = 1 "
+                    + "where "
+                    + "  CF.ID = :idCodigoFonte "
+                    + "  and CF.IdExercicio = :idExercicio "
+                    + "  and CFM.LinhaInicio = :linha "
+                    + "  and CFM.IdTipoMarcacao = :idTipoMarcacao "
+                    + "  and CFM.Ativo = 1 "
+                    + "order by M.ID");
+            query.addScalar("IdPessoa", IntegerType.INSTANCE);
+            query.addScalar("Nome", StringType.INSTANCE);
+            query.addScalar("DataCadastro", StringType.INSTANCE);
+            query.addScalar("Texto", StringType.INSTANCE);
+            query.addScalar("Publico", BooleanType.INSTANCE);
+            query.addScalar("LinhaInicio", IntegerType.INSTANCE);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idCodigoFonte", idCodigoFonte);
             query.setInteger("linha", linha);
             query.setInteger("idTipoMarcacao", ETipoMarcacao.DUVIDA);
-            
+
             return query.list();
-            
+
         } catch (Exception e) {
             return null;
         }
     }
-    
-    public boolean inserirAnotacao(int idExercicio, int idAutor, int idCodigoFonte, int linha, boolean publico, String texto)
-    {
+
+    public boolean inserirAnotacao(int idExercicio, int idAutor, int idCodigoFonte, int linha, boolean publico, String texto) {
         try {
-            
+
             CodigoFonteMarcacaoService repoCodigoFonteMarcacao = new CodigoFonteMarcacaoService();
             CodigoFonteMarcacao codigoFonteMarcacao = repoCodigoFonteMarcacao.getByIdCodigoFonte(idCodigoFonte, linha, ETipoMarcacao.ANOTACAO);
-            
-            if (codigoFonteMarcacao == null)
-            {
+
+            if (codigoFonteMarcacao == null) {
                 codigoFonteMarcacao = new CodigoFonteMarcacao();
                 codigoFonteMarcacao.setAtivo(true);
                 codigoFonteMarcacao.setDataCadastro(new Date());
@@ -322,34 +311,30 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
                 codigoFonteMarcacao.setLinhaInicio(linha);
                 codigoFonteMarcacao.setAnotacao(texto);
                 return repoCodigoFonteMarcacao.insert(codigoFonteMarcacao);
-            }
-            else
-            {
+            } else {
                 codigoFonteMarcacao.setAtivo(true);
                 codigoFonteMarcacao.setDataCadastro(new Date());
                 codigoFonteMarcacao.setIdTipoMarcacao(ETipoMarcacao.ANOTACAO);
                 codigoFonteMarcacao.setAnotacao(texto);
                 return repoCodigoFonteMarcacao.update(codigoFonteMarcacao);
             }
-            
+
         } catch (Exception e) {
             return false;
         }
     }
-    
-    public boolean inserirPergunta(int idExercicio, int idAutor, String nomeAutor, int idCodigoFonte, int linha, boolean publico, int idLeitor, String texto)
-    {
+
+    public boolean inserirPergunta(int idExercicio, int idAutor, String nomeAutor, int idCodigoFonte, int linha, boolean publico, int idLeitor, String texto) {
         try {
-            
+
             Date dataPergunta = new Date();
-            
+
             CodigoFonteMarcacaoService repoCodigoFonteMarcacao = new CodigoFonteMarcacaoService();
             MensagemCabecalhoService repoMensagemCabecalho = new MensagemCabecalhoService();
             MensagemLeitorService repoMensagemLeitor = new MensagemLeitorService();
-            
+
             CodigoFonteMarcacao codigoFonteMarcacao = repoCodigoFonteMarcacao.getByIdCodigoFonte(idCodigoFonte, linha, ETipoMarcacao.DUVIDA);
-            if (codigoFonteMarcacao == null)
-            {
+            if (codigoFonteMarcacao == null) {
                 codigoFonteMarcacao = new CodigoFonteMarcacao();
                 codigoFonteMarcacao.setAtivo(true);
                 codigoFonteMarcacao.setDataCadastro(dataPergunta);
@@ -360,24 +345,23 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
                 codigoFonteMarcacao.setAnotacao("");
                 repoCodigoFonteMarcacao.insert(codigoFonteMarcacao);
             }
-            
+
             MensagemCabecalho mensagemCabecalho = repoMensagemCabecalho.getByIdCodigoFonteMarcacao(codigoFonteMarcacao.getId());
-            if (mensagemCabecalho == null)
-            {
+            if (mensagemCabecalho == null) {
                 mensagemCabecalho = new MensagemCabecalho();
                 mensagemCabecalho.setAtivo(true);
                 mensagemCabecalho.setDataCadastro(dataPergunta);
                 mensagemCabecalho.setIdCodigoFonteMarcacao(codigoFonteMarcacao.getId());
                 mensagemCabecalho.setPublico(publico);
                 repoMensagemCabecalho.insert(mensagemCabecalho);
-                
+
                 MensagemLeitor mensagemLeitor = new MensagemLeitor();
                 mensagemLeitor.setAtivo(true);
                 mensagemLeitor.setIdLeitor(idLeitor);
                 mensagemLeitor.setIdMensagemCabecalho(mensagemCabecalho.getId());
                 mensagemLeitor.setTipoLeitor(ETipoLeitor.DESTINATARIO);
                 repoMensagemLeitor.insert(mensagemLeitor);
-                
+
                 mensagemLeitor = new MensagemLeitor();
                 mensagemLeitor.setAtivo(true);
                 mensagemLeitor.setDataUltimaLeitura(dataPergunta);
@@ -385,13 +369,11 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
                 mensagemLeitor.setIdMensagemCabecalho(mensagemCabecalho.getId());
                 mensagemLeitor.setTipoLeitor(ETipoLeitor.REMETENTE);
                 repoMensagemLeitor.insert(mensagemLeitor);
-            }
-            else
-            {
+            } else {
                 repoMensagemLeitor.atualizarDataLeitura(idAutor, ETipoLeitor.REMETENTE, dataPergunta);
                 repoMensagemLeitor.atualizarDataLeitura(idAutor, ETipoLeitor.DESTINATARIO, dataPergunta);
             }
-            
+
             MensagemService repoMensagem = new MensagemService();
             Mensagem mensagem = new Mensagem();
             mensagem.setAtivo(true);
@@ -400,36 +382,35 @@ public class CodigoFonteService extends HibernateUtil<CodigoFonte> {
             mensagem.setIdPessoa(idAutor);
             mensagem.setTexto(texto);
             repoMensagem.insert(mensagem);
-            
+
             PessoaService pessoaService = new PessoaService();
             Pessoa destinatario = pessoaService.getById(idLeitor);
-            
-            String html = "<p>Olá #NOME#,</p>\n" +
-                        "<p>Você recebeu uma nova mensagem de #AUTOR#.<br>Acesse o <i>feeper</i> para visualizá-la.</p>\n" +
-                        "<p>Endereço: <a href=\"http://feeper.jelasticlw.com.br\">http://feeper.jelasticlw.com.br</a></p>";
+
+            String html = "<p>Olá #NOME#,</p>\n"
+                    + "<p>Você recebeu uma nova mensagem de #AUTOR#.<br>Acesse o <i>feeper</i> para visualizá-la.</p>\n"
+                    + "<p>Endereço: <a href=\"http://feeper.jelasticlw.com.br\">http://feeper.jelasticlw.com.br</a></p>";
             html = html.replaceAll("#NOME#", destinatario.getNome());
             html = html.replaceAll("#AUTOR#", nomeAutor);
-            
+
             Util.sendMail(destinatario.getEmail(), "Nova mensagem recebida!", html);
-            
+
             return true;
-            
+
         } catch (Exception e) {
             return false;
         }
     }
-    
-    public List<CodigoFonte> getMeusCodigosFavoritos(int idPessoa)
-    {
+
+    public List<CodigoFonte> getMeusCodigosFavoritos(int idPessoa) {
         try {
-            
+
             SQLQuery query = query("select * from CodigoFonte where IdAutor = :idPessoa and Favorito = 1 order by DataCadastro desc").addEntity(CodigoFonte.class);
             query.setInteger("idPessoa", idPessoa);
             return query.list();
-            
+
         } catch (Exception e) {
             return null;
         }
     }
-    
+
 }

@@ -8,15 +8,15 @@ import feeper.Data.entity.CodigoFonte;
 import feeper.Data.entity.Resposta;
 import feeper.Data.entity.RespostaCodigoFonte;
 import feeper.Data.model.EStatusResposta;
-import feeper.Data.model.ETipoLog;
-//import feeper.Data.entity.RespostaCodigoFonte;
 import feeper.Data.model.HibernateUtil;
 import feeper.Data.model.IntegerResult;
 import java.util.Date;
 import java.util.List;
-import org.hibernate.CacheMode;
 import org.hibernate.Hibernate;
 import org.hibernate.SQLQuery;
+import org.hibernate.type.IntegerType;
+import org.hibernate.type.StringType;
+import org.hibernate.type.TimestampType;
 
 /**
  *
@@ -87,16 +87,16 @@ public class RespostaService extends HibernateUtil<Resposta> {
                                     "  and R.IdAutor = :idAutor " +
                                     "order by R.ID desc");
             
-            query.addScalar("ID", Hibernate.INTEGER);
-            query.addScalar("IdAutor", Hibernate.INTEGER);
-            query.addScalar("Autor", Hibernate.STRING);
-            query.addScalar("IdExercicio", Hibernate.INTEGER);
-            query.addScalar("Exercicio", Hibernate.STRING);
-            query.addScalar("DataCadastroString", Hibernate.STRING);
-            query.addScalar("DataCadastro", Hibernate.TIMESTAMP);
-            query.addScalar("IdStatus", Hibernate.INTEGER);
-            query.addScalar("Status", Hibernate.STRING);
-            query.addScalar("Mensagem", Hibernate.STRING);
+            query.addScalar("ID", IntegerType.INSTANCE);
+            query.addScalar("IdAutor", IntegerType.INSTANCE);
+            query.addScalar("Autor", StringType.INSTANCE);
+            query.addScalar("IdExercicio", IntegerType.INSTANCE);
+            query.addScalar("Exercicio", StringType.INSTANCE);
+            query.addScalar("DataCadastroString", StringType.INSTANCE);
+            query.addScalar("DataCadastro", TimestampType.INSTANCE);
+            query.addScalar("IdStatus", IntegerType.INSTANCE);
+            query.addScalar("Status", StringType.INSTANCE);
+            query.addScalar("Mensagem", StringType.INSTANCE);
             
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAutor", idAutor);
