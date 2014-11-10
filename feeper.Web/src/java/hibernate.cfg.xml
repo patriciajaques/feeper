@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <!--<property name="hibernate.connection.url">jdbc:mysql://mysql-feeper.jelasticlw.com.br/feeper</property>
+    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.password">2Uhl7YhwFH</property>-->
+    <property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/feeper</property>
+    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.password"/>
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="hibernate.connection.autoReconnect">true</property>
+    <property name="hibernate.connection.autoReconnectForPools">true</property>
+    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.query.factory_class">org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory</property>
+    <property name="hibernate.current_session_context_class">thread</property>
+    <property name="hibernate.c3p0.min_size">5</property>
+    <property name="hibernate.c3p0.max_size">20</property>
+    <property name="hibernate.c3p0.timeout">300</property>
+    <property name="hibernate.c3p0.max_statements">50</property>
+    <property name="hibernate.c3p0.idle_test_period">3000</property>
+    <mapping resource="feeper/Data/entity/Conquista.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/Mensagem.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/Exercicio.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/MensagemLeitor.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/Grade.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/PessoaConquista.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/Log.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/TipoMarcacao.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/Turma.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/Novidade.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/TipoLog.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/MensagemCabecalho.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/TurmaExercicio.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/CodigoFonteMarcacao.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/TipoNovidade.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/MensagemComentario.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/MensagemCurtir.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/TurmaPessoa.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/ExercicioValidacao.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/ExercicioClasseValidacao.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/StatusResposta.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/CodigoFonte.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/Pessoa.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/UploadTemp.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/TelaPerfil.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/Tela.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/Perfil.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/Resposta.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/RespostaCodigoFonte.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/RespostaCodigoFonteMarcacao.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/FilaNovaSenha.hbm.xml"/>
+  </session-factory>
+</hibernate-configuration>
