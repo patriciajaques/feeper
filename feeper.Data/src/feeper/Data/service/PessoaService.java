@@ -32,7 +32,6 @@ public class PessoaService extends HibernateUtil<Pessoa> {
             
             return (Pessoa)query.list().get(0);
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
