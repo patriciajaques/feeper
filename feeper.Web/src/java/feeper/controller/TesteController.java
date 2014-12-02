@@ -39,8 +39,8 @@ public class TesteController extends ApplicationController {
             URLConnection connection = url.openConnection();
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
+            connection.setConnectTimeout(60000);
+            connection.setReadTimeout(60000);
             OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
             out.write(jsonObject.toString());
             out.close();
