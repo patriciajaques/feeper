@@ -21,7 +21,7 @@ public class ExercicioSolucao {
     @XmlElement
     public Integer idAluno;
     @XmlElement
-    public String codigo;
+    public ExercicioSolucaoClasse[] classes;
     @XmlElement
     public ExercicioCasoTeste[] testes;
 }

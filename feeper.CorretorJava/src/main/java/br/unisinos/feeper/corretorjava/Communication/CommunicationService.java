@@ -1,13 +1,18 @@
 package br.unisinos.feeper.corretorjava.Communication;
 
-import br.unisinos.feeper.corretorjava.FileUtils.CopyFile;
-import br.unisinos.feeper.corretorjava.Test.DinamicTest;
+import br.unisinos.feeper.corretorjava.Entities.ExercicioCasoTeste;
+import br.unisinos.feeper.corretorjava.Entities.ExercicioCorrecao;
+import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucao;
+import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucaoClasse;
+import br.unisinos.feeper.corretorjava.Test.DinamicTestCreator;
+import br.unisinos.feeper.corretorjava.Test.JarCreator;
+import br.unisinos.feeper.corretorjava.Test.MainCreator;
 import br.unisinos.feeper.corretorjava.Test.StaticTest;
-import feeper.Data.entity.ExercicioSolucao;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import javax.ws.rs.Consumes;
@@ -39,6 +44,7 @@ public class CommunicationService {
                 builder.append(line);
             }
 
+            //Le o xml
             String xmlData = builder.toString();
 
             JAXBContext jaxbContext = JAXBContext.newInstance(ExercicioSolucao.class);
@@ -49,33 +55,81 @@ public class CommunicationService {
 
             String alunoID = solucao.idAluno.toString();
             String exercicioID = solucao.idExercicio.toString();
+            String solucaoID = solucao.id.toString();
 
             String partialPath = getClass().getClassLoader().getResource("FindBugs").toURI().getPath();
             String appResourcesPath = new File(partialPath).getParentFile().getPath();
-            String tmpPath = System.getProperty("user.home") + "\\Feeper\\Tmp\\" + alunoID + "\\" + exercicioID;
+            String tmpPath = System.getProperty("user.home") + "\\Feeper\\Tmp\\" + alunoID + "\\" + exercicioID + "\\" + solucaoID;
 
-            //Le o xml
-            //Move a Solucao do aluno para a pasta tmp
-            String dummyPath = appResourcesPath + "\\DummyData";
-            CopyFile.copy(dummyPath + "\\Aluno.txt", tmpPath + "\\Aluno.java");
+            //inicializa a Pasta
+            File dir = new File(tmpPath);
+            dir.delete();
+            dir.mkdirs();
 
-            //Cria os Testes na pasta
-            CopyFile.copy(dummyPath + "\\parameterizedTest.txt", tmpPath + "\\parameterizedTest.java");
-            CopyFile.copy(dummyPath + "\\Main.txt", tmpPath + "\\Main.java");
+            //Escreve a Solucao do aluno na pasta tmp
+            for (ExercicioSolucaoClasse classe : solucao.classes) {
+
+                PrintWriter writer = new PrintWriter(tmpPath + "\\" + classe.NomeClasse + ".java");
+                writer.write(classe.codigo);
+                writer.close();
+            }
+
+            //Cria os Testes na pasta tmp
+            DinamicTestCreator testCreator = new DinamicTestCreator();
+            for (ExercicioCasoTeste teste : solucao.testes) {
+
+                String testString = testCreator.CreateTest(teste);
+
+                PrintWriter writer = new PrintWriter(tmpPath + "\\test_" + teste.id + ".java");
+                writer.write(testString);
+                writer.close();
+            }
+
+            //Cria a main do jar na pasta tmp
+            MainCreator creator = new MainCreator();
+            String mainString = creator.CreateMain(solucao);
+            PrintWriter writer = new PrintWriter(tmpPath + "\\Main.java");
+            writer.write(mainString);
+            writer.close();
+
+            //Inicializa o Resultado
+            ExercicioCorrecao correcao = new ExercicioCorrecao(solucao.id, solucao.idExercicio, solucao.idAluno);
 
             //Executa os testes Dinamicos
-            DinamicTest teste1 = new DinamicTest(appResourcesPath, tmpPath);
-            teste1.ExecuteTest();
+            JarCreator jarCreator = new JarCreator(appResourcesPath, tmpPath);
+            jarCreator.Prepare();
+            jarCreator.Compile();
+            jarCreator.Pack();
+            jarCreator.Run();
+
+            jaxbContext = JAXBContext.newInstance(ExercicioCorrecao.class);
+            jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+            File file = new File(tmpPath + "\\dinamic_output.xml");
+            ExercicioCorrecao correcaoDinamica = (ExercicioCorrecao) jaxbUnmarshaller.unmarshal(file);
+            if (correcaoDinamica.erros != null && correcaoDinamica.erros.size() > 0) {
+
+                correcao.erros.addAll(correcaoDinamica.erros);
+            }
 
             //Executa os testes Estaticos
-            StaticTest teste2 = new StaticTest(appResourcesPath, tmpPath);
-            teste2.ExecuteTest("Aluno");
+            StaticTest staticTest = new StaticTest(appResourcesPath, tmpPath);
+            for (ExercicioSolucaoClasse classe : solucao.classes) {
+
+                staticTest.ExecuteTest(classe.NomeClasse, correcao);
+            }
+            
             //trata os resultados
+            JAXBContext context = JAXBContext.newInstance(ExercicioCorrecao.class);
+            Marshaller m = context.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            StringWriter sw = new StringWriter();
+            m.marshal(correcao, sw);
+            return Response.status(Response.Status.OK).entity(sw.toString()).build();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.toString()).build();
         }
 
-        return Response.status(200).entity("OK").build();
     }
 }

@@ -9,6 +9,7 @@ import feeper.Data.entity.ExercicioCasoTeste;
 import feeper.Data.entity.ExercicioCasoTestePasso;
 import feeper.Data.entity.ExercicioCasoTestePassoParametro;
 import feeper.Data.entity.ExercicioSolucao;
+import feeper.Data.entity.ExercicioSolucaoClasse;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -49,8 +50,8 @@ public class TesteController extends ApplicationController {
             URLConnection connection = url.openConnection();
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/xml");
-            connection.setConnectTimeout(60000);
-            connection.setReadTimeout(60000);
+            connection.setConnectTimeout(6000000);
+            connection.setReadTimeout(6000000);
             OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
             out.write(xmlData);
             out.close();
@@ -75,12 +76,16 @@ public class TesteController extends ApplicationController {
         ExercicioSolucao solucao = new ExercicioSolucao();
 
         try {
+            solucao.id = 123;
             solucao.idAluno = 123;
             solucao.idExercicio = 123;
-            solucao.codigo = this.getCodigoString();
+            solucao.classes = new ExercicioSolucaoClasse[1];
+            solucao.classes[0] = this.getClasse();
 
             solucao.testes = new ExercicioCasoTeste[1];
             ExercicioCasoTeste teste = new ExercicioCasoTeste();
+            teste.id = 1;
+            teste.ordem = 1;
 
             teste.passos = new ExercicioCasoTestePasso[2];
             ExercicioCasoTestePasso passo = new ExercicioCasoTestePasso();
@@ -92,7 +97,7 @@ public class TesteController extends ApplicationController {
             ExercicioCasoTestePassoParametro parametro = new ExercicioCasoTestePassoParametro();
             parametro.ObjectType = "String";
             parametro.ObjectName = "nome";
-            parametro.ObjectValue = "Gilvani Schneider";
+            parametro.ObjectValue = "\"Gilvani Schneider\"";
             passo.inputParameters[0] = parametro;
             teste.passos[0] = passo;
 
@@ -102,7 +107,7 @@ public class TesteController extends ApplicationController {
             passo.MethodName = "getNome";
             passo.ExpectedOutputType = "String";
             passo.ExpectedOutputName = "nome";
-            passo.ExpectedOutputValue = "Gilvani Schneider";
+            passo.ExpectedOutputValue = "\"Gilvani Schneider\"";
             teste.passos[1] = passo;
 
             solucao.testes[0] = teste;
@@ -113,8 +118,10 @@ public class TesteController extends ApplicationController {
         return solucao;
     }
 
-    private String getCodigoString() {
+    private ExercicioSolucaoClasse getClasse() {
 
+        ExercicioSolucaoClasse classe = new ExercicioSolucaoClasse();
+        classe.NomeClasse = "Aluno";
         StringBuilder builder = new StringBuilder();
 
         builder.append("import java.io.PrintWriter;");
@@ -141,7 +148,8 @@ public class TesteController extends ApplicationController {
         builder.append("System.out.print(7);");
         builder.append("}}}");
 
-        return builder.toString();
+        classe.codigo = builder.toString();
+        return classe;
     }
 
     private String objectToXML(ExercicioSolucao solucao) {

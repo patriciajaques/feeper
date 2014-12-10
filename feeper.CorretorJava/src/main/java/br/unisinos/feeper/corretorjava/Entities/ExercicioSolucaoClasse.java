@@ -9,11 +9,8 @@ package br.unisinos.feeper.corretorjava.Entities;
  *
  * @author gilvani
  */
-public class ExercicioCasoTestePassoParametro {
+public class ExercicioSolucaoClasse {
     
-    public Integer id;
-    public Integer idPasso;  
-    public String ObjectType;  
-    public String ObjectName;
-    public String ObjectValue;
+    public String NomeClasse;
+    public String codigo;
 }

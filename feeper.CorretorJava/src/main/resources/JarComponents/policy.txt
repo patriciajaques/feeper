@@ -1,9 +1,8 @@
-/* AUTOMATICALLY GENERATED ON Tue Aug 05 21:57:07 BRT 2014*/
-/* DO NOT EDIT */
 
 grant {
   permission java.io.FilePermission "-", "read, write, delete, execute";
   permission java.lang.RuntimePermission "accessDeclaredMembers";
   permission java.lang.RuntimePermission "setIO";
+  permission java.util.PropertyPermission "mapAnyUriToUri", "read";
 };
 

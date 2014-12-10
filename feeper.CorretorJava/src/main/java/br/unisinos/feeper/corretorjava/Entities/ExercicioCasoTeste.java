@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package feeper.Data.entity;
+package br.unisinos.feeper.corretorjava.Entities;
 
 /**
  *

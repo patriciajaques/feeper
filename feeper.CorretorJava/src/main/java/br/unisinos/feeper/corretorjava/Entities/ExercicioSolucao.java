@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package feeper.Data.entity;
+package br.unisinos.feeper.corretorjava.Entities;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -21,7 +21,7 @@ public class ExercicioSolucao {
     @XmlElement
     public Integer idAluno;
     @XmlElement
-    public String codigo;
+    public ExercicioSolucaoClasse[] classes;
     @XmlElement
     public ExercicioCasoTeste[] testes;
 }
