@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package feeper.Data.entity;
+package br.unisinos.feeper.corretorjava.StaticTests;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
@@ -11,16 +11,10 @@ import javax.xml.bind.annotation.XmlAttribute;
  *
  * @author gilvani
  */
-public class ExercicioCasoTeste {
+public class ClassResult {
 
     @XmlAttribute
-    public Integer id;
-    @XmlAttribute
-    public Integer idExercicio;
-    @XmlAttribute
-    public Boolean ativo;
-    @XmlAttribute
-    public Integer ordem; 
+    public String classname;
     
-    public ExercicioCasoTestePasso[] passos;
+    public BugInstance[] BugInstance;
 }

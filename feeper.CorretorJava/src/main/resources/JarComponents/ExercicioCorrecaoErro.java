@@ -2,11 +2,8 @@
 public class ExercicioCorrecaoErro {
 
     public Integer idTeste;
-
     public String ErrorType;
-
     public String mensagemErro;
-
     public ExercicioCorrecaoErro() {
     }
 

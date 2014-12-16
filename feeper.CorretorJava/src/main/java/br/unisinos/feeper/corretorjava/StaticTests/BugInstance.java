@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.unisinos.feeper.corretorjava.Entities;
+package br.unisinos.feeper.corretorjava.StaticTests;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
@@ -11,16 +11,14 @@ import javax.xml.bind.annotation.XmlAttribute;
  *
  * @author gilvani
  */
-public class ExercicioCasoTestePassoParametro {
+public class BugInstance {
     
     @XmlAttribute
-    public Integer id;
+    public String type;
     @XmlAttribute
-    public Integer idPasso; 
+    public String priority;
     @XmlAttribute
-    public String ObjectType;
+    public String message;
     @XmlAttribute
-    public String ObjectName;
-    @XmlAttribute
-    public String ObjectValue;
+    public int line;
 }

@@ -5,19 +5,30 @@
  */
 package br.unisinos.feeper.corretorjava.Entities;
 
+import javax.xml.bind.annotation.XmlAttribute;
+
 /**
  *
  * @author gilvani
  */
 public class ExercicioCasoTestePasso {
 
+    @XmlAttribute
     public Integer id;
+    @XmlAttribute
     public Integer idCasoTeste;
+    @XmlAttribute
     public String ObjectType;
+    @XmlAttribute
     public String ObjectName;
+    @XmlAttribute
     public String MethodName;
+    @XmlAttribute
     public String ExpectedOutputType;
+    @XmlAttribute
     public String ExpectedOutputName;
+    @XmlAttribute
     public String ExpectedOutputValue;
+    
     public ExercicioCasoTestePassoParametro[] inputParameters;
 }

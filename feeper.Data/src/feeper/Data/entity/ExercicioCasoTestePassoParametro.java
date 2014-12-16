@@ -5,15 +5,22 @@
  */
 package feeper.Data.entity;
 
+import javax.xml.bind.annotation.XmlAttribute;
+
 /**
  *
  * @author gilvani
  */
 public class ExercicioCasoTestePassoParametro {
     
+    @XmlAttribute
     public Integer id;
-    public Integer idPasso;  
+    @XmlAttribute
+    public Integer idPasso;
+    @XmlAttribute
     public String ObjectType;  
+    @XmlAttribute
     public String ObjectName;
+    @XmlAttribute
     public String ObjectValue;
 }

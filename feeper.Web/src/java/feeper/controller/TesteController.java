@@ -5,6 +5,7 @@
  */
 package feeper.controller;
 
+import br.unisinos.feeper.corretorjava.Entities.ExercicioCorrecao;
 import feeper.Data.entity.ExercicioCasoTeste;
 import feeper.Data.entity.ExercicioCasoTestePasso;
 import feeper.Data.entity.ExercicioCasoTestePassoParametro;
@@ -14,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLConnection;
@@ -21,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,9 +60,17 @@ public class TesteController extends ApplicationController {
             out.close();
 
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-            while (in.readLine() != null) {
+            StringBuilder builder = new StringBuilder();
+            String line = null;
+            while ((line = in.readLine()) != null) {
+                builder.append(line);
             }
+            
+            StringReader reader = new StringReader(builder.toString());
+            JAXBContext jaxbContext = JAXBContext.newInstance(ExercicioCorrecao.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            ExercicioCorrecao correcao = (ExercicioCorrecao) jaxbUnmarshaller.unmarshal(reader);
+            
 
             System.out.println("\nREST Service Invoked Successfully..");
             in.close();

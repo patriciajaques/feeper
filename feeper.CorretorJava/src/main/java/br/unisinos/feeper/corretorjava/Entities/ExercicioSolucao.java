@@ -5,7 +5,7 @@
  */
 package br.unisinos.feeper.corretorjava.Entities;
 
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -15,13 +15,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ExercicioSolucao {
 
+    @XmlAttribute
     public Integer id;
-    @XmlElement
+    @XmlAttribute
     public Integer idExercicio;
-    @XmlElement
+    @XmlAttribute
     public Integer idAluno;
-    @XmlElement
+    
     public ExercicioSolucaoClasse[] classes;
-    @XmlElement
     public ExercicioCasoTeste[] testes;
 }
