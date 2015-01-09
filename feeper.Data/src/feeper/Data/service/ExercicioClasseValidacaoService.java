@@ -10,7 +10,7 @@ import java.math.BigInteger;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
-import org.hibernate.Session;
+import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 /**
@@ -41,7 +41,7 @@ public class ExercicioClasseValidacaoService extends HibernateUtil<ExercicioClas
     public boolean deleteNotIn(int idExercicio, String concatIds)
     {
         Transaction transaction_;
-        Session session_;
+        StatelessSession session_;
         
         session_ = currentSession();
         transaction_ = session_.beginTransaction();
@@ -56,9 +56,7 @@ public class ExercicioClasseValidacaoService extends HibernateUtil<ExercicioClas
         } catch (HibernateException e) { 
             transaction_.rollback();
             return false;
-        } finally {
-            closeSession();
-        }
+        } 
     }
     
 }

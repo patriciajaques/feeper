@@ -8,7 +8,6 @@ import feeper.Data.entity.MensagemCabecalho;
 import feeper.Data.model.ETipoLeitor;
 import feeper.Data.model.HibernateUtil;
 import java.util.List;
-import org.hibernate.Hibernate;
 import org.hibernate.SQLQuery;
 import org.hibernate.type.BooleanType;
 import org.hibernate.type.DateType;
@@ -26,11 +25,11 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
         super(MensagemCabecalho.class);
     }
     
-    public MensagemCabecalho getByIdCodigoFonteMarcacao(int idCodigoFonteMarcacao)
+    public MensagemCabecalho getByIdClasseMarcacao(int idClasseMarcacao)
     {
         try {
-            SQLQuery query = query("select * from MensagemCabecalho where IdCodigoFonteMarcacao = :idCodigoFonteMarcacao and Ativo = 1 ").addEntity(MensagemCabecalho.class);
-            query.setInteger("idCodigoFonteMarcacao", idCodigoFonteMarcacao);
+            SQLQuery query = query("select * from MensagemCabecalho where IdClasseMarcacao = :idClasseMarcacao and Ativo = 1 ").addEntity(MensagemCabecalho.class);
+            query.setInteger("idClasseMarcacao", idClasseMarcacao);
             return (MensagemCabecalho)query.list().get(0);
         }
         catch(Exception e) {
@@ -38,11 +37,11 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
         }
     }
     
-    public MensagemCabecalho getByIdRespostaCodigoFonteMarcacao(int idRespostaCodigoFonteMarcacao)
+    public MensagemCabecalho getByIdRespostaClasseMarcacao(int idRespostaClasseMarcacao)
     {
         try {
-            SQLQuery query = query("select * from MensagemCabecalho where IdRespostaCodigoFonteMarcacao = :idRespostaCodigoFonteMarcacao and Ativo = 1 ").addEntity(MensagemCabecalho.class);
-            query.setInteger("idRespostaCodigoFonteMarcacao", idRespostaCodigoFonteMarcacao);
+            SQLQuery query = query("select * from MensagemCabecalho where IdRespostaClasseMarcacao = :idRespostaClasseMarcacao and Ativo = 1 ").addEntity(MensagemCabecalho.class);
+            query.setInteger("idRespostaClasseMarcacao", idRespostaClasseMarcacao);
             return (MensagemCabecalho)query.list().get(0);
         }
         catch(Exception e) {
@@ -65,18 +64,18 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
         try {
             
             String sql = "select " +
-                        "  CFM.IdAutor, " +
+                        "  CM.IdAutor, " +
                         "  PA.Nome AS Autor, " +
                         "  MC.ID AS IdMensagemCabecalho, " +
                         "  MC.Publico, " +
                         "  M.IdPessoa, " +
                         "  P.Nome, " +
-                        "  CFM.LinhaInicio, " +
-                        "  CF.ID AS IdCodigoFonte, " +
-                        "  CF.Classe, " +
+                        "  CM.LinhaInicio, " +
+                        "  CL.ID AS IdClasse, " +
+                        "  CL.NomeClasse, " +
                         "  E.ID AS IdExercicio, " +
                         "  E.Nome AS Exercicio, " +
-                        "  CF.IdAutor AS IdAluno, " +
+                        "  CL.IdAluno, " +
                         "  0 AS Resposta, ";
             
             if (agrupadas)
@@ -105,16 +104,16 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
                         "  inner join Pessoa P " +
                         "  on P.ID = M.IdPessoa " +
                         "  and P.Ativo = 1 " +
-                        "  inner join CodigoFonteMarcacao CFM " +
-                        "  on CFM.ID = MC.IdCodigoFonteMarcacao " +
-                        "  and CFM.Ativo = 1 " +
-                        "  inner join CodigoFonte CF " +
-                        "  on CF.ID = CFM.IdCodigoFonte " +
+                        "  inner join ClasseMarcacao CM " +
+                        "  on CM.ID = MC.IdClasseMarcacao " +
+                        "  and CM.Ativo = 1 " +
+                        "  inner join ExercicioSolucaoClasse CL " +
+                        "  on CL.ID = CM.IdClasse " +
                         "  inner join Exercicio E " +
-                        "  on E.ID = CF.IdExercicio " +
+                        "  on E.ID = CL.IdExercicio " +
                         "  and E.Ativo = 1 " +
                         "  inner join Pessoa PA " +
-                        "  on PA.ID = CFM.IdAutor " +
+                        "  on PA.ID = CM.IdAutor " +
                         "  and PA.Ativo = 1 " +
                         "where " +
                         "  MC.Ativo = 1 ";
@@ -126,15 +125,15 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
                 sql += "group by MC.ID ";
             
             sql += "union all select " +
-                        "  RCFM.IdAutor, " +
+                        "  RCM.IdAutor, " +
                         "  PA.Nome AS Autor, " +
                         "  MC.ID AS IdMensagemCabecalho, " +
                         "  MC.Publico, " +
                         "  M.IdPessoa, " +
                         "  P.Nome, " +
-                        "  RCFM.LinhaInicio, " +
-                        "  RCF.ID AS IdCodigoFonte, " +
-                        "  RCF.Classe, " +
+                        "  RCM.LinhaInicio, " +
+                        "  RC.ID AS IdClasse, " +
+                        "  RC.Classe, " +
                         "  E.ID AS IdExercicio, " +
                         "  E.Nome AS Exercicio, " +
                         "  R.IdAutor AS IdAluno, " +
@@ -166,18 +165,18 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
                         "  inner join Pessoa P " +
                         "  on P.ID = M.IdPessoa " +
                         "  and P.Ativo = 1 " +
-                        "  inner join RespostaCodigoFonteMarcacao RCFM " +
-                        "  on RCFM.ID = MC.IdRespostaCodigoFonteMarcacao " +
-                        "  and RCFM.Ativo = 1 " +
-                        "  inner join RespostaCodigoFonte RCF " +
-                        "  on RCF.ID = RCFM.IdRespostaCodigoFonte " +
+                        "  inner join RespostaClasseMarcacao RCM " +
+                        "  on RCM.ID = MC.IdRespostaClasseMarcacao " +
+                        "  and RCM.Ativo = 1 " +
+                        "  inner join RespostaClasse RC " +
+                        "  on RC.ID = RCM.IdRespostaClasse " +
                         "  inner join Resposta R " +
-                        "  on R.ID = RCF.IdResposta " +
+                        "  on R.ID = RC.IdResposta " +
                         "  inner join Exercicio E " +
                         "  on E.ID = R.IdExercicio " +
                         "  and E.Ativo = 1 " +
                         "  inner join Pessoa PA " +
-                        "  on PA.ID = RCFM.IdAutor " +
+                        "  on PA.ID = RCM.IdAutor " +
                         "  and PA.Ativo = 1 " +
                         "where " +
                         "  MC.Ativo = 1 ";
@@ -200,7 +199,7 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
             query.addScalar("IdPessoa", IntegerType.INSTANCE);
             query.addScalar("Nome", StringType.INSTANCE);
             query.addScalar("LinhaInicio", IntegerType.INSTANCE);
-            query.addScalar("IdCodigoFonte", IntegerType.INSTANCE);
+            query.addScalar("IdClasse", IntegerType.INSTANCE);
             query.addScalar("Classe", StringType.INSTANCE);
             query.addScalar("IdExercicio", IntegerType.INSTANCE);
             query.addScalar("Exercicio", StringType.INSTANCE);

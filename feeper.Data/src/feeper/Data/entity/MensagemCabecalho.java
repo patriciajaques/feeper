@@ -11,11 +11,11 @@ public class MensagemCabecalho  implements java.io.Serializable {
 
 
      private Long id;
-     private Integer idCodigoFonteMarcacao;
+     private Integer idClasseMarcacao;
      private boolean publico;
      private Date dataCadastro;
      private boolean ativo;
-     private Integer idRespostaCodigoFonteMarcacao;
+     private Integer idRespostaClasseMarcacao;
 
     public MensagemCabecalho() {
     }
@@ -26,8 +26,8 @@ public class MensagemCabecalho  implements java.io.Serializable {
         this.dataCadastro = dataCadastro;
         this.ativo = ativo;
     }
-    public MensagemCabecalho(Integer idCodigoFonteMarcacao, boolean publico, Date dataCadastro, boolean ativo) {
-       this.idCodigoFonteMarcacao = idCodigoFonteMarcacao;
+    public MensagemCabecalho(Integer idClasseMarcacao, boolean publico, Date dataCadastro, boolean ativo) {
+       this.idClasseMarcacao = idClasseMarcacao;
        this.publico = publico;
        this.dataCadastro = dataCadastro;
        this.ativo = ativo;
@@ -40,12 +40,12 @@ public class MensagemCabecalho  implements java.io.Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    public Integer getIdCodigoFonteMarcacao() {
-        return this.idCodigoFonteMarcacao;
+    public Integer getIdClasseMarcacao() {
+        return this.idClasseMarcacao;
     }
     
-    public void setIdCodigoFonteMarcacao(Integer idCodigoFonteMarcacao) {
-        this.idCodigoFonteMarcacao = idCodigoFonteMarcacao;
+    public void setIdClasseMarcacao(Integer idClasseMarcacao) {
+        this.idClasseMarcacao = idClasseMarcacao;
     }
     public boolean isPublico() {
         return this.publico;
@@ -69,12 +69,12 @@ public class MensagemCabecalho  implements java.io.Serializable {
         this.ativo = ativo;
     }
 
-    public Integer getIdRespostaCodigoFonteMarcacao() {
-        return this.idRespostaCodigoFonteMarcacao;
+    public Integer getIdRespostaClasseMarcacao() {
+        return this.idRespostaClasseMarcacao;
     }
     
-    public void setIdRespostaCodigoFonteMarcacao(Integer idRespostaCodigoFonteMarcacao) {
-        this.idRespostaCodigoFonteMarcacao = idRespostaCodigoFonteMarcacao;
+    public void setIdRespostaClasseMarcacao(Integer idRespostaClasseMarcacao) {
+        this.idRespostaClasseMarcacao = idRespostaClasseMarcacao;
     }
 
 

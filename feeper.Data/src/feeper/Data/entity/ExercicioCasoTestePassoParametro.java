@@ -5,22 +5,55 @@
  */
 package feeper.Data.entity;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  *
  * @author gilvani
  */
 public class ExercicioCasoTestePassoParametro {
     
-    @XmlAttribute
-    public Integer id;
-    @XmlAttribute
-    public Integer idPasso;
-    @XmlAttribute
-    public String ObjectType;  
-    @XmlAttribute
-    public String ObjectName;
-    @XmlAttribute
-    public String ObjectValue;
+    private Integer id;
+    private Integer idPasso;
+    private String ObjectType;  
+    private String ObjectName;
+    private String ObjectValue;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getIdPasso() {
+        return idPasso;
+    }
+
+    public void setIdPasso(Integer idPasso) {
+        this.idPasso = idPasso;
+    }
+
+    public String getObjectType() {
+        return ObjectType;
+    }
+
+    public void setObjectType(String ObjectType) {
+        this.ObjectType = ObjectType;
+    }
+
+    public String getObjectName() {
+        return ObjectName;
+    }
+
+    public void setObjectName(String ObjectName) {
+        this.ObjectName = ObjectName;
+    }
+
+    public String getObjectValue() {
+        return ObjectValue;
+    }
+
+    public void setObjectValue(String ObjectValue) {
+        this.ObjectValue = ObjectValue;
+    }
 }

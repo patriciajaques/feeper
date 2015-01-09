@@ -194,8 +194,8 @@
                         <div class="col-md-3">
                             <h4><c:out value="${TurmaSelecionada.getNome()}"/></h4>
                             <div class="list-group">
-                                <a href="<c:url value='/'/>codigos" class="list-group-item" id="menu-meus-codigos-favoritos">
-                                    <span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;<fmt:message key="menu.codigosfavoritos"/>
+                                <a href="<c:url value='/'/>classes" class="list-group-item" id="menu-minhas-classes-favoritas">
+                                    <span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;<fmt:message key="menu.classesfavoritas"/>
                                 </a>
                                 <a href="<c:url value='/'/>exercicios/meusexercicios" class="list-group-item" id="menu-lista-exercicios">
                                     <span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;<fmt:message key="menu.meusexercicios"/>

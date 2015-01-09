@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="feeper.Data.entity.ExercicioCasoTestePasso" table="ExercicioCasoTestePasso" catalog="feeper">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="identity" />
+        </id>
+        <property name="idCasoTeste" type="java.lang.Integer">
+            <column name="idCasoTeste" not-null="true" />
+        </property>
+        <property name="ObjectType" type="string">
+            <column name="ObjectType" length="200" />
+        </property>
+        <property name="ObjectName" type="string">
+            <column name="ObjectName" length="200" />
+        </property>
+        <property name="MethodName" type="string">
+            <column name="MethodName" length="200" />
+        </property>
+        <property name="ExpectedOutputType" type="string">
+            <column name="ExpectedOutputType" length="200" />
+        </property>
+        <property name="ExpectedOutputName" type="string">
+            <column name="ExpectedOutputName" length="200" />
+        </property>
+        <property name="ExpectedOutputValue" type="string">
+            <column name="ExpectedOutputValue" length="200" />
+        </property>
+    </class>
+</hibernate-mapping>

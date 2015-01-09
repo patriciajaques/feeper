@@ -94,7 +94,10 @@ public class TurmaController extends ApplicationController {
                 pageSize,
                 sortField,
                 sortDirection);
-
+        
+        for (Turma turma : lista) {
+            turma.setProfessor(service.getProfessor(turma.getId()));
+        }
         model.addAttribute("listaTurma", lista);
         model.addAttribute("nome", nome);
         model.addAttribute("professor", professor);
@@ -138,6 +141,7 @@ public class TurmaController extends ApplicationController {
     public String edit(@PathVariable int id, Model model) {
 
         Turma turma = service.getById(id);
+        turma.setProfessor(service.getProfessor(id));
         turma.setAlunos(service.getAlunos(id));
         turma.setExercicios(service.getExercicios(id));
 

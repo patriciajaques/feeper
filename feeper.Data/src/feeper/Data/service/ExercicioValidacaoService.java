@@ -10,7 +10,7 @@ import java.math.BigInteger;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
-import org.hibernate.Session;
+import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 
@@ -39,31 +39,10 @@ public class ExercicioValidacaoService extends HibernateUtil<ExercicioValidacao>
         return ((BigInteger)query.uniqueResult()).intValue() >= 1;
     }
     
-//    public boolean insertOrUpdate(ExercicioValidacao entity)
-//    {
-//        try {
-//            
-//            if (!exists(entity.getId()))
-//            {
-//                entity.setDataCadastro(new Date());
-//                entity.setAtivo(true);
-//                insert(entity);
-//            }
-//            else
-//            {
-//                update(entity);
-//            }
-//                
-//            return true;
-//        } catch (Exception e) {
-//            return false;
-//        }
-//    }
-    
     public boolean deleteNotIn(int idExercicio, String concatIds)
     {
         Transaction transaction_;
-        Session session_;
+        StatelessSession session_;
         
         session_ = currentSession();
         transaction_ = session_.beginTransaction();
@@ -78,9 +57,7 @@ public class ExercicioValidacaoService extends HibernateUtil<ExercicioValidacao>
         } catch (HibernateException e) { 
             transaction_.rollback();
             return false;
-        } finally {
-            closeSession();
-        }
+        } 
     }
     
 }

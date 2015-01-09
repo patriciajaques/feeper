@@ -8,12 +8,10 @@ import feeper.Data.entity.Exercicio;
 import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.Turma;
 import feeper.Data.model.HibernateUtil;
-import feeper.Data.model.Util;
 import java.util.List;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
-import org.hibernate.Session;
+import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 import org.hibernate.type.BooleanType;
 import org.hibernate.type.IntegerType;
@@ -51,6 +49,12 @@ public class TurmaService extends HibernateUtil<Turma> {
         return query.list();
     }
 
+    public Pessoa getProfessor(int idTurma) {
+        Turma turma = this.getById(idTurma);
+        PessoaService repoPessoa = new PessoaService();
+        return repoPessoa.getById(turma.getIdProfessor());
+    }
+
     public List<Pessoa> getAlunos(int idTurma) {
         SQLQuery query = query("select P.* from TurmaPessoa TP inner join Pessoa P on P.ID = TP.IdPessoa where P.Ativo = 1 and TP.IdTurma = :idTurma order by P.Nome").addEntity(Pessoa.class);
         query.setInteger("idTurma", idTurma);
@@ -59,7 +63,7 @@ public class TurmaService extends HibernateUtil<Turma> {
 
     public boolean removeExercicio(int idTurma, int idExercicio) {
         Transaction transaction_;
-        Session session_;
+        StatelessSession session_;
 
         session_ = currentSession();
         transaction_ = session_.beginTransaction();
@@ -75,14 +79,12 @@ public class TurmaService extends HibernateUtil<Turma> {
         } catch (HibernateException e) {
             transaction_.rollback();
             return false;
-        } finally {
-            closeSession();
         }
     }
 
     public boolean visibilidadeExercicio(int idTurma, int idExercicio) {
         Transaction transaction_;
-        Session session_;
+        StatelessSession session_;
 
         session_ = currentSession();
         transaction_ = session_.beginTransaction();
@@ -98,14 +100,12 @@ public class TurmaService extends HibernateUtil<Turma> {
         } catch (HibernateException e) {
             transaction_.rollback();
             return false;
-        } finally {
-            closeSession();
         }
     }
 
     public boolean removeAluno(int idTurma, int idAluno) {
         Transaction transaction_;
-        Session session_;
+        StatelessSession session_;
 
         session_ = currentSession();
         transaction_ = session_.beginTransaction();
@@ -121,8 +121,6 @@ public class TurmaService extends HibernateUtil<Turma> {
         } catch (HibernateException e) {
             transaction_.rollback();
             return false;
-        } finally {
-            closeSession();
         }
     }
 

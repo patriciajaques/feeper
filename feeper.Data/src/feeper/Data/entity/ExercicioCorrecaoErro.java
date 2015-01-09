@@ -1,6 +1,4 @@
-package br.unisinos.feeper.corretorjava.Entities;
-
-import javax.xml.bind.annotation.XmlAttribute;
+package feeper.Data.entity;
 
 
 /*
@@ -14,12 +12,9 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 public class ExercicioCorrecaoErro {
 
-    @XmlAttribute
-    public Integer idTeste;
-    @XmlAttribute
-    public String ErrorType;
-    @XmlAttribute
-    public String mensagemErro;
+    private Integer idTeste;
+    private String ErrorType;
+    private String mensagemErro;
 
     public ExercicioCorrecaoErro() {
     }
@@ -28,5 +23,29 @@ public class ExercicioCorrecaoErro {
         this.idTeste = idTeste;
         this.ErrorType = ErrorType;
         this.mensagemErro = mensagemErro;
+    }
+
+    public String getMensagemErro() {
+        return mensagemErro;
+    }
+
+    public void setMensagemErro(String mensagemErro) {
+        this.mensagemErro = mensagemErro;
+    }
+
+    public Integer getIdTeste() {
+        return idTeste;
+    }
+
+    public void setIdTeste(Integer idTeste) {
+        this.idTeste = idTeste;
+    }
+
+    public String getErrorType() {
+        return ErrorType;
+    }
+
+    public void setErrorType(String ErrorType) {
+        this.ErrorType = ErrorType;
     }
 }

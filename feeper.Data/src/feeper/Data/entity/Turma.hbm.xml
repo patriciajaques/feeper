@@ -23,6 +23,5 @@
         <property name="idProfessor" type="java.lang.Integer">
             <column name="IdProfessor" />
         </property>
-        <many-to-one name="professor" class="feeper.Data.entity.Pessoa" column="IdProfessor" insert="false" update="false" />
     </class>
 </hibernate-mapping>

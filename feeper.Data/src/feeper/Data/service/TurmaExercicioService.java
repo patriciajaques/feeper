@@ -5,12 +5,11 @@
 package feeper.Data.service;
 
 import feeper.Data.entity.TurmaExercicio;
-import feeper.Data.entity.TurmaExercicio;
 import feeper.Data.model.HibernateUtil;
 import java.math.BigInteger;
 import java.util.List;
 import org.hibernate.SQLQuery;
-import org.hibernate.Session;
+import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 /**
@@ -50,7 +49,7 @@ public class TurmaExercicioService extends HibernateUtil<TurmaExercicio> {
     public boolean insertIfNotExist(int idTurma, int idExercicio)
     {
         Transaction transaction_;
-        Session session_;
+        StatelessSession session_;
         
         session_ = currentSession();
         transaction_ = session_.beginTransaction();
@@ -63,22 +62,20 @@ public class TurmaExercicioService extends HibernateUtil<TurmaExercicio> {
                 query.setInteger("idExercicio", idExercicio);
                 query.executeUpdate();
             }
-            session_.flush();
+            //session_.flush();
             transaction_.commit();
             
             return true;
         } catch (Exception e) {
             transaction_.rollback();
             return false;
-        } finally {
-            closeSession();
-        }
+        } 
     }
     
     public boolean deleteAllByIdTurma(int idTurma)
     {
         Transaction transaction_;
-        Session session_;
+        StatelessSession session_;
         
         session_ = currentSession();
         transaction_ = session_.beginTransaction();
@@ -89,7 +86,7 @@ public class TurmaExercicioService extends HibernateUtil<TurmaExercicio> {
             query.setInteger("idTurma", idTurma);
             query.executeUpdate();
             
-            session_.flush();
+            //session_.flush();
             transaction_.commit();
             
             return true;
@@ -97,9 +94,7 @@ public class TurmaExercicioService extends HibernateUtil<TurmaExercicio> {
         } catch (Exception e) {
             transaction_.rollback();
             return false;
-        } finally {
-            closeSession();
-        }
+        } 
     }
     
 }

@@ -5,22 +5,57 @@
  */
 package feeper.Data.entity;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  *
  * @author gilvani
  */
 public class ExercicioCasoTeste {
 
-    @XmlAttribute
-    public Integer id;
-    @XmlAttribute
-    public Integer idExercicio;
-    @XmlAttribute
-    public Boolean ativo;
-    @XmlAttribute
-    public Integer ordem; 
+    private Integer id;
+    private Integer idExercicio;
+    private Boolean ativo;
+    private Integer ordem; 
+    private ExercicioCasoTestePasso[] passos;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getIdExercicio() {
+        return idExercicio;
+    }
+
+    public void setIdExercicio(Integer idExercicio) {
+        this.idExercicio = idExercicio;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public Integer getOrdem() {
+        return ordem;
+    }
+
+    public void setOrdem(Integer ordem) {
+        this.ordem = ordem;
+    }
+
+    public ExercicioCasoTestePasso[] getPassos() {
+        return passos;
+    }
+
+    public void setPassos(ExercicioCasoTestePasso[] passos) {
+        this.passos = passos;
+    }
     
-    public ExercicioCasoTestePasso[] passos;
+    
 }

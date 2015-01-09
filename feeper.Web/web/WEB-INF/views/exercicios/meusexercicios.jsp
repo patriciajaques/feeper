@@ -22,7 +22,7 @@
                 $(".btn-responder").click(function(){
                     var id = $(this).attr("data-id");
                     if (id === undefined) return;
-                    document.location.href = "<c:url value='/'/>exercicios/responder/" + id;
+                    document.location.href = "<c:url value='/'/>exercicios/solucionar/" + id;
                 });
             });
         </script>

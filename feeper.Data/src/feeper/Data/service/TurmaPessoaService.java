@@ -9,7 +9,7 @@ import feeper.Data.model.HibernateUtil;
 import java.math.BigInteger;
 import java.util.List;
 import org.hibernate.SQLQuery;
-import org.hibernate.Session;
+import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 /**
@@ -49,7 +49,7 @@ public class TurmaPessoaService extends HibernateUtil<TurmaPessoa> {
     public boolean insertIfNotExist(int idTurma, int idPessoa)
     {
         Transaction transaction_;
-        Session session_;
+        StatelessSession session_;
         
         session_ = currentSession();
         transaction_ = session_.beginTransaction();
@@ -63,22 +63,20 @@ public class TurmaPessoaService extends HibernateUtil<TurmaPessoa> {
 
                 query.executeUpdate();
             }
-            session_.flush();
+            //session_.flush();
             transaction_.commit();
             
             return true;
         } catch (Exception e) {
             transaction_.rollback();
             return false;
-        } finally {
-            closeSession();
         }
     }
     
     public boolean deleteAllByIdTurma(int idTurma)
     {
         Transaction transaction_;
-        Session session_;
+        StatelessSession session_;
         
         session_ = currentSession();
         transaction_ = session_.beginTransaction();
@@ -89,7 +87,7 @@ public class TurmaPessoaService extends HibernateUtil<TurmaPessoa> {
             query.setInteger("idTurma", idTurma);
             query.executeUpdate();
             
-            session_.flush();
+            //session_.flush();
             transaction_.commit();
             
             return true;
@@ -97,9 +95,7 @@ public class TurmaPessoaService extends HibernateUtil<TurmaPessoa> {
         } catch (Exception e) {
             transaction_.rollback();
             return false;
-        } finally {
-            closeSession();
-        }
+        } 
     }
     
 }

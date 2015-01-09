@@ -69,7 +69,7 @@
         
         <div class="container">
             
-            <form class="form-signin" role="form" action="<c:url value='/'/>login/validate" method="POST">
+            <form class="form-signin" role="form" action="<c:url value='/'/>login/validate" id="frmLogin" method="POST">
                 <div class="panel panel-primary">
                     <div class="panel-body"><a href="<c:url value='/'/>" title="<fmt:message key="label.feeper"/>"><img src="<c:url value='/resources/img/logo_p.png'/>" style="width:75px; margin-left: 95px;" /></a></div>
                 </div>

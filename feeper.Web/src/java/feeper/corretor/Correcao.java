@@ -7,7 +7,7 @@ package feeper.corretor;
 import feeper.Data.entity.ExercicioClasseValidacao;
 import feeper.Data.entity.ExercicioValidacao;
 import feeper.Data.entity.Resposta;
-import feeper.Data.entity.RespostaCodigoFonte;
+import feeper.Data.entity.RespostaClasse;
 import feeper.Data.model.EStatusResposta;
 import feeper.Data.model.ETipoLog;
 import feeper.Data.service.ExercicioClasseValidacaoService;
@@ -49,8 +49,8 @@ public class Correcao implements Runnable {
                         
             //criar e compilar arquivos java
             Language language = null;
-            List<RespostaCodigoFonte> fontes = repoResposta.getListRespostaCodigoFonte(idResposta);
-            for (RespostaCodigoFonte respostaCodigoFonte : fontes)
+            List<RespostaClasse> fontes = repoResposta.getListRespostaClasse(idResposta);
+            for (RespostaClasse respostaCodigoFonte : fontes)
                 language = new Java(respostaCodigoFonte.getClasse(), timeout, respostaCodigoFonte.getFonte(), dir.getAbsolutePath());
             language.compile();
             

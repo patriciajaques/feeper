@@ -1,7 +1,8 @@
-package br.unisinos.feeper.corretorjava.Entities;
+package feeper.Data.entity;
 
 import java.util.ArrayList;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /*
@@ -14,16 +15,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author gilvani
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ExercicioCorrecao {
 
-    @XmlAttribute
-    public Integer idSolucao;
-    @XmlAttribute
-    public Integer idExercicio;
-    @XmlAttribute
-    public Integer idAluno;
-    
-    public ArrayList< ExercicioCorrecaoErro> erros;
+    private Integer idSolucao;
+    private Integer idExercicio;
+    private Integer idAluno;
+    private ArrayList< ExercicioCorrecaoErro> erros;
 
     public ExercicioCorrecao() {
     }
@@ -33,5 +31,37 @@ public class ExercicioCorrecao {
         this.idExercicio = idExercicio;
         this.idAluno = idAluno;
         this.erros = new ArrayList<>();
+    }
+
+    public Integer getIdSolucao() {
+        return idSolucao;
+    }
+
+    public void setIdSolucao(Integer idSolucao) {
+        this.idSolucao = idSolucao;
+    }
+
+    public Integer getIdExercicio() {
+        return idExercicio;
+    }
+
+    public void setIdExercicio(Integer idExercicio) {
+        this.idExercicio = idExercicio;
+    }
+
+    public Integer getIdAluno() {
+        return idAluno;
+    }
+
+    public void setIdAluno(Integer idAluno) {
+        this.idAluno = idAluno;
+    }
+
+    public ArrayList< ExercicioCorrecaoErro> getErros() {
+        return erros;
+    }
+
+    public void setErros(ArrayList< ExercicioCorrecaoErro> erros) {
+        this.erros = erros;
     }
 }

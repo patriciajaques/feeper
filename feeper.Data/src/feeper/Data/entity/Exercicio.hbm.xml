@@ -26,7 +26,5 @@
         <property name="descricaoHtml" type="string">
             <column name="DescricaoHtml" length="65535" />
         </property>
-        <many-to-one name="autor" class="feeper.Data.entity.Pessoa" column="IdAutor" insert="false" update="false" />
-
     </class>
 </hibernate-mapping>

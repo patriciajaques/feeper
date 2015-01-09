@@ -4,15 +4,14 @@
  */
 package feeper.Data.service;
 
-import feeper.Data.entity.CodigoFonte;
+import feeper.Data.entity.ExercicioSolucaoClasse;
 import feeper.Data.entity.Resposta;
-import feeper.Data.entity.RespostaCodigoFonte;
+import feeper.Data.entity.RespostaClasse;
 import feeper.Data.model.EStatusResposta;
 import feeper.Data.model.HibernateUtil;
 import feeper.Data.model.IntegerResult;
 import java.util.Date;
 import java.util.List;
-import org.hibernate.Hibernate;
 import org.hibernate.SQLQuery;
 import org.hibernate.type.IntegerType;
 import org.hibernate.type.StringType;
@@ -107,11 +106,11 @@ public class RespostaService extends HibernateUtil<Resposta> {
         }
     }
     
-    public List<RespostaCodigoFonte> getListRespostaCodigoFonte(int idResposta)
+    public List<RespostaClasse> getListRespostaClasse(int idResposta)
     {
         try {
             
-            SQLQuery query = query("select * from RespostaCodigoFonte where IdResposta = :idResposta order by Principal, ID ").addEntity(RespostaCodigoFonte.class);
+            SQLQuery query = query("select * from RespostaClasse where IdResposta = :idResposta order by Principal, ID ").addEntity(RespostaClasse.class);
             
             query.setInteger("idResposta", idResposta);
             return query.list();
@@ -121,14 +120,14 @@ public class RespostaService extends HibernateUtil<Resposta> {
         }
     }
     
-    public RespostaCodigoFonte getRespostaCodigoFonte(int id)
+    public RespostaClasse getRespostaClasse(int id)
     {
         try {
             
-            SQLQuery query = query("select * from RespostaCodigoFonte where ID = :id ").addEntity(RespostaCodigoFonte.class);
+            SQLQuery query = query("select * from RespostaClasse where ID = :id ").addEntity(RespostaClasse.class);
             
             query.setInteger("id", id);
-            return (RespostaCodigoFonte)query.list().get(0);
+            return (RespostaClasse)query.list().get(0);
             
         } catch (Exception e) {
             return null;
@@ -147,17 +146,16 @@ public class RespostaService extends HibernateUtil<Resposta> {
             
             if (insert(resposta))
             {
-                RespostaCodigoFonteService repoRespostaCodigoFonte = new RespostaCodigoFonteService();
-                CodigoFonteService repoCodigoFonte = new CodigoFonteService();
-                List<CodigoFonte> listaFontes = repoCodigoFonte.getAllByIdExercicio(idExercicio, idPessoa);
+                RespostaClasseService repoRespostaClasse = new RespostaClasseService();
+                ExercicioSolucaoClasseService repoClasse = new ExercicioSolucaoClasseService();
+                List<ExercicioSolucaoClasse> listaClasses = repoClasse.getAllByIdExercicio(idExercicio, idPessoa);
                 
-                for (CodigoFonte fonte : listaFontes) {
-                    RespostaCodigoFonte respostaCodigoFonte = new RespostaCodigoFonte();
-                    respostaCodigoFonte.setClasse(fonte.getClasse());
-                    respostaCodigoFonte.setFonte(fonte.getFonte());
-                    respostaCodigoFonte.setPrincipal(fonte.isPrincipal());
-                    respostaCodigoFonte.setIdResposta(resposta.getId());
-                    if (!repoRespostaCodigoFonte.insert(respostaCodigoFonte))
+                for (ExercicioSolucaoClasse classe : listaClasses) {
+                    RespostaClasse respostaClasse = new RespostaClasse();
+                    respostaClasse.setClasse(classe.getNomeClasse());
+                    respostaClasse.setFonte(classe.getCodigo());
+                    respostaClasse.setIdResposta(resposta.getId());
+                    if (!repoRespostaClasse.insert(respostaClasse))
                         return false;
                 }
                 idResposta.setResult(resposta.getId());
