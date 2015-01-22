@@ -5,7 +5,7 @@
  */
 package br.unisinos.feeper.corretorjava.Entities;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import java.util.List;
 
 /**
  *
@@ -13,22 +13,98 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 public class ExercicioCasoTestePasso {
 
-    @XmlAttribute
-    public Integer id;
-    @XmlAttribute
-    public Integer idCasoTeste;
-    @XmlAttribute
-    public String ObjectType;
-    @XmlAttribute
-    public String ObjectName;
-    @XmlAttribute
-    public String MethodName;
-    @XmlAttribute
-    public String ExpectedOutputType;
-    @XmlAttribute
-    public String ExpectedOutputName;
-    @XmlAttribute
-    public String ExpectedOutputValue;
+    private Integer id;
+    private Integer idCasoTeste;
+    private int ordem;
+    private String operationType;
+    private String expectedOutputType;
+    private String expectedOutputName;
+    private String expectedOutputValue;
+    private String objectName;
+    private String methodName;
     
-    public ExercicioCasoTestePassoParametro[] inputParameters;
+    //auxiliar no angular
+    private List<ExercicioCasoTestePassoParametro> inputParameters;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getIdCasoTeste() {
+        return idCasoTeste;
+    }
+
+    public void setIdCasoTeste(Integer idCasoTeste) {
+        this.idCasoTeste = idCasoTeste;
+    }
+
+    public int getOrdem() {
+        return ordem;
+    }
+
+    public void setOrdem(int ordem) {
+        this.ordem = ordem;
+    }
+    
+    
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
+    }
+
+    public String getExpectedOutputType() {
+        return expectedOutputType;
+    }
+
+    public void setExpectedOutputType(String ExpectedOutputType) {
+        this.expectedOutputType = ExpectedOutputType;
+    }
+
+    public String getExpectedOutputName() {
+        return expectedOutputName;
+    }
+
+    public void setExpectedOutputName(String ExpectedOutputName) {
+        this.expectedOutputName = ExpectedOutputName;
+    }
+
+    public String getExpectedOutputValue() {
+        return expectedOutputValue;
+    }
+
+    public void setExpectedOutputValue(String ExpectedOutputValue) {
+        this.expectedOutputValue = ExpectedOutputValue;
+    }
+
+    public String getObjectName() {
+        return objectName;
+    }
+
+    public void setObjectName(String ObjectName) {
+        this.objectName = ObjectName;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String MethodName) {
+        this.methodName = MethodName;
+    }
+
+    public List<ExercicioCasoTestePassoParametro> getInputParameters() {
+        return inputParameters;
+    }
+
+    public void setInputParameters(List<ExercicioCasoTestePassoParametro> inputParameters) {
+        this.inputParameters = inputParameters;
+    }
 }

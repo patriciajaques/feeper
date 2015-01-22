@@ -7,7 +7,6 @@ package feeper.model;
 import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.Turma;
 import feeper.Data.service.MensagemService;
-import feeper.Data.service.NovidadeService;
 import feeper.Data.service.TelaPerfilService;
 import feeper.Data.service.TelaService;
 import java.util.List;

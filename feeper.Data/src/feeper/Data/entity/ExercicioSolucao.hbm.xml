@@ -18,8 +18,5 @@
         <property name="dataCadastro" type="timestamp">
             <column length="19" name="DataCadastro" not-null="true"/>
         </property>
-        <property name="mensagem" type="string">
-            <column length="16777215" name="Mensagem"/>
-        </property>
     </class>
 </hibernate-mapping>

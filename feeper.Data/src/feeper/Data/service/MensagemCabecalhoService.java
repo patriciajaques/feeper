@@ -25,11 +25,11 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
         super(MensagemCabecalho.class);
     }
     
-    public MensagemCabecalho getByIdClasseMarcacao(int idClasseMarcacao)
+    public MensagemCabecalho getByIdExercicioClasseMarcacao(int idExercicioClasseMarcacao)
     {
         try {
-            SQLQuery query = query("select * from MensagemCabecalho where IdClasseMarcacao = :idClasseMarcacao and Ativo = 1 ").addEntity(MensagemCabecalho.class);
-            query.setInteger("idClasseMarcacao", idClasseMarcacao);
+            SQLQuery query = query("select * from MensagemCabecalho where IdExercicioClasseMarcacao = :idExercicioClasseMarcacao and Ativo = 1 ").addEntity(MensagemCabecalho.class);
+            query.setInteger("idExercicioClasseMarcacao", idExercicioClasseMarcacao);
             return (MensagemCabecalho)query.list().get(0);
         }
         catch(Exception e) {
@@ -37,11 +37,11 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
         }
     }
     
-    public MensagemCabecalho getByIdRespostaClasseMarcacao(int idRespostaClasseMarcacao)
+    public MensagemCabecalho getByIdExercicioSolucaoClasseMarcacao(int idExercicioSolucaoClasseMarcacao)
     {
         try {
-            SQLQuery query = query("select * from MensagemCabecalho where IdRespostaClasseMarcacao = :idRespostaClasseMarcacao and Ativo = 1 ").addEntity(MensagemCabecalho.class);
-            query.setInteger("idRespostaClasseMarcacao", idRespostaClasseMarcacao);
+            SQLQuery query = query("select * from MensagemCabecalho where IdExercicioSolucaoClasseMarcacao = :idExercicioSolucaoClasseMarcacao and Ativo = 1 ").addEntity(MensagemCabecalho.class);
+            query.setInteger("idExercicioSolucaoClasseMarcacao", idExercicioSolucaoClasseMarcacao);
             return (MensagemCabecalho)query.list().get(0);
         }
         catch(Exception e) {
@@ -64,18 +64,18 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
         try {
             
             String sql = "select " +
-                        "  CM.IdAutor, " +
+                        "  ECM.IdAutor, " +
                         "  PA.Nome AS Autor, " +
                         "  MC.ID AS IdMensagemCabecalho, " +
                         "  MC.Publico, " +
                         "  M.IdPessoa, " +
                         "  P.Nome, " +
-                        "  CM.LinhaInicio, " +
-                        "  CL.ID AS IdClasse, " +
-                        "  CL.NomeClasse, " +
+                        "  ECM.LinhaInicio, " +
+                        "  ECL.ID AS IdClasse, " +
+                        "  ECL.NomeClasse, " +
                         "  E.ID AS IdExercicio, " +
                         "  E.Nome AS Exercicio, " +
-                        "  CL.IdAluno, " +
+                        "  ECL.IdAluno, " +
                         "  0 AS Resposta, ";
             
             if (agrupadas)
@@ -104,16 +104,16 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
                         "  inner join Pessoa P " +
                         "  on P.ID = M.IdPessoa " +
                         "  and P.Ativo = 1 " +
-                        "  inner join ClasseMarcacao CM " +
-                        "  on CM.ID = MC.IdClasseMarcacao " +
-                        "  and CM.Ativo = 1 " +
-                        "  inner join ExercicioSolucaoClasse CL " +
-                        "  on CL.ID = CM.IdClasse " +
+                        "  inner join ExercicioClasseMarcacao ECM " +
+                        "  on ECM.ID = MC.IdExercicioClasseMarcacao " +
+                        "  and ECM.Ativo = 1 " +
+                        "  inner join ExercicioClasse ECL " +
+                        "  on ECL.ID = ECM.IdExercicioClasse " +
                         "  inner join Exercicio E " +
-                        "  on E.ID = CL.IdExercicio " +
+                        "  on E.ID = ECL.IdExercicio " +
                         "  and E.Ativo = 1 " +
                         "  inner join Pessoa PA " +
-                        "  on PA.ID = CM.IdAutor " +
+                        "  on PA.ID = ECM.IdAutor " +
                         "  and PA.Ativo = 1 " +
                         "where " +
                         "  MC.Ativo = 1 ";
@@ -125,18 +125,18 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
                 sql += "group by MC.ID ";
             
             sql += "union all select " +
-                        "  RCM.IdAutor, " +
+                        "  ESCM.IdAutor, " +
                         "  PA.Nome AS Autor, " +
                         "  MC.ID AS IdMensagemCabecalho, " +
                         "  MC.Publico, " +
                         "  M.IdPessoa, " +
                         "  P.Nome, " +
-                        "  RCM.LinhaInicio, " +
-                        "  RC.ID AS IdClasse, " +
-                        "  RC.Classe, " +
+                        "  ESCM.LinhaInicio, " +
+                        "  ESC.ID AS IdClasse, " +
+                        "  ESC.NomeClasse, " +
                         "  E.ID AS IdExercicio, " +
                         "  E.Nome AS Exercicio, " +
-                        "  R.IdAutor AS IdAluno, " +
+                        "  ES.IdAluno, " +
                         "  1 AS Resposta, ";
             
             if (agrupadas)
@@ -165,18 +165,18 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
                         "  inner join Pessoa P " +
                         "  on P.ID = M.IdPessoa " +
                         "  and P.Ativo = 1 " +
-                        "  inner join RespostaClasseMarcacao RCM " +
-                        "  on RCM.ID = MC.IdRespostaClasseMarcacao " +
-                        "  and RCM.Ativo = 1 " +
-                        "  inner join RespostaClasse RC " +
-                        "  on RC.ID = RCM.IdRespostaClasse " +
-                        "  inner join Resposta R " +
-                        "  on R.ID = RC.IdResposta " +
+                        "  inner join ExercicioSolucaoClasseMarcacao ESCM " +
+                        "  on ESCM.ID = MC.IdExercicioSolucaoClasseMarcacao " +
+                        "  and ESCM.Ativo = 1 " +
+                        "  inner join ExercicioSolucaoClasse ESC " +
+                        "  on ESC.ID = ESCM.IdExercicioSolucaoClasse " +
+                        "  inner join ExercicioSolucao ES " +
+                        "  on ES.ID = ESC.IdSolucao " +
                         "  inner join Exercicio E " +
-                        "  on E.ID = R.IdExercicio " +
+                        "  on E.ID = ES.IdExercicio " +
                         "  and E.Ativo = 1 " +
                         "  inner join Pessoa PA " +
-                        "  on PA.ID = RCM.IdAutor " +
+                        "  on PA.ID = ESCM.IdAutor " +
                         "  and PA.Ativo = 1 " +
                         "where " +
                         "  MC.Ativo = 1 ";
@@ -200,7 +200,7 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
             query.addScalar("Nome", StringType.INSTANCE);
             query.addScalar("LinhaInicio", IntegerType.INSTANCE);
             query.addScalar("IdClasse", IntegerType.INSTANCE);
-            query.addScalar("Classe", StringType.INSTANCE);
+            query.addScalar("NomeClasse", StringType.INSTANCE);
             query.addScalar("IdExercicio", IntegerType.INSTANCE);
             query.addScalar("Exercicio", StringType.INSTANCE);
             query.addScalar("IdAluno", IntegerType.INSTANCE);

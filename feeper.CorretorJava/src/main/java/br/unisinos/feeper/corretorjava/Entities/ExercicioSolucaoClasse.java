@@ -5,15 +5,48 @@
  */
 package br.unisinos.feeper.corretorjava.Entities;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import java.util.Date;
 
 /**
  *
  * @author gilvani
  */
 public class ExercicioSolucaoClasse {
-    
-    @XmlAttribute
-    public String NomeClasse;
-    public String codigo;
+
+    private Integer id;
+    private Integer idSolucao;
+    private String nomeClasse;
+    private String codigo;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getIdSolucao() {
+        return idSolucao;
+    }
+
+    public void setIdSolucao(Integer idSolucao) {
+        this.idSolucao = idSolucao;
+    }
+
+    public String getNomeClasse() {
+        return nomeClasse;
+    }
+
+    public void setNomeClasse(String nomeClasse) {
+        this.nomeClasse = nomeClasse;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }    
 }

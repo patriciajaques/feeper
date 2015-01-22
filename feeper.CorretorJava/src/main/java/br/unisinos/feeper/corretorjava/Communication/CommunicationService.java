@@ -1,14 +1,16 @@
 package br.unisinos.feeper.corretorjava.Communication;
 
 import br.unisinos.feeper.corretorjava.Entities.ExercicioCasoTeste;
-import br.unisinos.feeper.corretorjava.Entities.ExercicioCorrecao;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucao;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucaoClasse;
 import br.unisinos.feeper.corretorjava.Creators.DinamicTestCreator;
 import br.unisinos.feeper.corretorjava.Creators.JarCreator;
 import br.unisinos.feeper.corretorjava.Creators.MainCreator;
-import br.unisinos.feeper.corretorjava.FileUtils.FileToString;
+import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucaoErro;
+import br.unisinos.feeper.corretorjava.Utils.FileToString;
 import br.unisinos.feeper.corretorjava.StaticTests.StaticTestRunner;
+import br.unisinos.feeper.corretorjava.Utils.EErrorType;
+import br.unisinos.feeper.corretorjava.Utils.EStatusSolucao;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -16,6 +18,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -52,9 +55,9 @@ public class CommunicationService {
             JAXBContext jaxbContext = JAXBContext.newInstance(ExercicioSolucao.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             ExercicioSolucao solucao = (ExercicioSolucao) jaxbUnmarshaller.unmarshal(reader);
-            String alunoID = solucao.idAluno.toString();
-            String exercicioID = solucao.idExercicio.toString();
-            String solucaoID = solucao.id.toString();
+            String alunoID = solucao.getIdAluno().toString();
+            String exercicioID = solucao.getIdExercicio().toString();
+            String solucaoID = solucao.getId().toString();
 
             String partialPath = getClass().getClassLoader().getResource("FindBugs").toURI().getPath();
             String appResourcesPath = new File(partialPath).getParentFile().getPath();
@@ -66,20 +69,20 @@ public class CommunicationService {
             dir.mkdirs();
 
             //Escreve a Solucao do aluno na pasta tmp
-            for (ExercicioSolucaoClasse classe : solucao.classes) {
+            for (ExercicioSolucaoClasse classe : solucao.getClasses()) {
 
-                PrintWriter writer = new PrintWriter(tmpPath + "\\" + classe.NomeClasse + ".java");
-                writer.write(classe.codigo);
+                PrintWriter writer = new PrintWriter(tmpPath + "\\" + classe.getNomeClasse() + ".java");
+                writer.write(classe.getCodigo());
                 writer.close();
             }
 
             //Cria os Testes na pasta tmp
             DinamicTestCreator testCreator = new DinamicTestCreator();
-            for (ExercicioCasoTeste teste : solucao.testes) {
+            for (ExercicioCasoTeste teste : solucao.getTestes()) {
 
                 String testString = testCreator.CreateTest(teste);
 
-                PrintWriter writer = new PrintWriter(tmpPath + "\\test_" + teste.id + ".java");
+                PrintWriter writer = new PrintWriter(tmpPath + "\\test_" + teste.getId() + ".java");
                 writer.write(testString);
                 writer.close();
             }
@@ -91,41 +94,61 @@ public class CommunicationService {
             writer.write(mainString);
             writer.close();
 
-            //Inicializa o Resultado
-            ExercicioCorrecao correcao = new ExercicioCorrecao(solucao.id, solucao.idExercicio, solucao.idAluno);
+            solucao.setErros(new ArrayList<ExercicioSolucaoErro>());
 
             //Executa os testes Dinamicos
             JarCreator jarCreator = new JarCreator(appResourcesPath, tmpPath);
-            jarCreator.Prepare();
-            jarCreator.Compile();
-            jarCreator.Pack();
-            jarCreator.Run();
+            try {
+                jarCreator.Prepare();
+                jarCreator.Compile();
+                jarCreator.Pack();
+            } catch (Exception e) {
+                //erro de compilação
+                solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
 
-            //carrega os resultados dinâmicos
-            String dinamicResult = FileToString.toString(tmpPath + "\\dinamic_output.xml");
-            reader = new StringReader(dinamicResult);
-            jaxbContext = JAXBContext.newInstance(ExercicioCorrecao.class);
-            jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            ExercicioCorrecao correcaoDinamica = (ExercicioCorrecao) jaxbUnmarshaller.unmarshal(reader);
-
-            if (correcaoDinamica.erros != null && correcaoDinamica.erros.size() > 0) {
-
-                correcao.erros.addAll(correcaoDinamica.erros);
+                ExercicioSolucaoErro erroCompilacao = new ExercicioSolucaoErro(solucao.getId(), 0, EErrorType.COMPILACAO, e.toString());
+                solucao.getErros().add(erroCompilacao);
             }
 
-            //Executa os testes Estaticos e carrega os resultados
-            StaticTestRunner staticTest = new StaticTestRunner(appResourcesPath, tmpPath);
-            for (ExercicioSolucaoClasse classe : solucao.classes) {
+            //se deu erro de compilação, nem continua
+            if (solucao.getErros().isEmpty()) {
 
-                staticTest.RunTest(classe.NomeClasse, correcao);
+                jarCreator.Run();
+
+                //carrega os resultados dinâmicos
+                String dinamicResult = FileToString.toString(tmpPath + "\\dinamic_output.xml");
+                reader = new StringReader(dinamicResult);
+                jaxbContext = JAXBContext.newInstance(ExercicioSolucaoErro[].class);
+                jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                ExercicioSolucaoErro[] errosDinamicos = (ExercicioSolucaoErro[]) jaxbUnmarshaller.unmarshal(reader);
+
+                if (errosDinamicos != null) {
+                    for (ExercicioSolucaoErro erroDinamico : errosDinamicos) {
+                        solucao.getErros().add(erroDinamico);
+                    }
+                }
+
+                //deu erro dinâmico ou seja não cumpriu os objetivos
+                if (solucao.getErros().isEmpty() == false) {
+                    solucao.setIdStatus(EStatusSolucao.RESULTADO_INVALIDO);
+                } else {
+                    solucao.setIdStatus(EStatusSolucao.RESOLVIDO);
+                }
+
+                //Executa os testes Estaticos e carrega os resultados
+                StaticTestRunner staticTest = new StaticTestRunner(appResourcesPath, tmpPath);
+                for (ExercicioSolucaoClasse classe : solucao.getClasses()) {
+
+                    staticTest.RunTest(classe.getNomeClasse(), solucao);
+                }
             }
 
             //retorna os resultados
-            jaxbContext = JAXBContext.newInstance(ExercicioCorrecao.class);
+            jaxbContext = JAXBContext.newInstance(ExercicioSolucao.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             StringWriter sw = new StringWriter();
-            jaxbMarshaller.marshal(correcao, sw);
+            jaxbMarshaller.marshal(solucao, sw);
             return Response.status(Response.Status.OK).entity(sw.toString()).build();
 
         } catch (Exception e) {

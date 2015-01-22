@@ -5,7 +5,10 @@
  */
 package br.unisinos.feeper.corretorjava.Entities;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import java.util.Date;
+import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -13,15 +16,82 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author gilvani
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ExercicioSolucao {
 
-    @XmlAttribute
-    public Integer id;
-    @XmlAttribute
-    public Integer idExercicio;
-    @XmlAttribute
-    public Integer idAluno;
+    protected Integer id;
+    protected Integer idExercicio;
+    protected Integer idAluno;
+    protected int idStatus;
+    protected Date dataCadastro;
+
+    protected List<ExercicioSolucaoClasse> classes;
+    protected List<ExercicioCasoTeste> testes;
+    private List<ExercicioSolucaoErro> erros;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getIdExercicio() {
+        return idExercicio;
+    }
+
+    public void setIdExercicio(Integer idExercicio) {
+        this.idExercicio = idExercicio;
+    }
+
+    public Integer getIdAluno() {
+        return idAluno;
+    }
+
+    public void setIdAluno(Integer idAluno) {
+        this.idAluno = idAluno;
+    }
+
+    public int getIdStatus() {
+        return idStatus;
+    }
+
+    public void setIdStatus(int idStatus) {
+        this.idStatus = idStatus;
+    }
+
+    public Date getDataCadastro() {
+        return dataCadastro;
+    }
+
+    public void setDataCadastro(Date dataCadastro) {
+        this.dataCadastro = dataCadastro;
+    }
+
+    public List<ExercicioSolucaoClasse> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(List<ExercicioSolucaoClasse> classes) {
+        this.classes = classes;
+    }
+
+    public List<ExercicioCasoTeste> getTestes() {
+        return testes;
+    }
+
+    public void setTestes(List<ExercicioCasoTeste> testes) {
+        this.testes = testes;
+    }
+
+    public List<ExercicioSolucaoErro> getErros() {
+        return erros;
+    }
+
+    public void setErros(List<ExercicioSolucaoErro> erros) {
+        this.erros = erros;
+    }
     
-    public ExercicioSolucaoClasse[] classes;
-    public ExercicioCasoTeste[] testes;
+    
 }

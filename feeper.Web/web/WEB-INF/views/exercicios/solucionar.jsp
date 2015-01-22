@@ -43,7 +43,7 @@
                 });
                 
                 $(".btn-classe-enviar").click(function(){
-                    $("#frmSolucionar").attr("action", "<c:url value='/'/>exercicios/saveSolucionar");
+                    $("#frmSolucionar").attr("action", "<c:url value='/'/>exercicios/enviarcorrecao");
                     $("#frmSolucionar").submit();
                 });
                 
@@ -110,12 +110,7 @@
                         $("#panel-markedannotations .panel-body").animate({ scrollTop: $("#panel-markedquestions .panel-body")[0].scrollHeight}, 1000);
                     }
                 }; 
-                $('#frmAnotacao').ajaxForm(ajaxFormOptions2);
-                
-                <c:if test="${idRespostaEncoded != null}">
-                    $.get("<c:url value='/'/>OnlineJudge?r=${idRespostaEncoded}");
-                </c:if>
-                
+                $('#frmAnotacao').ajaxForm(ajaxFormOptions2);              
             });
             
             function cancelarClasse(){
@@ -143,10 +138,10 @@
         <h4><fmt:message key="label.exercicios.acoesexercicio"/></h4>
         <div class="list-group">
             <a href="#" class="list-group-item btn-classe-enviar">
-                <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;<fmt:message key="menu.classe.enviar"/>
+                <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;<fmt:message key="menu.solucao.enviar"/>
             </a>
             <a href="#" class="list-group-item btn-classe-download">
-                <span class="glyphicon glyphicon-save"></span>&nbsp;&nbsp;<fmt:message key="menu.classe.baixar"/>
+                <span class="glyphicon glyphicon-save"></span>&nbsp;&nbsp;<fmt:message key="menu.solucao.baixar"/>
             </a>
         </div>
     </jsp:attribute>
@@ -412,24 +407,22 @@
         <c:if test="${Solucao != null}">
             <c:choose>
                 <c:when test="${Solucao.getIdStatus() == 1}">
-                    <div class="alert alert-danger"><fmt:message key="label.exercicios.status.errocompilacao"/><br><c:out value="${Solucao.getMensagem()}"/></div>
+                    <div class="alert alert-info"><fmt:message key="label.exercicios.status.aguardando"/></div>
                 </c:when>
                 <c:when test="${Solucao.getIdStatus() == 2}">
-                    <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errosaidainvalida"/><br><c:out value="${Solucao.getMensagem()}"/></div>
+                    <div class="alert alert-danger"><fmt:message key="label.exercicios.status.errocompilacao"/></div>
                 </c:when>
                 <c:when test="${Solucao.getIdStatus() == 3}">
-                    <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errotempolimite"/></div>
+                    <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errosaidainvalida"/></div>
                 </c:when>
                 <c:when test="${Solucao.getIdStatus() == 4}">
                     <div class="alert alert-success"><fmt:message key="label.exercicios.status.resolvido"/></div>
                 </c:when>
-                <c:when test="${Solucao.getIdStatus() == 5}">
-                    <div class="alert alert-info"><fmt:message key="label.exercicios.status.aguardando"/></div>
-                </c:when>
+                
             </c:choose>
             <small><fmt:message key="label.exercicios.dataultimaresposta"/> <fmt:formatDate value="${Solucao.getDataCadastro()}" pattern="dd/MM/yyyy HH:mm" /></small>
         </c:if>
-        <c:if test="${Solucao != null && Solucao.getIdStatus() == 5}">
+        <c:if test="${Solucao != null && Solucao.getIdStatus() == 1}">
             <script type="text/javascript">
                 intervalLookingStatus = setInterval(function(){lookingForNewStatus()}, 5000);
             </script>

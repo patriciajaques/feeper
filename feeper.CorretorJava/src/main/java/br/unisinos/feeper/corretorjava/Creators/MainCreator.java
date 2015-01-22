@@ -7,6 +7,7 @@ package br.unisinos.feeper.corretorjava.Creators;
 
 import br.unisinos.feeper.corretorjava.Entities.ExercicioCasoTeste;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucao;
+import br.unisinos.feeper.corretorjava.Utils.EErrorType;
 
 /**
  *
@@ -33,6 +34,7 @@ public class MainCreator {
 
         StringBuilder builder = new StringBuilder();
         builder.append("import java.util.List;");
+        builder.append("import java.util.ArrayList;");
         builder.append("import org.junit.runner.JUnitCore;");
         builder.append("import org.junit.runner.Result;");
         builder.append("import org.junit.runner.notification.Failure;");
@@ -48,25 +50,25 @@ public class MainCreator {
         StringBuilder builder = new StringBuilder();
         builder.append("try {");
         builder.append("JUnitCore junit = new JUnitCore();");
-        builder.append("ExercicioCorrecao correcao = new ExercicioCorrecao(" + solucao.id + "," + solucao.idExercicio + "," + solucao.idAluno + ");");
+        builder.append("List<ExercicioSolucaoErro> erros = new ArrayList<ExercicioSolucaoErro>();");
         builder.append("Result result = null;");
         builder.append("List<Failure> failures = null;");
 
-        for (ExercicioCasoTeste teste : solucao.testes) {
-            builder.append("result = junit.run(test_" + teste.id + ".class);");
+        for (ExercicioCasoTeste teste : solucao.getTestes()) {
+            builder.append("result = junit.run(test_" + teste.getId() + ".class);");
             builder.append("failures = result.getFailures();");
 
             builder.append("for (Failure failure : failures) {");
-            builder.append("ExercicioCorrecaoErro erro = new ExercicioCorrecaoErro(" + teste.id + ",\"static\",failure.getMessage());");
-            builder.append("correcao.erros.add(erro);");
+            builder.append("ExercicioSolucaoErro erro = new ExercicioSolucaoErro(" + solucao.getId() + "," + teste.getId() + "," + ((int) EErrorType.DINAMICO) + ",failure.getMessage());");
+            builder.append("erros.add(erro);");
             builder.append("}");
         }
 
-        builder.append("JAXBContext context = JAXBContext.newInstance(ExercicioCorrecao.class);");
+        builder.append("JAXBContext context = JAXBContext.newInstance(ExercicioSolucaoErro[].class);");
         builder.append("Marshaller m = context.createMarshaller();");
         builder.append("m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);");
         builder.append("File file = new File(\"dinamic_output.xml\");");
-        builder.append("m.marshal(correcao, file);");
+        builder.append("m.marshal(erros.toArray(), file);");
         builder.append("}catch (Exception e) {e.printStackTrace();}");
         builder.append("}");
 

@@ -28,17 +28,9 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <servlet>
-        <servlet-name>OnlineJudge</servlet-name>
-        <servlet-class>feeper.corretor.OnlineJudge</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
         <url-pattern>/</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>OnlineJudge</servlet-name>
-        <url-pattern>/OnlineJudge</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>45</session-timeout>

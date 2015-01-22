@@ -5,6 +5,8 @@
  */
 package feeper.Data.entity;
 
+import java.util.List;
+
 /**
  *
  * @author gilvani
@@ -13,13 +15,16 @@ public class ExercicioCasoTestePasso {
 
     private Integer id;
     private Integer idCasoTeste;
-    private String ObjectType;
-    private String ObjectName;
-    private String MethodName;
-    private String ExpectedOutputType;
-    private String ExpectedOutputName;
-    private String ExpectedOutputValue;
-    private ExercicioCasoTestePassoParametro[] inputParameters;
+    private int ordem;
+    private String operationType;
+    private String expectedOutputType;
+    private String expectedOutputName;
+    private String expectedOutputValue;
+    private String objectName;
+    private String methodName;
+    
+    //auxiliar no angular
+    private List<ExercicioCasoTestePassoParametro> inputParameters;
 
     public Integer getId() {
         return id;
@@ -37,59 +42,69 @@ public class ExercicioCasoTestePasso {
         this.idCasoTeste = idCasoTeste;
     }
 
-    public String getObjectType() {
-        return ObjectType;
+    public int getOrdem() {
+        return ordem;
     }
 
-    public void setObjectType(String ObjectType) {
-        this.ObjectType = ObjectType;
+    public void setOrdem(int ordem) {
+        this.ordem = ordem;
+    }
+    
+    
+
+    public String getOperationType() {
+        return operationType;
     }
 
-    public String getObjectName() {
-        return ObjectName;
-    }
-
-    public void setObjectName(String ObjectName) {
-        this.ObjectName = ObjectName;
-    }
-
-    public String getMethodName() {
-        return MethodName;
-    }
-
-    public void setMethodName(String MethodName) {
-        this.MethodName = MethodName;
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
     }
 
     public String getExpectedOutputType() {
-        return ExpectedOutputType;
+        return expectedOutputType;
     }
 
     public void setExpectedOutputType(String ExpectedOutputType) {
-        this.ExpectedOutputType = ExpectedOutputType;
+        this.expectedOutputType = ExpectedOutputType;
     }
 
     public String getExpectedOutputName() {
-        return ExpectedOutputName;
+        return expectedOutputName;
     }
 
     public void setExpectedOutputName(String ExpectedOutputName) {
-        this.ExpectedOutputName = ExpectedOutputName;
+        this.expectedOutputName = ExpectedOutputName;
     }
 
     public String getExpectedOutputValue() {
-        return ExpectedOutputValue;
+        return expectedOutputValue;
     }
 
     public void setExpectedOutputValue(String ExpectedOutputValue) {
-        this.ExpectedOutputValue = ExpectedOutputValue;
+        this.expectedOutputValue = ExpectedOutputValue;
     }
 
-    public ExercicioCasoTestePassoParametro[] getInputParameters() {
+    public String getObjectName() {
+        return objectName;
+    }
+
+    public void setObjectName(String ObjectName) {
+        this.objectName = ObjectName;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String MethodName) {
+        this.methodName = MethodName;
+    }
+
+    public List<ExercicioCasoTestePassoParametro> getInputParameters() {
         return inputParameters;
     }
 
-    public void setInputParameters(ExercicioCasoTestePassoParametro[] inputParameters) {
+    public void setInputParameters(List<ExercicioCasoTestePassoParametro> inputParameters) {
         this.inputParameters = inputParameters;
     }
 }

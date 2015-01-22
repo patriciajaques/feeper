@@ -1,38 +1,43 @@
 package feeper.controller;
 
-import com.oreilly.servlet.Base64Encoder;
 import feeper.Data.entity.Exercicio;
-import feeper.Data.entity.ExercicioClasseValidacao;
+import feeper.Data.entity.ExercicioCasoTeste;
+import feeper.Data.entity.ExercicioClasse;
+import feeper.Data.entity.ExercicioInterface;
+import feeper.Data.entity.ExercicioInterfaceMembro;
+import feeper.Data.entity.ExercicioInterfaceParametro;
 import feeper.Data.entity.ExercicioSolucao;
-import feeper.Data.entity.ExercicioSolucaoClasse;
-import feeper.Data.entity.ExercicioValidacao;
 import feeper.Data.entity.MeusExercicios;
 import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.Turma;
-import feeper.Data.entity.UploadTemp;
 import feeper.Data.model.EPerfil;
 import feeper.Data.model.ETipoLog;
 import feeper.Data.model.IntegerResult;
 import feeper.Data.model.ScalarResult;
 import feeper.Data.model.Util;
-import feeper.Data.service.ClasseMarcacaoService;
-import feeper.Data.service.ExercicioClasseValidacaoService;
+import feeper.Data.service.ExercicioClasseMarcacaoService;
 import feeper.Data.service.ExercicioService;
-import feeper.Data.service.ExercicioSolucaoClasseService;
+import feeper.Data.service.ExercicioClasseService;
 import feeper.Data.service.ExercicioSolucaoService;
-import feeper.Data.service.ExercicioValidacaoService;
-import feeper.Data.service.UploadTempService;
+import feeper.Data.service.ExercicioCasoTesteService;
+import feeper.model.InterfaceHandler;
 import feeper.model.PaginadorUtil;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.type.BinaryType;
 import org.hibernate.type.IntegerType;
@@ -43,8 +48,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -136,215 +143,144 @@ public class ExerciciosController extends ApplicationController {
         model.addAttribute(new Exercicio());
         model.addAttribute("IsAdd", true);
 
-        return "exercicios/edit";
+        return "exercicios/editNew";
     }
 
-    @RequestMapping(value = "/saveadd", method = RequestMethod.POST)
-    public ModelAndView saveadd(
-            @ModelAttribute("exercicio") Exercicio exercicio,
-            @ModelAttribute("htmlcontent") String html,
-            @ModelAttribute("idUploadTemp") String idUploadTemp,
-            HttpSession session,
-            BindingResult result,
-            final RedirectAttributes flash) {
+    @RequestMapping(value = "/editNew/{id}", method = RequestMethod.GET)
+    public String editNew(@PathVariable int id, Model model) {
 
-        ModelAndView mav = new ModelAndView();
-        mav.setView(new RedirectView("/exercicios", true, true, false));
-
-        Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
-
-        exercicio.setDataCadastro(new Date());
-        exercicio.setIdAutor(usuarioLogado.getId());
-
-        if (idUploadTemp == null || idUploadTemp.isEmpty()) {
-            exercicio.setDescricaoHtml(html);
-        } else {
-            UploadTempService repoUploadTemp = new UploadTempService();
-            UploadTemp uploadTemp = repoUploadTemp.getByGuid(idUploadTemp);
-            exercicio.setDescricao(uploadTemp.getArquivo());
-        }
-
-        if (service.insert(exercicio)) {
-            log(usuarioLogado.getId(), "SUCESSO: ID: " + exercicio.getId(), ETipoLog.CADASTRAR_EXERCICIO);
-            flash.addFlashAttribute("MSG_SUCESSO", "Registro inserido com sucesso");
-        } else {
-            log(usuarioLogado.getId(), "ERRO: ID: " + exercicio.getNome(), ETipoLog.CADASTRAR_EXERCICIO);
-            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao inserir o registro");
-        }
-
-        return mav;
-    }
-
-    @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
-    public String edit(@PathVariable int id, Model model) {
+        ExercicioCasoTesteService repoCasoTeste = new ExercicioCasoTesteService();
 
         Exercicio exercicio = service.getById(id);
-        exercicio.setValidacoes(service.getValidacoes(id));
-        exercicio.setClassesValidacao(service.getClassesValidacao(id));
+        exercicio.setCasosTeste(repoCasoTeste.getByIdExercicio(id));
 
         model.addAttribute(exercicio);
         model.addAttribute("IsAdd", false);
 
-        return "exercicios/edit";
+        return "exercicios/editNew";
     }
 
-    @RequestMapping(value = "/saveedit", method = RequestMethod.POST)
-    public ModelAndView saveedit(
-            @ModelAttribute("exercicio") Exercicio exercicio,
-            @ModelAttribute("htmlcontent") String html,
-            HttpSession session,
-            BindingResult result,
-            final RedirectAttributes flash) {
+    @RequestMapping(value = "/getJson", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Exercicio getJson(@RequestParam(value = "exercicioId", defaultValue = "0") String exercicioId) {
 
-        ModelAndView mav = new ModelAndView();
-        mav.setView(new RedirectView("/exercicios", true, true, false));
+        int exercId = Integer.parseInt(exercicioId);
 
-        Exercicio exercicioBanco = service.getById(exercicio.getId());
+        ExercicioService service = new ExercicioService();
+        Exercicio exercicio = service.getById(exercId);
 
-        exercicioBanco.setAtivo(exercicio.isAtivo());
-        exercicioBanco.setDescricaoHtml(html);
-        exercicioBanco.setNome(exercicio.getNome());
+        ExercicioCasoTesteService repoCasoTeste = new ExercicioCasoTesteService();
+        exercicio.setCasosTeste(repoCasoTeste.getByIdExercicio(exercId));
 
-        Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
-
-        if (service.update(exercicioBanco)) {
-            log(usuarioLogado.getId(), "SUCESSO: ID: " + exercicioBanco.getId(), ETipoLog.ALTERAR_EXERCICIO);
-            flash.addFlashAttribute("MSG_SUCESSO", "Registro alterado com sucesso");
-        } else {
-            log(usuarioLogado.getId(), "ERRO: ID: " + exercicioBanco.getId(), ETipoLog.ALTERAR_EXERCICIO);
-            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao alterar o registro");
-        }
-
-        return mav;
+        return exercicio;
     }
 
-    @RequestMapping(value = "/savevalidacao", method = RequestMethod.POST)
-    public ModelAndView savevalidacao(
-            HttpServletRequest request,
-            HttpSession session,
-            final RedirectAttributes flash) {
-
-        Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
-        int idExercicio = Integer.parseInt(request.getParameter("idExercicio").toString());
-        int contador = Integer.parseInt(request.getParameter("contador").toString());
-        ExercicioValidacaoService repo = new ExercicioValidacaoService();
-        StringBuilder idsExistentes = new StringBuilder("0");
-
-        ModelAndView mav = new ModelAndView();
-        mav.setView(new RedirectView("/exercicios/edit/" + idExercicio, true, true, false));
+    @RequestMapping(value = "/saveJson", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    public boolean saveJson(@RequestBody Exercicio exercicio) {
 
         try {
 
-            for (int i = 1; i <= contador; i++) {
+            ExercicioService service = new ExercicioService();
 
-                int idValidacao = request.getParameter("idValidacao" + i) == null ? 0 : Integer.parseInt(request.getParameter("idValidacao" + i).toString());
-                int ordem = request.getParameter("ordem" + i) == null ? 0 : Integer.parseInt(request.getParameter("ordem" + i).toString());
-                String entrada = request.getParameter("entrada" + i) == null ? "" : request.getParameter("entrada" + i).toString();
-                String saida = request.getParameter("saida" + i) == null ? "" : request.getParameter("saida" + i).toString();
-                String mensagem = request.getParameter("mensagem" + i) == null ? "" : request.getParameter("mensagem" + i).toString();
-
-                if (entrada.isEmpty() && saida.isEmpty() && mensagem.isEmpty()) {
-                    continue;
-                }
-
-                ExercicioValidacao entity = new ExercicioValidacao();
-
-                if (idValidacao != 0) {
-                    entity.setId(idValidacao);
-                }
-                entity.setIdExercicio(idExercicio);
-                entity.setEntrada(entrada);
-                entity.setSaida(saida);
-                entity.setMensagem(mensagem);
-                entity.setDataCadastro(new Date());
-                entity.setAtivo(true);
-                entity.setOrdem(ordem);
-
-                if (entity.getId() != null && entity.getId() > 0) {
-                    repo.update(entity);
-                } else {
-                    repo.insert(entity);
-                }
-
-                idsExistentes.append(",").append(entity.getId());
+            Integer exercicioId = exercicio.getId();
+            if (exercicioId != null && exercicioId > 0) {
+                service.update(exercicio);
+            } else {
+                service.insert(exercicio);
             }
 
-            repo.deleteNotIn(idExercicio, idsExistentes.toString());
+            ExercicioCasoTesteService repoCasoTeste = new ExercicioCasoTesteService();
+            List<ExercicioCasoTeste> casosTeste = exercicio.getCasosTeste();
 
-            log(usuarioLogado.getId(), "SUCESSO: VALIDACAO: ID: " + idExercicio, ETipoLog.ALTERAR_EXERCICIO);
-            flash.addFlashAttribute("MSG_SUCESSO", "Validações salvas com sucesso!");
+            return repoCasoTeste.SaveCasos(exercicio.getId(), casosTeste);
 
         } catch (Exception e) {
-            log(usuarioLogado.getId(), "ERRO: VALIDACAO: ID: " + idExercicio, ETipoLog.ALTERAR_EXERCICIO);
-            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao salvar as validações");
+            return false;
         }
-
-        return mav;
     }
 
-    @RequestMapping(value = "/saveclassevalidacao", method = RequestMethod.POST)
-    public ModelAndView saveclassevalidacao(
-            HttpServletRequest request,
-            HttpSession session,
-            final RedirectAttributes flash) {
-
-        Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
-        int idExercicio = Integer.parseInt(request.getParameter("idExercicio").toString());
-        int contador = Integer.parseInt(request.getParameter("contador").toString());
-        ExercicioClasseValidacaoService repo = new ExercicioClasseValidacaoService();
-        StringBuilder idsExistentes = new StringBuilder("0");
-
-        ModelAndView mav = new ModelAndView();
-        mav.setView(new RedirectView("/exercicios/edit/" + idExercicio, true, true, false));
+    @RequestMapping(value = "/uploaddescricao", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public byte[] uploaddescricao(MultipartHttpServletRequest request) {
 
         try {
+            MultipartFile file = request.getFile("filedata");
+            return file.getBytes();
+        } catch (Exception ex) {
+            Logger.getLogger(ExerciciosController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
-            for (int i = 1; i <= contador; i++) {
+    @RequestMapping(value = "/uploadinterfacesolucao", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public ExercicioInterface uploadinterfacesolucao(MultipartHttpServletRequest request) {
 
-                int idClasseValidacao = request.getParameter("idClasseValidacao" + i) == null ? 0 : Integer.parseInt(request.getParameter("idClasseValidacao" + i).toString());
-                int ordem = request.getParameter("ordemClasse" + i) == null ? 0 : Integer.parseInt(request.getParameter("ordemClasse" + i).toString());
-                String fonte = request.getParameter("fonte" + i) == null ? "" : request.getParameter("fonte" + i).toString();
-                String saida = request.getParameter("saida" + i) == null ? "" : request.getParameter("saida" + i).toString();
-                String mensagem = request.getParameter("mensagem" + i) == null ? "" : request.getParameter("mensagem" + i).toString();
-                String mensagemCompilacao = request.getParameter("mensagemCompilacao" + i) == null ? "" : request.getParameter("mensagemCompilacao" + i).toString();
+        try {
+            MultipartFile file = request.getFile("filedata");
+            HttpSession session = request.getSession();
+            Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
 
-                if (fonte.isEmpty()) {
-                    continue;
+            File f = new File("tmp/" + file.getOriginalFilename());
+            f.mkdirs();
+            file.transferTo(f);
+
+            String className = FilenameUtils.removeExtension(file.getOriginalFilename());
+            InterfaceHandler handler = new InterfaceHandler();
+            Class<?> classe = handler.GetInterface(f.getPath(), className);
+
+            ExercicioInterface inter = new ExercicioInterface();
+
+            List<ExercicioInterfaceMembro> membros = new ArrayList();
+
+            for (Constructor constructor : classe.getConstructors()) {
+
+                ExercicioInterfaceMembro membro = new ExercicioInterfaceMembro();
+                membro.setModifier(constructor.getModifiers());
+                membro.setName(constructor.getName());
+
+                Parameter[] parameters = constructor.getParameters();
+                List<ExercicioInterfaceParametro> parametros = new ArrayList();
+                for (Parameter parameter : parameters) {
+                    ExercicioInterfaceParametro parametro = new ExercicioInterfaceParametro();
+                    parametro.setName(parameter.getName());
+                    parametro.setType(parameter.getType().getSimpleName());
+                    parametros.add(parametro);
                 }
+                membro.setParametros(parametros.toArray(new ExercicioInterfaceParametro[parametros.size()]));
 
-                ExercicioClasseValidacao entity = new ExercicioClasseValidacao();
-
-                if (idClasseValidacao != 0) {
-                    entity.setId(idClasseValidacao);
-                }
-                entity.setIdExercicio(idExercicio);
-                entity.setFonte(fonte);
-                entity.setSaida(saida);
-                entity.setMensagem(mensagem);
-                entity.setMensagemCompilacao(mensagemCompilacao);
-                entity.setDataCadastro(new Date());
-                entity.setAtivo(true);
-                entity.setOrdem(ordem);
-
-                if (entity.getId() != null && entity.getId() > 0) {
-                    repo.update(entity);
-                } else {
-                    repo.insert(entity);
-                }
-
-                idsExistentes.append(",").append(entity.getId());
+                membros.add(membro);
             }
 
-            repo.deleteNotIn(idExercicio, idsExistentes.toString());
+            for (Method method : classe.getMethods()) {
 
-            log(usuarioLogado.getId(), "SUCESSO: CLASSE VALIDACAO: ID: " + idExercicio, ETipoLog.ALTERAR_EXERCICIO);
-            flash.addFlashAttribute("MSG_SUCESSO", "Classes de validação salvas com sucesso!");
+                ExercicioInterfaceMembro membro = new ExercicioInterfaceMembro();
+                membro.setModifier(method.getModifiers());
+                membro.setType(method.getReturnType().getName());
+                membro.setName(method.getName());
 
-        } catch (Exception e) {
-            log(usuarioLogado.getId(), "ERRO: CLASSE VALIDACAO: ID: " + idExercicio, ETipoLog.ALTERAR_EXERCICIO);
-            flash.addFlashAttribute("MSG_ERRO", "Ocorreu um erro ao salvar as classes de validação");
+                Parameter[] parameters = method.getParameters();
+                List<ExercicioInterfaceParametro> parametros = new ArrayList();
+                for (Parameter parameter : parameters) {
+                    ExercicioInterfaceParametro parametro = new ExercicioInterfaceParametro();
+                    parametro.setName(parameter.getName());
+                    parametro.setType(parameter.getType().getSimpleName());
+                    parametros.add(parametro);
+                }
+                membro.setParametros(parametros.toArray(new ExercicioInterfaceParametro[parametros.size()]));
+
+                membros.add(membro);
+            }
+
+            inter.setMembros(membros.toArray(new ExercicioInterfaceMembro[membros.size()]));
+
+            return inter;
+
+        } catch (Exception ex) {
+            Logger.getLogger(ExerciciosController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return mav;
+        return null;
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
@@ -369,32 +305,6 @@ public class ExerciciosController extends ApplicationController {
         }
 
         return mav;
-    }
-
-    @RequestMapping(value = "/upload", method = RequestMethod.POST, produces = "application/json")
-    @ResponseBody
-    public String upload(MultipartHttpServletRequest request) {
-
-        MultipartFile file = request.getFile("filedata");
-        HttpSession session = request.getSession();
-        Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
-
-        try {
-            UploadTemp uploadTemp = new UploadTemp();
-            uploadTemp.setGuid(UUID.randomUUID().toString());
-            uploadTemp.setArquivo(file.getBytes());
-            UploadTempService repoUploadTemp = new UploadTempService();
-            if (repoUploadTemp.insert(uploadTemp)) {
-                log(usuarioLogado.getId(), "SUCESSO: ID: " + uploadTemp.getId() + " NOME: " + file.getOriginalFilename(), ETipoLog.UPLOAD_EXERCICIO);
-                return uploadTemp.getGuid();
-            } else {
-                log(usuarioLogado.getId(), "ERRO: NOME: " + file.getOriginalFilename(), ETipoLog.UPLOAD_EXERCICIO);
-                return "erro";
-            }
-
-        } catch (IOException ex) {
-            return "";
-        }
     }
 
     @RequestMapping(value = "/meusexercicios", method = RequestMethod.GET)
@@ -445,8 +355,8 @@ public class ExerciciosController extends ApplicationController {
                 + "  E.Descricao, "
                 + "  TRUNCATE_TEXT(REMOVE_HTML_TAGS(E.DescricaoHtml), 100) AS DescricaoHtml, "
                 + "  T.Nome AS Turma, "
-                + "  (select MAX(DataCadastro) from Resposta R "
-                + "  where R.IdExercicio = E.ID and R.IdAutor = :p0 ) AS DataUltimaAlteracao "
+                + "  (select MAX(DataCadastro) from ExercicioSolucao ES "
+                + "  where ES.IdExercicio = E.ID and ES.IdAluno = :p0 ) AS DataUltimaAlteracao "
                 + "from  "
                 + "  TurmaExercicio TE "
                 + "  inner join Exercicio E "
@@ -502,8 +412,8 @@ public class ExerciciosController extends ApplicationController {
             ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();
             ExercicioSolucao solucao = repoSolucao.getLastByIdExercicio(exercicio.getId(), pessoa.getId());
 
-            ExercicioSolucaoClasseService repoClasses = new ExercicioSolucaoClasseService();
-            List<ExercicioSolucaoClasse> listaClasses = repoClasses.getAllByIdExercicio(exercicio.getId(), pessoa.getId());
+            ExercicioClasseService repoClasses = new ExercicioClasseService();
+            List<ExercicioClasse> listaClasses = repoClasses.getAllByIdExercicio(exercicio.getId(), pessoa.getId());
 
             mav.addObject("Exercicio", exercicio);
             mav.addObject("Solucao", solucao);
@@ -517,8 +427,8 @@ public class ExerciciosController extends ApplicationController {
         return mav;
     }
 
-    @RequestMapping(value = "/savesolucionar", method = RequestMethod.POST)
-    public ModelAndView savesolucionar(
+    @RequestMapping(value = "/enviarcorrecao", method = RequestMethod.POST)
+    public ModelAndView enviarcorrecao(
             Model model,
             HttpServletRequest request,
             final RedirectAttributes flash) {
@@ -534,31 +444,25 @@ public class ExerciciosController extends ApplicationController {
         Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
 
         if (exercicio != null) {
-            ExercicioSolucaoClasseService repoSolucaoClasses = new ExercicioSolucaoClasseService();
+            ExercicioClasseService repoClasses = new ExercicioClasseService();
 
-            List<ExercicioSolucaoClasse> listaClasses = repoSolucaoClasses.getAllByIdExercicio(exercicio.getId(), pessoa.getId());
+            List<ExercicioClasse> listaClasses = repoClasses.getAllByIdExercicio(exercicio.getId(), pessoa.getId());
 
             if (listaClasses != null && listaClasses.size() > 0) {
 
                 ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();
                 IntegerResult idSolucao = new IntegerResult();
-                if (repoSolucao.salvarSolucao(pessoa.getId(), exercicio.getId(), idSolucao)) {
-                    log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId(), ETipoLog.CODIGO_ENVIADO);
+                repoSolucao.salvarSolucao(pessoa.getId(), exercicio.getId(), idSolucao);
 
-                    if (idSolucao.getResult() > 0) {
-                        try {
-                            String idRespostaEncoded = Base64Encoder.encode(Integer.toString(idSolucao.getResult()));
-                            log(pessoa.getId(), "ONLINEJUDGE ID RESPOSTA: " + idSolucao.getResult() + " ENCODED: " + idRespostaEncoded, ETipoLog.CODIGO_ENVIADO);
-                            flash.addFlashAttribute("idRespostaEncoded", idRespostaEncoded);
-                        } catch (Exception e) {
-                            log(pessoa.getId(), "ERRO: ONLINEJUDGE ID RESPOSTA: " + idSolucao.getResult() + " MESSAGE: " + e.getMessage(), ETipoLog.CODIGO_ENVIADO);
-                        }
-                    }
-                } else {
-                    log(pessoa.getId(), "ERRO: ID EXERCICIO: " + exercicio.getId(), ETipoLog.CODIGO_ENVIADO);
-                }
+                //enviar para correção
+                log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId(), ETipoLog.CODIGO_ENVIADO);
+
+                repoSolucao.enviarCorrecao(idSolucao.getResult());
+                //log(pessoa.getId(), "ONLINEJUDGE ID RESPOSTA: " + idSolucao.getResult() + " ENCODED: " + idRespostaEncoded, ETipoLog.CODIGO_ENVIADO);
+                //log(pessoa.getId(), "ERRO: ONLINEJUDGE ID RESPOSTA: " + idSolucao.getResult() + " MESSAGE: " + e.getMessage(), ETipoLog.CODIGO_ENVIADO);
             }
         }
+
         mav.setView(new RedirectView("/exercicios/solucionar/" + id, true, true, false));
         return mav;
     }
@@ -576,8 +480,8 @@ public class ExerciciosController extends ApplicationController {
         Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
 
         if (exercicio != null) {
-            ExercicioSolucaoClasseService repoSolucaoClasses = new ExercicioSolucaoClasseService();
-            List<ExercicioSolucaoClasse> classes = repoSolucaoClasses.getAllByIdExercicio(exercicio.getId(), pessoa.getId());
+            ExercicioClasseService repoSolucaoClasses = new ExercicioClasseService();
+            List<ExercicioClasse> classes = repoSolucaoClasses.getAllByIdExercicio(exercicio.getId(), pessoa.getId());
 
             if (classes != null && classes.size() > 0) {
                 try {
@@ -585,7 +489,7 @@ public class ExerciciosController extends ApplicationController {
                     ArrayList<byte[]> arquivos = new ArrayList<byte[]>();
                     ArrayList<String> nomes = new ArrayList<String>();
 
-                    for (ExercicioSolucaoClasse classe : classes) {
+                    for (ExercicioClasse classe : classes) {
                         arquivos.add(classe.getCodigo().getBytes("UTF-8"));
                         nomes.add(classe.getNomeClasse() + ".java");
                     }
@@ -617,12 +521,12 @@ public class ExerciciosController extends ApplicationController {
         HttpSession session = request.getSession(false);
         Pessoa pessoa = (Pessoa) session.getAttribute("UsuarioLogado");
 
-        ExercicioSolucaoClasseService repoSolucaoClasses = new ExercicioSolucaoClasseService();
+        ExercicioClasseService repoSolucaoClasses = new ExercicioClasseService();
 
-        ClasseMarcacaoService repoClasseMarcacao = new ClasseMarcacaoService();
+        ExercicioClasseMarcacaoService repoClasseMarcacao = new ExercicioClasseMarcacaoService();
         Object[] dados = new Object[7];
         dados[0] = idClasse;
-        ExercicioSolucaoClasse classe = repoSolucaoClasses.getById(idClasse);
+        ExercicioClasse classe = repoSolucaoClasses.getById(idClasse);
         dados[1] = classe.getNomeClasse();
         dados[2] = classe.getCodigo().replaceAll("\"", "#'#");
         dados[3] = repoClasseMarcacao.getLinhasDuvida(idClasse);
@@ -644,7 +548,7 @@ public class ExerciciosController extends ApplicationController {
         Pessoa pessoa = (Pessoa) session.getAttribute("UsuarioLogado");
         Turma turma = (Turma) session.getAttribute("TurmaSelecionada");
 
-        ExercicioSolucaoClasseService repoSolucaoClasses = new ExercicioSolucaoClasseService();
+        ExercicioClasseService repoSolucaoClasses = new ExercicioClasseService();
         Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
 
         if (exercicio != null) {
@@ -654,7 +558,7 @@ public class ExerciciosController extends ApplicationController {
                 String fonte = request.getParameter("hdnEditor") == null ? "" : request.getParameter("hdnEditor").toString();
 
                 if (!fonte.isEmpty()) {
-                    ExercicioSolucaoClasse entity = new ExercicioSolucaoClasse();
+                    ExercicioClasse entity = new ExercicioClasse();
 
                     if (idclasse > 0) {
                         entity = repoSolucaoClasses.getById(idclasse);
@@ -697,11 +601,11 @@ public class ExerciciosController extends ApplicationController {
         Pessoa pessoa = (Pessoa) session.getAttribute("UsuarioLogado");
 
         try {
-            ExercicioSolucaoClasseService repoSolucaoClasses = new ExercicioSolucaoClasseService();
-            ExercicioSolucaoClasse classe = repoSolucaoClasses.getById(idClasse);
+            ExercicioClasseService repoExercicioClasses = new ExercicioClasseService();
+            ExercicioClasse classe = repoExercicioClasses.getById(idClasse);
 
             if (classe != null) {
-                repoSolucaoClasses.delete(classe);
+                repoExercicioClasses.delete(classe);
                 log(pessoa.getId(), "SUCESSO: ID: " + idClasse, ETipoLog.CODIGO_EXCLUIDO);
             }
         } catch (Exception e) {
@@ -725,13 +629,13 @@ public class ExerciciosController extends ApplicationController {
         HttpSession session = request.getSession(false);
         Pessoa pessoa = (Pessoa) session.getAttribute("UsuarioLogado");
 
-        ExercicioSolucaoClasseService repoSolucaoClasses = new ExercicioSolucaoClasseService();
+        ExercicioClasseMarcacaoService repoMarcacao = new ExercicioClasseMarcacaoService();
 
         List<Object> dados;
         if (pessoa.getIdPerfil() == EPerfil.ALUNO) {
-            dados = repoSolucaoClasses.getMarcacaoAutor(idExercicio, pessoa.getId(), idClasse, linha);
+            dados = repoMarcacao.getMarcacaoAutor(idExercicio, pessoa.getId(), idClasse, linha);
         } else {
-            dados = repoSolucaoClasses.getMarcacaoLeitor(idExercicio, idClasse, linha);
+            dados = repoMarcacao.getMarcacaoLeitor(idExercicio, idClasse, linha);
         }
 
         model.addAttribute("lista", dados);
@@ -754,7 +658,8 @@ public class ExerciciosController extends ApplicationController {
         Pessoa pessoa = (Pessoa) session.getAttribute("UsuarioLogado");
         Turma turma = (Turma) session.getAttribute("TurmaSelecionada");
 
-        ExercicioSolucaoClasseService repoSolucaoClasses = new ExercicioSolucaoClasseService();
+        ExercicioClasseService repoClasses = new ExercicioClasseService();
+        ExercicioClasseMarcacaoService repoMarcacoes = new ExercicioClasseMarcacaoService();
         Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
 
         if (exercicio != null) {
@@ -767,11 +672,11 @@ public class ExerciciosController extends ApplicationController {
 
                     if (pessoa.getIdPerfil() == EPerfil.PROFESSOR) {
                         //Buscar o id do aluno
-                        ExercicioSolucaoClasse classe = repoSolucaoClasses.getById(idClasse);
+                        ExercicioClasse classe = repoClasses.getById(idClasse);
                         idDestinatario = classe.getIdAluno();
                     }
 
-                    if (repoSolucaoClasses.inserirPergunta(id, idRemetente, pessoa.getNome(), idClasse, linha, false, idDestinatario, questao)) {
+                    if (repoMarcacoes.inserirPergunta(id, idRemetente, pessoa.getNome(), idClasse, linha, false, idDestinatario, questao)) {
                         log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId() + " ID CLASSE: " + idClasse + " LINHA: " + linha, ETipoLog.REALIZAR_PERGUNTA);
                     } else {
                         log(pessoa.getId(), "ERRO: ID EXERCICIO: " + exercicio.getId() + " ID CLASSE: " + idClasse + " LINHA: " + linha, ETipoLog.REALIZAR_PERGUNTA);
@@ -800,8 +705,8 @@ public class ExerciciosController extends ApplicationController {
         HttpSession session = request.getSession(false);
         Pessoa pessoa = (Pessoa) session.getAttribute("UsuarioLogado");
 
-        ExercicioSolucaoClasseService repoSolucaoClasses = new ExercicioSolucaoClasseService();
-        Object dados = repoSolucaoClasses.getAnotacao(idExercicio, idClasse, linha);
+        ExercicioClasseMarcacaoService repoMarcacoes = new ExercicioClasseMarcacaoService();
+        Object dados = repoMarcacoes.getAnotacao(idExercicio, idClasse, linha);
 
         return dados != null ? dados : "";
     }
@@ -820,7 +725,7 @@ public class ExerciciosController extends ApplicationController {
         Pessoa pessoa = (Pessoa) session.getAttribute("UsuarioLogado");
         Turma turma = (Turma) session.getAttribute("TurmaSelecionada");
 
-        ExercicioSolucaoClasseService repoSolucaoClasses = new ExercicioSolucaoClasseService();
+        ExercicioClasseMarcacaoService repoMarcacoes = new ExercicioClasseMarcacaoService();
         Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
 
         if (exercicio != null) {
@@ -828,7 +733,7 @@ public class ExerciciosController extends ApplicationController {
                 String anotacao = request.getParameter("anotacaoClasse") == null ? "" : request.getParameter("anotacaoClasse").toString();
 
                 if (!anotacao.isEmpty()) {
-                    if (repoSolucaoClasses.inserirAnotacao(id, pessoa.getId(), idClasse, linha, false, anotacao)) {
+                    if (repoMarcacoes.inserirAnotacao(id, pessoa.getId(), idClasse, linha, false, anotacao)) {
                         log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId() + " ID CLASSE: " + idClasse + " LINHA: " + linha, ETipoLog.CODIGO_COMENTADO);
                     } else {
                         log(pessoa.getId(), "ERRO: ID EXERCICIO: " + exercicio.getId() + " ID CLASSE: " + idClasse + " LINHA: " + linha, ETipoLog.CODIGO_COMENTADO);

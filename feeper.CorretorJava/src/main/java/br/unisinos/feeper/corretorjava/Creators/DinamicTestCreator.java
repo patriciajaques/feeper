@@ -3,7 +3,6 @@ package br.unisinos.feeper.corretorjava.Creators;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioCasoTeste;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioCasoTestePasso;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioCasoTestePassoParametro;
-import java.util.ArrayList;
 
 public class DinamicTestCreator {
 
@@ -12,7 +11,7 @@ public class DinamicTestCreator {
         StringBuilder builder = new StringBuilder();
         builder.append(this.getImports());
 
-        builder.append("public class test_" + teste.id + " {");
+        builder.append("public class test_" + teste.getId() + " {");
 
         builder.append(this.getGlobalVariables());
         builder.append(this.getBefore());
@@ -66,32 +65,27 @@ public class DinamicTestCreator {
         builder.append("@Test ");
         builder.append("public void test() {");
 
-        ArrayList objetosInicializados = new ArrayList<String>();
-        for (ExercicioCasoTestePasso passo : teste.passos) {
-
-            //caso objeto não inicializado, usa construtor padrão
-            if (objetosInicializados.contains(passo.ObjectName) == false) {
-                builder.append(passo.ObjectType + " " + passo.ObjectName + " = new " + passo.ObjectType + "();");
-                objetosInicializados.add(passo.ObjectName);
-            }
+        for (ExercicioCasoTestePasso passo : teste.getPassos()) {
 
             //escreve o passo
-            if (passo.ExpectedOutputValue == null || passo.ExpectedOutputValue.isEmpty()) {
-                builder.append(passo.ObjectName + "." + passo.MethodName + this.getParameters(passo) + ";");
-            } else {
-                if (passo.ExpectedOutputName == null || passo.ExpectedOutputName.isEmpty()) {
-                    //Não guarda somente valida
-                    builder.append("assertEquals(");
-                    builder.append(passo.ObjectName + "." + passo.MethodName + this.getParameters(passo));
-                    builder.append("," + passo.ExpectedOutputValue + ");");
+            if (passo.getExpectedOutputName() != null && passo.getExpectedOutputName().isEmpty() == false) {
 
-                } else {
-                    //guarda e valida
-                    builder.append(passo.ExpectedOutputType + " " + passo.ExpectedOutputName + " = " + passo.ObjectName + "." + passo.MethodName + this.getParameters(passo) + ";");
-                    objetosInicializados.add(passo.ExpectedOutputName);
+                //guarda na variavel
+                builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = " + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ";");
+            }
+            if (passo.getExpectedOutputValue() != null && passo.getExpectedOutputValue().isEmpty() == false) {
 
-                    builder.append("assertEquals(" + passo.ExpectedOutputName + "," + passo.ExpectedOutputValue + ");");
+                //valida o retorno
+                String value = passo.getExpectedOutputValue();
+                //tratamento para strings
+                if (passo.getExpectedOutputType().equals("String") && value.startsWith("\"") == false) {
+                    value = "\"" + value + "\"";
                 }
+
+                builder.append("assertEquals(" + passo.getExpectedOutputValue() + "," + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ");");
+            } else {
+                //somente executa
+                builder.append(passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ";");
             }
         }
         builder.append("}");
@@ -102,17 +96,26 @@ public class DinamicTestCreator {
     private String getParameters(ExercicioCasoTestePasso passo) {
 
         StringBuilder builder = new StringBuilder();
-        if (passo.inputParameters == null || passo.inputParameters.length == 0) {
+        if (passo.getInputParameters() == null || passo.getInputParameters().isEmpty()) {
             builder.append("()");
         } else {
             builder.append("(");
-            for (int i = 0; i < passo.inputParameters.length; i++) {
-                ExercicioCasoTestePassoParametro parametro = passo.inputParameters[i];
 
-                if (i < passo.inputParameters.length - 1) {
-                    builder.append(parametro.ObjectValue + ",");
+            int nrParametros = passo.getInputParameters().size();
+
+            for (int i = 0; i < nrParametros; i++) {
+                ExercicioCasoTestePassoParametro parametro = passo.getInputParameters().get(i);
+
+                String value = parametro.getObjectValue();
+                //tratamento para strings
+                if (parametro.getObjectType().equals("String") && value.startsWith("\"") == false) {
+                    value = "\"" + value + "\"";
+                }
+
+                if (i < nrParametros - 1) {
+                    builder.append(value + ",");
                 } else {
-                    builder.append(parametro.ObjectValue + ")");
+                    builder.append(value + ")");
                 }
             }
         }

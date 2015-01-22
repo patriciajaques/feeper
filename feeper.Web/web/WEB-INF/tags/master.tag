@@ -10,10 +10,10 @@
     <head>
         <title>feeper - <jsp:invoke fragment="title"/></title>
         <meta http-equiv="Content-Type" content="text/html">
-        
-        <!--[if IE]><link rel="shortcut icon" href="<c:url value='/resources/img/favicon.ico'/>"><![endif]-->
+
+<!--[if IE]><link rel="shortcut icon" href="<c:url value='/resources/img/favicon.ico'/>"><![endif]-->
         <link rel="icon" href="<c:url value='/resources/img/favicon.png'/>">
-        
+
         <link href="<c:url value='/resources/css/bootstrap.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/css/util.css'/>" rel="stylesheet" type="text/css" />
         <!--link href="<c:url value='/resources/css/webkit-scrollbars.css'/>" rel="stylesheet" type="text/css" /-->
@@ -22,13 +22,13 @@
         <link href="<c:url value='/resources/fancybox/jquery.fancybox.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/uploadify/uploadify.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/jquery-te/jquery-te-1.4.0.css'/>" rel="stylesheet" type="text/css" />
-        
+
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
         <script src="<c:url value='/resources/assets/js/html5shiv.js'/>"></script>
         <script src="<c:url value='/resources/assets/js/respond.min.js'/>"></script>
         <![endif]-->
-        
+
         <script src="<c:url value='/resources/jquery/jquery-1.9.1.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/jquery/ui/jquery-ui.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/js/bootstrap.min.js'/>" type="text/javascript"></script>
@@ -41,8 +41,10 @@
         <script src="<c:url value='/resources/fancybox/jquery.fancybox.pack.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/uploadify/jquery.uploadify.min.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/jquery-te/jquery-te-1.4.0.min.js'/>" type="text/javascript"></script>
-        
+
         <script type="text/javascript">
+            var baseUrl = "<c:url value='/'/>";
+
             function MostraCarregando() {
                 $.fancybox.showLoading();
             }
@@ -53,47 +55,49 @@
             function FechaModal() {
                 $.fancybox.close(true);
             }
-            
+
             function changeTurma(id) {
-                if (id === undefined) return;
+                if (id === undefined)
+                    return;
                 document.location.href = "<c:url value='/'/>turma/change/" + id;
             }
-            
+
             function CloseSession() {
                 document.location.href = "<c:url value='/'/>login/logout";
             }
-            
-            $(function(){
-               
-               $("#feedback-button").fancybox({
+
+            $(function () {
+
+                $("#feedback-button").fancybox({
                     'autoSize': true,
                     'autoResize': true,
                     'openEffect': 'fade',
                     'closeEffect': 'fade',
                     'modal': false
-               });
-               
-               var ajaxFormOptions = { 
+                });
+
+                var ajaxFormOptions = {
                     beforeSubmit: MostraCarregando,
                     clearForm: true,
-                    success: function(data) {
-                        RemoveCarregando();                
+                    success: function (data) {
+                        RemoveCarregando();
                         if (data == "ok")
                             $("#msg-feedback-sucesso").slideDown("fast");
                         else
                             $("#msg-feedback-erro").slideDown("fast");
                     }
-                }; 
+                };
                 $('#frmFeedback').ajaxForm(ajaxFormOptions);
-                
+
                 try {
-                   parent.FechaModal();
-               } catch (e) { }
-               SessionTimeout.schedulePopup(44, '< c:url value='/'/>timeout', '<fmt:message key="label.mensagemsessiontimeout"/>'); 
-               
+                    parent.FechaModal();
+                } catch (e) {
+                }
+                SessionTimeout.schedulePopup(44, '< c:url value=' / '/>timeout', '<fmt:message key="label.mensagemsessiontimeout"/>');
+
             });
         </script>
-        
+
         <jsp:invoke fragment="header"/>
 
     </head>
@@ -115,17 +119,17 @@
                                 <li id="menu-lista-conquistas"><a href="<c:url value='/'/>conquistas"><fmt:message key="menu.conquistas"/></a></li>
                                 <li id="menu-lista-logs"><a href="<c:url value='/'/>log"><fmt:message key="menu.logs"/></a></li>
                                 <li id="menu-teste"><a href="<c:url value='/'/>teste"><fmt:message key="menu.teste"/></a></li>
-                            </c:when>
-                            <c:otherwise>
+                                </c:when>
+                                <c:otherwise>
                                 <li id="menu-mensagens"><a href="<c:url value='/'/>mensagens"><fmt:message key="menu.mensagens"/> ${BadgeMensagens}</a></li>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="menu.turmas"/> <b class="caret"></b></a>
                                     <ul class="dropdown-menu">${MinhasTurmas}</ul>
                                 </li>
                                 <li><p class="navbar-text"><b><c:out value="${TurmaSelecionada.getNome()}"/></b></p></li>
-                            </c:otherwise>
-                        </c:choose>
-                        
+                                        </c:otherwise>
+                                    </c:choose>
+
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li style="margin-top: 3px">
@@ -143,12 +147,12 @@
                                 <c:out value="${UsuarioLogado.getNome()}"/> <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
-                                
+
                                 <c:if test="${UsuarioLogado.getIdPerfil() == 3}">
-                                <li><a href="<c:url value='/'/>conquistas/minhasconquistas"><span class="glyphicon glyphicon-certificate"></span>&nbsp;&nbsp;<fmt:message key="menu.minhasconquistas"/></a></li>
-                                <li class="divider"></li>
-                                </c:if>
-                                
+                                    <li><a href="<c:url value='/'/>conquistas/minhasconquistas"><span class="glyphicon glyphicon-certificate"></span>&nbsp;&nbsp;<fmt:message key="menu.minhasconquistas"/></a></li>
+                                    <li class="divider"></li>
+                                    </c:if>
+
                                 <li><a href="<c:url value='/'/>pessoa/perfil"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;<fmt:message key="menu.configuracoes"/></a></li>
                                 <li><a href="<c:url value='/'/>login/logout"><span class="glyphicon glyphicon-off"></span>&nbsp;&nbsp;<fmt:message key="menu.logout"/></a></li>
                             </ul>
@@ -157,7 +161,7 @@
                 </div>
             </div>
         </nav>
-        
+
         <div class="container">
             <div class="row">
                 <c:choose>
@@ -214,10 +218,10 @@
                 </c:choose>
             </div>
         </div>
-        
+
         <jsp:invoke fragment="footer"/>
         <p style="text-align: center; margin-top: 50px;"><small><fmt:message key="author"/></small></p>
-        
+
         <a id="feedback-button" href="#divFeedback">
             <img src="<c:url value='/resources/img/feedback.png'/>" alt="feedback" />
         </a>
@@ -237,6 +241,6 @@
                 <button type="submit" class="btn btn-primary"><fmt:message key="button.enviarfeedback"/></button>
             </form>
         </div>
-        
+
     </body>
 </html>

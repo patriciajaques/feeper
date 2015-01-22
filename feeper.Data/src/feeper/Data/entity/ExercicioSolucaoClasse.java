@@ -14,13 +14,9 @@ import java.util.Date;
 public class ExercicioSolucaoClasse {
 
     private Integer id;
-    private Integer idExercicio;
-    private Integer idAluno;
+    private Integer idSolucao;
     private String nomeClasse;
     private String codigo;
-    private String codigoAnterior;
-    private Date dataCadastro;
-    private boolean favorito;
 
     public Integer getId() {
         return id;
@@ -30,20 +26,12 @@ public class ExercicioSolucaoClasse {
         this.id = id;
     }
 
-    public Integer getIdExercicio() {
-        return idExercicio;
+    public Integer getIdSolucao() {
+        return idSolucao;
     }
 
-    public void setIdExercicio(Integer idExercicio) {
-        this.idExercicio = idExercicio;
-    }
-
-    public Integer getIdAluno() {
-        return idAluno;
-    }
-
-    public void setIdAluno(Integer idAluno) {
-        this.idAluno = idAluno;
+    public void setIdSolucao(Integer idSolucao) {
+        this.idSolucao = idSolucao;
     }
 
     public String getNomeClasse() {
@@ -60,29 +48,5 @@ public class ExercicioSolucaoClasse {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
-    }
-
-    public String getCodigoAnterior() {
-        return codigoAnterior;
-    }
-
-    public void setCodigoAnterior(String codigoAnterior) {
-        this.codigoAnterior = codigoAnterior;
-    }
-
-    public Date getDataCadastro() {
-        return dataCadastro;
-    }
-
-    public void setDataCadastro(Date dataCadastro) {
-        this.dataCadastro = dataCadastro;
-    }
-
-    public boolean isFavorito() {
-        return favorito;
-    }
-
-    public void setFavorito(boolean favorito) {
-        this.favorito = favorito;
     }    
 }

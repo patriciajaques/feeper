@@ -180,7 +180,7 @@ public class PessoaController extends ApplicationController {
             @PathVariable String word, 
             Model model) {
         
-        List<Object> lista = service.search("nome", word, " and IdPerfil = " + idPerfil, "id, nome, email");
+        List<Object> lista = service.search("Nome", word, " and IdPerfil = " + idPerfil, "ID, Nome, Email");
         return lista;
     }
     

@@ -6,6 +6,7 @@
 package feeper.Data.entity;
 
 import java.util.Date;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -23,10 +24,10 @@ public class ExercicioSolucao {
     protected Integer idAluno;
     protected int idStatus;
     protected Date dataCadastro;
-    protected String mensagem;
 
-    protected ExercicioSolucaoClasse[] classes;
-    protected ExercicioCasoTeste[] testes;
+    protected List<ExercicioSolucaoClasse> classes;
+    protected List<ExercicioCasoTeste> testes;
+    private List<ExercicioSolucaoErro> erros;
 
     public Integer getId() {
         return id;
@@ -68,27 +69,29 @@ public class ExercicioSolucao {
         this.dataCadastro = dataCadastro;
     }
 
-    public String getMensagem() {
-        return mensagem;
-    }
-
-    public void setMensagem(String mensagem) {
-        this.mensagem = mensagem;
-    }
-
-    public ExercicioSolucaoClasse[] getClasses() {
+    public List<ExercicioSolucaoClasse> getClasses() {
         return classes;
     }
 
-    public void setClasses(ExercicioSolucaoClasse[] classes) {
+    public void setClasses(List<ExercicioSolucaoClasse> classes) {
         this.classes = classes;
     }
 
-    public ExercicioCasoTeste[] getTestes() {
+    public List<ExercicioCasoTeste> getTestes() {
         return testes;
     }
 
-    public void setTestes(ExercicioCasoTeste[] testes) {
+    public void setTestes(List<ExercicioCasoTeste> testes) {
         this.testes = testes;
     }
+
+    public List<ExercicioSolucaoErro> getErros() {
+        return erros;
+    }
+
+    public void setErros(List<ExercicioSolucaoErro> erros) {
+        this.erros = erros;
+    }
+    
+    
 }

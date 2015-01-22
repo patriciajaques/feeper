@@ -5,10 +5,7 @@
 package feeper.Data.service;
 
 import feeper.Data.entity.Exercicio;
-import feeper.Data.entity.ExercicioClasseValidacao;
-import feeper.Data.entity.ExercicioValidacao;
 import feeper.Data.entity.Pessoa;
-import feeper.Data.entity.Turma;
 import feeper.Data.model.HibernateUtil;
 import java.util.List;
 import org.hibernate.SQLQuery;
@@ -23,18 +20,6 @@ public class ExercicioService extends HibernateUtil<Exercicio> {
         Exercicio exercicio = this.getById(idExercicio);
         PessoaService repoPessoa = new PessoaService();
         return repoPessoa.getById(exercicio.getIdAutor());
-    }
-
-    public List<ExercicioValidacao> getValidacoes(int idExercicio) {
-        SQLQuery query = query("select EV.* from ExercicioValidacao EV inner join Exercicio E on E.ID = EV.IdExercicio where E.ID = :idExercicio order by EV.Ordem").addEntity(ExercicioValidacao.class);
-        query.setInteger("idExercicio", idExercicio);
-        return query.list();
-    }
-
-    public List<ExercicioClasseValidacao> getClassesValidacao(int idExercicio) {
-        SQLQuery query = query("select EV.* from ExercicioClasseValidacao EV inner join Exercicio E on E.ID = EV.IdExercicio where E.ID = :idExercicio order by EV.Ordem").addEntity(ExercicioClasseValidacao.class);
-        query.setInteger("idExercicio", idExercicio);
-        return query.list();
     }
 
     public List<Exercicio> getExercioByTurma(int idTurma) {

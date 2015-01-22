@@ -58,10 +58,9 @@ public class HibernateUtil<T> {
 
     public List<T> search(String coluna, String dado) {
         List<T> lista = null;
-        Query query = null;
         try {
-            session = currentSession();
-            query = session.createQuery("From " + objClass.getName() + " Where " + coluna + " like '%" + dado + "%'");
+            SQLQuery query = query("Select * From " + objClass.getSimpleName() + " Where " + coluna + " like :like");
+            query.setParameter("like", "%" + dado + "%");
             lista = query.list();
         } catch (HibernateException e) {
             System.err.println(e.fillInStackTrace());
@@ -71,10 +70,8 @@ public class HibernateUtil<T> {
 
     public List<Object> search(String colunaFiltro, String filtro, String colunasResultado) {
         List<Object> lista = null;
-        Query query = null;
         try {
-            session = currentSession();
-            query = session.createQuery("Select " + colunasResultado + " From " + objClass.getName() + " Where " + colunaFiltro + " like :like order by " + colunasResultado);
+            SQLQuery query = query("Select " + colunasResultado + " From " + objClass.getSimpleName() + " Where " + colunaFiltro + " like :like order by " + colunasResultado);
             query.setParameter("like", "%" + filtro + "%");
             lista = query.list();
         } catch (HibernateException e) {
@@ -85,10 +82,8 @@ public class HibernateUtil<T> {
 
     public List<Object> search(String colunaFiltro, String filtro, String where, String colunasResultado) {
         List<Object> lista = null;
-        Query query = null;
         try {
-            session = currentSession();
-            query = session.createQuery("Select " + colunasResultado + " From " + objClass.getName() + " Where " + colunaFiltro + " like :like " + where + " order by " + colunasResultado);
+            SQLQuery query = query("Select " + colunasResultado + " From " + objClass.getSimpleName() + " Where " + colunaFiltro + " like :like " + where + " order by " + colunasResultado);
             query.setParameter("like", "%" + filtro + "%");
             lista = query.list();
         } catch (HibernateException e) {
@@ -99,10 +94,8 @@ public class HibernateUtil<T> {
 
     public List<T> getAll() {
         List<T> lista = null;
-        Query query = null;
         try {
-            session = currentSession();
-            query = session.createQuery("From " + objClass.getName());
+            SQLQuery query = query("Select * From " + objClass.getSimpleName());
             lista = query.list();
         } catch (HibernateException e) {
             System.err.println(e.fillInStackTrace());
@@ -123,7 +116,7 @@ public class HibernateUtil<T> {
         Query query = null;
         try {
             session = currentSession();
-            query = session.createQuery("From " + objClass.getName() + " Where " + column + " = :p ");
+            query = session.createQuery("From " + objClass.getSimpleName() + " Where " + column + " = :p ");
 
             if (type == IntegerType.INSTANCE) {
                 query.setInteger("p", Integer.parseInt(value.toString()));

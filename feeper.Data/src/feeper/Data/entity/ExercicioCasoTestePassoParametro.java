@@ -13,9 +13,10 @@ public class ExercicioCasoTestePassoParametro {
     
     private Integer id;
     private Integer idPasso;
-    private String ObjectType;  
-    private String ObjectName;
-    private String ObjectValue;
+    private int ordem;
+    private String objectType;  
+    private String objectName;
+    private String objectValue;
 
     public Integer getId() {
         return id;
@@ -33,27 +34,35 @@ public class ExercicioCasoTestePassoParametro {
         this.idPasso = idPasso;
     }
 
+    public int getOrdem() {
+        return ordem;
+    }
+
+    public void setOrdem(int ordem) {
+        this.ordem = ordem;
+    }
+
     public String getObjectType() {
-        return ObjectType;
+        return objectType;
     }
 
     public void setObjectType(String ObjectType) {
-        this.ObjectType = ObjectType;
+        this.objectType = ObjectType;
     }
 
     public String getObjectName() {
-        return ObjectName;
+        return objectName;
     }
 
     public void setObjectName(String ObjectName) {
-        this.ObjectName = ObjectName;
+        this.objectName = ObjectName;
     }
 
     public String getObjectValue() {
-        return ObjectValue;
+        return objectValue;
     }
 
     public void setObjectValue(String ObjectValue) {
-        this.ObjectValue = ObjectValue;
+        this.objectValue = ObjectValue;
     }
 }

@@ -6,26 +6,14 @@
             <column name="ID"/>
             <generator class="identity"/>
         </id>
-        <property name="idExercicio" type="java.lang.Integer">
-            <column name="IdExercicio" not-null="true"/>
-        </property>
-        <property name="idAluno" type="java.lang.Integer">
-            <column name="IdAluno" not-null="true"/>
-        </property>
+        <property name="idSolucao" type="java.lang.Integer">
+            <column name="IdSolucao" not-null="true"/>
+        </property>  
         <property name="nomeClasse" type="string">
             <column length="200" name="NomeClasse"/>
         </property>
         <property name="codigo" type="string">
             <column  name="Codigo" length="16777215"/>
-        </property>
-        <property name="codigoAnterior" type="string">
-            <column name="CodigoAnterior" length="16777215" />
-        </property>
-        <property name="dataCadastro" type="timestamp">
-            <column length="19" name="DataCadastro" not-null="true"/>
-        </property>
-        <property name="favorito" type="boolean">
-            <column name="Favorito" />
         </property>
     </class>
 </hibernate-mapping>

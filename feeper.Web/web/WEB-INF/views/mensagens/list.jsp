@@ -11,7 +11,7 @@
 //4 - IdPessoa
 //5 - Nome
 //6 - LinhaInicio
-//7 - IdCodigoFonte
+//7 - IdClasse
 //8 - Classe
 //9 - IdExercicio
 //10 - Exercicio
@@ -33,18 +33,18 @@
                 
                 $(".fancybox").click(function(event){
                     var idExercicio = $(this).attr("data-idexercicio");
-                    var idCodigoFonte = $(this).attr("data-idcodigofonte");
+                    var idClasse = $(this).attr("data-idclasse");
                     var linha = $(this).attr("data-linha");
                     var resposta = $(this).attr("data-resposta");
                     var aluno = $(this).attr("data-aluno");
                     var url = "";
                     
-                    if (idExercicio === undefined || idCodigoFonte === undefined || linha === undefined || resposta === undefined || aluno === undefined) return;
+                    if (idExercicio === undefined || idClasse === undefined || linha === undefined || resposta === undefined || aluno === undefined) return;
                     
                     if (resposta == "true")
-                        url = "<c:url value='/'/>codigos/showversion/" + idCodigoFonte + "/" + aluno
+                        url = "<c:url value='/'/>classes/showversion/" + idClasse + "/" + aluno
                     else
-                        url = "<c:url value='/'/>codigos/show/" + idExercicio + "/" + idCodigoFonte + "/" + linha
+                        url = "<c:url value='/'/>classes/show/" + idExercicio + "/" + idClasse + "/" + linha
                     
                     event.preventDefault ? event.preventDefault() : event.returnValue = false;
                     $.fancybox({
@@ -76,9 +76,9 @@
             <c:forEach var="item" varStatus="status" items="${listaMensagens}">
                 <blockquote class="${item[15] == 1 ? "new-message" : "old-message"}">
                     <p><c:out value="${item[16]}"/></p>
-                    <small><c:out value="${item[1]}"/> <fmt:message key="label.mensagens.em"/> <a href="#" class="fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}" data-resposta="${item[12]}" data-aluno="${item[11]}"><c:out value="${item[10]}"/> / <c:out value="${item[8]}"/> (<fmt:message key="label.mensagens.linha"/> ${item[6]})</a> - <fmt:message key="label.mensagens.ha"/> ${item[13]}</small><br>
+                    <small><c:out value="${item[1]}"/> <fmt:message key="label.mensagens.em"/> <a href="#" class="fancybox" data-idexercicio="${item[9]}" data-idclasse="${item[7]}" data-linha="${item[6]}" data-resposta="${item[12]}" data-aluno="${item[11]}"><c:out value="${item[10]}"/> / <c:out value="${item[8]}"/> (<fmt:message key="label.mensagens.linha"/> ${item[6]})</a> - <fmt:message key="label.mensagens.ha"/> ${item[13]}</small><br>
                     <p>
-                        <button type="button" class="btn btn-primary btn-xs fancybox" data-idexercicio="${item[9]}" data-idcodigofonte="${item[7]}" data-linha="${item[6]}" data-resposta="${item[12]}" data-aluno="${item[11]}"><fmt:message key="button.responder"/></button>
+                        <button type="button" class="btn btn-primary btn-xs fancybox" data-idexercicio="${item[9]}" data-idclasse="${item[7]}" data-linha="${item[6]}" data-resposta="${item[12]}" data-aluno="${item[11]}"><fmt:message key="button.responder"/></button>
                     </p>
                 </blockquote>
             </c:forEach>

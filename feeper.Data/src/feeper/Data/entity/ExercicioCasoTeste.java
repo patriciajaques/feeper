@@ -5,6 +5,8 @@
  */
 package feeper.Data.entity;
 
+import java.util.List;
+
 /**
  *
  * @author gilvani
@@ -14,8 +16,11 @@ public class ExercicioCasoTeste {
     private Integer id;
     private Integer idExercicio;
     private Boolean ativo;
-    private Integer ordem; 
-    private ExercicioCasoTestePasso[] passos;
+    private String mensagemPersonalizada;
+    private Integer ordem;
+    
+    //auxiliar no Angular
+    private List<ExercicioCasoTestePasso> passos;
 
     public Integer getId() {
         return id;
@@ -41,6 +46,14 @@ public class ExercicioCasoTeste {
         this.ativo = ativo;
     }
 
+    public String getMensagemPersonalizada() {
+        return mensagemPersonalizada;
+    }
+
+    public void setMensagemPersonalizada(String mensagemPersonalizada) {
+        this.mensagemPersonalizada = mensagemPersonalizada;
+    }
+
     public Integer getOrdem() {
         return ordem;
     }
@@ -49,11 +62,11 @@ public class ExercicioCasoTeste {
         this.ordem = ordem;
     }
 
-    public ExercicioCasoTestePasso[] getPassos() {
+    public List<ExercicioCasoTestePasso> getPassos() {
         return passos;
     }
 
-    public void setPassos(ExercicioCasoTestePasso[] passos) {
+    public void setPassos(List<ExercicioCasoTestePasso> passos) {
         this.passos = passos;
     }
     

@@ -33,7 +33,7 @@
                     {
                         $(this).parent().addClass("borda-selecao");
                     
-                        var url = "<c:url value='/'/>codigos/results/" + idExercicio + "/" + idAluno;
+                        var url = "<c:url value='/'/>classes/results/" + idExercicio + "/" + idAluno;
                         $(this).parent().parent().after("<tr><td colspan='11' style='border-top:2px solid #999; border-bottom:2px solid #999; display:none' id='panelResults" + idExercicio + "_" + idAluno + "'></td></tr>");
                     
                         MostraCarregando();
@@ -44,26 +44,26 @@
                         //------------------------------
                         //EVENTOS DOS BOTÕES DA LISTAGEM
                         //------------------------------
-                        $("#panelResults" + idExercicio + "_" + idAluno).on('click', '.btn-vercodigos', function(){
+                        $("#panelResults" + idExercicio + "_" + idAluno).on('click', '.btn-verclasses', function(){
                             var id = $(this).attr("data-id");
                             var idAluno = $(this).attr("data-idaluno");
 
                             if (id === undefined || idAluno === undefined) return;
 
-                            if ($("#panelCodes" + id + "_" + idAluno).length == 0)
+                            if ($("#panelClasses" + id + "_" + idAluno).length == 0)
                             {
-                                var url = "<c:url value='/'/>codigos/listcode/" + id + "/" + idAluno;
-                                $(this).parent().parent().parent().after("<tr><td colspan='4' style='border-top:2px solid #999; border-bottom:2px solid #999; display:none' id='panelCodes" + id + "_" + idAluno + "'></td></tr>");
+                                var url = "<c:url value='/'/>classes/listclasses/" + id + "/" + idAluno;
+                                $(this).parent().parent().parent().after("<tr><td colspan='4' style='border-top:2px solid #999; border-bottom:2px solid #999; display:none' id='panelClasses" + id + "_" + idAluno + "'></td></tr>");
 
                                 MostraCarregando()
-                                $("#panelCodes" + id + "_" + idAluno).slideDown("fast").load(url, function(){
+                                $("#panelClasses" + id + "_" + idAluno).slideDown("fast").load(url, function(){
                                     RemoveCarregando();
                                 });
                                 
                                 //------------------------------
                                 //EVENTOS DOS BOTÕES DA LISTAGEM
                                 //------------------------------
-                                $("#panelCodes" + id + "_" + idAluno).on('click', '.btn-exibircodigo', function(){
+                                $("#panelClasses" + id + "_" + idAluno).on('click', '.btn-exibirclasse', function(){
                                     var id = $(this).attr("data-id");
                                     var idAluno = $(this).attr("data-idaluno");
 
@@ -78,19 +78,19 @@
                                         'arrows': false,
                                         'width': '90%',
                                         'height': '90%',
-                                        'href': "<c:url value='/'/>codigos/showversion/" + id + "/" + idAluno
+                                        'href': "<c:url value='/'/>classes/showversion/" + id + "/" + idAluno
                                     });
                                 });
                                 
-                                $("#panelCodes" + id + "_" + idAluno).on('click', '.btn-download', function(){
+                                $("#panelClasses" + id + "_" + idAluno).on('click', '.btn-download', function(){
                                     var id = $(this).attr("data-id");
                                     var idAluno = $(this).attr("data-idaluno");
-                                    document.location.href = "<c:url value='/'/>codigos/downloadfileversion/" + id + "/" + idAluno;
+                                    document.location.href = "<c:url value='/'/>classes/downloadfileversion/" + id + "/" + idAluno;
                                 });
                             }
                             else{
                                 $(this).parent().removeClass("borda-selecao");
-                                $("#panelCodes" + id + "_" + idAluno).slideUp("fast").parent().remove();
+                                $("#panelClasses" + id + "_" + idAluno).slideUp("fast").parent().remove();
                             }
 
                         });
@@ -98,7 +98,7 @@
                         $("#panelResults" + idExercicio + "_" + idAluno).on('click', '.btn-download-pacote', function(){
                             var id = $(this).attr("data-id");
                             var idAluno = $(this).attr("data-idaluno");
-                            document.location.href = "<c:url value='/'/>codigos/downloadpkgversion/" + id + "/" + idAluno;
+                            document.location.href = "<c:url value='/'/>classes/downloadpkgversion/" + id + "/" + idAluno;
                         });
                     }
                     else{

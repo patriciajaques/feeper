@@ -1,31 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="feeper.Data.entity.ExercicioCasoTestePasso" table="ExercicioCasoTestePasso" catalog="feeper">
+    <class catalog="feeper" name="feeper.Data.entity.ExercicioCasoTestePasso" table="ExercicioCasoTestePasso">
         <id name="id" type="java.lang.Integer">
-            <column name="ID" />
-            <generator class="identity" />
+            <column name="ID"/>
+            <generator class="identity"/>
         </id>
         <property name="idCasoTeste" type="java.lang.Integer">
-            <column name="idCasoTeste" not-null="true" />
+            <column name="IdCasoTeste" not-null="true"/>
         </property>
-        <property name="ObjectType" type="string">
-            <column name="ObjectType" length="200" />
+        <property name="ordem" type="java.lang.Integer">
+            <column name="Ordem"/>
         </property>
-        <property name="ObjectName" type="string">
-            <column name="ObjectName" length="200" />
+        <property name="operationType" type="string">
+            <column length="200" name="OperationType"/>
         </property>
-        <property name="MethodName" type="string">
-            <column name="MethodName" length="200" />
+        <property name="expectedOutputType" type="string">
+            <column length="200" name="ExpectedOutputType"/>
         </property>
-        <property name="ExpectedOutputType" type="string">
-            <column name="ExpectedOutputType" length="200" />
+        <property name="expectedOutputName" type="string">
+            <column length="200" name="ExpectedOutputName"/>
         </property>
-        <property name="ExpectedOutputName" type="string">
-            <column name="ExpectedOutputName" length="200" />
+        <property name="expectedOutputValue" type="string">
+            <column length="200" name="ExpectedOutputValue"/>
         </property>
-        <property name="ExpectedOutputValue" type="string">
-            <column name="ExpectedOutputValue" length="200" />
+        <property name="objectName" type="string">
+            <column length="200" name="ObjectName"/>
+        </property>
+        <property name="methodName" type="string">
+            <column length="200" name="MethodName"/>
         </property>
     </class>
 </hibernate-mapping>

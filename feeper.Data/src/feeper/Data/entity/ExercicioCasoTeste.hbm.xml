@@ -12,6 +12,9 @@
         <property name="ativo" type="boolean">
             <column name="Ativo" not-null="true" />
         </property>
+        <property name="mensagemPersonalizada" type="string">
+            <column length="5000" name="MensagemPersonalizada"/>
+        </property>
         <property name="ordem" type="java.lang.Integer">
             <column name="Ordem" />
         </property>

@@ -5,7 +5,7 @@
  */
 package br.unisinos.feeper.corretorjava.Creators;
 
-import br.unisinos.feeper.corretorjava.FileUtils.CopyFile;
+import br.unisinos.feeper.corretorjava.Utils.CopyFile;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;

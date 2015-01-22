@@ -156,8 +156,8 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "  P.Nome as NomePessoa, "
                     + "  E.ID as IdExercicio, "
                     + "  E.Nome as NomeExercicio, "
-                    + "  RRR.ID as IdResposta, "
-                    + "  RRR.IdStatus as IdStatusResposta "
+                    + "  RRR.ID as IdSolucao, "
+                    + "  RRR.IdStatus as IdStatusSolucao "
                     + "from "
                     + "  Turma T "
                     + "  inner join TurmaPessoa TP "
@@ -169,18 +169,18 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "  inner join Exercicio E "
                     + "  on E.ID = TE.IdExercicio "
                     + "  left join ( "
-                    + "    select R.* from Resposta R "
+                    + "    select ES.* from ExercicioSolucao ES "
                     + "    inner join ( "
-                    + "      select IdExercicio, IdAutor, max(DataCadastro) as DataCadastro  "
-                    + "      from Resposta "
-                    + "      group by IdExercicio, IdAutor "
+                    + "      select IdExercicio, IdAluno, max(DataCadastro) as DataCadastro  "
+                    + "      from ExercicioSolucao "
+                    + "      group by IdExercicio, IdAluno "
                     + "    ) RR "
-                    + "    on RR.IdExercicio = R.IdExercicio "
-                    + "    and RR.IdAutor = R.IdAutor "
-                    + "    and RR.DataCadastro = R.DataCadastro "
+                    + "    on RR.IdExercicio = ES.IdExercicio "
+                    + "    and RR.IdAluno = ES.IdAluno "
+                    + "    and RR.DataCadastro = ES.DataCadastro "
                     + "  ) RRR "
                     + "  on RRR.IdExercicio = E.ID "
-                    + "  and RRR.IdAutor = P.ID "
+                    + "  and RRR.IdAluno = P.ID "
                     + "where "
                     + "  T.Ativo = 1 "
                     + "  and P.Ativo = 1 "
@@ -195,8 +195,8 @@ public class TurmaService extends HibernateUtil<Turma> {
             query.addScalar("NomePessoa", StringType.INSTANCE);
             query.addScalar("IdExercicio", IntegerType.INSTANCE);
             query.addScalar("NomeExercicio", StringType.INSTANCE);
-            query.addScalar("IdResposta", StringType.INSTANCE);
-            query.addScalar("IdStatusResposta", IntegerType.INSTANCE);
+            query.addScalar("IdSolucao", StringType.INSTANCE);
+            query.addScalar("IdStatusSolucao", IntegerType.INSTANCE);
 
             query.setInteger("idTurma", idTurma);
 
@@ -215,8 +215,8 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "  P.Nome as NomePessoa, "
                     + "  E.ID as IdExercicio, "
                     + "  E.Nome as NomeExercicio, "
-                    + "  RRR.ID as IdResposta, "
-                    + "  RRR.IdStatus as IdStatusResposta "
+                    + "  RRR.ID as IdSolucao, "
+                    + "  RRR.IdStatus as IdStatusSolucao "
                     + "from "
                     + "  Turma T "
                     + "  inner join TurmaPessoa TP "
@@ -228,18 +228,18 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "  inner join Exercicio E "
                     + "  on E.ID = TE.IdExercicio "
                     + "  left join ( "
-                    + "    select R.* from Resposta R "
+                    + "    select ES.* from ExercicioSolucao ES "
                     + "    inner join ( "
-                    + "      select IdExercicio, IdAutor, max(DataCadastro) as DataCadastro  "
-                    + "      from Resposta "
-                    + "      group by IdExercicio, IdAutor "
+                    + "      select IdExercicio, IdAluno, max(DataCadastro) as DataCadastro  "
+                    + "      from ExercicioSolucao "
+                    + "      group by IdExercicio, IdAluno "
                     + "    ) RR "
-                    + "    on RR.IdExercicio = R.IdExercicio "
-                    + "    and RR.IdAutor = R.IdAutor "
-                    + "    and RR.DataCadastro = R.DataCadastro "
+                    + "    on RR.IdExercicio = ES.IdExercicio "
+                    + "    and RR.IdAluno = ES.IdAluno "
+                    + "    and RR.DataCadastro = ES.DataCadastro "
                     + "  ) RRR "
                     + "  on RRR.IdExercicio = E.ID "
-                    + "  and RRR.IdAutor = P.ID "
+                    + "  and RRR.IdAluno = P.ID "
                     + "where "
                     + "  T.Ativo = 1 "
                     + "  and P.Ativo = 1 "
@@ -255,8 +255,8 @@ public class TurmaService extends HibernateUtil<Turma> {
             query.addScalar("NomePessoa", StringType.INSTANCE);
             query.addScalar("IdExercicio", IntegerType.INSTANCE);
             query.addScalar("NomeExercicio", StringType.INSTANCE);
-            query.addScalar("IdResposta", IntegerType.INSTANCE);
-            query.addScalar("IdStatusResposta", IntegerType.INSTANCE);
+            query.addScalar("IdSolucao", IntegerType.INSTANCE);
+            query.addScalar("IdStatusSolucao", IntegerType.INSTANCE);
 
             query.setInteger("idTurma", idTurma);
             query.setInteger("idAluno", idAluno);

@@ -33,10 +33,10 @@
             <div class="panel-body" id="pnlMensagens" style="height: 300px; overflow-y: auto">...</div>
             <div class="panel-footer">
                 <form role="form" action="<c:url value='/'/>classes/saveversionquestion" id="frmQuestao" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" id="hdnQuestaoIdRespostaClasse" name="hdnQuestaoIdRespostaClasse">
+                    <input type="hidden" id="hdnQuestaoIdExercicioSolucaoClasse" name="hdnQuestaoIdExercicioSolucaoClasse">
                     <input type="hidden" id="hdnQuestaoLinha" name="hdnQuestaoLinha">
-                    <input type="hidden" id="hdnQuestaoIdExercicio" name="hdnQuestaoIdExercicio" value="${idExercicio}">
-                    <textarea class="form-control input-sm" rows="3" name="questaoRespostaClasse"></textarea>
+                    <input type="hidden" id="hdnQuestaoIdExercicio" name="hdnQuestaoIdExercicio">
+                    <textarea class="form-control input-sm" rows="3" name="questaoExercicioSolucaoClasse"></textarea>
                     <button class="btn btn-success btn-xs" type="submit"><span class="glyphicon glyphicon-ok"></span> <fmt:message key="button.enviarpergunta"/></button>
                 </form>
             </div>
@@ -50,12 +50,12 @@
             </div>
             <form role="form" action="<c:url value='/'/>classes/saveversionannotation" id="frmAnotacao" method="POST">
             <div class="panel-body" id="pnlAnotacoes" style="height: 300px; overflow-y: auto">
-                <textarea class="form-control" rows="12" id="anotacaoRespostaClasse" name="anotacaoRespostaClasse"></textarea>
+                <textarea class="form-control" rows="12" id="anotacaoExercicioSolucaoClasse" name="anotacaoExercicioSolucaoClasse"></textarea>
             </div>
             <div class="panel-footer">
-                <input type="hidden" id="hdnAnotacaoIdRespostaClasse" name="hdnAnotacaoIdRespostaClasse">
+                <input type="hidden" id="hdnAnotacaoIdExercicioSolucaoClasse" name="hdnAnotacaoIdExercicioSolucaoClasse">
                 <input type="hidden" id="hdnAnotacaoLinha" name="hdnAnotacaoLinha">
-                <input type="hidden" id="hdnAnotacaoIdExercicio" name="hdnAnotacaoIdExercicio" value="${idExercicio}">
+                <input type="hidden" id="hdnAnotacaoIdExercicio" name="hdnAnotacaoIdExercicio">
                 <button class="btn btn-success btn-xs" type="submit"><span class="glyphicon glyphicon-save"></span> <fmt:message key="button.salvar"/></button>
                 <button class="btn btn-success btn-xs"><span class="glyphicon glyphicon-trash"></span> <fmt:message key="button.excluir"/></button>
             </div>
@@ -144,7 +144,7 @@
                     },
                     success: function(data) {
                         $.fancybox.hideLoading();
-                        $("#anotacaoRespostaClasse").val(data[1]);
+                        $("#anotacaoExercicioSolucaoClasse").val(data[1]);
                         $("#panel-markedannotations .panel-body").animate({ scrollTop: $("#panel-markedannotations .panel-body")[0].scrollHeight}, 1000);
                     }
                 };
@@ -158,10 +158,11 @@
                 $("#panel-markedquestions").show("slide", "fast");
                 $('html, body').animate({ scrollTop: $("#panel-markedquestions").offset().top }, 1000);
 
-                $("#hdnQuestaoIdRespostaClasse").val(${idClasse});
+                $("#hdnQuestaoIdExercicioSolucaoClasse").val(${idExercicioSolucaoClasse});
+                $("#hdnQuestaoIdExercicio").val(${idExercicio});
                 $("#hdnQuestaoLinha").val(row);
 
-                $("#panel-markedquestions .panel-body").load("<c:url value='/'/>classe/showversionquestion/${idExercicio}/${idClasse}/" + row, function(){
+                $("#panel-markedquestions .panel-body").load("<c:url value='/'/>classes/showversionquestion/${idExercicioSolucaoClasse}/" + row, function(){
                     $("#panel-markedquestions .panel-body").animate({ scrollTop: $("#panel-markedquestions .panel-body")[0].scrollHeight}, 1000);
                 });
             }
@@ -172,11 +173,12 @@
                 $("#panel-markedannotations #title-linenumber").html(row);
                 $("#panel-markedannotations").show("slide", "fast");
 
-                $("#hdnAnotacaoIdRespostaClasse").val(${idClasse});
+                $("#hdnAnotacaoIdExercicioSolucaoClasse").val(${idExercicioSolucaoClasse});
+                $("#hdnAnotacaoIdExercicio").val(${idExercicio});
                 $("#hdnAnotacaoLinha").val(row);
 
-                $.get("<c:url value='/'/>classes/showversionannotation/${idExercicio}/${idClasse}/" + row, function(data){
-                    $("#anotacaoRespostaClasse").val(data[1]).focus();
+                $.get("<c:url value='/'/>classes/showversionannotation/${idExercicioSolucaoClasse}/" + row, function(data){
+                    $("#anotacaoeExercicioSolucaoClasse").val(data[1]).focus();
                     $("#panel-markedannotations .panel-body").animate({ scrollTop: $("#panel-markedannotations .panel-body")[0].scrollHeight}, 1000);
                 });
             }

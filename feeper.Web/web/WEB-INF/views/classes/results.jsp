@@ -2,7 +2,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
-//Respostas[10]
+//Solucoes[9]
 //0 - ID
 //1 - IdAutor
 //2 - Autor
@@ -11,8 +11,7 @@
 //5 - DataCadastroString
 //6 - DataCadastro
 //7 - IdStatus
-//8 - Status
-//9 - Mensagem  
+//8 - Status 
 %>
 <h5 style="margin-top: 0px;"><c:out value="${nomeExercicio}"/></h5>
 <div class="panel panel-default" style="margin-bottom: 0px;">
@@ -27,8 +26,8 @@
                 </tr>
             </thead>
             <tbody>
-                <c:if test="${not empty Respostas}">
-                    <c:forEach var="item" varStatus="status" items="${Respostas}">
+                <c:if test="${not empty Solucoes}">
+                    <c:forEach var="item" varStatus="status" items="${Solucoes}">
                         <tr>
                             <td>
                                 <div class="btn-group btn-group-xs">
@@ -42,7 +41,7 @@
                         </tr>
                     </c:forEach>
                 </c:if>
-                <c:if test="${empty Respostas}">
+                <c:if test="${empty Solucoes}">
                     <tr>
                         <td colspan="4" style="text-align: center;"><fmt:message key="label.nenhumregistroencontrado"/></td>
                     </tr>
