@@ -6,68 +6,77 @@
 <t:master>
     <jsp:attribute name="title"><fmt:message key="title.resultadoexercicios"/></jsp:attribute>
     <jsp:attribute name="header">
-        
+
         <style>
             .borda-selecao {
                 background-color: #999 !important
             }
         </style>
-        
+
         <script type="text/javascript">
-            $(function(){
+            $(function () {
                 $("#menu-minhas-notas").addClass("active");
-                
+
                 MostraCarregando();
-                $("#grade-resultados").load("<c:url value='/'/>notas/results", function(){
+                $("#grade-resultados").load("<c:url value='/'/>notas/results", function () {
                     RemoveCarregando();
                     $(".th-exercicio").tooltip();
                 });
-                
-                $("#grade-resultados").on('click', '.btn-exercicio', function(){
+
+                $("#grade-resultados").on('click', '.btn-exercicio', function () {
                     var idExercicio = $(this).attr("data-idexercicio");
                     var idAluno = $(this).attr("data-idaluno");
-                    
-                    if (idExercicio === undefined || idAluno === undefined) return;
-                    
+
+                    if (idExercicio === undefined || idAluno === undefined)
+                        return;
+
                     if ($("#panelResults" + idExercicio + "_" + idAluno).length == 0)
                     {
                         $(this).parent().addClass("borda-selecao");
-                    
-                        var url = "<c:url value='/'/>classes/results/" + idExercicio + "/" + idAluno;
+
+                        var url = "<c:url value='/'/>solucoes/results/" + idExercicio + "/" + idAluno;
                         $(this).parent().parent().after("<tr><td colspan='11' style='border-top:2px solid #999; border-bottom:2px solid #999; display:none' id='panelResults" + idExercicio + "_" + idAluno + "'></td></tr>");
-                    
+
                         MostraCarregando();
-                        $("#panelResults" + idExercicio + "_" + idAluno).slideDown("fast").load(url, function(){
+                        $("#panelResults" + idExercicio + "_" + idAluno).slideDown("fast").load(url, function () {
                             RemoveCarregando();
                         });
-                        
+
                         //------------------------------
                         //EVENTOS DOS BOTÕES DA LISTAGEM
                         //------------------------------
-                        $("#panelResults" + idExercicio + "_" + idAluno).on('click', '.btn-verclasses', function(){
+                        $("#panelResults" + idExercicio + "_" + idAluno).on('click', '.btn-verclasses', function () {
                             var id = $(this).attr("data-id");
                             var idAluno = $(this).attr("data-idaluno");
 
-                            if (id === undefined || idAluno === undefined) return;
+                            if (id === undefined || idAluno === undefined)
+                                return;
+                            
+                            if ($("#panelErros" + id + "_" + idAluno).length > 0)
+                            {
+                                $(this).parent().removeClass("borda-selecao");
+                                $("#panelErros" + id + "_" + idAluno).slideUp("fast").parent().remove();
+                            }
 
                             if ($("#panelClasses" + id + "_" + idAluno).length == 0)
                             {
-                                var url = "<c:url value='/'/>classes/listclasses/" + id + "/" + idAluno;
+                                var url = "<c:url value='/'/>classes/listsolucaoclasses/" + id + "/" + idAluno;
                                 $(this).parent().parent().parent().after("<tr><td colspan='4' style='border-top:2px solid #999; border-bottom:2px solid #999; display:none' id='panelClasses" + id + "_" + idAluno + "'></td></tr>");
 
                                 MostraCarregando()
-                                $("#panelClasses" + id + "_" + idAluno).slideDown("fast").load(url, function(){
+                                $("#panelClasses" + id + "_" + idAluno).slideDown("fast").load(url, function () {
                                     RemoveCarregando();
                                 });
-                                
+
                                 //------------------------------
                                 //EVENTOS DOS BOTÕES DA LISTAGEM
                                 //------------------------------
-                                $("#panelClasses" + id + "_" + idAluno).on('click', '.btn-exibirclasse', function(){
+                                $("#panelClasses" + id + "_" + idAluno).on('click', '.btn-exibirclasse', function () {
                                     var id = $(this).attr("data-id");
                                     var idAluno = $(this).attr("data-idaluno");
 
-                                    if (id === undefined || idAluno === undefined) return;
+                                    if (id === undefined || idAluno === undefined)
+                                        return;
 
                                     $.fancybox({
                                         'openEffect': 'fade',
@@ -81,42 +90,72 @@
                                         'href': "<c:url value='/'/>classes/showversion/" + id + "/" + idAluno
                                     });
                                 });
-                                
-                                $("#panelClasses" + id + "_" + idAluno).on('click', '.btn-download', function(){
+
+                                $("#panelClasses" + id + "_" + idAluno).on('click', '.btn-download', function () {
                                     var id = $(this).attr("data-id");
                                     var idAluno = $(this).attr("data-idaluno");
                                     document.location.href = "<c:url value='/'/>classes/downloadfileversion/" + id + "/" + idAluno;
                                 });
                             }
-                            else{
+                            else {
                                 $(this).parent().removeClass("borda-selecao");
                                 $("#panelClasses" + id + "_" + idAluno).slideUp("fast").parent().remove();
                             }
 
                         });
-                        
-                        $("#panelResults" + idExercicio + "_" + idAluno).on('click', '.btn-download-pacote', function(){
+
+                        $("#panelResults" + idExercicio + "_" + idAluno).on('click', '.btn-verresultado', function () {
+                            var id = $(this).attr("data-id");
+                            var idAluno = $(this).attr("data-idaluno");
+
+                            if (id === undefined || idAluno === undefined)
+                                return;
+
+                            if ($("#panelClasses" + id + "_" + idAluno).length > 0)
+                            {
+                                $(this).parent().removeClass("borda-selecao");
+                                $("#panelClasses" + id + "_" + idAluno).slideUp("fast").parent().remove();
+                            }
+                            
+                            if ($("#panelErros" + id + "_" + idAluno).length == 0)
+                            {
+                                var url = "<c:url value='/'/>solucoes/listerros/" + id + "/" + idAluno;
+                                $(this).parent().parent().parent().after("<tr><td colspan='4' style='border-top:2px solid #999; border-bottom:2px solid #999; display:none' id='panelErros" + id + "_" + idAluno + "'></td></tr>");
+
+                                MostraCarregando()
+                                $("#panelErros" + id + "_" + idAluno).slideDown("fast").load(url, function () {
+                                    RemoveCarregando();
+                                });
+                            }
+                            else {
+                                $(this).parent().removeClass("borda-selecao");
+                                $("#panelErros" + id + "_" + idAluno).slideUp("fast").parent().remove();
+                            }
+
+                        });
+
+                        $("#panelResults" + idExercicio + "_" + idAluno).on('click', '.btn-download-pacote', function () {
                             var id = $(this).attr("data-id");
                             var idAluno = $(this).attr("data-idaluno");
                             document.location.href = "<c:url value='/'/>classes/downloadpkgversion/" + id + "/" + idAluno;
                         });
                     }
-                    else{
+                    else {
                         $(this).parent().removeClass("borda-selecao");
                         $("#panelResults" + idExercicio + "_" + idAluno).slideUp("fast").parent().remove();
                     }
-                    
+
                 });
-                
+
             });
         </script>
-        
+
     </jsp:attribute>
     <jsp:body>
-        
+
         <h2><c:out value="${TurmaSelecionada.getNome()}"/> - <fmt:message key="label.notas.resultadoexercicios"/></h2>
-        
+
         <div id="grade-resultados"></div>
-            
+
     </jsp:body>
 </t:master>

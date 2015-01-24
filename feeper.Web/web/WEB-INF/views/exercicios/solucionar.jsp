@@ -6,7 +6,7 @@
 <t:master>
     <jsp:attribute name="title"><fmt:message key="title.exercicios"/></jsp:attribute>
     <jsp:attribute name="header">
-        
+
         <style type="text/css" media="screen">
             .line-selected {
                 background-color: #3A87AD;
@@ -18,122 +18,104 @@
             }
             .line-warning {
                 background-color: #e6cf4d;
-                color: #f2ebad;
-            }
+                color: #f2ebad;             }
             .line-question {
                 background-color: #5cb85c;
                 color: #ffffff;
                 cursor: pointer;
             }
-            
+
             .ace_gutter-cell.ace_breakpoint{ 
                 border-radius: 20px 0px 0px 20px; 
-                box-shadow: 0px 0px 1px 1px red inset; 
-            } 
-            
+                box-shadow: 0px 0px 1px 1px red inset;              } 
+
         </style>
-        
+
         <script type="text/javascript">
             $(function(){
-                $("#menu-lista-exercicios").addClass("active");
-                
-                $(".btn-classe-download").click(function(){
-                    var id = $("#hdnIdExercicio").val();
+            $("#menu-lista-exercicios").addClass("active");
+                    $(".btn-classe-download").click(function(){
+            var id = $("#hdnIdExercicio").val();
                     document.location.href = "<c:url value='/'/>exercicios/download/" + id;
-                });
-                
-                $(".btn-classe-enviar").click(function(){
+                    });
+                    $(".btn-classe-enviar").click(function(){
                     $("#frmSolucionar").attr("action", "<c:url value='/'/>exercicios/enviarcorrecao");
                     $("#frmSolucionar").submit();
-                });
-                
-                $(".btn-excluir-classe").click(function(){
-                    if (!confirm("<fmt:message key="label.confirmaexclusao"/>")) return;
-                    var id = $("#hdnIdClasse").val();
-                    document.location.href = "<c:url value='/'/>exercicios/deleteclasse/${Exercicio.getId()}/" + id;
-                });
-                
-                $(".btn-nova-classe").fancybox({
-                    'autoSize': true,
-                    'openEffect': 'fade',
-                    'closeEffect': 'fade',
-                    'modal': true
-                });
-                
-                $('#file_upload').uploadify({
-                    'swf'           : '<c:url value='/resources/uploadify/uploadify.swf'/>',
-                    'uploader'      : '<c:url value='/'/>exercicios/uploadclass',
+                    }); $(".btn-excluir-classe").click(function(){
+                            if (!confirm("<fmt:message key="label.confirmaexclusao"/>")) return;
+                            var id = $("#hdnIdClasse").val();
+                            document.location.href = "<c:url value='/'/>exercicios/deleteclasse/${Exercicio.getId()}/" + id;
+                    });
+                    $(".btn-nova-classe").fancybox({
+            'autoSize': true,
+                            'openEffect': 'fade',
+                            'closeEffect': 'fade', 'modal': true
+                    }); $('#file_upload').uploadify({
+                    'swf'           : '<c:url value='/resources/uploadify/uploadify.swf'/>', 'uploader'      : '<c:url value='/'/>exercicios/uploadclass',
                     'fileTypeDesc'  : 'Arquivos JAVA',
                     'fileTypeExts'  : '*.java',
-                    'fileSizeLimit' : '500KB',
-                    'buttonText'    : '<fmt:message key="button.adicionarclasseexistente"/>',
-                    'multi'         : false,
+                            'fileSizeLimit' : '500KB',
+                            'buttonText'    : '<fmt:message key="button.adicionarclasseexistente"/>', 'multi'         : false,
                     'fileObjName'   : 'filedata',
-                    'checkExisting' : false,
-                    'width'         : 154,
-                    'height'        : 22,
-                    'removeCompleted' : false,
-                    'queueID'       : 'fileQueue',
-                    'itemTemplate'  : '<div style="margin-top:40px;" id="\${fileID}"><div class="uploadify-progress"><div class="uploadify-progress-bar"><!--Progress Bar--></div></div></div>',
-                    'onUploadSuccess' : function(file, data, response) {
-                        $("#fileQueue").html("");
-                        adicionarClasse(data);
-                    },
-                    'onUploadError' : function(file, errorCode, errorMsg, errorString) {
-                    }
-                });
+                            'checkExisting' : false, 'width'         : 154,
+                            'height'        : 22, 'removeCompleted' : false,
+                            'queueID'       : 'fileQueue',
+                            'itemTemplate'  : '<div style="margin-top:40px;" id="\${fileID}"><div class="uploadify-progress"><div class="uploadify-progress-bar"><!--Progress Bar--></div></div></div>',                'onUploadSuccess' : function(file, data, response) {
+    $("#fileQueue").html("");
+            adicionarClasse(data); },
+    'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+}
+});        $("#panel-markedquestions button.close").click(function() {
+$("#panel-markedquestions").hide("slide", "fast");
+});
                 
-                $("#panel-markedquestions button.close").click(function() {
-                    $("#panel-markedquestions").hide("slide", "fast");
-	    	});
+$("#panel-markedannotations button.close").click(function() {
+$("#panel-markedannotations").hide("slide", "fast");
+});
                 
-                $("#panel-markedannotations button.close").click(function() {
-                    $("#panel-markedannotations").hide("slide", "fast");
-	    	});
+var ajaxFormOptions = { 
+target: '#pnlMensagens',
+clearForm: true,
+beforeSubmit: MostraCarregando,
+success: function() {
+RemoveCarregando();
+$("#panel-markedquestions .panel-body").animate({ scrollTop: $("#panel-markedquestions .panel-body")[0].scrollHeight}, 1000);
+}
+}; 
+$('#frmQuestao').ajaxForm(ajaxFormOptions);
                 
-                var ajaxFormOptions = { 
-                    target: '#pnlMensagens',
-                    clearForm: true,
-                    beforeSubmit: MostraCarregando,
-                    success: function() {
-                        RemoveCarregando();
-                        $("#panel-markedquestions .panel-body").animate({ scrollTop: $("#panel-markedquestions .panel-body")[0].scrollHeight}, 1000);
-                    }
-                }; 
-                $('#frmQuestao').ajaxForm(ajaxFormOptions);
-                
-                var ajaxFormOptions2 = { 
-                    beforeSubmit: MostraCarregando,
-                    success: function(data) {
-                        $("#anotacaoClasse").val(data[1]);
-                        RemoveCarregando();
-                        $("#panel-markedannotations .panel-body").animate({ scrollTop: $("#panel-markedquestions .panel-body")[0].scrollHeight}, 1000);
-                    }
-                }; 
-                $('#frmAnotacao').ajaxForm(ajaxFormOptions2);              
-            });
+var ajaxFormOptions2 = { 
+beforeSubmit: MostraCarregando,
+success: function(data) {
+$("#anotacaoClasse").val(data[1]);
+RemoveCarregando();
+$("#panel-markedannotations .panel-body").animate({ scrollTop: $("#panel-markedquestions .panel-body")[0].scrollHeight}, 1000);
+}
+}; 
+$('#frmAnotacao').ajaxForm(ajaxFormOptions2);              
+});
             
-            function cancelarClasse(){
-                $("#txtNomeClasse").val("");            
-                $.fancybox.close(true);
-            }
+function cancelarClasse(){
+$("#txtNomeClasse").val("");            
+$.fancybox.close(true);
+}
             
-            function trataString(valor)
-            {
-                $.ajax({
-                    url: "<c:url value='/'/>tratastring/" + valor,
-                    cache: false,
-                    async: false
-                })
-                .done(function( data ) {
-                    valor = data;
-                });
-                return valor;
-            }
+function trataString(valor)
+{
+$.ajax({
+url: "<c:url value='/'/>tratastring/" + valor,
+cache: false,
+async: false
+})
+.done(function( data ) {
+valor = data;
+});
+return valor;
+}
         </script>
-        
+
     </jsp:attribute>
-        
+
     <jsp:attribute name="rightmenu">
         <h4><fmt:message key="label.exercicios.acoesexercicio"/></h4>
         <div class="list-group">
@@ -145,266 +127,238 @@
             </a>
         </div>
     </jsp:attribute>
-        
+
     <jsp:attribute name="footer">
-        
+
         <script src="<c:url value='/resources/ace/ace.js'/>" type="text/javascript"></script>
         <script type="text/javascript">
-            var newClassContent = "${CodigoFontePadraoClasse}";
-            var editor;
-            
-            $(function(){
-                
-                ControlaBotoes();
-                
-                $(".btn-salvar-classe").click(function(){
-                    $("#hdnEditor").val(editor.getSession().getValue());
-                    $("#frmSolucionar").submit();
-                });
-                
-                $(".btn-show-class-code").click(function(event){
-                    event.preventDefault ? event.preventDefault() : event.returnValue = false;
-                    
-                    var id = $(this).attr("data-id");
-                    if (id === undefined) return;
-                    
-                    $(".btn-show-class-code").removeClass("active");
-                    $(this).addClass("active");
-                    
-                    MostraCarregando();
-                    
-                    $.get("<c:url value='/'/>exercicios/showclassecode/${Exercicio.getId()}/" + id, function(data){
-                        $("#hdnIdClasse").val(data[0]);                
-                        $("#hdnNomeClasse").val(data[1]);
-                        $("#lblFilename").html(data[1]);
-                        
-                        var content = data[2].replace(/#'#/gi, '"');
-                        CreateEditor(content, data[0] != "0", data[3], data[4]);
-                        
-                        if (data[5])
-                            $(".btn-classe-favorita").html("<span class=\"glyphicon glyphicon-star\"></span> <fmt:message key="button.desmarcarfavorita"/>");
-                        else
-                            $(".btn-classe-favorita").html("<span class=\"glyphicon glyphicon-star-empty\"></span> <fmt:message key="button.marcarfavorita"/>");
-                        
-                        ControlaBotoes();
-                        RemoveCarregando();
-                        
-                        $('html, body').animate({ scrollTop: $("#lblFilename").offset().top }, 1000);
-                    });
-                });
-                
-                $(".btn-classe-favorita").click(function(){
-                    var id = $("#hdnIdClasse").val();
-                    $.get("<c:url value='/'/>classes/savefavorite/${Exercicio.getId()}/" + id, function(data){
-                        if (data != "erro" && data == "true")
-                            $(".btn-classe-favorita").html("<span class=\"glyphicon glyphicon-star\"></span> <fmt:message key="button.desmarcarfavorita"/>");
-                        else if (data != "erro" && data == "false")
-                            $(".btn-ckasse-favorita").html("<span class=\"glyphicon glyphicon-star-empty\"></span> <fmt:message key="button.marcarfavorita"/>");
-                    });
-                });
-                
-                $(".btn-registrar-duvida").click(function(){
-                    var row = editor.getSelectionRange().start.row;
-                    exibeQuadroDuvida(row);
-                });
-                
-                $(".btn-registrar-anotacao").click(function(){
-                    var row = editor.getSelectionRange().start.row;
-                    exibeQuadroAnotacao(row);
-                });
-                
-                $(".btn-habilitar-edicao").click(function(){
-                    editor.setReadOnly(false);
-                    ControlaBotoes();
-                });
-                
-            });
-            
-            function CreateEditor(source, readOnly, questions, comments)
-            {
-                try {
-                    editor.destroy();
-                    $("#editor").remove();
-                } catch (e) {}
-                
-                $("#panelEditor").append($('<div id="editor"></div>'));
-                editor = ace.edit("editor");
-                editor.session.setValue(source);
-                editor.container.style.opacity = "";
-                editor.setOptions({
-                    maxLines: 30,
-                    mode: "ace/mode/java",
-                    autoScrollEditorIntoView: true
-                });
-                editor.setReadOnly(readOnly);
-                editor.setTheme("ace/theme/eclipse");
-                editor.setShowPrintMargin(false);
-                editor.getSession().setUseSoftTabs(true);
-                editor.renderer.setHScrollBarAlwaysVisible(false);
-                editor.focus();
-                
-                editor.on("guttermousedown", function(e){ 
-                    var target = e.domEvent.target; 
-                    if (target.className.indexOf("ace_gutter-cell") == -1) 
-                        return; 
-                    if (!editor.isFocused()) 
-                        return; 
-                    if (e.clientX > 25 + target.getBoundingClientRect().left) 
-                        return; 
+                                        var newClassContent = "${CodigoFontePadraoClasse}";
+                                        var editor;
+                                        $(function(){
 
-                    var row = e.getDocumentPosition().row;
-                    if (target.className.indexOf("ace_question") != -1)
-                        exibeQuadroDuvida(row);
-                    if (target.className.indexOf("ace_comment") != -1)
-                        exibeQuadroAnotacao(row);
-                    e.stop();
-                });
-                
-                if (questions)
-                    for(var i = 0; i < questions.length; i++)
-                        editor.getSession().addGutterDecoration(questions[i] - 1, "ace_question");
-                if (comments)
-                    for(var i = 0; i < comments.length; i++)
-                        editor.getSession().addGutterDecoration(comments[i] - 1, "ace_comment");
-            }
-            
-            function exibeQuadroDuvida(row)
-            {
-                row++;
-                $("#panel-markedquestions #title-linenumber").html(row);
-                $("#panel-markedquestions").show("slide", "fast");
+                                        ControlaBotoes();
+                                                $(".btn-salvar-classe").click(function(){
+                                        $("#hdnEditor").val(editor.getSession().getValue());
+                                                $("#frmSolucionar").submit();
+                                        });
+                                                $(".btn-show-class-code").click(function(event){
+                                        event.preventDefault ? event.preventDefault() : event.returnValue = false;
+                                                var id = $(this).attr("data-id");
+                                                if (id === undefined) return;
+                                                $(".btn-show-class-code").removeClass("active");
+                                                $(this).addClass("active");
+                                                MostraCarregando();
+                                                $.get("<c:url value='/'/>exercicios/showclassecode/${Exercicio.getId()}/" + id, function(data){
+                                                $("#hdnIdClasse").val(data[0]);
+                                                        $("#hdnNomeClasse").val(data[1]);
+                                                        $("#lblFilename").html(data[1]);
+                                                        var content = data[2].replace(/#'#/gi, '"');
+                                                        CreateEditor(content, data[0] != "0", data[3], data[4]);
+                                                        if (data[5])
+                                                        $(".btn-classe-favorita").html("<span class=\"glyphicon glyphicon-star\"></span> <fmt:message key="button.desmarcarfavorita"/>");
+                                                        else
+                                                        $(".btn-classe-favorita").html("<span class=\"glyphicon glyphicon-star-empty\"></span> <fmt:message key="button.marcarfavorita"/>");
+                                                        ControlaBotoes();
+                                                        RemoveCarregando();
+                                                        $('html, body').animate({ scrollTop: $("#lblFilename").offset().top }, 1000);
+                                                });
+                                        });
+                                                $(".btn-classe-favorita").click(function(){
+                                        var id = $("#hdnIdClasse").val();
+                                                $.get("<c:url value='/'/>classes/savefavorite/${Exercicio.getId()}/" + id, function(data){
+                                                if (data != "erro" && data == "true")
+                                                        $(".btn-classe-favorita").html("<span class=\"glyphicon glyphicon-star\"></span> <fmt:message key="button.desmarcarfavorita"/>");
+                                                        else if (data != "erro" && data == "false")
+                                                        $(".btn-ckasse-favorita").html("<span class=\"glyphicon glyphicon-star-empty\"></span> <fmt:message key="button.marcarfavorita"/>");
+                                                });
+                                        });
+                                                $(".btn-registrar-duvida").click(function(){
+                                        var row = editor.getSelectionRange().start.row;
+                                                exibeQuadroDuvida(row);
+                                        });
+                                                $(".btn-registrar-anotacao").click(function(){
+                                        var row = editor.getSelectionRange().start.row;
+                                                exibeQuadroAnotacao(row);
+                                        });
+                                                $(".btn-habilitar-edicao").click(function(){
+                                        editor.setReadOnly(false);
+                                                ControlaBotoes();
+                                        });
+                                        });
+                                        function CreateEditor(source, readOnly, questions, comments)
+                                        {
+                                        try {                                                                 editor.destroy(); $(" #editor").remove();
+                                        } catch (e) {}
 
-                MostraCarregando();
+                                        $("#panelEditor").append($('<div id="editor"></div>'));
+                                                editor = ace.edit("editor");
+                                                editor.session.setValue(source);
+                                                editor.container.style.opacity = "";
+                                                editor.setOptions({
+                                                maxLines: 30,
+                                                        mode: "ace/mode/java",
+                                                        autoScrollEditorIntoView: true
+                                                });
+                                                editor.setReadOnly(readOnly);
+                                                editor.setTheme("ace/theme/eclipse");
+                                                editor.setShowPrintMargin(false);
+                                                editor.getSession().setUseSoftTabs(true);
+                                                editor.renderer.setHScrollBarAlwaysVisible(false);
+                                                editor.focus();
+                                                editor.on("guttermousedown", function(e){
+                                                var target = e.domEvent.target;
+                                                        if (target.className.indexOf("ace_gutter-cell") == - 1)
+                                                        return;
+                                                        if (!editor.isFocused())
+                                                        return;
+                                                        if (e.clientX > 25 + target.getBoundingClientRect().left)
+                                                        return;
+                                                        var row = e.getDocumentPosition().row;
+                                                        if (target.className.indexOf("ace_question") != - 1)
+                                                        exibeQuadroDuvida(row);
+                                                        if (target.className.indexOf("ace_comment") != - 1)
+                                                        exibeQuadroAnotacao(row);
+                                                        e.stop();
+                                                });
+                                                if (questions)
+                                                for (var i = 0; i < questions.length; i++)
+                                                editor.getSession().addGutterDecoration(questions[i] - 1, "ace_question");
+                                                if (comments)
+                                                for (var i = 0; i < comments.length; i++)
+                                                editor.getSession().addGutterDecoration(comments[i] - 1, "ace_comment");
+                                        }
 
-                var idClasse = $("#hdnIdClasse").val();
-                $("#hdnQuestaoIdClasse").val(idClasse);
-                $("#hdnQuestaoLinha").val(row);
+                                function exibeQuadroDuvida(row)
+                                {
+                                row++;
+                                        $("#panel-markedquestions #title-linenumber").html(row);
+                                        $("#panel-markedquestions").show("slide", "fast");
+                                        MostraCarregando();
+                                        var idClasse = $("#hdnIdClasse").val();
+                                        $("#hdnQuestaoIdClasse").val(idClasse);
+                                        $("#hdnQuestaoLinha").val(row);
+                                        $("#panel-markedquestions .panel-body").load("<c:url value='/'/>exercicios/showquestion/${Exercicio.getId()}/" + idClasse + "/" + row, function(){
+                                RemoveCarregando();
+                                        $("#panel-markedquestions .panel-body").animate({ scrollTop: $("#panel-markedquestions .panel-body")[0].scrollHeight}, 1000);
+                                });
+                                }
 
-                $("#panel-markedquestions .panel-body").load("<c:url value='/'/>exercicios/showquestion/${Exercicio.getId()}/" + idClasse + "/" + row, function(){
-                    RemoveCarregando();
-                    $("#panel-markedquestions .panel-body").animate({ scrollTop: $("#panel-markedquestions .panel-body")[0].scrollHeight}, 1000);
-                });
-            }
-            
-            function exibeQuadroAnotacao(row)
-            {
-                row++;
-                $("#panel-markedannotations #title-linenumber").html(row);
-                $("#panel-markedannotations").show("slide", "fast");
+                                function exibeQuadroAnotacao(row)
+                                {
+                                row++;
+                                        $("#panel-markedannotations #title-linenumber").html(row); $("#panel-markedannotations").show("slide", "fast");
+                                        MostraCarregando();
+                                        var idClasse = $("#hdnIdClasse").val();
+                                        $("#hdnAnotacaoIdClasse").val(idClasse);
+                                        $("#hdnAnotacaoLinha").val(row);
+                                        $.get("<c:url value='/'/>exercicios/showannotation/${Exercicio.getId()}/" + idClasse + "/" + row, function(data){
+                                        $("#anotacaoClasse").val(data[1]).focus();
+                                                RemoveCarregando();
+                                                $("#panel-markedannotations .panel-body").animate({ scrollTop: $("#panel-markedannotations .panel-body")[0].scrollHeight}, 1000);
+                                        });
+                                }
 
-                MostraCarregando();
+                                function adicionarClasse(content){
 
-                var idClasse = $("#hdnIdClasse").val();
-                $("#hdnAnotacaoIdClasse").val(idClasse);
-                $("#hdnAnotacaoLinha").val(row);
+                                if (content.length == 0)
+                                {
+                                if ($("#txtNomeClasse").val().length == 0)
+                                {
+                                $("#txtNomeClasse").parent().addClass("has-error");
+                                        return;
+                                }
+                                var fileName = trataString($("#txtNomeClasse").val());
+                                        content = newClassContent.replace(/#@#CLASSE#@#/gi, fileName).replace(/#n#/gi, "\n");
+                                }
+                                else
+                                {
+                                var fileName = content.split("#@#")[0];
+                                        content = content.replace(fileName + "#@#", "");
+                                }
 
-                $.get("<c:url value='/'/>exercicios/showannotation/${Exercicio.getId()}/" + idClasse + "/" + row, function(data){
-                    $("#anotacaoClasse").val(data[1]).focus();
-                    RemoveCarregando();
-                    $("#panel-markedannotations .panel-body").animate({ scrollTop: $("#panel-markedannotations .panel-body")[0].scrollHeight}, 1000);
-                });
-            }
-            
-            function adicionarClasse(content){
-                
-                if (content.length == 0)
-                {
-                    if ($("#txtNomeClasse").val().length == 0)
-                    {
-                        $("#txtNomeClasse").parent().addClass("has-error");
-                        return;
-                    }
-                    var fileName = trataString($("#txtNomeClasse").val());
-                    content = newClassContent.replace(/#@#CLASSE#@#/gi, fileName).replace(/#n#/gi, "\n");
-                }
-                else
-                {
-                    var fileName = content.split("#@#")[0];
-                    content = content.replace(fileName + "#@#", "");
-                }
-                
-                CreateEditor(content, false);
-                
-                $("#hdnEditor").val("");
-                $("#hdnIdClasse").val("0");
-                $("#hdnNomeClasse").val(fileName);
-                $("#txtNomeClasse").val("");
-                $("#lblFilename").html(fileName + ".java").show();
-                ControlaBotoes();
-                FechaModal();
-            }
-            
-            var intervalLookingRows = setInterval(function(){lookingForNewRows()},500);
-            function lookingForNewRows()
-            {
-                if (editor == null) return;
-                var qtdeLinhasHtml = $(".ace_gutter-cell[id]").length;
-                var qtdeLinhasEditor = editor.session.getLength();
-                
-                if (qtdeLinhasHtml != qtdeLinhasEditor)
-                {
-                    $(".ace_gutter-cell").each(function(index) {
-                        $(this).attr("id", "L" + index);
-                    });
-                }
-            }
-            
-            var intervalLookingStatus;
-            function lookingForNewStatus()
-            {
-                $.get("<c:url value='/'/>exercicios/getstatus/${Exercicio.getId()}", function(data){
-                    if (data !== undefined && data != 0 && data != 5)
-                        document.location.href = "<c:url value='/'/>exercicios/solucionar/${Exercicio.getId()}";
-                });
-            }
-            
-            function ControlaBotoes()
-            {
-                var idClasse = $("#hdnIdClasse").val();
-                var editorReadOnly = editor == null ? true : editor.getReadOnly();
-                
-                if (editor == null)
-                {
-                    $(".btn-registrar-duvida, .btn-registrar-anotacao, .btn-salvar-classe, .btn-excluir-classe, .btn-habilitar-edicao, .btn-classe-favorita").slideUp("fast");
-                    return;
-                }
-                else
-                {
-                    $(".btn-registrar-duvida, .btn-registrar-anotacao, .btn-salvar-classe, .btn-excluir-classe, .btn-habilitar-edicao, .btn-classe-favorita").slideDown("fast");
-                }
-                if (editorReadOnly)
-                {
-                    $(".btn-salvar-classe").prop("disabled", "disabled");
-                    $(".btn-habilitar-edicao, .btn-classe-favorita").prop("disabled", "");
-                    $(".ace_content").css("background-color", "#f3f3f3");
-                }
-                else
-                {
-                    $(".btn-salvar-classe").prop("disabled", "");
-                    $(".btn-habilitar-edicao, .btn-classe-favorita").prop("disabled", "disabled");
-                    $(".ace_content").css("background-color", "");
-                }
-                    $(".btn-excluir-classe").prop("disabled", "");
-                if (idClasse != "" && idClasse > 0 && editorReadOnly)
-                {
-                    $(".btn-registrar-duvida, .btn-registrar-anotacao").prop("disabled", "");
-                }
-                else
-                {
-                    $(".btn-registrar-duvida, .btn-registrar-anotacao, .btn-excluir-classe").prop("disabled", "disabled");
-                }
-            }
+                                CreateEditor(content, false);
+                                        $("#hdnEditor").val("");
+                                        $("#hdnIdClasse").val("0");
+                                        $("#hdnNomeClasse").val(fileName);
+                                        $("#txtNomeClasse").val("");
+                                        $("#lblFilename").html(fileName + ".java").show();
+                                        ControlaBotoes();
+                                        FechaModal();
+                                }
+
+                                var intervalLookingRows = setInterval(function(){lookingForNewRows()}, 500);
+                                        function lookingForNewRows()
+                                        {
+                                        if (editor == null) return;
+                                                var qtdeLinhasHtml = $(".ace_gutter-cell[id]").length;
+                                                var qtdeLinhasEditor = editor.session.getLength();
+                                                if (qtdeLinhasHtml != qtdeLinhasEditor)
+                                        {
+                                        $(".ace_gutter-cell").each(function(index) {
+                                        $(this).attr("id", "L" + index);
+                                        });
+                                        }
+                                        }
+
+                                var intervalLookingStatus;
+                                        function lookingForNewStatus()
+                                        {
+                                        $.get("<c:url value='/'/>exercicios/gets tatus/${Exercicio.getId()}", function(data){
+                                                            if (data !== undefined && data != 0 && data != 5)
+                                                                    document.location.href = "<c:url value='/'/>exercicios/solucionar/${Exercicio.getId()}";
+                                                                                        });
+                                                                                        }
+
+                                                                                function ControlaBotoes()
+                                                                                {
+                                                                                var idClasse = $("#hdnIdClasse").val();
+                                                                                        var editorReadOnly = editor == null ? true : editor.getReadOnly();
+                                                                                        if (editor == null)
+                                                                                {
+                                                                                $(".btn-registrar-duvida, .btn-registrar-anotacao, .btn-salvar-classe, .btn-excluir-classe, .btn-habilitar-edicao, .btn-classe-favorita").slideUp("fast");
+                                                                                        return;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                $(".btn-registrar-duvida, .btn-registrar-anotacao, .btn-salvar-classe, .btn-excluir-classe, .btn-habilitar-edicao, .btn-classe-favorita").slideDown("fast");
+                                                                                }
+                                                                                if (editorReadOnly)
+                                                                                {
+                                                                                $(".btn-salvar-classe").prop("disabled", "disabled");
+                                                                                        $(".btn-habilitar-edicao, .btn-classe-favorita").prop("disabled", "");
+                                                                                        $(".ace_content").css("background-color", "#f3f3f3");
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                $(".btn-salvar-classe").prop("disabled", "");
+                                                                                        $(".btn-habilitar-edicao, .btn-classe-favorita").prop("disabled", "disabled");
+                                                                                        $(".ace_content").css("background-color", "");
+                                                                                }
+                                                                                $(".btn-excluir-classe").prop("disabled", "");
+                                                                                        if (idClasse != "" && idClasse > 0 && editorReadOnly)
+                                                                                {
+                                                                                $(".btn-registrar-duvida, .btn-registrar-anotacao").prop("disabled", "");
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                $(".btn-registrar-duvida, .btn-registrar-anotacao, .btn-excluir-classe").prop("disabled", "disabled");
+                                                                                }
+                                                                                }
         </script>
-        
+
     </jsp:attribute>
-        
+
     <jsp:body>
-        
-        <h2><c:out value="${TurmaSelecionada.getNome()}"/></h2>
-        
-        <h3><c:out value="${Exercicio.getNome()}"/></h3>
-        
+        <h2><c:out value="${Exercicio.getNome()}"/></h2>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                ${Exercicio.getDescricaoHtml()}
+            </div>
+        </div>
+
         <c:if test="${Solucao != null}">
+            <h4><fmt:message key="label.exercicios.resultado"/></h4>
             <c:choose>
                 <c:when test="${Solucao.getIdStatus() == 1}">
                     <div class="alert alert-info"><fmt:message key="label.exercicios.status.aguardando"/></div>
@@ -415,25 +369,51 @@
                 <c:when test="${Solucao.getIdStatus() == 3}">
                     <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errosaidainvalida"/></div>
                 </c:when>
-                <c:when test="${Solucao.getIdStatus() == 4}">
+                <c:when test="${Solucao.getIdStatus() == 4 &&  empty Solucao.getErros()}">
                     <div class="alert alert-success"><fmt:message key="label.exercicios.status.resolvido"/></div>
                 </c:when>
-                
-            </c:choose>
+                <c:when test="${Solucao.getIdStatus() == 4 && not empty Solucao.getErros()}">
+                    <div class="alert alert-success"><fmt:message key="label.exercicios.status.resolvidocomalerta"/></div>
+                </c:when>
+            </c:choose>  
             <small><fmt:message key="label.exercicios.dataultimaresposta"/> <fmt:formatDate value="${Solucao.getDataCadastro()}" pattern="dd/MM/yyyy HH:mm" /></small>
+
+            <c:if test="${not empty Solucao.getErros()}">
+                <div class="list-group">
+                    <h4><fmt:message key="label.exercicios.errosalertas"/></h4>         
+                    <table class="table table-striped" style="margin-bottom: 0px;">
+                        <thead>
+                            <tr>
+                                <th></th>
+                    <th><fmt:message key="label.notas.linha"/></th>
+                    <th><fmt:message key="label.notas.mensagem"/></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="erro" items="${Solucao.getErros()}">
+                                <tr>
+                                    <td>
+                                        ${erro.getErrorType() == 1
+                                          ?
+                                          "<button type=\"button\" class=\"btn btn-success btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span></button>"
+                                          :
+                                          "<button type=\"button\" class=\"btn btn-warning btn-xs\"><span class=\"glyphicon glyphicon-warning-sign\"></span></button>"
+                                        }
+                                    </td>
+                                    <td>${erro.getLinhaErro()>0?erro.getLinhaErro():""}</td>
+                                    <td>${erro.getMensagemErro()}</td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </c:if>            
         </c:if>
         <c:if test="${Solucao != null && Solucao.getIdStatus() == 1}">
             <script type="text/javascript">
-                intervalLookingStatus = setInterval(function(){lookingForNewStatus()}, 5000);
-            </script>
-        </c:if>
-            
-        <div class="panel panel-default">
-            <div class="panel-body">
-                ${Exercicio.getDescricaoHtml()}
-            </div>
-        </div>
-            
+                        intervalLookingStatus = setInterval(function(){lookingForNewStatus()}, 5000);</script>
+            </c:if>
+
         <h3><fmt:message key="label.exercicios.classes"/></h3>
         <div class="list-group">
             <c:if test="${not empty Classes}">
@@ -471,7 +451,7 @@
         <button type="button" class="btn btn-default btn-sm btn-classe-favorita" style="display:none;">
             <span class="glyphicon glyphicon-star-empty"></span> <fmt:message key="menu.classe.favorita"/>
         </button>
-        
+
         <!--Modal exibida para adicionar novas classes-->
         <div style="display:none;" id="divNovaClasse">
             <div class="input-group" style="width:400px; margin-bottom:3px">
@@ -489,7 +469,7 @@
             </div>
             <div id="fileQueue" style="display:block;"></div>
         </div>
-        
+
         <!--Modal exibida para adicionar perguntas-->
         <div class="panel panel-success shadow" id="panel-markedquestions" style="width:400px; display:none; position:fixed; top:120px; left:0px; z-index:100">
             <div class="panel-heading">
@@ -506,8 +486,8 @@
                     <button class="btn btn-success btn-xs" type="submit"><span class="glyphicon glyphicon-ok"></span> <fmt:message key="button.enviarpergunta"/></button>
                 </form>
             </div>
-  	</div>
-                
+        </div>
+
         <!--Modal exibida para adicionar anotaçõess-->
         <div class="panel panel-success shadow" id="panel-markedannotations" style="width:400px; display:none; position:fixed; top:120px; left:0px; z-index:100">
             <div class="panel-heading">
@@ -515,19 +495,19 @@
                     <button type="button" class="close pull-right" aria-hidden="true">&times;</button></h3>
             </div>
             <form role="form" action="<c:url value='/'/>exercicios/saveannotation" id="frmAnotacao" method="POST">
-            <div class="panel-body" id="pnlAnotacoes" style="height: 300px; overflow-y: auto">
-                <textarea class="form-control" rows="12" id="anotacaoClasse" name="anotacaoClasse"></textarea>
-            </div>
-            <div class="panel-footer">
-                <input type="hidden" id="hdnAnotacaoIdClasse" name="hdnAnotacaoIdClasse">
-                <input type="hidden" id="hdnAnotacaoLinha" name="hdnAnotacaoLinha">
-                <input type="hidden" id="hdnAnotacaoIdExercicio" name="hdnAnotacaoIdExercicio" value="${Exercicio.getId()}">
-                <button class="btn btn-success btn-xs" type="submit"><span class="glyphicon glyphicon-save"></span> <fmt:message key="button.salvar"/></button>
-                <button class="btn btn-success btn-xs"><span class="glyphicon glyphicon-trash"></span> <fmt:message key="button.excluir"/></button>
-            </div>
+                <div class="panel-body" id="pnlAnotacoes" style="height: 300px; overflow-y: auto">
+                    <textarea class="form-control" rows="12" id="anotacaoClasse" name="anotacaoClasse"></textarea>
+                </div>
+                <div class="panel-footer">
+                    <input type="hidden" id="hdnAnotacaoIdClasse" name="hdnAnotacaoIdClasse">
+                    <input type="hidden" id="hdnAnotacaoLinha" name="hdnAnotacaoLinha">
+                    <input type="hidden" id="hdnAnotacaoIdExercicio" name="hdnAnotacaoIdExercicio" value="${Exercicio.getId()}">
+                    <button class="btn btn-success btn-xs" type="submit"><span class="glyphicon glyphicon-save"></span> <fmt:message key="button.salvar"/></button>
+                    <button class="btn btn-success btn-xs"><span class="glyphicon glyphicon-trash"></span> <fmt:message key="button.excluir"/></button>
+                </div>
             </form>
-  	</div>
-        
+        </div>
+
     </jsp:body>
-        
+
 </t:master>

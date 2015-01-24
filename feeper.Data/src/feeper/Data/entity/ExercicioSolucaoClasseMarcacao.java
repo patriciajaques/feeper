@@ -14,14 +14,14 @@ import java.util.Date;
 public class ExercicioSolucaoClasseMarcacao {
     
     private Integer id;
-     private int idExercicioSolucaoClasse;
-     private int idAutor;
-     private int idTipoMarcacao;
-     private int linhaInicio;
-     private int linhaFim;
+     private Integer idExercicioSolucaoClasse;
+     private Integer idAutor;
+     private Integer idTipoMarcacao;
+     private Integer linhaInicio;
+     private Integer linhaFim;
      private String anotacao;
      private Date dataCadastro;
-     private boolean ativo;
+     private Boolean ativo;
 
     public ExercicioSolucaoClasseMarcacao() {
     }

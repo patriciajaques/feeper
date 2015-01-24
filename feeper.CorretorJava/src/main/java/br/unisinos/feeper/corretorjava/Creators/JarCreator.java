@@ -31,8 +31,8 @@ public class JarCreator {
         CopyFile.copy(this.appResourcesPath + "\\JarComponents\\junit.jar", this.destPath + "\\junit.jar");
         CopyFile.copy(this.appResourcesPath + "\\JarComponents\\org.hamcrest.core.jar", this.destPath + "\\org.hamcrest.core.jar");
         CopyFile.copy(this.appResourcesPath + "\\JarComponents\\policy.txt", this.destPath + "\\policy.txt");
-        CopyFile.copy(this.appResourcesPath + "\\JarComponents\\ExercicioCorrecao.java", this.destPath + "\\ExercicioCorrecao.java");
-        CopyFile.copy(this.appResourcesPath + "\\JarComponents\\ExercicioCorrecaoErro.java", this.destPath + "\\ExercicioCorrecaoErro.java");
+        CopyFile.copy(this.appResourcesPath + "\\JarComponents\\ExercicioSolucao.java", this.destPath + "\\ExercicioSolucao.java");
+        CopyFile.copy(this.appResourcesPath + "\\JarComponents\\ExercicioSolucaoErro.java", this.destPath + "\\ExercicioSolucaoErro.java");
     }
 
     public void Compile() throws Exception {

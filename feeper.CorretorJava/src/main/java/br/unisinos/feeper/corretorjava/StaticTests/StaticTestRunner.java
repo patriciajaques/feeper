@@ -4,7 +4,9 @@ import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucao;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucaoErro;
 import br.unisinos.feeper.corretorjava.Utils.CopyFile;
 import br.unisinos.feeper.corretorjava.Utils.EErrorType;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
@@ -35,6 +37,14 @@ public class StaticTestRunner {
         
         Runtime rt = Runtime.getRuntime();
         Process pr = rt.exec(command);
+        
+        //lê o resultado do comando
+        BufferedReader stdError = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
+        String error = "";
+        String s = null;
+        while ((s = stdError.readLine()) != null) {
+            error += s + "\n";
+        }
 
         //carrega os resultados
         File file = new File(outFile);

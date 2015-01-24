@@ -118,12 +118,12 @@ public class CommunicationService {
                 //carrega os resultados dinâmicos
                 String dinamicResult = FileToString.toString(tmpPath + "\\dinamic_output.xml");
                 reader = new StringReader(dinamicResult);
-                jaxbContext = JAXBContext.newInstance(ExercicioSolucaoErro[].class);
+                jaxbContext = JAXBContext.newInstance(ExercicioSolucao.class);
                 jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                ExercicioSolucaoErro[] errosDinamicos = (ExercicioSolucaoErro[]) jaxbUnmarshaller.unmarshal(reader);
+                ExercicioSolucao resultadoDinamico = (ExercicioSolucao) jaxbUnmarshaller.unmarshal(reader);
 
-                if (errosDinamicos != null) {
-                    for (ExercicioSolucaoErro erroDinamico : errosDinamicos) {
+                if (resultadoDinamico != null && resultadoDinamico.getErros() != null) {
+                    for (ExercicioSolucaoErro erroDinamico : resultadoDinamico.getErros()) {
                         solucao.getErros().add(erroDinamico);
                     }
                 }

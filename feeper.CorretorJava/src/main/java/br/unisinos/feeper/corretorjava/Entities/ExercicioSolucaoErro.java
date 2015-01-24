@@ -1,6 +1,5 @@
 package br.unisinos.feeper.corretorjava.Entities;
 
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,13 +11,13 @@ package br.unisinos.feeper.corretorjava.Entities;
  */
 public class ExercicioSolucaoErro {
 
-    private Integer id;
-    private Integer idSolucao;
-    private Integer idCasoTeste;
-    private int errorType;
-    private String mensagemErro;
-    private String staticErrorType;
-    private int linhaErro;
+    protected Integer id;
+    protected Integer idSolucao;
+    protected Integer idCasoTeste;
+    protected Integer errorType;
+    protected String mensagemErro;
+    protected String staticErrorType;
+    protected Integer linhaErro;
 
     public ExercicioSolucaoErro() {
     }

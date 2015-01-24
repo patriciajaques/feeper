@@ -22,12 +22,12 @@ public class ExercicioSolucao {
     protected Integer id;
     protected Integer idExercicio;
     protected Integer idAluno;
-    protected int idStatus;
+    protected Integer idStatus;
     protected Date dataCadastro;
 
     protected List<ExercicioSolucaoClasse> classes;
     protected List<ExercicioCasoTeste> testes;
-    private List<ExercicioSolucaoErro> erros;
+    protected List<ExercicioSolucaoErro> erros;
 
     public Integer getId() {
         return id;

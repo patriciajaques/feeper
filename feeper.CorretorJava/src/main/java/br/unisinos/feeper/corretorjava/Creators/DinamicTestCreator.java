@@ -71,9 +71,16 @@ public class DinamicTestCreator {
             if (passo.getExpectedOutputName() != null && passo.getExpectedOutputName().isEmpty() == false) {
 
                 //guarda na variavel
-                builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = " + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ";");
+                if (passo.getMethodName() == null || passo.getMethodName().isEmpty()) {
+                    //construtor
+                    builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = new " + passo.getObjectName() + this.getParameters(passo) + ";");
+
+                } else {
+                    //método
+                    builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = " + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ";");
+                }
             }
-            if (passo.getExpectedOutputValue() != null && passo.getExpectedOutputValue().isEmpty() == false) {
+            else if (passo.getExpectedOutputValue() != null && passo.getExpectedOutputValue().isEmpty() == false) {
 
                 //valida o retorno
                 String value = passo.getExpectedOutputValue();
@@ -82,7 +89,7 @@ public class DinamicTestCreator {
                     value = "\"" + value + "\"";
                 }
 
-                builder.append("assertEquals(" + passo.getExpectedOutputValue() + "," + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ");");
+                builder.append("assertEquals(" + value + "," + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ");");
             } else {
                 //somente executa
                 builder.append(passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ";");

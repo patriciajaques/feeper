@@ -257,7 +257,6 @@ public class TurmaService extends HibernateUtil<Turma> {
             query.addScalar("NomeExercicio", StringType.INSTANCE);
             query.addScalar("IdSolucao", IntegerType.INSTANCE);
             query.addScalar("IdStatusSolucao", IntegerType.INSTANCE);
-
             query.setInteger("idTurma", idTurma);
             query.setInteger("idAluno", idAluno);
 

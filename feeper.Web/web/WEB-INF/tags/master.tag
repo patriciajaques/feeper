@@ -118,7 +118,6 @@
                                 <li id="menu-lista-exercicio"><a href="<c:url value='/'/>exercicios"><fmt:message key="menu.exercicios"/></a></li>
                                 <li id="menu-lista-conquistas"><a href="<c:url value='/'/>conquistas"><fmt:message key="menu.conquistas"/></a></li>
                                 <li id="menu-lista-logs"><a href="<c:url value='/'/>log"><fmt:message key="menu.logs"/></a></li>
-                                <li id="menu-teste"><a href="<c:url value='/'/>teste"><fmt:message key="menu.teste"/></a></li>
                                 </c:when>
                                 <c:otherwise>
                                 <li id="menu-mensagens"><a href="<c:url value='/'/>mensagens"><fmt:message key="menu.mensagens"/> ${BadgeMensagens}</a></li>

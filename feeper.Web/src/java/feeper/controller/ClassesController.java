@@ -180,48 +180,8 @@ public class ClassesController extends ApplicationController {
 
     }
 
-    @RequestMapping(value = "/results/{idExercicio}/{idAluno}", method = RequestMethod.GET)
-    public ModelAndView results(
-            @PathVariable int idExercicio,
-            @PathVariable int idAluno,
-            HttpSession session,
-            Model model) {
-
-        ModelAndView mav = new ModelAndView();
-
-        ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();
-
-        Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
-        if (usuarioLogado.getIdPerfil() == EPerfil.PROFESSOR) {
-            //Validação para verificar se a pessoa logada é professor do autor do código fonte
-            TurmaService repoTurma = new TurmaService();
-            if (!repoTurma.verificaProfessorDoAluno(usuarioLogado.getId(), idAluno)) {
-                mav.setView(new RedirectView("/closemodal", true, true, false));
-                return mav;
-            }
-        } else if (usuarioLogado.getIdPerfil() == EPerfil.ALUNO) {
-            //Validação para verificar se a pessoa logada é o autor do código fonte
-            if (idAluno != usuarioLogado.getId()) {
-                mav.setView(new RedirectView("/closemodal", true, true, false));
-                return mav;
-            }
-        }
-
-        List<Object> solucoes = repoSolucao.getDetailsByIdExercicio(idExercicio, idAluno);
-
-        ExercicioService repoExercicio = new ExercicioService();
-        Exercicio exercicio = repoExercicio.getById(idExercicio);
-
-        mav.setViewName("classes/results");
-        mav.addObject("Solucoes", solucoes);
-        mav.addObject("nomeExercicio", exercicio.getNome());
-        mav.addObject("idAluno", idAluno);
-
-        return mav;
-    }
-
-    @RequestMapping(value = "/listclasses/{idSolucao}/{idAluno}", method = RequestMethod.GET)
-    public ModelAndView listclasses(
+    @RequestMapping(value = "/listsolucaoclasses/{idSolucao}/{idAluno}", method = RequestMethod.GET)
+    public ModelAndView listsolucaoclasses(
             @PathVariable int idSolucao,
             @PathVariable int idAluno,
             HttpSession session,
@@ -248,7 +208,7 @@ public class ClassesController extends ApplicationController {
         ExercicioSolucaoClasseService repoclasses = new ExercicioSolucaoClasseService();
         List<ExercicioSolucaoClasse> classes = repoclasses.getbyIdSolucao(idSolucao);
 
-        mav.setViewName("classes/listclasses");
+        mav.setViewName("classes/listsolucaoclasses");
         mav.addObject("classes", classes);
         mav.addObject("idAluno", idAluno);
 

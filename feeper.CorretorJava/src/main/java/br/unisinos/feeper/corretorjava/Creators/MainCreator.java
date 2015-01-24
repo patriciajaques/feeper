@@ -64,11 +64,13 @@ public class MainCreator {
             builder.append("}");
         }
 
-        builder.append("JAXBContext context = JAXBContext.newInstance(ExercicioSolucaoErro[].class);");
+        builder.append("ExercicioSolucao solucao = new ExercicioSolucao();");
+        builder.append("solucao.setErros(erros);");
+        builder.append("JAXBContext context = JAXBContext.newInstance(ExercicioSolucao.class);");
         builder.append("Marshaller m = context.createMarshaller();");
         builder.append("m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);");
         builder.append("File file = new File(\"dinamic_output.xml\");");
-        builder.append("m.marshal(erros.toArray(), file);");
+        builder.append("m.marshal(solucao, file);");
         builder.append("}catch (Exception e) {e.printStackTrace();}");
         builder.append("}");
 
