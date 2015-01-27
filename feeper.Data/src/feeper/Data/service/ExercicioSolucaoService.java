@@ -9,6 +9,7 @@ import feeper.Data.entity.ExercicioClasse;
 import feeper.Data.entity.ExercicioSolucao;
 import feeper.Data.entity.ExercicioSolucaoClasse;
 import feeper.Data.entity.ExercicioSolucaoErro;
+import feeper.Data.model.EErrorType;
 import feeper.Data.model.EStatusSolucao;
 import feeper.Data.model.HibernateUtil;
 import feeper.Data.model.IntegerResult;
@@ -26,16 +27,13 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.hibernate.SQLQuery;
-import org.hibernate.type.IntegerType;
-import org.hibernate.type.StringType;
-import org.hibernate.type.TimestampType;
 
 /**
  *
  * @author gilvani
  */
 public class ExercicioSolucaoService extends HibernateUtil<ExercicioSolucao> {
-
+    
     public static final String CODIGO_PADRAO_CLASSE = "/* package qualquer; // Não coloque nome no package */\n"
             + "\n"
             + "import java.util.*;\n"
@@ -46,69 +44,69 @@ public class ExercicioSolucaoService extends HibernateUtil<ExercicioSolucao> {
             + "{\n"
             + "   // Coloque aqui o seu código\n"
             + "}";
-
+    
     public ExercicioSolucaoService() {
         super(ExercicioSolucao.class);
     }
-
+    
     public ExercicioSolucao getLastByIdExercicio(int idExercicio, int idAluno) {
         try {
-
+            
             SQLQuery query = query("select * from ExercicioSolucao where IdExercicio = :idExercicio and IdAluno = :idAluno order by ID desc limit 1").addEntity(ExercicioSolucao.class);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAluno", idAluno);
-
+            
             ExercicioSolucao solucao = (ExercicioSolucao) query.list().get(0);
-
+            
             ExercicioSolucaoErroService repoErros = new ExercicioSolucaoErroService();
             solucao.setErros(repoErros.getAllByIdSolucao(solucao.getId()));
-
+            
             return solucao;
         } catch (Exception e) {
             return null;
         }
     }
-
+    
     public List<ExercicioSolucao> getByIdExercicio(int idExercicio, int idAluno) {
         try {
-
+            
             SQLQuery query = query("select * from ExercicioSolucao where IdExercicio = :idExercicio and IdAluno = :idAluno order by ID desc").addEntity(ExercicioSolucao.class);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAluno", idAluno);
-
+            
             List<ExercicioSolucao> data = query.list();
-
+            
             ExercicioSolucaoErroService repoErros = new ExercicioSolucaoErroService();
             for (ExercicioSolucao solucao : data) {
                 solucao.setErros(repoErros.getAllByIdSolucao(solucao.getId()));
             }
-
+            
             return data;
-
+            
         } catch (Exception e) {
             return null;
         }
     }
-
+    
     public void salvarSolucao(int idAluno, int idExercicio, IntegerResult idSolucao) {
-
+        
         ExercicioSolucao solucao = new ExercicioSolucao();
         solucao.setDataCadastro(new Date());
         solucao.setIdAluno(idAluno);
         solucao.setIdExercicio(idExercicio);
         solucao.setIdStatus(EStatusSolucao.AGUARDANDO);
-
+        
         if (insert(solucao)) {
             idSolucao.setResult(solucao.getId());
 
             //realiza uma cópia das classes do exercício para a solução para manter um histórico
             ExercicioClasseService repoClassesExercicio = new ExercicioClasseService();
             ExercicioSolucaoClasseService repoClassesSolucao = new ExercicioSolucaoClasseService();
-
+            
             List<ExercicioClasse> classesExercicio = repoClassesExercicio.getAllByIdExercicio(idExercicio, idAluno);
-
+            
             for (ExercicioClasse classe : classesExercicio) {
-
+                
                 ExercicioSolucaoClasse classeSolucao = new ExercicioSolucaoClasse();
                 classeSolucao.setIdSolucao(solucao.getId());
                 classeSolucao.setNomeClasse(classe.getNomeClasse());
@@ -117,23 +115,23 @@ public class ExercicioSolucaoService extends HibernateUtil<ExercicioSolucao> {
             }
         }
     }
-
+    
     public void enviarCorrecao(int idSolucao) {
-
+        
         ExercicioSolucao solucao = this.getById(idSolucao);
         int idAluno = solucao.getIdAluno();
         int idExercicio = solucao.getIdExercicio();
-
+        
         ExercicioSolucaoClasseService repoClassesSolucao = new ExercicioSolucaoClasseService();
         solucao.setClasses(repoClassesSolucao.getbyIdSolucao(solucao.getId()));
-
+        
         ExercicioCasoTesteService repoTestes = new ExercicioCasoTesteService();
         solucao.setTestes(repoTestes.getByIdExercicio(idExercicio));
-
+        
         try {
             String serverURL = "http://localhost:8084/feeper.CorretorJava/rest/efetuaCorrecao";
             String xmlData = this.solucaoToXML(solucao);
-
+            
             URL url = new URL(serverURL);
             URLConnection connection = url.openConnection();
             connection.setDoOutput(true);
@@ -143,7 +141,7 @@ public class ExercicioSolucaoService extends HibernateUtil<ExercicioSolucao> {
             OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
             out.write(xmlData);
             out.close();
-
+            
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuilder builder = new StringBuilder();
             String line = null;
@@ -151,39 +149,49 @@ public class ExercicioSolucaoService extends HibernateUtil<ExercicioSolucao> {
                 builder.append(line);
             }
             solucao = this.solucaoFromXML(builder.toString());
-
+            
             ExercicioSolucaoErroService repoErrosSolucao = new ExercicioSolucaoErroService();
-
+            
             for (ExercicioSolucaoErro erro : solucao.getErros()) {
                 repoErrosSolucao.insert(erro);
             }
-
+            
             this.update(solucao);
-
+            
         } catch (Exception ex) {
             solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
             this.update(solucao);
-
+            
+            ExercicioSolucaoErro erro = new ExercicioSolucaoErro();
+            erro.setIdSolucao(solucao.getId());
+            erro.setIdCasoTeste(-1);
+            erro.setErrorType(EErrorType.COMPILACAO);
+            erro.setLinhaErro(-1);
+            erro.setMensagemErro(ex.getMessage());
+            
+            ExercicioSolucaoErroService repoErrosSolucao = new ExercicioSolucaoErroService();
+            repoErrosSolucao.insert(erro);
+            
         }
     }
-
+    
     private String solucaoToXML(ExercicioSolucao solucao) throws JAXBException {
-
+        
         JAXBContext context = JAXBContext.newInstance(ExercicioSolucao.class
         );
         Marshaller m = context.createMarshaller();
-
+        
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
+        
         StringWriter sw = new StringWriter();
-
+        
         m.marshal(solucao, sw);
-
+        
         return sw.toString();
     }
-
+    
     private ExercicioSolucao solucaoFromXML(String xmlString) throws JAXBException {
-
+        
         StringReader reader = new StringReader(xmlString);
         JAXBContext jaxbContext = JAXBContext.newInstance(ExercicioSolucao.class
         );

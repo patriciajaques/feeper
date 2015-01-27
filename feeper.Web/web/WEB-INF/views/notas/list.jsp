@@ -52,10 +52,10 @@
                             if (id === undefined || idAluno === undefined)
                                 return;
                             
-                            if ($("#panelErros" + id + "_" + idAluno).length > 0)
+                            if ($("#panelMensagens" + id + "_" + idAluno).length > 0)
                             {
                                 $(this).parent().removeClass("borda-selecao");
-                                $("#panelErros" + id + "_" + idAluno).slideUp("fast").parent().remove();
+                                $("#panelMensagens" + id + "_" + idAluno).slideUp("fast").parent().remove();
                             }
 
                             if ($("#panelClasses" + id + "_" + idAluno).length == 0)
@@ -104,7 +104,7 @@
 
                         });
 
-                        $("#panelResults" + idExercicio + "_" + idAluno).on('click', '.btn-verresultado', function () {
+                        $("#panelResults" + idExercicio + "_" + idAluno).on('click', '.btn-vermensagens', function () {
                             var id = $(this).attr("data-id");
                             var idAluno = $(this).attr("data-idaluno");
 
@@ -117,19 +117,19 @@
                                 $("#panelClasses" + id + "_" + idAluno).slideUp("fast").parent().remove();
                             }
                             
-                            if ($("#panelErros" + id + "_" + idAluno).length == 0)
+                            if ($("#panelMensagens" + id + "_" + idAluno).length == 0)
                             {
                                 var url = "<c:url value='/'/>solucoes/listerros/" + id + "/" + idAluno;
-                                $(this).parent().parent().parent().after("<tr><td colspan='4' style='border-top:2px solid #999; border-bottom:2px solid #999; display:none' id='panelErros" + id + "_" + idAluno + "'></td></tr>");
+                                $(this).parent().parent().parent().after("<tr><td colspan='4' style='border-top:2px solid #999; border-bottom:2px solid #999; display:none' id='panelMensagens" + id + "_" + idAluno + "'></td></tr>");
 
                                 MostraCarregando()
-                                $("#panelErros" + id + "_" + idAluno).slideDown("fast").load(url, function () {
+                                $("#panelMensagens" + id + "_" + idAluno).slideDown("fast").load(url, function () {
                                     RemoveCarregando();
                                 });
                             }
                             else {
                                 $(this).parent().removeClass("borda-selecao");
-                                $("#panelErros" + id + "_" + idAluno).slideUp("fast").parent().remove();
+                                $("#panelMensagens" + id + "_" + idAluno).slideUp("fast").parent().remove();
                             }
 
                         });

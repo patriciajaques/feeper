@@ -157,7 +157,8 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "  E.ID as IdExercicio, "
                     + "  E.Nome as NomeExercicio, "
                     + "  RRR.ID as IdSolucao, "
-                    + "  RRR.IdStatus as IdStatusSolucao "
+                    + "  RRR.IdStatus as IdStatusSolucao, "
+                    + "  RRR.ErrosCount "
                     + "from "
                     + "  Turma T "
                     + "  inner join TurmaPessoa TP "
@@ -169,7 +170,9 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "  inner join Exercicio E "
                     + "  on E.ID = TE.IdExercicio "
                     + "  left join ( "
-                    + "    select ES.* from ExercicioSolucao ES "
+                    + "    select ES.*, "
+                    + "    COUNT(ESE.ID) as ErrosCount "
+                    + "    from ExercicioSolucao ES " 
                     + "    inner join ( "
                     + "      select IdExercicio, IdAluno, max(DataCadastro) as DataCadastro  "
                     + "      from ExercicioSolucao "
@@ -178,9 +181,11 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "    on RR.IdExercicio = ES.IdExercicio "
                     + "    and RR.IdAluno = ES.IdAluno "
                     + "    and RR.DataCadastro = ES.DataCadastro "
+                    + "    left join ExercicioSolucaoErro ESE "
+                    + "    on ESE.IdSolucao = ES.Id "
                     + "  ) RRR "
                     + "  on RRR.IdExercicio = E.ID "
-                    + "  and RRR.IdAluno = P.ID "
+                    + "  and RRR.IdAluno = P.ID "                   
                     + "where "
                     + "  T.Ativo = 1 "
                     + "  and P.Ativo = 1 "
@@ -197,7 +202,8 @@ public class TurmaService extends HibernateUtil<Turma> {
             query.addScalar("NomeExercicio", StringType.INSTANCE);
             query.addScalar("IdSolucao", StringType.INSTANCE);
             query.addScalar("IdStatusSolucao", IntegerType.INSTANCE);
-
+            query.addScalar("ErrosCount", IntegerType.INSTANCE);
+            
             query.setInteger("idTurma", idTurma);
 
             return query.list();
@@ -216,7 +222,8 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "  E.ID as IdExercicio, "
                     + "  E.Nome as NomeExercicio, "
                     + "  RRR.ID as IdSolucao, "
-                    + "  RRR.IdStatus as IdStatusSolucao "
+                    + "  RRR.IdStatus as IdStatusSolucao, "
+                    + "  RRR.ErrosCount "
                     + "from "
                     + "  Turma T "
                     + "  inner join TurmaPessoa TP "
@@ -228,7 +235,9 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "  inner join Exercicio E "
                     + "  on E.ID = TE.IdExercicio "
                     + "  left join ( "
-                    + "    select ES.* from ExercicioSolucao ES "
+                    + "    select ES.*, "
+                    + "    COUNT(ESE.ID) as ErrosCount "
+                    + "    from ExercicioSolucao ES "   
                     + "    inner join ( "
                     + "      select IdExercicio, IdAluno, max(DataCadastro) as DataCadastro  "
                     + "      from ExercicioSolucao "
@@ -237,6 +246,8 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "    on RR.IdExercicio = ES.IdExercicio "
                     + "    and RR.IdAluno = ES.IdAluno "
                     + "    and RR.DataCadastro = ES.DataCadastro "
+                    + "    left join ExercicioSolucaoErro ESE "
+                    + "    on ESE.IdSolucao = ES.Id "
                     + "  ) RRR "
                     + "  on RRR.IdExercicio = E.ID "
                     + "  and RRR.IdAluno = P.ID "
@@ -257,6 +268,8 @@ public class TurmaService extends HibernateUtil<Turma> {
             query.addScalar("NomeExercicio", StringType.INSTANCE);
             query.addScalar("IdSolucao", IntegerType.INSTANCE);
             query.addScalar("IdStatusSolucao", IntegerType.INSTANCE);
+            query.addScalar("ErrosCount", IntegerType.INSTANCE);
+            
             query.setInteger("idTurma", idTurma);
             query.setInteger("idAluno", idAluno);
 

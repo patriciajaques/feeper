@@ -36,36 +36,44 @@
             $("#menu-lista-exercicios").addClass("active");
                     $(".btn-classe-download").click(function(){
             var id = $("#hdnIdExercicio").val();
-                    document.location.href = "<c:url value='/'/>exercicios/download/" + id;
-                    });
+                    document.location.href = "<c:url value='/'/>exercicios/download/" + id; });
                     $(".btn-classe-enviar").click(function(){
-                    $("#frmSolucionar").attr("action", "<c:url value='/'/>exercicios/enviarcorrecao");
-                    $("#frmSolucionar").submit();
-                    }); $(".btn-excluir-classe").click(function(){
-                            if (!confirm("<fmt:message key="label.confirmaexclusao"/>")) return;
-                            var id = $("#hdnIdClasse").val();
+            $("#frmSolucionar").attr("action", "<c:url value='/'/>exercicios/enviarcorrecao"); $("#frmSolucionar").submit();
+                    });
+                    $(".btn-excluir-classe").click(function(){
+                                        if (!confirm("<fmt:message key="label.confirmaexclusao"/>")) return;
+                    var id = $("#hdnIdClasse").val();
                             document.location.href = "<c:url value='/'/>exercicios/deleteclasse/${Exercicio.getId()}/" + id;
                     });
                     $(".btn-nova-classe").fancybox({
             'autoSize': true,
                             'openEffect': 'fade',
-                            'closeEffect': 'fade', 'modal': true
-                    }); $('#file_upload').uploadify({
-                    'swf'           : '<c:url value='/resources/uploadify/uploadify.swf'/>', 'uploader'      : '<c:url value='/'/>exercicios/uploadclass',
-                    'fileTypeDesc'  : 'Arquivos JAVA',
+                    'closeEffect': 'fade',
+                            'modal': true
+                    });
+                            $('#file_upload').uploadify({             'swf'           : '<c:url value='/resources/uploadify/uploadify.swf'/>',
+                            'uploader'      : '<c:url value='/'/>exercicios/uploadclass',
+                            'fileTypeDesc'  : 'Arquivos JAVA',
                     'fileTypeExts'  : '*.java',
-                            'fileSizeLimit' : '500KB',
-                            'buttonText'    : '<fmt:message key="button.adicionarclasseexistente"/>', 'multi'         : false,
-                    'fileObjName'   : 'filedata',
-                            'checkExisting' : false, 'width'         : 154,
-                            'height'        : 22, 'removeCompleted' : false,
+                    'fileSizeLimit' : '500KB',
+                            'buttonText'    : '<fmt:message key="button.adicionarclasseexistente"/>',
+                            'multi'         : false,
+                            'fileObjName'   : 'filedata',
+                    'checkExisting' : false,
+                            'width'         : 154,
+                            'height'    : 22,
+                            'removeCompleted' : true,
                             'queueID'       : 'fileQueue',
-                            'itemTemplate'  : '<div style="margin-top:40px;" id="\${fileID}"><div class="uploadify-progress"><div class="uploadify-progress-bar"><!--Progress Bar--></div></div></div>',                'onUploadSuccess' : function(file, data, response) {
-    $("#fileQueue").html("");
-            adicionarClasse(data); },
-    'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+                            'itemTemplate'  : '<div style="margin-top:40px;" id="\${fileID}"><div class="uploadify-progress"><div class="uploadify-progress-bar"><!--Progress Bar--></div></div></div>', 
+'onUploadSuccess' : function(file, data, response) {
+$("#fileQueue").html("");
+adicionarClasse(data); 
+},
+'onUploadError' : function(file, errorCode, errorMsg, errorString) {
 }
-});        $("#panel-markedquestions button.close").click(function() {
+});        
+
+$("#panel-markedquestions button.close").click(function() {
 $("#panel-markedquestions").hide("slide", "fast");
 });
                 
@@ -92,7 +100,8 @@ RemoveCarregando();
 $("#panel-markedannotations .panel-body").animate({ scrollTop: $("#panel-markedquestions .panel-body")[0].scrollHeight}, 1000);
 }
 }; 
-$('#frmAnotacao').ajaxForm(ajaxFormOptions2);              
+$('#frmAnotacao').ajaxForm(ajaxFormOptions2);  
+
 });
             
 function cancelarClasse(){
@@ -106,8 +115,7 @@ $.ajax({
 url: "<c:url value='/'/>tratastring/" + valor,
 cache: false,
 async: false
-})
-.done(function( data ) {
+}).done(function( data ) {
 valor = data;
 });
 return valor;
@@ -385,8 +393,8 @@ return valor;
                         <thead>
                             <tr>
                                 <th></th>
-                    <th><fmt:message key="label.notas.linha"/></th>
-                    <th><fmt:message key="label.notas.mensagem"/></th>
+                                <th><fmt:message key="label.notas.linha"/></th>
+                                <th><fmt:message key="label.notas.mensagem"/></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -395,7 +403,7 @@ return valor;
                                     <td>
                                         ${erro.getErrorType() == 1
                                           ?
-                                          "<button type=\"button\" class=\"btn btn-success btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span></button>"
+                                          "<button type=\"button\" class=\"btn btn-danger btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span></button>"
                                           :
                                           "<button type=\"button\" class=\"btn btn-warning btn-xs\"><span class=\"glyphicon glyphicon-warning-sign\"></span></button>"
                                         }

@@ -6,24 +6,18 @@
 package feeper.controller;
 
 import feeper.Data.entity.Exercicio;
-import feeper.Data.entity.ExercicioClasse;
 import feeper.Data.entity.ExercicioSolucao;
-import feeper.Data.entity.ExercicioSolucaoClasse;
 import feeper.Data.entity.ExercicioSolucaoErro;
 import feeper.Data.entity.Pessoa;
 import feeper.Data.model.EPerfil;
 import feeper.Data.service.ExercicioService;
-import feeper.Data.service.ExercicioSolucaoClasseService;
 import feeper.Data.service.ExercicioSolucaoErroService;
 import feeper.Data.service.ExercicioSolucaoService;
 import feeper.Data.service.TurmaService;
-import feeper.model.PaginadorUtil;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

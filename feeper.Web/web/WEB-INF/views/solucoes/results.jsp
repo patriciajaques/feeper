@@ -21,7 +21,7 @@
                                 <div class="btn-group btn-group-xs">
                                     <button type="button" class="btn btn-default btn-verclasses" data-id="${item.getId()}" data-idaluno="${idAluno}"><fmt:message key="button.verclasses"/></button>
                                     <c:if test="${not empty item.getErros()}">
-                                        <button type="button" class="btn btn-default btn-verresultado" data-id="${item.getId()}" data-idaluno="${idAluno}"><fmt:message key="button.verresultado"/></button>
+                                        <button type="button" class="btn btn-default btn-vermensagens" data-id="${item.getId()}" data-idaluno="${idAluno}"><fmt:message key="button.vermensagens"/></button>
                                     </c:if>
                                     <button type="button" class="btn btn-default btn-download-pacote" data-id="${item.getId()}" data-idaluno="${idAluno}"><fmt:message key="button.downloadPKG"/></button>
                                 </div>
