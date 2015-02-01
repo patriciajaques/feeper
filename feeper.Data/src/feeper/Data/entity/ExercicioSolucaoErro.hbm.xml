@@ -3,7 +3,7 @@
  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class name="feeper.Data.entity.ExercicioSolucaoErro" table="ExercicioSolucaoErro" catalog="feeper">
-        <id name="id" type="java.lang.Integer">
+        <id name="id" type="int">
             <column name="ID" />
             <generator class="identity" />
         </id>
@@ -12,6 +12,9 @@
         </property>
         <property name="idCasoTeste" type="int">
             <column name="IdCasoTeste" not-null="true" />
+        </property>
+        <property name="mensagemPersonalizada" type="string">
+            <column length="5000" name="MensagemPersonalizada"/>
         </property>
         <property name="errorType" type="int">
             <column name="ErrorType" not-null="true"/>

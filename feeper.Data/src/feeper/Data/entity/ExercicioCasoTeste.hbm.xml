@@ -3,11 +3,11 @@
  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class name="feeper.Data.entity.ExercicioCasoTeste" table="ExercicioCasoTeste" catalog="feeper">
-        <id name="id" type="java.lang.Integer">
+        <id name="id" type="int">
             <column name="ID" />
             <generator class="identity" />
         </id>
-        <property name="idExercicio" type="java.lang.Integer">
+        <property name="idExercicio" type="int">
             <column name="IdExercicio" not-null="true" />
         </property>
         <property name="ativo" type="boolean">
@@ -16,7 +16,7 @@
         <property name="mensagemPersonalizada" type="string">
             <column length="5000" name="MensagemPersonalizada"/>
         </property>
-        <property name="ordem" type="java.lang.Integer">
+        <property name="ordem" type="int">
             <column name="Ordem" />
         </property>
     </class>

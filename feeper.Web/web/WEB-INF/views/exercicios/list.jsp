@@ -12,13 +12,13 @@
                 $("#menu-lista-exercicio").addClass("active");
                 
                 $(".btn-novo").click(function(){
-                    document.location.href = "<c:url value='/'/>exercicios/add";
+                    document.location.href = "<c:url value='/'/>exercicios/edit";
                 });
                 
                 $(".btn-editar").click(function(){
                     var id = $(this).attr("data-id");
                     if (id === undefined) return;
-                    document.location.href = "<c:url value='/'/>exercicios/editNew/" + id;
+                    document.location.href = "<c:url value='/'/>exercicios/edit/" + id;
                 });
                 
                 $(".btn-excluir").click(function(){
@@ -83,7 +83,7 @@
                 <table class="table table-striped table-hover" style="margin-bottom: 0px;">
                     <thead>
                         <tr>
-                            <th><fmt:message key="label.exercicios.acoesexercicio"/></th>
+                            <th><fmt:message key="label.exercicios.acoes"/></th>
                             <th>#</th>
                             <th><fmt:message key="label.exercicios.nomeexercicio"/></th>
                             <th><fmt:message key="label.exercicios.autor"/></th>

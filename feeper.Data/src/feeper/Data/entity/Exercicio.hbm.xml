@@ -11,9 +11,7 @@
         <property name="nome" type="string">
             <column name="Nome" length="50" not-null="true" />
         </property>
-        <property name="descricao" type="binary">
-            <column name="Descricao" />
-        </property>
+        
         <property name="idAutor" type="int">
             <column name="IdAutor" not-null="true" />
         </property>
@@ -23,8 +21,14 @@
         <property name="ativo" type="boolean">
             <column name="Ativo" not-null="true" />
         </property>
+        <property name="usaDescricaoPDF" type="boolean">
+            <column name="UsaDescricaoPDF" not-null="true" />
+        </property>     
         <property name="descricaoHtml" type="string">
             <column name="DescricaoHtml" length="65535" />
+        </property>
+        <property name="descricao" type="binary">
+            <column name="Descricao" />
         </property>
     </class>
 </hibernate-mapping>

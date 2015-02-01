@@ -11,26 +11,26 @@ package feeper.Data.entity;
  */
 public class ExercicioCasoTestePassoParametro {
     
-    private Integer id;
-    private Integer idPasso;
+    private int id;
+    private int idPasso;
     private int ordem;
     private String objectType;  
     private String objectName;
     private String objectValue;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getIdPasso() {
+    public int getIdPasso() {
         return idPasso;
     }
 
-    public void setIdPasso(Integer idPasso) {
+    public void setIdPasso(int idPasso) {
         this.idPasso = idPasso;
     }
 

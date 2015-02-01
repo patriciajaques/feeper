@@ -13,12 +13,12 @@ import java.util.Date;
  */
 public class ExercicioSolucaoClasseMarcacao {
     
-    private Integer id;
-     private Integer idExercicioSolucaoClasse;
-     private Integer idAutor;
-     private Integer idTipoMarcacao;
-     private Integer linhaInicio;
-     private Integer linhaFim;
+    private int id;
+     private int idExercicioSolucaoClasse;
+     private int idAutor;
+     private int idTipoMarcacao;
+     private int linhaInicio;
+     private int linhaFim;
      private String anotacao;
      private Date dataCadastro;
      private Boolean ativo;
@@ -26,11 +26,11 @@ public class ExercicioSolucaoClasseMarcacao {
     public ExercicioSolucaoClasseMarcacao() {
     }
    
-    public Integer getId() {
+    public int getId() {
         return this.id;
     }
     
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -13,36 +13,36 @@ import java.util.Date;
  */
 public class ExercicioClasse {
 
-    private Integer id;
-    private Integer idExercicio;
-    private Integer idAluno;
+    private int id;
+    private int idExercicio;
+    private int idAluno;
     private String nomeClasse;
     private String codigo;
     private String codigoAnterior;
     private Date dataCadastro;
     private boolean favorito;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getIdExercicio() {
+    public int getIdExercicio() {
         return idExercicio;
     }
 
-    public void setIdExercicio(Integer idExercicio) {
+    public void setIdExercicio(int idExercicio) {
         this.idExercicio = idExercicio;
     }
 
-    public Integer getIdAluno() {
+    public int getIdAluno() {
         return idAluno;
     }
 
-    public void setIdAluno(Integer idAluno) {
+    public void setIdAluno(int idAluno) {
         this.idAluno = idAluno;
     }
 

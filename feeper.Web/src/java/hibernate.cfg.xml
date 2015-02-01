@@ -54,5 +54,8 @@
         <mapping resource="feeper/Data/entity/ExercicioSolucaoClasse.hbm.xml"/>
         <mapping resource="feeper/Data/entity/ExercicioSolucaoClasseMarcacao.hbm.xml"/>
         <mapping resource="feeper/Data/entity/ExercicioSolucaoErro.hbm.xml"/>
+        <mapping resource="feeper/Data/entity/ExercicioInterface.hbm.xml"/>
+        <mapping resource="feeper/Data/entity/ExercicioInterfaceMembro.hbm.xml"/>
+        <mapping resource="feeper/Data/entity/ExercicioInterfaceMembroParametro.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

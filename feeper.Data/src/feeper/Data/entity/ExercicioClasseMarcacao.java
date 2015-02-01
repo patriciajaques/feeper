@@ -10,7 +10,7 @@ import java.util.Date;
 public class ExercicioClasseMarcacao  implements java.io.Serializable {
 
 
-     private Integer id;
+     private int id;
      private int idExercicioClasse;
      private int idAutor;
      private int idTipoMarcacao;
@@ -24,11 +24,11 @@ public class ExercicioClasseMarcacao  implements java.io.Serializable {
     public ExercicioClasseMarcacao() {
     }
    
-    public Integer getId() {
+    public int getId() {
         return this.id;
     }
     
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 

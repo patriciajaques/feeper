@@ -3,6 +3,9 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
+<script src="<c:url value='/resources/AngularJS/angular.min.js'/>" type="text/javascript"></script>
+<script src="<c:url value='/resources/AngularJS/Exercicios/edit.js'/>" type="text/javascript"></script>
+
 <t:master>
     <jsp:attribute name="title"><fmt:message key="title.exercicios"/></jsp:attribute>
     <jsp:attribute name="header">
@@ -10,371 +13,236 @@
             .ui-state-highlight { height: 91px; }
         </style>
         <script type="text/javascript">
-            var trTemplate = "<tr id=\"trLinhaNova#id#\" class=\"linha-validacao\"><td><div class=\"btn-group btn-group-xs\"><input type=\"hidden\" class=\"field-ordem\" id=\"ordem#id#\" name=\"ordem#id#\" value=\"#id#\"><button type=\"button\" class=\"btn btn-primary btn-ordem disabled\">#id#</button><button type=\"button\" class=\"btn btn-default btn-excluir\" data-context=\"frmSaveValidacao\" data-source=\"0\" data-id=\"#id#\"><fmt:message key="button.excluir"/></button></div></td><td><textarea class=\"form-control\" rows=\"3\" id=\"entrada#id#\" name=\"entrada#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"saida#id#\" name=\"saida#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"mensagem#id#\" name=\"mensagem#id#\"></textarea></td></tr>";
-            var trTemplateClasse = "<tr id=\"trLinhaNova#id#\" class=\"linha-validacao\"><td><div class=\"btn-group btn-group-xs\"><input type=\"hidden\" class=\"field-ordem\" id=\"ordemClasse#id#\" name=\"ordemClasse#id#\" value=\"#id#\"><button type=\"button\" class=\"btn btn-primary btn-ordem disabled\">#id#</button><button type=\"button\" class=\"btn btn-default btn-excluir\" data-context=\"frmSaveClasseValidacao\" data-source=\"0\" data-id=\"#id#\"><fmt:message key="button.excluir"/></button></div></td><td><textarea class=\"form-control\" rows=\"3\" id=\"fonte#id#\" name=\"fonte#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"saida#id#\" name=\"saida#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"mensagemCompilacao#id#\" name=\"mensagemCompilacao#id#\"></textarea></td><td><textarea class=\"form-control\" rows=\"3\" id=\"mensagem#id#\" name=\"mensagem#id#\"></textarea></td></tr>";
-    
-            $(function(){
-                $("#menu-lista-exercicio").addClass("active");
-                
-                $(".editor").jqte();
-                
-                
-                $('#file_upload').uploadify({
-                    'swf'           : '<c:url value='/resources/uploadify/uploadify.swf'/>',
-                    'uploader'      : '<c:url value='/'/>exercicios/upload',
-                    'fileTypeDesc'  : 'Arquivos PDF',
-                    'fileTypeExts'  : '*.pdf',
-                    'fileSizeLimit' : '500KB',
-                    'buttonText'    : '<fmt:message key="button.escolherarquivo"/>',
-                    'multi'         : false,
-                    'fileObjName'   : 'filedata',
-                    'checkExisting' : false,
-                    'width'         : 146,
-                    'height'        : 34,
-                    'removeCompleted' : false,
-                    'onUploadSuccess' : function(file, data, response) {
-                        $("#idUploadTemp").val(data);
-                    },
-                    'onUploadError' : function(file, errorCode, errorMsg, errorString) {
-                        //alert('The file ' + file.name + ' could not be uploaded: ' + errorString);
-                    }
-                });
-                
-                $(".rd-detalhamento").click(function(){
-                    var show = $(this).attr("show-div");
-                    $(".div-detalhamento").hide();
-                    $("#" + show).show();
-                });
-                
-                $(".btn-voltar").click(function(){
-                    document.location.href = "<c:url value='/'/>exercicios";
-                });
-                
-                $(document).on("click", ".btn-excluir", function(){
-                    var context = $(this).attr("data-context");
-                    var id = $(this).attr("data-id");
-                    if (id === undefined) return;
-                    var source = parseInt($(this).attr("data-source"));
-                    var trId = (source === 1) ? "#trLinha" + id : "#trLinhaNova" + id;
-                    $("#"+ context + " " + trId).remove();
-                    atualizaOrdem($("#"+ context + " #tbody-validacoes"));
-                });
-                
-                $(".btn-nova-linha").click(function(){
-                    novaLinha($(this));
-                });
-                
-                $(".btn-nova-classe").click(function(){
-                    var obj = $(this);
-                    $.fancybox({
-                        'autoSize': true,
-                        'openEffect': 'fade',
-                        'closeEffect': 'fade',
-                        'modal': true,
-                        'href': '#divNovaClasse'
-                    });
-                });
-                
-                $("#frmSaveValidacao #tbody-validacoes").sortable({
-                    placeholder: "ui-state-highlight",
-                    update: function() {
-                        atualizaOrdem($(this));
-                    }
-                });
-                $("#frmSaveValidacao #tbody-validacoes").disableSelection();
-                
-                $("#frmSaveClasseValidacao #tbody-validacoes").sortable({
-                    placeholder: "ui-state-highlight",
-                    update: function() {
-                        atualizaOrdem($(this));
-                    }
-                });
-                $("#frmSaveClasseValidacao #tbody-validacoes").disableSelection();
-                
-            });
-            
-            function atualizaOrdem(obj)
-            {
-                $(obj).find(".field-ordem").each(function(index){
-                   $(this).val(index + 1);
-                });
-                $(obj).find(".btn-ordem").each(function(index){
-                   $(this).html(index + 1);
-                });
-            }
-            
-            function novaLinha(obj)
-            {
-                var context = $(obj).attr("data-context");
-                var cont = parseInt($("#"+ context + " #contador").val()) + 1;
-                var linha = context == "frmSaveValidacao" ?
-                                trTemplate.replace(/#id#/gi, cont) :
-                                trTemplateClasse.replace(/#id#/gi, cont);
-
-                $("#"+ context + " #tbody-validacoes").append(linha);
-                $("#"+ context + " #contador").val(cont);
-                atualizaOrdem($("#"+ context + " #tbody-validacoes"));
-                return cont;
-            }
-            
-            function adicionarClasse()
-            {
-                if ($("#classe").val().length == 0 || $("#classe").val().length == 0) return;
-                var obj = $(".btn-nova-classe").get(0);
-                var context = $(obj).attr("data-context");
-                var classe = $("#classe").val();
-                var atributos = $("#atributos").val().split("\n");
-                
-                //Nova linha para testar a classe. ex: Classe x = new Classe();
-                var cont = novaLinha(obj);
-                var newClasse = classe + " x = new " + classe + "();";
-                $("#"+ context + " #fonte" + cont).val(newClasse);
-                $("#"+ context + " #saida" + cont).val("");
-                $("#"+ context + " #mensagemCompilacao" + cont).val("<fmt:message key="label.exercicio.mensagemvalidacao.nomeclasse"/>");
-                $("#"+ context + " #mensagem" + cont).val("");
-
-                for (i = 0; i < atributos.length; i++)
-                {
-                    //Linha para testar o método SET
-                    cont = novaLinha(obj);
-                    var fonte = newClasse + "\n" + "x.set" + atributos[i] + "(123);";
-                    
-                    $("#"+ context + " #fonte" + cont).val(fonte);
-                    $("#"+ context + " #saida" + cont).val("");
-                    $("#"+ context + " #mensagemCompilacao" + cont).val("<fmt:message key="label.exercicio.mensagemvalidacao.metodoset"/>");
-                    $("#"+ context + " #mensagem" + cont).val("");
-                    
-                    //Linha para testar o método GET
-                    cont = novaLinha(obj);
-                    fonte = fonte + "\n" + "System.out.println(x.get" + atributos[i] + "());";
-                    
-                    $("#"+ context + " #fonte" + cont).val(fonte);
-                    $("#"+ context + " #saida" + cont).val("123");
-                    $("#"+ context + " #mensagemCompilacao" + cont).val("<fmt:message key="label.exercicio.mensagemvalidacao.metodoget"/>");
-                    $("#"+ context + " #mensagem" + cont).val("<fmt:message key="label.exercicio.mensagemvalidacao.retornoget"/>");
-                }
-                
-                cancelarClasse();
-            }
-            
-            function cancelarClasse()
-            {
-                $("#atributos").val("");            
-                $("#classe").val("");            
-                $.fancybox.close(true);
-            }
+            var baseUrl = "<c:url value='/'/>";
+            var escolherArquivoText = '<fmt:message key="button.escolherarquivo"/>';
         </script>
-        
+
     </jsp:attribute>
     <jsp:body>
-        <h2>
-        <c:choose>
-            <c:when test="${IsAdd != null && IsAdd}">
+        <div ng-app="feeper" ng-controller="editExercicios" >
+            <h2 ng-show="exercicio.id == 0">
                 <fmt:message key="label.exercicios.novo"/>
-            </c:when>
-            <c:otherwise>
+            </h2>
+            <h2 ng-show="exercicio.id > 0">
                 <fmt:message key="label.exercicios.editar"/>
-            </c:otherwise>
-        </c:choose>
-        </h2>
-        
-        <c:if test="${not empty MSG_SUCESSO}">
-            <div class="alert alert-success">${MSG_SUCESSO}</div>
-        </c:if>
-        <c:if test="${not empty MSG_ERRO}">
-            <div class="alert alert-danger">${MSG_ERRO}</div>
-        </c:if>
-        
-        <div class="panel panel-default">
-            <div class="panel-body">
-
-                <form role="form" action="<c:url value='/'/>${IsAdd != null && IsAdd ? "exercicios/saveadd" : "exercicios/saveedit/"}" method="POST">
-                    <input type="hidden" id="id" name="id" value="${exercicio.getId()}">
+            </h2>
+            <div class="panel panel-default">
+                <div class="panel-body">
                     <div class="form-group">
-                        <label for="titulo"><fmt:message key="label.exercicios.titulo"/>:</label>
-                        <input type="text" class="form-control" id="nome" name="nome" placeholder="<fmt:message key="label.exercicios.tituloinforme"/>" value="${exercicio.getNome()}">
+                        <label><fmt:message key="label.exercicios.titulo"/></label>
+                        <input type="text" class="form-control" id="nome" name="nome" ng-model="exercicio.nome">
                     </div>
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" name="ativo" ${IsAdd != null && IsAdd ? "checked" : exercicio.isAtivo() ? "checked" : ""}>
+                            <input type="checkbox" name="ativo" ng-model="exercicio.ativo">
                             <fmt:message key="label.exercicios.ativo"/>
                         </label>
                     </div>
                     <div class="form-group">
-                        <label for="encerramento"><fmt:message key="label.exercicios.detalhamento"/>:</label><br>
+                        <label><fmt:message key="label.exercicios.detalhamento"/>:</label>
+                        <br>
                         <label class="radio-inline">
-                            <input type="radio" id="rdHTML" name="rdDetalhamento" class="rd-detalhamento" value="html" show-div="editorhtml" checked="checked">
+                            <input type="radio" id="rdHTML" name="rdDetalhamento" class="rd-detalhamento" ng-value="falseValue" ng-model="exercicio.usaDescricaoPDF">
                             <fmt:message key="label.exercicios.utilizareditorhtml"/>
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" id="rdPDF" name="rdDetalhamento" class="rd-detalhamento" value="pdf" show-div="uploadpdf" disabled="disabled">
+                            <input type="radio" id="rdPDF" name="rdDetalhamento" class="rd-detalhamento" ng-value="trueValue" ng-model="exercicio.usaDescricaoPDF">
                             <fmt:message key="label.exercicios.utilizarpdf"/>
                         </label>
                     </div>
-                    
-                    <div id="editorhtml" class="div-detalhamento">
-                        <textarea class="editor" name="htmlcontent">
-                            <c:choose>
-                                <c:when test="${IsAdd != null && IsAdd}">
-                                    <fmt:message key="label.exercicios.descricaoinforme"/>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:out value="${exercicio.getDescricaoHtml()}"/>
-                                </c:otherwise>
-                            </c:choose>
+
+                    <div id="editorhtml" ng-show="exercicio.usaDescricaoPDF == false" class="div-detalhamento">
+                        <textarea class="editor" name="htmlcontent" >
                         </textarea>
                     </div>
-                    <div id="uploadpdf" style="display:none;" class="div-detalhamento">
-                        <input type="hidden" id="idUploadTemp" name="idUploadTemp">
-                        <input type="file" name="file_upload" id="file_upload" />
+                    <div id="uploadpdf" ng-show="exercicio.usaDescricaoPDF == true" class="div-detalhamento">
+                        <input type="file" name="upload_descricao" id="upload_descricao" />
+                        <!--Este ng-repeat é uma gambiarra para não dar o erro 404, mas o que é um programador sem gambiarra-->
+                        <div ng-repeat="url in arquivoPDFURLs">                            
+                            <iframe border="0" width="100%" height="600px" ng-src="{{url.domain}}" >
+                            </iframe>
+                        </div>
                     </div>
-                        
-                    <button type="submit" class="btn btn-primary"><fmt:message key="button.salvar"/></button>
-                    <button type="button" class="btn btn-default btn-voltar"><fmt:message key="button.voltarlistagem"/></button>
-                </form>
 
+                    <div id="casosTeste" class="form-group">
+                        <div class="form-group" style="margin-top: 20px;">                     
+                            <label><fmt:message key="label.exercicios.casosteste"/>:</label>
+                        </div>
+
+                        <button type="button" ng-click="visualizaTelaInterface()" class="btn btn-primary"><fmt:message key="label.exercicios.uploadInterface"/></button>
+
+                        <table class="table table-striped table-hover" style="margin-bottom: 0px;">
+                            <thead>
+                                <tr>
+                                    <th><fmt:message key="label.exercicios.acoes"/></th>
+                                    <th><fmt:message key="label.exercicios.mensagempersonalizada"/></th>
+                                    <th><fmt:message key="label.exercicios.ativo"/></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="casoTeste in exercicio.casosTeste">
+                                    <td>
+                                        <button type="button" ng-click="deletaCasoTeste(casoTeste)" class="btn btn-default btn-xs"><fmt:message key="button.excluir"/></button>
+                                        <button type="button" ng-click="editaPassosCasoTeste(casoTeste)" class="btn btn-default btn-xs"><fmt:message key="label.exercicios.editarpassoscasosteste"/></button>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" ng-model="casoTeste.mensagemPersonalizada">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" ng-model="casoTeste.ativo">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3">
+                                        <button type="button" ng-click="adicionaCasoTeste()" class="btn btn-primary"><fmt:message key="label.exercicios.adicionarcasoteste"/></button>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <button type="button" ng-click="save()" class="btn btn-primary"><fmt:message key="button.salvar"/></button>
+                    <button type="button" ng-click="voltar()" class="btn btn-default btn-voltar"><fmt:message key="button.voltarlistagem"/></button>
+
+                    <!--Modal exibida para carregar Interface-->
+                    <div style="display:none;" id="divUploadInterface">
+                        <div id="uploadInterface">
+                            <input type="file" name="upload_Interface_Solucao" id="upload_Interface_Solucao" />
+                        </div>
+                        <div class="form-group">
+                            <label><fmt:message key="label.exercicios.nomeclasse"/></label>
+                            <input type="text" class="form-control" id="nome" name="nome" ng-model="exercicio.interfaceSolucao.nomeClasse">
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="gerarTestesGetSet">
+                                <fmt:message key="label.exercicios.gerarcasostestegetset"/>
+                            </label>
+                        </div>
+                        <button type="button" ng-click="concluiUploadInterface()" class="btn btn-primary"><fmt:message key="button.concluir"/></button>
+
+                    </div>
+
+                    <!--Modal exibida para editar Passos-->
+                    <div style="display:none;" id="divEditPassos">
+                        <label><fmt:message key="label.exercicios.passoscasosteste"/>:</label>
+                        <table ng-show="exercicio.interfaceSolucao == null">
+                            <tbody>
+                                <tr ng-repeat="passo in editingCasoTeste.passos">
+                                    <td>
+                                        <span style="cursor: pointer;" class="glyphicon glyphicon-minus" ng-click="deletaPasso(passo)"></span>
+                                    </td>
+                                    <td>
+                                        <select ng-model="passo.operationType" ng-options="o.value as o.label for o in OperationTypes">                                                
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" ng-disabled="passo.operationType == 2" ng-model="passo.expectedOutputType" />
+                                    </td>
+                                    <td>
+                                        <input type="text" ng-disabled="passo.operationType == 2" ng-show="passo.operationType != 3" ng-model="passo.expectedOutputName"/>
+                                        <input type="text" ng-disabled="passo.operationType == 2" ng-show="passo.operationType == 3" ng-model="passo.expectedOutputValue"/>
+                                    </td>
+                                    <td> {{ passo.operationType == 3?"==":"=" }} </td>
+                                    <td>
+                                        <input type="text"  ng-model="passo.objectName"/>
+                                    </td>
+                                    <td>.</td>
+                                    <td>
+                                        <input type="text"  ng-model="passo.methodName"/>
+                                    </td>
+                                    <td>
+                                        <table >
+                                            <tr>
+                                                <td>(</td>
+                                                <td ng-repeat="parametro in passo.inputParameters">
+                                                    <table>
+                                                        <tr>
+                                                            <td><span style="cursor: pointer;" class="glyphicon glyphicon-minus" ng-click="deletaParametro(passo, parametro)"></span></td>
+                                                            <td><input type="text" ng-model="parametro.objectType"/></td>
+                                                            <td><input type="text" ng-model="parametro.objectValue"/></td>
+                                                            <td>,</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td>
+                                                    <span style="cursor: pointer;" class="glyphicon glyphicon-plus" ng-click="adicionaParametro(passo)"></span> 
+                                                </td>
+                                                <td>);</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="9">
+                                        <button type="button" ng-click="adicionaPasso()" class="btn btn-primary"><fmt:message key="label.exercicios.adicionarpassocasoteste"/></button>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <table ng-show="exercicio.interfaceSolucao != null">
+                            <tbody>
+                                <tr ng-repeat="passo in editingCasoTeste.passos">
+                                    <td>
+                                        <span style="cursor: pointer;" class="glyphicon glyphicon-minus" ng-click="deletaPasso(passo)"></span>
+                                    </td>
+                                    <td>
+                                        <select ng-model="passo.operationType" ng-options="o.value as o.label for o in OperationTypes">                                                
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" ng-disabled="passo.operationType == 2" ng-model="passo.expectedOutputType" />
+                                    </td>
+                                    <td>
+                                        <input type="text" ng-disabled="passo.operationType == 2" ng-show="passo.operationType != 3" ng-model="passo.expectedOutputName"/>
+                                        <input type="text" ng-disabled="passo.operationType == 2" ng-show="passo.operationType == 3" ng-model="passo.expectedOutputValue"/>
+                                    </td>
+                                    <td> {{ passo.operationType == 3?"==":"=" }} </td>
+                                    <td>
+                                        <input type="text"  ng-model="passo.objectName"/>
+                                    </td>
+                                    <td>.</td>
+                                    <td>
+                                        <input type="text"  ng-model="passo.methodName"/>
+                                    </td>
+                                    <td>
+                                        <table >
+                                            <tr>
+                                                <td>(</td>
+                                                <td ng-repeat="parametro in passo.inputParameters">
+                                                    <table>
+                                                        <tr>
+                                                            <td><span style="cursor: pointer;" class="glyphicon glyphicon-minus" ng-click="deletaParametro(passo, parametro)"></span></td>
+                                                            <td><input type="text" ng-model="parametro.objectType"/></td>
+                                                            <td><input type="text" ng-model="parametro.objectValue"/></td>
+                                                            <td>,</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td>
+                                                    <span style="cursor: pointer;" class="glyphicon glyphicon-plus" ng-click="adicionaParametro(passo)"></span> 
+                                                </td>
+                                                <td>);</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="9">
+                                        <button type="button" ng-click="adicionaPasso()" class="btn btn-primary"><fmt:message key="label.exercicios.adicionarpassocasoteste"/></button>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-                
-        <c:if test="${IsAdd != null && !IsAdd}">
-
-            <h2><fmt:message key="label.exercicios.cadastrarentradassaidas"/></h2>
-            
-            <form role="form" id="frmSaveValidacao" action="<c:url value='/'/>exercicios/savevalidacao" method="POST">
-                <input type="hidden" id="idExercicio" name="idExercicio" value="${exercicio.getId()}">
-                <input type="hidden" id="contador" name="contador" value="${exercicio.getValidacoes().size()}">
-                
-                
-                <button type="button" class="btn btn-primary btn-nova-linha" data-context="frmSaveValidacao"><fmt:message key="button.novalinha"/></button>
-                <button type="submit" class="btn btn-primary"><fmt:message key="button.salvarvalidacao"/></button>
-                <br /><br />
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title"><fmt:message key="label.registroscadastrados"/></h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <table class="table table-striped table-hover" style="margin-bottom: 0px;">
-                            <thead>
-                                <tr>
-                                    <th><fmt:message key="label.exercicios.acoes"/></th>
-                                    <th><fmt:message key="label.exercicios.entrada"/></th>
-                                    <th><fmt:message key="label.exercicios.saida"/></th>
-                                    <th><fmt:message key="label.exercicios.mensagempersonalizada"/></th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-validacoes">
-                                <c:if test="${not empty exercicio.getValidacoes()}">
-                                    <c:forEach var="item" varStatus="status" items="${exercicio.getValidacoes()}">
-                                        <tr id="trLinha${item.getId()}" class="linha-validacao">
-                                            <td>
-                                                <div class="btn-group btn-group-xs">
-                                                    <input type="hidden" id="idValidacao${status.index + 1}" name="idValidacao${status.index + 1}" value="${item.getId()}">
-                                                    <input type="hidden" class="field-ordem" id="ordem${status.index + 1}" name="ordem${status.index + 1}" value="${item.getOrdem()}">
-                                                    <button type="button" class="btn btn-primary btn-ordem disabled">${item.getOrdem() == null ? 0 : item.getOrdem()}</button>
-                                                    <button type="button" class="btn btn-default btn-excluir" data-context="frmSaveValidacao" data-source="1" data-id="${item.getId()}"><fmt:message key="button.excluir"/></button>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <textarea class="form-control" rows="3" id="entrada${status.index + 1}" name="entrada${status.index + 1}">${item.getEntrada()}</textarea>
-                                            </td>
-                                            <td>
-                                                <textarea class="form-control" rows="3" id="saida${status.index + 1}" name="saida${status.index + 1}">${item.getSaida()}</textarea>
-                                            </td>
-                                            <td>
-                                                <textarea class="form-control" rows="3" id="mensagem${status.index + 1}" name="mensagem${status.index + 1}">${item.getMensagem()}</textarea>
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
-                                </c:if>
-                            </tbody>
-                        </table>
-
-                    </div>
-                </div>
-                <button type="button" class="btn btn-primary btn-nova-linha" data-context="frmSaveValidacao"><fmt:message key="button.novalinha"/></button>
-                <button type="submit" class="btn btn-primary"><fmt:message key="button.salvarvalidacao"/></button>
-            </form>
-            <br><br>
-            
-            <h2><fmt:message key="label.exercicios.cadastrarclassesteste"/></h2>
-            
-            <form role="form" id="frmSaveClasseValidacao" action="<c:url value='/'/>exercicios/saveclassevalidacao" method="POST">
-                <input type="hidden" id="idExercicio" name="idExercicio" value="${exercicio.getId()}">
-                <input type="hidden" id="contador" name="contador" value="${exercicio.getClassesValidacao().size()}">
-                
-                
-                <button type="button" class="btn btn-primary btn-nova-linha" data-context="frmSaveClasseValidacao"><fmt:message key="button.novalinha"/></button>
-                <button type="button" class="btn btn-primary btn-nova-classe" data-context="frmSaveClasseValidacao"><fmt:message key="button.novaclasse"/></button>
-                <button type="submit" class="btn btn-primary"><fmt:message key="button.salvarvalidacao"/></button>
-                <br /><br />
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title"><fmt:message key="label.registroscadastrados"/></h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <table class="table table-striped table-hover" style="margin-bottom: 0px;">
-                            <thead>
-                                <tr>
-                                    <th><fmt:message key="label.exercicios.acoes"/></th>
-                                    <th><fmt:message key="label.exercicios.classeteste"/></th>
-                                    <th><fmt:message key="label.exercicios.saida"/></th>
-                                    <th><fmt:message key="label.exercicios.mensagemcompilacao"/></th>
-                                    <th><fmt:message key="label.exercicios.mensagempersonalizada"/></th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-validacoes">
-                                <c:if test="${not empty exercicio.getClassesValidacao()}">
-                                    <c:forEach var="item" varStatus="status" items="${exercicio.getClassesValidacao()}">
-                                        <tr id="trLinha${item.getId()}" class="linha-validacao">
-                                            <td>
-                                                <div class="btn-group btn-group-xs">
-                                                    <input type="hidden" id="idClasseValidacao${status.index + 1}" name="idClasseValidacao${status.index + 1}" value="${item.getId()}">
-                                                    <input type="hidden" class="field-ordem" id="ordemClasse${status.index + 1}" name="ordemClasse${status.index + 1}" value="${item.getOrdem()}">
-                                                    <button type="button" class="btn btn-primary btn-ordem disabled">${item.getOrdem() == null ? 0 : item.getOrdem()}</button>
-                                                    <button type="button" class="btn btn-default btn-excluir" data-context="frmSaveClasseValidacao" data-source="1" data-id="${item.getId()}"><fmt:message key="button.excluir"/></button>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <textarea class="form-control" rows="3" id="fonte${status.index + 1}" name="fonte${status.index + 1}">${item.getFonte()}</textarea>
-                                            </td>
-                                            <td>
-                                                <textarea class="form-control" rows="3" id="saida${status.index + 1}" name="saida${status.index + 1}">${item.getSaida()}</textarea>
-                                            </td>
-                                            <td>
-                                                <textarea class="form-control" rows="3" id="mensagemCompilacao${status.index + 1}" name="mensagemCompilacao${status.index + 1}">${item.getMensagemCompilacao()}</textarea>
-                                            </td>
-                                            <td>
-                                                <textarea class="form-control" rows="3" id="mensagem${status.index + 1}" name="mensagem${status.index + 1}">${item.getMensagem()}</textarea>
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
-                                </c:if>
-                            </tbody>
-                        </table>
-
-                    </div>
-                </div>
-                <button type="button" class="btn btn-primary btn-nova-linha" data-context="frmSaveClasseValidacao"><fmt:message key="button.novalinha"/></button>
-                <button type="button" class="btn btn-primary btn-nova-classe" data-context="frmSaveClasseValidacao"><fmt:message key="button.novaclasse"/></button>
-                <button type="submit" class="btn btn-primary"><fmt:message key="button.salvarvalidacao"/></button>
-            </form>
-            <br><br>
-            
-            <!--Modal exibida para adicionar novas classes-->
-            <div style="display:none;" id="divNovaClasse">
-                <input type="text" class="form-control" id="classe" name="classe" placeholder="<fmt:message key="label.exercicio.nomeclasseinforme"/>" maxlength="45">
-                <textarea class="form-control" rows="5" id="atributos" name="atributos" placeholder="<fmt:message key="label.exercicio.atributoclasseinforme"/>"></textarea>
-                <button type="button" class="btn btn-primary btn-xs" onclick="adicionarClasse();"><fmt:message key="button.adicionarnovaclasse"/></button>
-                <button type="button" class="btn btn-default btn-xs" onclick="cancelarClasse();"><fmt:message key="button.cancelar"/></button>
-            </div>
-            
-        </c:if>
-                
-        
-
     </jsp:body>
 </t:master>

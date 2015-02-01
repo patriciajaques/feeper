@@ -8,7 +8,8 @@
                 <tr>
                     <th></th>
                     <th><fmt:message key="label.notas.linha"/></th>
-                    <th><fmt:message key="label.notas.mensagem"/></th>
+                    <th><fmt:message key="label.notas.mensagemprofessor"/></th>
+                    <th><fmt:message key="label.notas.mensagemsistema"/></th>
                 </tr>
             </thead>
             <tbody>
@@ -24,13 +25,14 @@
                                 }
                             </td>
                             <td>${erro.getLinhaErro()>0?erro.getLinhaErro():""}</td>
+                            <td>${erro.getMensagemPersonalizada()}</td>
                             <td>${erro.getMensagemErro()}</td>
                         </tr>
                     </c:forEach>
                 </c:if>
                 <c:if test="${empty erros}">
                     <tr>
-                        <td colspan="3" style="text-align: center;"><fmt:message key="label.nenhumregistroencontrado"/></td>
+                        <td colspan="4" style="text-align: center;"><fmt:message key="label.nenhumregistroencontrado"/></td>
                     </tr>
                 </c:if>
             </tbody>

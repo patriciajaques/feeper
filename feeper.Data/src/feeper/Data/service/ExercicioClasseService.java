@@ -5,23 +5,10 @@
  */
 package feeper.Data.service;
 
-import feeper.Data.entity.ExercicioClasseMarcacao;
 import feeper.Data.entity.ExercicioClasse;
-import feeper.Data.entity.Mensagem;
-import feeper.Data.entity.MensagemCabecalho;
-import feeper.Data.entity.MensagemLeitor;
-import feeper.Data.entity.Pessoa;
-import feeper.Data.model.ETipoLeitor;
-import feeper.Data.model.ETipoMarcacao;
 import feeper.Data.model.HibernateUtil;
-import feeper.Data.model.Util;
-import java.util.Date;
 import java.util.List;
 import org.hibernate.SQLQuery;
-import org.hibernate.type.BooleanType;
-import org.hibernate.type.IntegerType;
-import org.hibernate.type.StringType;
-import org.hibernate.type.TimestampType;
 
 /**
  *

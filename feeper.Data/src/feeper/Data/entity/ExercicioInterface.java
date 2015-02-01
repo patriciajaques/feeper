@@ -5,38 +5,49 @@
  */
 package feeper.Data.entity;
 
+import java.util.List;
+
 /**
  *
  * @author gilvani
  */
 public class ExercicioInterface {
     
-    private Integer id; 
-    private Integer idExercicio;
+    private int id; 
+    private int idExercicio;
+    private String nomeClasse;
     
-    private ExercicioInterfaceMembro[] membros;
+    private List<ExercicioInterfaceMembro> membros;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getIdExercicio() {
+    public int getIdExercicio() {
         return idExercicio;
     }
 
-    public void setIdExercicio(Integer idExercicio) {
+    public void setIdExercicio(int idExercicio) {
         this.idExercicio = idExercicio;
     }
 
-    public ExercicioInterfaceMembro[] getMembros() {
+    public String getNomeClasse() {
+        return nomeClasse;
+    }
+
+    public void setNomeClasse(String nomeClasse) {
+        this.nomeClasse = nomeClasse;
+    }
+
+    public List<ExercicioInterfaceMembro> getMembros() {
         return membros;
     }
 
-    public void setMembros(ExercicioInterfaceMembro[] membros) {
+    public void setMembros(List<ExercicioInterfaceMembro> membros) {
         this.membros = membros;
     }
     

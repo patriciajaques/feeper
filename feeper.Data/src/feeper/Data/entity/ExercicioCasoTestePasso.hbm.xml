@@ -3,18 +3,18 @@
  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class catalog="feeper" name="feeper.Data.entity.ExercicioCasoTestePasso" table="ExercicioCasoTestePasso">
-        <id name="id" type="java.lang.Integer">
+        <id name="id" type="int">
             <column name="ID"/>
             <generator class="identity"/>
         </id>
-        <property name="idCasoTeste" type="java.lang.Integer">
+        <property name="idCasoTeste" type="int">
             <column name="IdCasoTeste" not-null="true"/>
         </property>
-        <property name="ordem" type="java.lang.Integer">
+        <property name="ordem" type="int">
             <column name="Ordem"/>
         </property>
-        <property name="operationType" type="string">
-            <column length="200" name="OperationType"/>
+        <property name="operationType" type="int">
+            <column name="OperationType"/>
         </property>
         <property name="expectedOutputType" type="string">
             <column length="200" name="ExpectedOutputType"/>

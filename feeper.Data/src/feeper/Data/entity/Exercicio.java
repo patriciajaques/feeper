@@ -11,14 +11,17 @@ public class Exercicio implements java.io.Serializable {
 
     private Integer id;
     private String nome;
-    private byte[] descricao;
     private int idAutor;
     private Date dataCadastro;
     private boolean ativo;
+    private boolean usaDescricaoPDF;
     private String descricaoHtml;
+    private byte[] descricao;
     private Pessoa autor;
     private List<ExercicioCasoTeste> casosTeste;
     private ExercicioInterface interfaceSolucao;
+    
+    private int idUploadTemp;
 
     public Exercicio() {
     }
@@ -37,14 +40,6 @@ public class Exercicio implements java.io.Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public byte[] getDescricao() {
-        return this.descricao;
-    }
-
-    public void setDescricao(byte[] descricao) {
-        this.descricao = descricao;
     }
 
     public int getIdAutor() {
@@ -71,12 +66,28 @@ public class Exercicio implements java.io.Serializable {
         this.ativo = ativo;
     }
 
+    public boolean getUsaDescricaoPDF() {
+        return usaDescricaoPDF;
+    }
+
+    public void setUsaDescricaoPDF(boolean usaDescricaoPDF) {
+        this.usaDescricaoPDF = usaDescricaoPDF;
+    }
+
     public String getDescricaoHtml() {
         return this.descricaoHtml;
     }
 
     public void setDescricaoHtml(String descricaoHtml) {
         this.descricaoHtml = descricaoHtml;
+    }
+    
+    public byte[] getDescricao() {
+        return this.descricao;
+    }
+
+    public void setDescricao(byte[] descricao) {
+        this.descricao = descricao;
     }
 
     public Pessoa getAutor() {
@@ -103,4 +114,13 @@ public class Exercicio implements java.io.Serializable {
         this.interfaceSolucao = interfaceSolucao;
     }
 
+    public int getIdUploadTemp() {
+        return idUploadTemp;
+    }
+
+    public void setIdUploadTemp(int idUploadTemp) {
+        this.idUploadTemp = idUploadTemp;
+    }
+
+    
 }

@@ -13,10 +13,10 @@ import java.util.List;
  */
 public class ExercicioCasoTestePasso {
 
-    private Integer id;
-    private Integer idCasoTeste;
+    private int id;
+    private int idCasoTeste;
     private int ordem;
-    private String operationType;
+    private int operationType;
     private String expectedOutputType;
     private String expectedOutputName;
     private String expectedOutputValue;
@@ -26,19 +26,19 @@ public class ExercicioCasoTestePasso {
     //auxiliar no angular
     private List<ExercicioCasoTestePassoParametro> inputParameters;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getIdCasoTeste() {
+    public int getIdCasoTeste() {
         return idCasoTeste;
     }
 
-    public void setIdCasoTeste(Integer idCasoTeste) {
+    public void setIdCasoTeste(int idCasoTeste) {
         this.idCasoTeste = idCasoTeste;
     }
 
@@ -52,11 +52,11 @@ public class ExercicioCasoTestePasso {
     
     
 
-    public String getOperationType() {
+    public int getOperationType() {
         return operationType;
     }
 
-    public void setOperationType(String operationType) {
+    public void setOperationType(int operationType) {
         this.operationType = operationType;
     }
 

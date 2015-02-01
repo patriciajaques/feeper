@@ -2,19 +2,16 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class catalog="feeper" name="feeper.Data.entity.ExercicioSolucaoClasse" table="ExercicioSolucaoClasse">
+    <class  name="feeper.Data.entity.ExercicioInterface" table="ExercicioInterface">
         <id name="id" type="int">
             <column name="ID"/>
             <generator class="identity"/>
         </id>
-        <property name="idSolucao" type="int">
-            <column name="IdSolucao" not-null="true"/>
-        </property>  
+        <property name="idExercicio" type="int">
+            <column name="IdExercicio" not-null="true"/>
+        </property>      
         <property name="nomeClasse" type="string">
             <column length="200" name="NomeClasse"/>
-        </property>
-        <property name="codigo" type="string">
-            <column  name="Codigo" length="16777215"/>
         </property>
     </class>
 </hibernate-mapping>

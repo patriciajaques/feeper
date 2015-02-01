@@ -5,6 +5,7 @@
  */
 package feeper.Data.service;
 
+import feeper.Data.entity.ExercicioCasoTeste;
 import feeper.Data.entity.ExercicioClasse;
 import feeper.Data.entity.ExercicioSolucao;
 import feeper.Data.entity.ExercicioSolucaoClasse;
@@ -151,8 +152,14 @@ public class ExercicioSolucaoService extends HibernateUtil<ExercicioSolucao> {
             solucao = this.solucaoFromXML(builder.toString());
             
             ExercicioSolucaoErroService repoErrosSolucao = new ExercicioSolucaoErroService();
+            ExercicioCasoTesteService repoCasosTeste = new ExercicioCasoTesteService();
             
             for (ExercicioSolucaoErro erro : solucao.getErros()) {
+                
+                if (erro.getIdCasoTeste() > 0) {
+                    ExercicioCasoTeste caso = repoCasosTeste.getById(erro.getIdCasoTeste());
+                    erro.setMensagemPersonalizada(caso.getMensagemPersonalizada());
+                }
                 repoErrosSolucao.insert(erro);
             }
             
