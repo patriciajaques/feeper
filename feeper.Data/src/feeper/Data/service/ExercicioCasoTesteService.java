@@ -25,8 +25,13 @@ public class ExercicioCasoTesteService extends HibernateUtil<ExercicioCasoTeste>
         super(ExercicioCasoTeste.class);
     }
 
-    public List<ExercicioCasoTeste> getByIdExercicio(int idExercicio) {
-        SQLQuery query = query("select * from ExercicioCasoTeste where IdExercicio = :idExercicio order by Ordem, ID").addEntity(ExercicioCasoTeste.class);
+    public List<ExercicioCasoTeste> getByIdExercicio(int idExercicio, boolean somenteAtivos) {
+        SQLQuery query = null;
+        if (somenteAtivos) {
+            query = query("select * from ExercicioCasoTeste where IdExercicio = :idExercicio and Ativo = 1 order by Ordem, ID").addEntity(ExercicioCasoTeste.class);
+        } else {
+            query = query("select * from ExercicioCasoTeste where IdExercicio = :idExercicio order by Ordem, ID").addEntity(ExercicioCasoTeste.class);
+        }
         query.setInteger("idExercicio", idExercicio);
 
         List<ExercicioCasoTeste> data = query.list();

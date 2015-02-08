@@ -19,37 +19,38 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ExercicioSolucao {
 
-    protected Integer id;
-    protected Integer idExercicio;
-    protected Integer idAluno;
-    protected Integer idStatus;
+    protected int id;
+    protected int idExercicio;
+    protected int idAluno;
+    protected int idStatus;
     protected Date dataCadastro;
+    protected int errosCount;
 
     protected List<ExercicioSolucaoClasse> classes;
     protected List<ExercicioCasoTeste> testes;
     protected List<ExercicioSolucaoErro> erros;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getIdExercicio() {
+    public int getIdExercicio() {
         return idExercicio;
     }
 
-    public void setIdExercicio(Integer idExercicio) {
+    public void setIdExercicio(int idExercicio) {
         this.idExercicio = idExercicio;
     }
 
-    public Integer getIdAluno() {
+    public int getIdAluno() {
         return idAluno;
     }
 
-    public void setIdAluno(Integer idAluno) {
+    public void setIdAluno(int idAluno) {
         this.idAluno = idAluno;
     }
 
@@ -67,6 +68,14 @@ public class ExercicioSolucao {
 
     public void setDataCadastro(Date dataCadastro) {
         this.dataCadastro = dataCadastro;
+    }
+
+    public int getErrosCount() {
+        return errosCount;
+    }
+
+    public void setErrosCount(int errosCount) {
+        this.errosCount = errosCount;
     }
 
     public List<ExercicioSolucaoClasse> getClasses() {

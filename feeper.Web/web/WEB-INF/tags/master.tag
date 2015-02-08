@@ -41,7 +41,7 @@
         <script src="<c:url value='/resources/fancybox/jquery.fancybox.pack.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/uploadify/jquery.uploadify.min.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/jquery-te/jquery-te-1.4.0.min.js'/>" type="text/javascript"></script>
-        
+
         <script type="text/javascript">
             var baseUrl = "<c:url value='/'/>";
 
@@ -152,7 +152,17 @@
                                     <li class="divider"></li>
                                     </c:if>
 
-                                <li><a href="<c:url value='/'/>pessoa/perfil"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;<fmt:message key="menu.configuracoes"/></a></li>
+                                <li><a href="<c:url value='/'/>pessoa/perfil"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;<fmt:message key="menu.meuperfil"/></a></li>
+
+                                <c:if test="${UsuarioLogado.getIdPerfil() == 1}">
+                                    <li><a href="<c:url value='/'/>configuracoes/edit"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;<fmt:message key="menu.configuracoes"/></a></li>
+                                    <li class="divider"></li>
+                                    </c:if>
+                                    <c:if test="${UsuarioLogado.getIdPerfil() == 2}">
+                                    <li><a href="<c:url value='/'/>mensagenspersonalizadas/edit"><span class="glyphicon glyphicon-bookmark"></span>&nbsp;&nbsp;<fmt:message key="menu.mensagenspersonalizadas"/></a></li>
+                                    <li class="divider"></li>
+                                    </c:if>
+
                                 <li><a href="<c:url value='/'/>login/logout"><span class="glyphicon glyphicon-off"></span>&nbsp;&nbsp;<fmt:message key="menu.logout"/></a></li>
                             </ul>
                         </li>

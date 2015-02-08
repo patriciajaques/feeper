@@ -13,20 +13,20 @@ import java.util.List;
  */
 public class ExercicioCasoTeste {
 
-    private Integer id;
-    private Integer idExercicio;
+    private int id;
+    private int idExercicio;
     private Boolean ativo;
     private String mensagemPersonalizada;
-    private Integer ordem;
+    private int ordem;
     
     //auxiliar no Angular
     private List<ExercicioCasoTestePasso> passos;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -34,7 +34,7 @@ public class ExercicioCasoTeste {
         return idExercicio;
     }
 
-    public void setIdExercicio(Integer idExercicio) {
+    public void setIdExercicio(int idExercicio) {
         this.idExercicio = idExercicio;
     }
 
@@ -54,11 +54,11 @@ public class ExercicioCasoTeste {
         this.mensagemPersonalizada = mensagemPersonalizada;
     }
 
-    public Integer getOrdem() {
+    public int getOrdem() {
         return ordem;
     }
 
-    public void setOrdem(Integer ordem) {
+    public void setOrdem(int ordem) {
         this.ordem = ordem;
     }
 

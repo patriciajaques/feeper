@@ -24,9 +24,10 @@ public class ExercicioSolucaoErro {
     public ExercicioSolucaoErro() {
     }
 
-    public ExercicioSolucaoErro(int idSolucao, int idCasoTeste, int ErrorType, String mensagemErro) {
+    public ExercicioSolucaoErro(int idSolucao, int idCasoTeste, String mensagemPersonalizada, int ErrorType, String mensagemErro) {
         this.idSolucao = idSolucao;
         this.idCasoTeste = idCasoTeste;
+        this.mensagemPersonalizada = mensagemPersonalizada;
         this.errorType = ErrorType;
         this.mensagemErro = mensagemErro;
     }

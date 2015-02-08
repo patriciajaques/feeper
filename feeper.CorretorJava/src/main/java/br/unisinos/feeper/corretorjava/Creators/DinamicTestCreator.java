@@ -74,22 +74,52 @@ public class DinamicTestCreator {
                 if (passo.getMethodName() == null || passo.getMethodName().isEmpty()) {
                     //construtor
                     builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = new " + passo.getObjectName() + this.getParameters(passo) + ";");
-
                 } else {
                     //método
                     builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = " + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ";");
                 }
-            }
-            else if (passo.getExpectedOutputValue() != null && passo.getExpectedOutputValue().isEmpty() == false) {
+            } else if (passo.getExpectedOutputValue() != null && passo.getExpectedOutputValue().isEmpty() == false) {
 
-                //valida o retorno
-                String value = passo.getExpectedOutputValue();
-                //tratamento para strings
-                if (passo.getExpectedOutputType().equals("String") && value.startsWith("\"") == false) {
-                    value = "\"" + value + "\"";
+                //valida dados
+                if ((passo.getExpectedOutputType() == null || passo.getExpectedOutputType().isEmpty()) && (passo.getMethodName() == null || passo.getMethodName().isEmpty())) {
+
+                    //compara 2 objetos
+                    String object = "";
+                    if (passo.getObjectName().equals("System.Out")) {
+                        object = "outContent.toString()";
+                    } else {
+                        object = passo.getObjectName();
+                    }
+                    builder.append("assertEquals(" + passo.getExpectedOutputValue() + "," + object + ");");
+                } else if (passo.getMethodName() == null || passo.getMethodName().isEmpty()) {
+
+                    //compara valor com objeto
+                    String value = passo.getExpectedOutputValue();
+                    if (passo.getExpectedOutputType().equals("String") && value.startsWith("\"") == false) {
+                        //tratamento para strings
+                        value = "\"" + value + "\"";
+                    }
+
+                    String object = "";
+                    if (passo.getObjectName().equals("System.Out")) {
+                        object = "outContent.toString()";
+                    } else {
+                        object = passo.getObjectName();
+                    }
+
+                    builder.append("assertEquals(" + value + "," + object + ");");
+                } else {
+
+                    //compara valor com retorno do Método
+                    String value = passo.getExpectedOutputValue();
+                    if (passo.getExpectedOutputType().equals("String") && value.startsWith("\"") == false) {
+                        //tratamento para strings
+                        value = "\"" + value + "\"";
+                    }
+
+                    builder.append("assertEquals(" + value + "," + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ");");
                 }
 
-                builder.append("assertEquals(" + value + "," + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ");");
             } else {
                 //somente executa
                 builder.append(passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ";");

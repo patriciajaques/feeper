@@ -24,6 +24,7 @@ public class ExercicioSolucao {
     protected int idAluno;
     protected int idStatus;
     protected Date dataCadastro;
+    protected int errosCount;
 
     protected List<ExercicioSolucaoClasse> classes;
     protected List<ExercicioCasoTeste> testes;
@@ -67,6 +68,14 @@ public class ExercicioSolucao {
 
     public void setDataCadastro(Date dataCadastro) {
         this.dataCadastro = dataCadastro;
+    }
+
+    public int getErrosCount() {
+        return errosCount;
+    }
+
+    public void setErrosCount(int errosCount) {
+        this.errosCount = errosCount;
     }
 
     public List<ExercicioSolucaoClasse> getClasses() {

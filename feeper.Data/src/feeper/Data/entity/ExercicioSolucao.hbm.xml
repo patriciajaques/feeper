@@ -19,5 +19,8 @@
         <property name="dataCadastro" type="timestamp">
             <column length="19" name="DataCadastro" not-null="true"/>
         </property>
+        <property name="errosCount" type="int">
+            <column name="ErrosCount" not-null="true"/>
+        </property>
     </class>
 </hibernate-mapping>

@@ -59,7 +59,7 @@ public class MainCreator {
             builder.append("failures = result.getFailures();");
 
             builder.append("for (Failure failure : failures) {");
-            builder.append("ExercicioSolucaoErro erro = new ExercicioSolucaoErro(" + solucao.getId() + "," + teste.getId() + "," + ((int) EErrorType.DINAMICO) + ",failure.getMessage());");
+            builder.append("ExercicioSolucaoErro erro = new ExercicioSolucaoErro(" + solucao.getId() + "," + teste.getId() + ",\"" + teste.getMensagemPersonalizada().replace("\"", "") + "\"," + ((int) EErrorType.DINAMICO) + ",failure.getMessage());");
             builder.append("erros.add(erro);");
             builder.append("}");
         }

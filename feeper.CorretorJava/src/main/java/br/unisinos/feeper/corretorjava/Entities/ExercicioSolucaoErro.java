@@ -1,5 +1,6 @@
 package br.unisinos.feeper.corretorjava.Entities;
 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -11,46 +12,56 @@ package br.unisinos.feeper.corretorjava.Entities;
  */
 public class ExercicioSolucaoErro {
 
-    protected Integer id;
-    protected Integer idSolucao;
-    protected Integer idCasoTeste;
-    protected Integer errorType;
+    protected int id;
+    protected int idSolucao;
+    protected int idCasoTeste;
+    protected String mensagemPersonalizada;
+    protected int errorType;
     protected String mensagemErro;
     protected String staticErrorType;
-    protected Integer linhaErro;
+    protected int linhaErro;
 
     public ExercicioSolucaoErro() {
     }
 
-    public ExercicioSolucaoErro(Integer idSolucao, Integer idCasoTeste, int ErrorType, String mensagemErro) {
+    public ExercicioSolucaoErro(int idSolucao, int idCasoTeste, String mensagemPersonalizada, int ErrorType, String mensagemErro) {
         this.idSolucao = idSolucao;
         this.idCasoTeste = idCasoTeste;
+        this.mensagemPersonalizada = mensagemPersonalizada;
         this.errorType = ErrorType;
         this.mensagemErro = mensagemErro;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getIdSolucao() {
+    public int getIdSolucao() {
         return idSolucao;
     }
 
-    public void setIdSolucao(Integer idSolucao) {
+    public void setIdSolucao(int idSolucao) {
         this.idSolucao = idSolucao;
     }
 
-    public Integer getIdCasoTeste() {
+    public int getIdCasoTeste() {
         return idCasoTeste;
     }
 
-    public void setIdCasoTeste(Integer idCasoTeste) {
+    public void setIdCasoTeste(int idCasoTeste) {
         this.idCasoTeste = idCasoTeste;
+    }
+
+    public String getMensagemPersonalizada() {
+        return mensagemPersonalizada;
+    }
+
+    public void setMensagemPersonalizada(String mensagemPersonalizada) {
+        this.mensagemPersonalizada = mensagemPersonalizada;
     }
 
     public int getErrorType() {

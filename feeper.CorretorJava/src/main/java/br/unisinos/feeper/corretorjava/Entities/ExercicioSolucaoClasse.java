@@ -13,24 +13,24 @@ import java.util.Date;
  */
 public class ExercicioSolucaoClasse {
 
-    private Integer id;
-    private Integer idSolucao;
+    private int id;
+    private int idSolucao;
     private String nomeClasse;
     private String codigo;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getIdSolucao() {
+    public int getIdSolucao() {
         return idSolucao;
     }
 
-    public void setIdSolucao(Integer idSolucao) {
+    public void setIdSolucao(int idSolucao) {
         this.idSolucao = idSolucao;
     }
 

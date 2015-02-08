@@ -57,5 +57,7 @@
         <mapping resource="feeper/Data/entity/ExercicioInterface.hbm.xml"/>
         <mapping resource="feeper/Data/entity/ExercicioInterfaceMembro.hbm.xml"/>
         <mapping resource="feeper/Data/entity/ExercicioInterfaceMembroParametro.hbm.xml"/>
+        <mapping resource="feeper/Data/entity/ConfiguracaoSistema.hbm.xml"/>
+        <mapping resource="feeper/Data/entity/MensagemPersonalizada.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

@@ -30,9 +30,8 @@
                 box-shadow: 0px 0px 1px 1px red inset;              } 
 
         </style>
-
         <script src="<c:url value='/resources/ace/ace.js'/>" type="text/javascript"></script>
-        <script src="<c:url value='/resources/AngularJS/Exercicios/solucionar.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/js/views/exercicios/solucionar.js'/>" type="text/javascript"></script>
         <script type="text/javascript">
             var exercicioID = "${Exercicio.getId()}";
             var fileID = "${fileID}";
@@ -81,7 +80,7 @@
                     <div class="alert alert-danger"><fmt:message key="label.exercicios.status.errocompilacao"/></div>
                 </c:when>
                 <c:when test="${Solucao.getIdStatus() == 3}">
-                    <div class="alert alert-warning"><fmt:message key="label.exercicios.status.errosaidainvalida"/></div>
+                    <div class="alert alert-warning"><fmt:message key="label.exercicios.status.resultadoinvalido"/></div>
                 </c:when>
                 <c:when test="${Solucao.getIdStatus() == 4 &&  empty Solucao.getErros()}">
                     <div class="alert alert-success"><fmt:message key="label.exercicios.status.resolvido"/></div>
@@ -108,11 +107,11 @@
                             <c:forEach var="erro" items="${Solucao.getErros()}">
                                 <tr>
                                     <td>
-                                        ${erro.getErrorType() == 1
+                                        ${erro.getErrorType() == 2
                                           ?
-                                          "<button type=\"button\" class=\"btn btn-danger btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span></button>"
-                                          :
                                           "<button type=\"button\" class=\"btn btn-warning btn-xs\"><span class=\"glyphicon glyphicon-warning-sign\"></span></button>"
+                                          :
+                                          "<button type=\"button\" class=\"btn btn-danger btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span></button>"
                                         }
                                     </td>
                                     <td>${erro.getLinhaErro()>0 ? erro.getLinhaErro() : ""}</td>
@@ -174,7 +173,7 @@
         <!--Modal exibida para adicionar novas classes-->
         <div style="display:none;" id="divNovaClasse">
             <div class="input-group" style="width:400px; margin-bottom:3px">
-                <input type="text" class="form-control" id="txtNomeClasse" placeholder="<fmt:message key="label.exercicio.nomeclasseinforme"/>" maxlength="45">
+                <input type="text" class="form-control" id="txtNomeClasse" placeholder="<fmt:message key="label.exercicios.nomeclasseinforme"/>" maxlength="45">
                 <span class="input-group-addon">.java</span>
             </div>
             <div class="pull-left">

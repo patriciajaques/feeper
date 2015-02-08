@@ -35,7 +35,7 @@ public class JarCreator {
         CopyFile.copy(this.appResourcesPath + "\\JarComponents\\ExercicioSolucaoErro.java", this.destPath + "\\ExercicioSolucaoErro.java");
     }
 
-    public void Compile() throws Exception {
+    public void CompileMain() throws Exception {
 
         String command = "javac -classpath junit.jar;org.hamcrest.core.jar *.java";
 

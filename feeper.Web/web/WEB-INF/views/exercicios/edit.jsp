@@ -3,18 +3,23 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<script src="<c:url value='/resources/AngularJS/angular.min.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/resources/AngularJS/Exercicios/edit.js'/>" type="text/javascript"></script>
 
 <t:master>
     <jsp:attribute name="title"><fmt:message key="title.exercicios"/></jsp:attribute>
     <jsp:attribute name="header">
+        <link href="<c:url value='/resources/jquery/themes/base/jquery.ui.all.css'/>" rel="stylesheet" type="text/css" />
+        <script src="<c:url value='/resources/js/angular.min.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/js/views/exercicios/edit.js'/>" type="text/javascript"></script>
+
         <style>
             .ui-state-highlight { height: 91px; }
+            #divEditPassos select{min-width: 120px;}
+            #divEditPassos input{min-width: 100px;}
         </style>
         <script type="text/javascript">
             var baseUrl = "<c:url value='/'/>";
             var escolherArquivoText = '<fmt:message key="button.escolherarquivo"/>';
+            var erroUploadInterfaceText = '<fmt:message key="label.exercicios.errouploadInterface"/>';
         </script>
 
     </jsp:attribute>
@@ -81,14 +86,14 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="casoTeste in exercicio.casosTeste">
-                                    <td>
+                                    <td style="width: 160px">
                                         <button type="button" ng-click="deletaCasoTeste(casoTeste)" class="btn btn-default btn-xs"><fmt:message key="button.excluir"/></button>
                                         <button type="button" ng-click="editaPassosCasoTeste(casoTeste)" class="btn btn-default btn-xs"><fmt:message key="label.exercicios.editarpassoscasosteste"/></button>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" ng-model="casoTeste.mensagemPersonalizada">
+                                        <input type="text" class="form-control mensagemPersonalizada" ng-focus="updateMessagesAutocompletes()" ng-model="casoTeste.mensagemPersonalizada">
                                     </td>
-                                    <td>
+                                    <td style="width: 50px">
                                         <input type="checkbox" ng-model="casoTeste.ativo">
                                     </td>
                                 </tr>
@@ -108,12 +113,13 @@
 
                     <!--Modal exibida para carregar Interface-->
                     <div style="display:none;" id="divUploadInterface">
+                        <label class="alert alert-danger"><fmt:message key="label.exercicios.alertanomeinterface"/></label>
                         <div id="uploadInterface">
                             <input type="file" name="upload_Interface_Solucao" id="upload_Interface_Solucao" />
                         </div>
                         <div class="form-group">
-                            <label><fmt:message key="label.exercicios.nomeclasse"/></label>
-                            <input type="text" class="form-control" id="nome" name="nome" ng-model="exercicio.interfaceSolucao.nomeClasse">
+                            <label><fmt:message key="label.exercicios.nomeinterface"/></label>
+                            <input type="text" class="form-control" id="nome" name="nome" disabled="disabled" ng-model="exercicio.interfaceSolucao.nomeClasse">
                         </div>
                         <div class="checkbox">
                             <label>
@@ -128,30 +134,30 @@
                     <!--Modal exibida para editar Passos-->
                     <div style="display:none;" id="divEditPassos">
                         <label><fmt:message key="label.exercicios.passoscasosteste"/>:</label>
-                        <table ng-show="exercicio.interfaceSolucao == null">
+                        <table>
                             <tbody>
                                 <tr ng-repeat="passo in editingCasoTeste.passos">
                                     <td>
-                                        <span style="cursor: pointer;" class="glyphicon glyphicon-minus" ng-click="deletaPasso(passo)"></span>
+                                        <span style="cursor: pointer;" class="glyphicon glyphicon-trash" ng-click="deletaPasso(passo)"></span>
                                     </td>
                                     <td>
-                                        <select ng-model="passo.operationType" ng-options="o.value as o.label for o in OperationTypes">                                                
+                                        <select class="form-control" ng-model="passo.operationType"  ng-options="o.value as o.label for o in OperationTypes" ng-change="operationTypeChanged(passo)">                                                
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="text" ng-disabled="passo.operationType == 2" ng-model="passo.expectedOutputType" />
+                                        <input type="text" class="form-control passoDataType" ng-focus="updatePassosAutocompletes(passo)" ng-disabled="passo.operationType == 2" ng-model="passo.expectedOutputType" />
                                     </td>
                                     <td>
-                                        <input type="text" ng-disabled="passo.operationType == 2" ng-show="passo.operationType != 3" ng-model="passo.expectedOutputName"/>
-                                        <input type="text" ng-disabled="passo.operationType == 2" ng-show="passo.operationType == 3" ng-model="passo.expectedOutputValue"/>
+                                        <input type="text" class="form-control passoObject" ng-focus="updatePassosAutocompletes(passo)" ng-disabled="passo.operationType == 2" ng-show="passo.operationType != 3" ng-model="passo.expectedOutputName"/>
+                                        <input type="text" class="form-control" ng-show="passo.operationType == 3" ng-model="passo.expectedOutputValue"/>
                                     </td>
-                                    <td> {{ passo.operationType == 3?"==":"=" }} </td>
+                                    <td align="center"> {{ passo.operationType == 3?"==":"=" }} </td>
                                     <td>
-                                        <input type="text"  ng-model="passo.objectName"/>
+                                        <input type="text"  class="form-control passoDataTypeOrObject" ng-focus="updatePassosAutocompletes(passo, true)"  ng-model="passo.objectName" ng-change="objectNameChanged(passo)"/>
                                     </td>
                                     <td>.</td>
                                     <td>
-                                        <input type="text"  ng-model="passo.methodName"/>
+                                        <input type="text" class="form-control passoMethod" ng-disabled="passo.objectName == 'System.Out'" ng-focus="updatePassosAutocompletes(passo)" ng-model="passo.methodName" ng-change="methodNameChanged(passo)"/>
                                     </td>
                                     <td>
                                         <table >
@@ -160,65 +166,9 @@
                                                 <td ng-repeat="parametro in passo.inputParameters">
                                                     <table>
                                                         <tr>
-                                                            <td><span style="cursor: pointer;" class="glyphicon glyphicon-minus" ng-click="deletaParametro(passo, parametro)"></span></td>
-                                                            <td><input type="text" ng-model="parametro.objectType"/></td>
-                                                            <td><input type="text" ng-model="parametro.objectValue"/></td>
-                                                            <td>,</td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                                <td>
-                                                    <span style="cursor: pointer;" class="glyphicon glyphicon-plus" ng-click="adicionaParametro(passo)"></span> 
-                                                </td>
-                                                <td>);</td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="9">
-                                        <button type="button" ng-click="adicionaPasso()" class="btn btn-primary"><fmt:message key="label.exercicios.adicionarpassocasoteste"/></button>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                        <table ng-show="exercicio.interfaceSolucao != null">
-                            <tbody>
-                                <tr ng-repeat="passo in editingCasoTeste.passos">
-                                    <td>
-                                        <span style="cursor: pointer;" class="glyphicon glyphicon-minus" ng-click="deletaPasso(passo)"></span>
-                                    </td>
-                                    <td>
-                                        <select ng-model="passo.operationType" ng-options="o.value as o.label for o in OperationTypes">                                                
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="text" ng-disabled="passo.operationType == 2" ng-model="passo.expectedOutputType" />
-                                    </td>
-                                    <td>
-                                        <input type="text" ng-disabled="passo.operationType == 2" ng-show="passo.operationType != 3" ng-model="passo.expectedOutputName"/>
-                                        <input type="text" ng-disabled="passo.operationType == 2" ng-show="passo.operationType == 3" ng-model="passo.expectedOutputValue"/>
-                                    </td>
-                                    <td> {{ passo.operationType == 3?"==":"=" }} </td>
-                                    <td>
-                                        <input type="text"  ng-model="passo.objectName"/>
-                                    </td>
-                                    <td>.</td>
-                                    <td>
-                                        <input type="text"  ng-model="passo.methodName"/>
-                                    </td>
-                                    <td>
-                                        <table >
-                                            <tr>
-                                                <td>(</td>
-                                                <td ng-repeat="parametro in passo.inputParameters">
-                                                    <table>
-                                                        <tr>
-                                                            <td><span style="cursor: pointer;" class="glyphicon glyphicon-minus" ng-click="deletaParametro(passo, parametro)"></span></td>
-                                                            <td><input type="text" ng-model="parametro.objectType"/></td>
-                                                            <td><input type="text" ng-model="parametro.objectValue"/></td>
+                                                            <td><span style="cursor: pointer;" class="glyphicon glyphicon-trash" ng-click="deletaParametro(passo, parametro)"></span></td>
+                                                            <td><input type="text" class="form-control passoDataType" ng-focus="updatePassosAutocompletes(passo)" ng-model="parametro.objectType"/></td>
+                                                            <td><input type="text" class="form-control" ng-model="parametro.objectValue"/></td>
                                                             <td>,</td>
                                                         </tr>
                                                     </table>
