@@ -169,7 +169,7 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "  on TE.IdTurma = T.ID "
                     + "  inner join Exercicio E "
                     + "  on E.ID = TE.IdExercicio "
-                    + "  left join ( "
+                    + "  left join ( " 
                     + "    select ES.* "
                     + "    from ExercicioSolucao ES " 
                     + "    inner join ( "

@@ -86,7 +86,7 @@ public class DinamicTestCreator {
                     //compara 2 objetos
                     String object = "";
                     if (passo.getObjectName().equals("System.Out")) {
-                        object = "outContent.toString()";
+                        object = "outContent.toString().replaceAll(\"\\r\\n\", \"\").replaceAll(\"\\r\", \"\")";
                     } else {
                         object = passo.getObjectName();
                     }
@@ -102,7 +102,7 @@ public class DinamicTestCreator {
 
                     String object = "";
                     if (passo.getObjectName().equals("System.Out")) {
-                        object = "outContent.toString()";
+                        object = "outContent.toString().replaceAll(\"\\r\\n\", \"\").replaceAll(\"\\r\", \"\")";
                     } else {
                         object = passo.getObjectName();
                     }

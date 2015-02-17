@@ -16,10 +16,12 @@ import feeper.Data.model.EStatusSolucao;
 import feeper.Data.model.HibernateUtil;
 import feeper.Data.model.IntegerResult;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
@@ -118,10 +120,9 @@ public class ExercicioSolucaoService extends HibernateUtil<ExercicioSolucao> {
         }
     }
 
-    public ExercicioSolucao enviarCorrecao(int idSolucao) {
+    public ExercicioSolucao enviarCorrecao(int idSolucao) throws MalformedURLException, IOException {
 
         ExercicioSolucao solucao = this.getById(idSolucao);
-        int idAluno = solucao.getIdAluno();
         int idExercicio = solucao.getIdExercicio();
 
         ExercicioSolucaoClasseService repoClassesSolucao = new ExercicioSolucaoClasseService();
@@ -130,14 +131,15 @@ public class ExercicioSolucaoService extends HibernateUtil<ExercicioSolucao> {
         ExercicioCasoTesteService repoTestes = new ExercicioCasoTesteService();
         solucao.setTestes(repoTestes.getByIdExercicio(idExercicio, true));
 
+        ConfiguracaoService confService = new ConfiguracaoService();
+        ConfiguracaoSistema conf = confService.getConfiguracao();
+        String serverURL = conf.getEnderecoSistemaCorretorJava();
+        URL url = new URL(serverURL);
+        URLConnection connection = url.openConnection();
         try {
-            ConfiguracaoService confService = new ConfiguracaoService();
-            ConfiguracaoSistema conf = confService.getConfiguracao();
-            String serverURL = conf.getEnderecoSistemaCorretorJava();
+
             String xmlData = this.solucaoToXML(solucao);
 
-            URL url = new URL(serverURL);
-            URLConnection connection = url.openConnection();
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/xml");
             connection.setConnectTimeout(6000000);

@@ -23,14 +23,14 @@ public class StaticTestRunner {
 
     public void RunTest(String className, ExercicioSolucao solucao) throws Exception {
 
-        String srcFile = this.destPath + "\\" + className + ".class";
+        String srcFile = this.destPath + File.separator + className + ".class";
 
         //copia o avaliador
-        CopyFile.copy(this.appResourcesPath + "\\FindBugs", this.destPath + "\\FindBugs");
+        CopyFile.copy(this.appResourcesPath + File.separator + "FindBugs", this.destPath + File.separator + "FindBugs");
 
         //executa os testes
-        String jarFile = this.destPath + "\\FindBugs\\findbugs.jar";
-        String outFile = this.destPath + "\\findBugs_" + className + "_output.xml";
+        String jarFile = this.destPath + File.separator + "FindBugs" + File.separator + "findbugs.jar";
+        String outFile = this.destPath + File.separator + "findBugs_" + className + "_output.xml";
 
         String command = "java -jar " + jarFile;
         command += " -textui -low -xml:withMessages -xdocs -outputFile " + outFile;

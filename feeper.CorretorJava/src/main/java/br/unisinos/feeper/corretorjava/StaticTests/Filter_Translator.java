@@ -32,11 +32,43 @@ public class Filter_Translator {
     public boolean isBugShowed(BugInstance bug) {
 
         switch (bug.type) {
-            case "UUF_UNUSED_FIELD":
-                return true;
             case "ES_COMPARING_STRINGS_WITH_EQ":
-                return true;
+            case "ES_COMPARING_PARAMETER_STRING_WITH_EQ":
+            case "NP_BOOLEAN_RETURN_NULL":
+            case "IC_SUPERCLASS_USES_SUBCLASS_DURING_INITIALIZATION":
+            case "NP_CLONE_COULD_RETURN_NULL":
+            case "NP_EQUALS_SHOULD_HANDLE_NULL_ARGUMENT":
+            case "NP_TOSTRING_COULD_RETURN_NULL":
+            case "NM_CLASS_NAMING_CONVENTION":
             case "NM_FIELD_NAMING_CONVENTION":
+            case "NM_METHOD_NAMING_CONVENTION":
+            case "OS_OPEN_STREAM":
+            case "OS_OPEN_STREAM_EXCEPTION_PATH":
+            case "RC_REF_COMPARISON_BAD_PRACTICE":
+            case "RC_REF_COMPARISON_BAD_PRACTICE_BOOLEAN":
+            case "BC_IMPOSSIBLE_CAST":
+            case "BC_IMPOSSIBLE_DOWNCAST":
+            case "BC_IMPOSSIBLE_DOWNCAST_OF_TOARRAY":
+            case "EC_ARRAY_AND_NONARRAY":
+            case "EC_BAD_ARRAY_COMPARE":
+            case "EQ_ALWAYS_FALSE":
+            case "EQ_ALWAYS_TRUE":
+            case "IL_CONTAINER_ADDED_TO_ITSELF":
+            case "IL_INFINITE_LOOP":
+            case "IL_INFINITE_RECURSIVE_LOOP":
+            case "NM_LCASE_TOSTRING":
+            case "SA_FIELD_SELF_ASSIGNMENT":
+            case "SA_FIELD_SELF_COMPARISON":
+            case "SA_LOCAL_SELF_ASSIGNMENT_INSTEAD_OF_FIELD":
+            case "SA_LOCAL_SELF_COMPARISON":
+            case "SP_SPIN_ON_FIELD":
+            case "UPM_UNCALLED_PRIVATE_METHOD":
+            case "URF_UNREAD_FIELD":
+            case "UUF_UNUSED_FIELD":
+            case "DMI_HARDCODED_ABSOLUTE_FILENAME":
+            case "RV_RETURN_VALUE_IGNORED_INFERRED":
+            case "SA_LOCAL_SELF_ASSIGNMENT":
+            case "SF_SWITCH_FALLTHROUGH":
                 return true;
         }
 

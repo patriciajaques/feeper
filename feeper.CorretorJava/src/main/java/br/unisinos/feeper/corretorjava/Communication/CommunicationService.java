@@ -22,6 +22,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
@@ -36,14 +37,54 @@ import javax.xml.bind.Unmarshaller;
  */
 @Path("/")
 public class CommunicationService {
-    
+
+    @GET
+    @Path("/javahome")
+    public Response javaHome() throws Exception {
+
+        return Response.status(Response.Status.OK).entity(System.getProperty("java.home")).build();
+
+    }
+
+    @GET
+    @Path("/path")
+    public Response path() throws Exception {
+        return Response.status(Response.Status.OK).entity(System.getProperty("PATH")).build();
+    }
+
+    @GET
+    @Path("/testa")
+    public Response testaJavaC() throws Exception {
+
+        String javaPath = new File(System.getProperty("java.home")).getParent() + File.separator + "bin" + File.separator;
+
+        String destPath = System.getProperty("user.home") + File.separator + "Feeper" + File.separator + "temp" + File.separator;
+        String command = "javac -classpath " + destPath + "junit.jar;" + destPath + "org.hamcrest.core.jar " + destPath + "*.java";
+
+        Runtime rt = Runtime.getRuntime();
+        Process pr = rt.exec(command, null, new File(javaPath));
+
+        BufferedReader stdError = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
+        String error = "";
+        String s = null;
+        while ((s = stdError.readLine()) != null) {
+            error += s + "\n";
+        }
+        if (error.equals("") == false) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(command + ":::::::::::" + error).build();
+        }
+
+        return Response.status(Response.Status.OK).entity("OK").build();
+
+    }
+
     @POST
     @Path("/efetuaCorrecao")
     @Consumes(MediaType.APPLICATION_XML)
     public Response efetuaCorrecao(InputStream incomingData) {
-        
+
         try {
-            
+
             StringBuilder builder = new StringBuilder();
             BufferedReader in = new BufferedReader(new InputStreamReader(incomingData));
             String line = null;
@@ -57,122 +98,129 @@ public class CommunicationService {
             JAXBContext jaxbContext = JAXBContext.newInstance(ExercicioSolucao.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             ExercicioSolucao solucao = (ExercicioSolucao) jaxbUnmarshaller.unmarshal(reader);
-            
+
             for (ExercicioSolucaoClasse classe : solucao.getClasses()) {
                 classe.setCodigo(classe.getCodigo().replaceAll("#n", "\n").replaceAll("#r", "\r"));
             }
-            
-            String alunoID = String.valueOf(solucao.getIdAluno());
-            String exercicioID = String.valueOf(solucao.getIdExercicio());
-            String solucaoID = String.valueOf(solucao.getId());
-            
-            String partialPath = getClass().getClassLoader().getResource("FindBugs").toURI().getPath();
-            String appResourcesPath = new File(partialPath).getParentFile().getPath();
-            String tmpPath = System.getProperty("user.home") + "\\Feeper\\Tmp\\" + alunoID + "\\" + exercicioID + "\\" + solucaoID;
-
-            //inicializa a Pasta
-            File dir = new File(tmpPath);
-            dir.delete();
-            dir.mkdirs();
-            
             solucao.setErros(new ArrayList<ExercicioSolucaoErro>());
 
-            //Escreve a Solucao do aluno na pasta tmp e compila
-            FeeperCompiler compiler = new FeeperCompiler();
             try {
-                for (ExercicioSolucaoClasse classe : solucao.getClasses()) {
-                    
-                    String fileName = tmpPath + "\\" + classe.getNomeClasse() + ".java";
-                    PrintWriter writer = new PrintWriter(fileName);
-                    writer.write(classe.getCodigo());
-                    writer.close();
-                    //compila as classes do aluno
-                    compiler.CompileClass(fileName);
-                    
-                }
-            } catch (CompilationException e) {
-                solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
-                ExercicioSolucaoErro erroCompilacao = new ExercicioSolucaoErro(solucao.getId(), -1, "A solu&ccedil;&atilde;o submetida possui erros de compila&ccedil;&atilde;o", EErrorType.COMPILACAO, e.getMessage());
-                erroCompilacao.setLinhaErro((int) e.getLine());
-                solucao.getErros().add(erroCompilacao);
-            }
 
-            //se deu erro de compilação nas classes, nem continua
-            if (solucao.getErros().isEmpty()) {
+                String alunoID = String.valueOf(solucao.getIdAluno());
+                String exercicioID = String.valueOf(solucao.getIdExercicio());
+                String solucaoID = String.valueOf(solucao.getId());
 
-                //Move Pré-requisitos
-                JarCreator jarCreator = new JarCreator(appResourcesPath, tmpPath);
-                jarCreator.Prepare();
+                String partialPath = getClass().getClassLoader().getResource("FindBugs").toURI().getPath();
+                String appResourcesPath = new File(partialPath).getParentFile().getPath();
+                String tmpPath = System.getProperty("user.home") + File.separator + "Feeper" + File.separator + "temp" + File.separator + alunoID + File.separator + exercicioID + File.separator + solucaoID;
 
-                //Cria os Testes na pasta tmp
-                DinamicTestCreator testCreator = new DinamicTestCreator();
-                
-                ArrayList<String> classPathFileNames = new ArrayList<>();
-                classPathFileNames.add(tmpPath + "\\junit.jar");
-                classPathFileNames.add(tmpPath + "\\org.hamcrest.core.jar");
-                
-                for (ExercicioCasoTeste teste : solucao.getTestes()) {
-                    try {
-                        
-                        String testString = testCreator.CreateTest(teste);
-                        String fileName = tmpPath + "\\test_" + teste.getId() + ".java";
-                        
+                //inicializa a Pasta
+                File dir = new File(tmpPath);
+                dir.delete();
+                dir.mkdirs();
+
+                //Escreve a Solucao do aluno na pasta tmp e compila
+                FeeperCompiler compiler = new FeeperCompiler();
+                try {
+                    for (ExercicioSolucaoClasse classe : solucao.getClasses()) {
+
+                        String fileName = tmpPath + File.separator + classe.getNomeClasse() + ".java";
                         PrintWriter writer = new PrintWriter(fileName);
-                        writer.write(testString);
+                        writer.write(classe.getCodigo());
                         writer.close();
+                        //compila as classes do aluno
+                        compiler.CompileClass(fileName);
 
-                        //compila cada teste separado
-                        compiler.CompileTest(fileName, classPathFileNames);
-                    } catch (CompilationException e) {
-                        solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
-                        ExercicioSolucaoErro erroDinamico = new ExercicioSolucaoErro(solucao.getId(), teste.getId(), teste.getMensagemPersonalizada(), EErrorType.DINAMICO, e.getMessage());
-                        solucao.getErros().add(erroDinamico);
                     }
+                } catch (CompilationException e) {
+                    solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
+                    ExercicioSolucaoErro erroCompilacao = new ExercicioSolucaoErro(solucao.getId(), -1, "A solu&ccedil;&atilde;o submetida possui erros de compila&ccedil;&atilde;o", EErrorType.COMPILACAO, e.getMessage());
+                    erroCompilacao.setLinhaErro((int) e.getLine());
+                    solucao.getErros().add(erroCompilacao);
                 }
-                //se deu erro de compilação nos testes, nem continua
+
+                //se deu erro de compilação nas classes, nem continua
                 if (solucao.getErros().isEmpty()) {
 
-                    //Cria a main do jar na pasta tmp
-                    MainCreator creator = new MainCreator();
-                    String mainString = creator.CreateMain(solucao);
-                    PrintWriter writer = new PrintWriter(tmpPath + "\\Main.java");
-                    writer.write(mainString);
-                    writer.close();
+                    //Move Pré-requisitos
+                    JarCreator jarCreator = new JarCreator(appResourcesPath, tmpPath);
+                    jarCreator.Prepare();
 
-                    //Executa os testes Dinamicos
-                    jarCreator.CompileMain();
-                    jarCreator.Pack();
-                    jarCreator.Run();
+                    //Cria os Testes na pasta tmp
+                    DinamicTestCreator testCreator = new DinamicTestCreator();
 
-                    //carrega os resultados dinâmicos
-                    String dinamicResult = FileToString.toString(tmpPath + "\\dinamic_output.xml");
-                    reader = new StringReader(dinamicResult);
-                    jaxbContext = JAXBContext.newInstance(ExercicioSolucao.class);
-                    jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                    ExercicioSolucao resultadoDinamico = (ExercicioSolucao) jaxbUnmarshaller.unmarshal(reader);
-                    
-                    if (resultadoDinamico != null && resultadoDinamico.getErros() != null) {
-                        for (ExercicioSolucaoErro erroDinamico : resultadoDinamico.getErros()) {
+                    ArrayList<String> classPathFileNames = new ArrayList<>();
+                    classPathFileNames.add(tmpPath + File.separator + "junit.jar");
+                    classPathFileNames.add(tmpPath + File.separator + "org.hamcrest.core.jar");
+
+                    for (ExercicioCasoTeste teste : solucao.getTestes()) {
+                        try {
+
+                            String testString = testCreator.CreateTest(teste);
+                            String fileName = tmpPath + File.separator + "test_" + teste.getId() + ".java";
+
+                            PrintWriter writer = new PrintWriter(fileName);
+                            writer.write(testString);
+                            writer.close();
+
+                            //compila cada teste separado
+                            compiler.CompileTest(fileName, classPathFileNames);
+                        } catch (CompilationException e) {
+                            solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
+                            ExercicioSolucaoErro erroDinamico = new ExercicioSolucaoErro(solucao.getId(), teste.getId(), teste.getMensagemPersonalizada(), EErrorType.DINAMICO, e.getMessage());
                             solucao.getErros().add(erroDinamico);
                         }
                     }
+                    //se deu erro de compilação nos testes, não executa os testes dinâmicos
+                    if (solucao.getErros().isEmpty()) {
 
-                    //deu erro dinâmico ou seja não cumpriu os objetivos
-                    if (solucao.getErros().isEmpty() == false) {
-                        solucao.setIdStatus(EStatusSolucao.RESULTADO_INVALIDO);
-                    } else {
-                        solucao.setIdStatus(EStatusSolucao.RESOLVIDO);
+                        //Cria a main do jar na pasta tmp
+                        MainCreator creator = new MainCreator();
+                        String mainString = creator.CreateMain(solucao);
+                        PrintWriter writer = new PrintWriter(tmpPath + File.separator + "Main.java");
+                        writer.write(mainString);
+                        writer.close();
+
+                        //Executa os testes Dinamicos
+                        jarCreator.CompileMain();
+                        jarCreator.Pack();
+                        jarCreator.Run();
+
+                        //carrega os resultados dinâmicos
+                        String dinamicResult = FileToString.toString(tmpPath + File.separator + "dinamic_output.xml");
+                        reader = new StringReader(dinamicResult);
+                        jaxbContext = JAXBContext.newInstance(ExercicioSolucao.class);
+                        jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                        ExercicioSolucao resultadoDinamico = (ExercicioSolucao) jaxbUnmarshaller.unmarshal(reader);
+
+                        if (resultadoDinamico != null && resultadoDinamico.getErros() != null) {
+                            for (ExercicioSolucaoErro erroDinamico : resultadoDinamico.getErros()) {
+                                solucao.getErros().add(erroDinamico);
+                            }
+                        }
+
+                        //deu erro dinâmico ou seja não cumpriu os objetivos
+                        if (solucao.getErros().isEmpty() == false) {
+                            solucao.setIdStatus(EStatusSolucao.RESULTADO_INVALIDO);
+                        } else {
+                            solucao.setIdStatus(EStatusSolucao.RESOLVIDO);
+                        }
                     }
 
                     //Executa os testes Estaticos e carrega os resultados
                     StaticTestRunner staticTest = new StaticTestRunner(appResourcesPath, tmpPath);
                     for (ExercicioSolucaoClasse classe : solucao.getClasses()) {
-                        
+
                         staticTest.RunTest(classe.getNomeClasse(), solucao);
                     }
+
                 }
+            } catch (Exception e) {
+                solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
+                ExercicioSolucaoErro erroCompilacao = new ExercicioSolucaoErro(solucao.getId(), -1, "A solu&ccedil;&atilde;o submetida possui erros de compila&ccedil;&atilde;o", EErrorType.COMPILACAO, e.getMessage());
+                solucao.getErros().add(erroCompilacao);
             }
-            
+
             solucao.setErrosCount(solucao.getErros().size());
 
             //retorna os resultados
@@ -181,7 +229,7 @@ public class CommunicationService {
             StringWriter sw = new StringWriter();
             jaxbMarshaller.marshal(solucao, sw);
             return Response.status(Response.Status.OK).entity(sw.toString()).build();
-            
+
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.toString()).build();
         }

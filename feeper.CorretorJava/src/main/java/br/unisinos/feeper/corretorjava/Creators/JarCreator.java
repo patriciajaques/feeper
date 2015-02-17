@@ -6,10 +6,13 @@
 package br.unisinos.feeper.corretorjava.Creators;
 
 import br.unisinos.feeper.corretorjava.Utils.CopyFile;
+import br.unisinos.feeper.corretorjava.Utils.FeeperCompiler;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -27,38 +30,42 @@ public class JarCreator {
 
     public void Prepare() throws IOException {
 
-        CopyFile.copy(this.appResourcesPath + "\\JarComponents\\MANIFEST.MF", this.destPath + "\\MANIFEST.MF");
-        CopyFile.copy(this.appResourcesPath + "\\JarComponents\\junit.jar", this.destPath + "\\junit.jar");
-        CopyFile.copy(this.appResourcesPath + "\\JarComponents\\org.hamcrest.core.jar", this.destPath + "\\org.hamcrest.core.jar");
-        CopyFile.copy(this.appResourcesPath + "\\JarComponents\\policy.txt", this.destPath + "\\policy.txt");
-        CopyFile.copy(this.appResourcesPath + "\\JarComponents\\ExercicioSolucao.java", this.destPath + "\\ExercicioSolucao.java");
-        CopyFile.copy(this.appResourcesPath + "\\JarComponents\\ExercicioSolucaoErro.java", this.destPath + "\\ExercicioSolucaoErro.java");
+        CopyFile.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "MANIFEST.MF", this.destPath + File.separator + "MANIFEST.MF");
+        CopyFile.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "junit.jar", this.destPath + File.separator + "junit.jar");
+        CopyFile.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "org.hamcrest.core.jar", this.destPath + File.separator + "org.hamcrest.core.jar");
+        CopyFile.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "policy.txt", this.destPath + File.separator + "policy.txt");
+        CopyFile.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "ExercicioSolucao.java", this.destPath + File.separator + "ExercicioSolucao.java");
+        CopyFile.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "ExercicioSolucaoErro.java", this.destPath + File.separator + "ExercicioSolucaoErro.java");
     }
 
     public void CompileMain() throws Exception {
 
-        String command = "javac -classpath junit.jar;org.hamcrest.core.jar *.java";
+        FeeperCompiler compiler = new FeeperCompiler();
+        compiler.CompileClass(this.destPath + File.separator + "ExercicioSolucao.java");
+        compiler.CompileClass(this.destPath + File.separator + "ExercicioSolucaoErro.java");
 
-        File dir = new File(this.destPath);
-        Runtime rt = Runtime.getRuntime();
-        Process pr = rt.exec(command, new String[0], dir);
+        ArrayList<String> classPathFileNames = new ArrayList<>();
+        classPathFileNames.add(this.destPath + File.separator + "junit.jar");
+        classPathFileNames.add(this.destPath + File.separator + "org.hamcrest.core.jar");
 
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
-        String error = "";
-        String s = null;
-        while ((s = stdError.readLine()) != null) {
-            error += s + "\n";
-        }
-        if (error.equals("") == false) {
-            throw new Exception(error);
-        }
+        compiler.CompileTest(this.destPath + File.separator + "Main.java", classPathFileNames);
     }
 
     public void Pack() throws Exception {
 
-        String command = "jar cfm result.jar MANIFEST.MF *.jar *.class";
-
         File dir = new File(this.destPath);
+
+        String command = "jar cfm result.jar MANIFEST.MF";
+
+        for (String arquivo : dir.list()) {
+
+            if (arquivo.toLowerCase().endsWith(".jar") == false && arquivo.toLowerCase().endsWith(".class") == false) {
+                continue;
+            }
+
+            command += " " + arquivo;
+        }
+
         Runtime rt = Runtime.getRuntime();
         Process pr = rt.exec(command, new String[0], dir);
 

@@ -98,9 +98,8 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th><fmt:message key="label.notas.linha"/></th>
-                                <th><fmt:message key="label.notas.mensagemprofessor"/></th>
-                                <th><fmt:message key="label.notas.mensagemsistema"/></th>
+                                <th><fmt:message key="label.exercicios.linha"/></th>
+                                <th><fmt:message key="label.exercicios.mensagem"/></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -115,8 +114,12 @@
                                         }
                                     </td>
                                     <td>${erro.getLinhaErro()>0 ? erro.getLinhaErro() : ""}</td>
-                                    <td>${erro.getMensagemPersonalizada()}</td>
-                                    <td>${erro.getMensagemErro()}</td>
+                                    <td>${erro.getMensagemPersonalizada()}
+                                        <c:if test="${not empty erro.getMensagemErro()}">
+                                            <h6><fmt:message key="label.exercicios.mensagemSistema"/></h6>
+                                            ${erro.getMensagemErro()}</td>
+                                        </c:if>
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </tbody>
