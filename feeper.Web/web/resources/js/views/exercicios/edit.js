@@ -30,7 +30,12 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         $.fancybox("#divUploadInterface", {
             'openEffect': 'fade',
             'closeEffect': 'fade',
-            'closeClick': false
+            'closeClick': false,
+            helpers: {
+                overlay: {
+                    locked: false
+                }
+            }
         });
     }
 
@@ -115,7 +120,12 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         $.fancybox("#divEditPassos", {
             'openEffect': 'fade',
             'closeEffect': 'fade',
-            'closeClick': false
+            'closeClick': false,
+            helpers: {
+                overlay: {
+                    locked: false
+                }
+            }
         });
     }
 

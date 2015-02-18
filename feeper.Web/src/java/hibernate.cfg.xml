@@ -3,12 +3,12 @@
  "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <!--<property name="hibernate.connection.url">jdbc:mysql://mysql-feeper.jelasticlw.com.br/feeper</property>
+        <property name="hibernate.connection.url">jdbc:mysql://mysql42063-feeper2.jelasticlw.com.br/feeper</property>
         <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password">2Uhl7YhwFH</property>-->
-        <property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/feeper</property>
+        <property name="hibernate.connection.password">gAGwzo16BJ</property>
+        <!--<property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/feeper</property>
         <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password"/>
+        <property name="hibernate.connection.password"/>-->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="hibernate.connection.autoReconnect">true</property>

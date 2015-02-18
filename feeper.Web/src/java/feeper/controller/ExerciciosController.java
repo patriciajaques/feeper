@@ -545,10 +545,14 @@ public class ExerciciosController extends ApplicationController {
                 //enviar para correção
                 log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId(), ETipoLog.CODIGO_ENVIADO);
 
-                ExercicioSolucao solucao = repoSolucao.enviarCorrecao(idSolucao.getResult());
+                ExercicioSolucao solucao = null;
+                try {
+                    solucao = repoSolucao.enviarCorrecao(idSolucao.getResult());
+                    log(pessoa.getId(), "CORRETOR ID SOLUÇÃO: " + idSolucao.getResult() + " RESULTADO: " + solucao.getIdStatus(), ETipoLog.CODIGO_ENVIADO);
 
-                log(pessoa.getId(), "CORRETOR ID SOLUÇÃO: " + idSolucao.getResult() + " RESULTADO: " + solucao.getIdStatus(), ETipoLog.CODIGO_ENVIADO);
-
+                } catch (IOException ex) {
+                    log(pessoa.getId(), "ERRO ID SOLUÇÃO: " + idSolucao.getResult(), ETipoLog.CODIGO_ENVIADO);
+                }
             }
         }
 
