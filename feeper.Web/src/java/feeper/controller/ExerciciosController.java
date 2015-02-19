@@ -573,8 +573,8 @@ public class ExerciciosController extends ApplicationController {
         Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
 
         if (exercicio != null) {
-            ExercicioClasseService repoSolucaoClasses = new ExercicioClasseService();
-            List<ExercicioClasse> classes = repoSolucaoClasses.getAllByIdExercicio(exercicio.getId(), pessoa.getId());
+            ExercicioClasseService repoClasses = new ExercicioClasseService();
+            List<ExercicioClasse> classes = repoClasses.getAllByIdExercicio(exercicio.getId(), pessoa.getId());
 
             if (classes != null && classes.size() > 0) {
                 try {
@@ -614,12 +614,12 @@ public class ExerciciosController extends ApplicationController {
         HttpSession session = request.getSession(false);
         Pessoa pessoa = (Pessoa) session.getAttribute("UsuarioLogado");
 
-        ExercicioClasseService repoSolucaoClasses = new ExercicioClasseService();
+        ExercicioClasseService repoClasses = new ExercicioClasseService();
 
         ExercicioClasseMarcacaoService repoClasseMarcacao = new ExercicioClasseMarcacaoService();
         Object[] dados = new Object[7];
         dados[0] = idClasse;
-        ExercicioClasse classe = repoSolucaoClasses.getById(idClasse);
+        ExercicioClasse classe = repoClasses.getById(idClasse);
         dados[1] = classe.getNomeClasse();
         dados[2] = classe.getCodigo().replaceAll("\"", "#'#");
         dados[3] = repoClasseMarcacao.getLinhasDuvida(idClasse);
@@ -629,8 +629,8 @@ public class ExerciciosController extends ApplicationController {
         return dados;
     }
 
-    @RequestMapping(value = "/savesolucaoclasse", method = RequestMethod.POST)
-    public ModelAndView savesolucaoclasse(
+    @RequestMapping(value = "/saveclasse", method = RequestMethod.POST)
+    public ModelAndView saveclasse(
             @ModelAttribute("hdnIdExercicio") int id,
             HttpSession session,
             HttpServletRequest request,
@@ -641,7 +641,7 @@ public class ExerciciosController extends ApplicationController {
         Pessoa pessoa = (Pessoa) session.getAttribute("UsuarioLogado");
         Turma turma = (Turma) session.getAttribute("TurmaSelecionada");
 
-        ExercicioClasseService repoSolucaoClasses = new ExercicioClasseService();
+        ExercicioClasseService repoClasses = new ExercicioClasseService();
         Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
 
         if (exercicio != null) {
@@ -654,7 +654,7 @@ public class ExerciciosController extends ApplicationController {
                     ExercicioClasse entity = new ExercicioClasse();
 
                     if (idclasse > 0) {
-                        entity = repoSolucaoClasses.getById(idclasse);
+                        entity = repoClasses.getById(idclasse);
                         entity.setCodigoAnterior(entity.getCodigo());
                     } else {
                         entity.setIdAluno(pessoa.getId());
@@ -665,9 +665,9 @@ public class ExerciciosController extends ApplicationController {
                     entity.setCodigo(fonte);
 
                     if (entity.getId() > 0) {
-                        repoSolucaoClasses.update(entity);
+                        repoClasses.update(entity);
                     } else {
-                        repoSolucaoClasses.insert(entity);
+                        repoClasses.insert(entity);
                     }
 
                     log(pessoa.getId(), "SUCESSO: CLASSE: " + nomeClasse, ETipoLog.CODIGO_SALVO);

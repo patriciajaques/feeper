@@ -10,7 +10,12 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
         $scope.falseValue = false;
         $scope.trueValue = true;
-        $scope.initControls();
+        
+        //hack, para crash do uploadify
+        setTimeout(function () {
+            $scope.initControls();
+        }, 0);
+
         $http({
             url: baseUrl + 'exercicios/getJson',
             method: 'GET',

@@ -7,8 +7,6 @@ package feeper.Data.service;
 
 import feeper.Data.entity.ExercicioInterface;
 import feeper.Data.entity.ExercicioInterfaceMembro;
-import feeper.Data.entity.ExercicioInterfaceMembroParametro;
-import feeper.Data.entity.ExercicioSolucaoClasse;
 import feeper.Data.model.HibernateUtil;
 import java.util.List;
 import org.hibernate.SQLQuery;

@@ -5,8 +5,6 @@
  */
 package feeper.Data.entity;
 
-import java.util.Date;
-
 /**
  *
  * @author gilvani

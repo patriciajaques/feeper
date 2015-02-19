@@ -144,7 +144,7 @@
             </c:if>
             <a href="#divNovaClasse" class="list-group-item btn-nova-classe"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;<fmt:message key="label.exercicios.novaclasse"/></a>
         </div>
-        <form role="form" action="<c:url value='/'/>exercicios/savesolucaoclasse" id="frmSolucionar" method="POST">
+        <form role="form" action="<c:url value='/'/>exercicios/saveclasse" id="frmSolucionar" method="POST">
             <input type="hidden" id="hdnIdExercicio" name="hdnIdExercicio" value="${Exercicio.getId()}" />
             <input type="hidden" id="hdnIdClasse" name="hdnIdClasse" value="" />
             <input type="hidden" id="hdnNomeClasse" name="hdnNomeClasse" value="" />
