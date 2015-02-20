@@ -605,7 +605,7 @@ public class ExerciciosController extends ApplicationController {
 
     @RequestMapping(value = "/showclassecode/{idExercicio}/{idClasse}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public Object showcode(
+    public Object showclassecode(
             @PathVariable int idExercicio,
             @PathVariable int idClasse,
             Model model,

@@ -3,6 +3,7 @@ var editor = null;
 
 $(function () {
 
+    $.ajaxSetup({cache: false});
     $("#menu-lista-exercicios").addClass("active");
     ControlaBotoes();
 

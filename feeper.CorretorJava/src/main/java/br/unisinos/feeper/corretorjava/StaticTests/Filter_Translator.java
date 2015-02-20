@@ -76,10 +76,17 @@ public class Filter_Translator {
     }
 
     public void translateBug(BugInstance bug) {
+
+        String firstPart;
+        String variableName;
+
         switch (bug.type) {
 
             case "ES_COMPARING_STRINGS_WITH_EQ":
                 bug.message = bug.message.replace("ES: Comparison of String objects using == or != in", "Foi localizada uma compara&ccedil;&atilde;o de Strings com == ou != em") + "; Este tipo de opera&ccedil;&atilde;o pode causar um comportamento inesperado em sua solu&ccedil;&atilde;o";
+                break;
+            case "ES_COMPARING_PARAMETER_STRING_WITH_EQ":
+                bug.message = bug.message.replace("ES: Comparison of String parameter using == or != in", "Foi localizada uma compara&ccedil;&atilde;o de Strings com == ou != em") + "; Este tipo de opera&ccedil;&atilde;o pode causar um comportamento inesperado em sua solu&ccedil;&atilde;o";
                 break;
             case "NM_METHOD_NAMING_CONVENTION":
                 if (bug.message.contains("doesn&apos;t start with a lower case letter")) {
@@ -99,23 +106,40 @@ public class Filter_Translator {
                     bug.message = bug.message.replace("doesn&apos;t start with a upper case letter", "deve come&ccedil;ar com letra mai&uacute;scula");
                 }
                 break;
+            case "UPM_UNCALLED_PRIVATE_METHOD":
+                bug.message = bug.message.replace("UPM: Private method", "O m&eacute;todo privado");
+                bug.message = bug.message.replace("is never called", "nunca &eacute; chamado, considere a possibilidade de remov&ecirc;-lo");
+                break;
             case "UUF_UNUSED_FIELD":
-                bug.message = bug.message.replace("UuF: Unused field", "A seguinte propriedade foi declarada mas nunca foi utilizada");
+                bug.message = bug.message.replace("UuF: Unused field", "A propriedade");
+                bug.message += " foi declarada mas nunca foi utilizada, considere a possibilidade de remov&ecirc;-la";
+                break;
+            case "URF_UNREAD_FIELD":
+                bug.message = bug.message.replace("UrF: Unread field:", "A propriedade");
+                bug.message += " foi instanciada mas seu valor nunca foi lido, considere a possibilidade de remov&ecirc;-la";
+                break;
+            case "SA_FIELD_SELF_ASSIGNMENT":
+                bug.message = bug.message.replace("SA: Self assignment of field ", "A propriedade ");
+                bug.message = bug.message.replace(" in ", " est&aacute; recebendo seu pr&oacute;prio valor em ");
+                bug.message += "; Este tipo de opera&ccedil;&atilde;o geralmente representa um erro de l&oacute;gica";
+                break;
+            case "SA_FIELD_SELF_COMPARISON":
+                bug.message = bug.message.replace("SA: Self comparison of ", "A propriedade ");
+                bug.message = bug.message.replace(" with itself in ", " est&aacute; sendo comparada consigo mesma em ");
+                bug.message += ", este tipo de opera&ccedil;&atilde;o geralmente representa um erro de l&oacute;gica";
                 break;
             case "SA_LOCAL_SELF_ASSIGNMENT":
-                String firstPart = "SA: Self assignment of ";
-                String variableName = bug.message.substring(firstPart.length(), bug.message.indexOf(" ", firstPart.length()));
-
-                if (variableName.startsWith("$")) {
-                    bug.message = "Uma variável está recebendo seu próprio valor em " + bug.message.substring(firstPart.length() + variableName.length() + 3);
-                } else {
-                    bug.message = bug.message.replace("SA: Self assignment of ", "A vari&aacute;vel ");
-                    bug.message = bug.message.replace(" in ", " está recebendo seu próprio valor em ");
-                }
-                bug.message += "; Este tipo de opera&ccedil;&atilde;o geralmente representa um erro de l&oacute;gica";
+                firstPart = "SA: Self assignment of ";
+                variableName = bug.message.substring(firstPart.length(), bug.message.indexOf(" ", firstPart.length()));
+                bug.message = "Uma vari&aacute;vel est&aacute; recebendo seu pr&oacute;prio valor em " + bug.message.substring(firstPart.length() + variableName.length() + 3);
+                bug.message += ", este tipo de opera&ccedil;&atilde;o geralmente representa um erro de l&oacute;gica";
+                break;
+            case "SA_LOCAL_SELF_COMPARISON":
+                firstPart = "SA: Self comparison of ";
+                variableName = bug.message.substring(firstPart.length(), bug.message.indexOf(" ", firstPart.length()));
+                bug.message = "Uma vari&aacute;vel est&aacute; sendo comparada consigo mesma em " + bug.message.substring(firstPart.length() + variableName.length() + 12);
+                bug.message += ", este tipo de opera&ccedil;&atilde;o geralmente representa um erro de l&oacute;gica";
                 break;
         }
     }
-
-    //Nm: The method name Aluno.Teste() doesn't start with a lower case letter
 }

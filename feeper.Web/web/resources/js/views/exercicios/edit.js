@@ -549,6 +549,8 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             minLength: 0
         });
     }
+    
+    $.ajaxSetup({ cache: false });
     $scope.init();
     $scope.OperationTypes = [
         {value: 1, label: 'Atribui à'},
