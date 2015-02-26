@@ -1,6 +1,7 @@
 package feeper.Data.entity;
 // Generated Feb 1, 2014 9:45:43 AM by Hibernate Tools 3.2.1.GA
 
+import feeper.Data.model.ClasseAssinatura.Assinatura;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class Exercicio implements java.io.Serializable {
     private byte[] descricao;
     private Pessoa autor;
     private List<ExercicioCasoTeste> casosTeste;
-    private ExercicioInterface interfaceSolucao;
+    private List<ExercicioClasseAuxiliar> classesAuxiliares;
     
     private int idUploadTemp;
 
@@ -106,12 +107,12 @@ public class Exercicio implements java.io.Serializable {
         this.casosTeste = casosTeste;
     }
 
-    public ExercicioInterface getInterfaceSolucao() {
-        return interfaceSolucao;
+    public List<ExercicioClasseAuxiliar> getClassesAuxiliares() {
+        return classesAuxiliares;
     }
 
-    public void setInterfaceSolucao(ExercicioInterface interfaceSolucao) {
-        this.interfaceSolucao = interfaceSolucao;
+    public void setClassesAuxiliares(List<ExercicioClasseAuxiliar> classesAuxiliares) {
+        this.classesAuxiliares = classesAuxiliares;
     }
 
     public int getIdUploadTemp() {

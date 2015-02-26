@@ -7,11 +7,33 @@
 <t:master>
     <jsp:attribute name="title"><fmt:message key="title.exercicios"/></jsp:attribute>
     <jsp:attribute name="header">
+        <script src="<c:url value='/resources/ace/ace.js'/>" type="text/javascript"></script>
         <link href="<c:url value='/resources/jquery/themes/base/jquery.ui.all.css'/>" rel="stylesheet" type="text/css" />
         <script src="<c:url value='/resources/js/angular.min.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/js/views/exercicios/edit.js'/>" type="text/javascript"></script>
 
-        <style>
+        <style type="text/css" media="screen">
+            .line-selected {
+                background-color: #3A87AD;
+                color:#D9EDF7;
+            }
+            .line-error {
+                background-color: #d95959;
+                color: #f7aaaa;
+            }
+            .line-warning {
+                background-color: #e6cf4d;
+                color: #f2ebad;             }
+            .line-question {
+                background-color: #5cb85c;
+                color: #ffffff;
+                cursor: pointer;
+            }
+
+            .ace_gutter-cell.ace_breakpoint{ 
+                border-radius: 20px 0px 0px 20px; 
+                box-shadow: 0px 0px 1px 1px red inset;              } 
+
             .ui-state-highlight { height: 91px; }
             #divEditPassos select{min-width: 120px;}
             #divEditPassos input{min-width: 100px;}
@@ -19,7 +41,8 @@
         <script type="text/javascript">
             var baseUrl = "<c:url value='/'/>";
             var escolherArquivoText = '<fmt:message key="button.escolherarquivo"/>';
-            var erroUploadInterfaceText = '<fmt:message key="label.exercicios.errouploadInterface"/>';
+            var adicionarclasseexistenteText = '<fmt:message key="button.adicionarclasseexistente"/>';
+            var erroCarregarAssinaturas = '<fmt:message key="label.exercicios.errocarregarassinaturas"/>';
         </script>
 
     </jsp:attribute>
@@ -69,12 +92,39 @@
                         </div>
                     </div>
 
-                    <div id="casosTeste" class="form-group">
+                    <div id="classesAuxiliares" class="form-group">
+
                         <div class="form-group" style="margin-top: 20px;">                     
-                            <label><fmt:message key="label.exercicios.casosteste"/>:</label>
+                            <label><fmt:message key="label.exercicios.classesauxiliares"/>:</label>
                         </div>
 
                         <button type="button" ng-click="visualizaTelaInterface()" class="btn btn-primary"><fmt:message key="label.exercicios.uploadInterface"/></button>
+                        <br/>
+                        <br/>
+                        <div class="list-group">
+                            <a ng-repeat="classe in exercicio.classesAuxiliares| filter: { ehInterface: false }" href="#" ng-click="showClasseCode(classe)" class="list-group-item"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;{{classe.nomeClasse}}</a>
+                            <a href="#" ng-click="visualizaTelaClasse()" class="list-group-item"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;<fmt:message key="label.exercicios.adicionarclasseauxiliar"/></a>
+
+                        </div>
+                    </div>
+                    <div id="containerEditor" style="display: none;">
+                        <div id="panelEditor"></div>
+                        <button id="btnSaveClasseCode" type="button" ng-click="saveClasseCode()" class="btn btn-primary btn-sm" >
+                            <span class="glyphicon glyphicon-save"></span> <fmt:message key="button.salvar"/>
+                        </button>
+                        <button id="btnHabilitaEdicao" type="button" ng-click="habilitaEdicao()" class="btn btn-default btn-sm" >
+                            <span class="glyphicon glyphicon-lock"></span> <fmt:message key="button.habilitaredicao"/>
+                        </button>
+                        <button type="button" ng-click="deletaClasse()" class="btn btn-default btn-sm" >
+                            <span class="glyphicon glyphicon-trash"></span> <fmt:message key="button.excluir"/>
+                        </button>
+                    </div>
+
+                    <div id="casosTeste" class="form-group">
+                        <div class="form-group" style="margin-top: 60px;">                     
+                            <label><fmt:message key="label.exercicios.casosteste"/>:</label>
+                        </div>
+                        <button type="button" ng-click="adicionaCasoTeste()" class="btn btn-primary"><fmt:message key="label.exercicios.adicionarcasoteste"/></button>
 
                         <table class="table table-striped table-hover" style="margin-bottom: 0px;">
                             <thead>
@@ -98,13 +148,6 @@
                                     </td>
                                 </tr>
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="3">
-                                        <button type="button" ng-click="adicionaCasoTeste()" class="btn btn-primary"><fmt:message key="label.exercicios.adicionarcasoteste"/></button>
-                                    </td>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
 
@@ -112,14 +155,13 @@
                     <button type="button" ng-click="voltar()" class="btn btn-default btn-voltar"><fmt:message key="button.voltarlistagem"/></button>
 
                     <!--Modal exibida para carregar Interface-->
-                    <div style="display:none;" id="divUploadInterface">
-                        <label class="alert alert-danger"><fmt:message key="label.exercicios.alertanomeinterface"/></label>
+                    <div style="display:none;" id="divInterface">
                         <div id="uploadInterface">
                             <input type="file" name="upload_Interface_Solucao" id="upload_Interface_Solucao" />
                         </div>
                         <div class="form-group">
-                            <label><fmt:message key="label.exercicios.nomeinterface"/></label>
-                            <input type="text" class="form-control" id="nome" name="nome" disabled="disabled" ng-model="exercicio.interfaceSolucao.nomeClasse">
+                            <label><fmt:message key="label.exercicios.nomeClasse"/></label>
+                            <input type="text" class="form-control" id="nome" name="nome" disabled="disabled" ng-model="getInterface().nomeClasse">
                         </div>
                         <div class="checkbox">
                             <label>
@@ -127,8 +169,22 @@
                                 <fmt:message key="label.exercicios.gerarcasostestegetset"/>
                             </label>
                         </div>
-                        <button type="button" ng-click="concluiUploadInterface()" class="btn btn-primary"><fmt:message key="button.concluir"/></button>
+                        <button type="button" ng-click="concluiTelaInterface()" class="btn btn-primary"><fmt:message key="button.concluir"/></button>
 
+                    </div>
+
+                    <!--Modal exibida para adicionar novas classes-->
+                    <div style="display:none;" id="divNovaClasse">
+                        <div class="input-group" style="width:400px; margin-bottom:3px">
+                            <input type="text" class="form-control" ng-model="NomeNovaClasse" placeholder="<fmt:message key="label.exercicios.nomeclasseinforme"/>" maxlength="45">
+                            <span class="input-group-addon">.java</span>
+                        </div>
+                        <div class="pull-left">
+                            <button type="button" class="btn btn-primary btn-xs" ng-click="adicionaClasse();"><fmt:message key="button.adicionarnovaclasse"/></button>
+                        </div>
+                        <div class="pull-left" style="margin-left:3px">
+                            <input type="file" id="upload_Classe_Auxiliar" />
+                        </div>
                     </div>
 
                     <!--Modal exibida para editar Passos-->
@@ -145,19 +201,19 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control passoDataType" ng-focus="updatePassosAutocompletes(passo)" ng-disabled="passo.operationType == 2" ng-model="passo.expectedOutputType" />
+                                        <input type="text" class="form-control passoDataType" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-disabled="passo.operationType == 2 || isDeclaredObject(passo.expectedOutputName, passo) || isDeclaredObject(passo.expectedOutputValue, passo)" ng-model="passo.expectedOutputType" placeholder="<fmt:message key="label.exercicios.tipovariavel"/>" />
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control passoObject" ng-focus="updatePassosAutocompletes(passo)" ng-disabled="passo.operationType == 2" ng-show="passo.operationType != 3" ng-model="passo.expectedOutputName"/>
-                                        <input type="text" class="form-control" ng-show="passo.operationType == 3" ng-model="passo.expectedOutputValue"/>
+                                        <input type="text" class="form-control passoObject" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-show="passo.operationType != 3" ng-disabled="passo.operationType == 2"  ng-model="passo.expectedOutputName" ng-change="expectedOutputNameChanged(passo)" placeholder="<fmt:message key="label.exercicios.nomevariavel"/>"/>
+                                        <input type="text" class="form-control passoObject" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-show="passo.operationType == 3" ng-model="passo.expectedOutputValue" ng-change="expectedOutputValueChanged(passo)" placeholder="<fmt:message key="label.exercicios.valornomevariavel"/>"/>
                                     </td>
                                     <td align="center"> {{ passo.operationType == 3?"==":"=" }} </td>
                                     <td>
-                                        <input type="text"  class="form-control passoDataTypeOrObject" ng-focus="updatePassosAutocompletes(passo, true)"  ng-model="passo.objectName" ng-change="objectNameChanged(passo)"/>
+                                        <input type="text"  class="form-control passoDataTypeOrObject" data-index='{{$index}}' onfocus="$(this).trigger('input');"  ng-model="passo.objectName" ng-change="objectNameChanged(passo)" placeholder="<fmt:message key="label.exercicios.nomeclassevariavel"/>"/>
                                     </td>
                                     <td>.</td>
                                     <td>
-                                        <input type="text" class="form-control passoMethod" ng-disabled="passo.objectName == 'System.Out'" ng-focus="updatePassosAutocompletes(passo)" ng-model="passo.methodName" ng-change="methodNameChanged(passo)"/>
+                                        <input type="text" class="form-control passoMethod" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-disabled="passo.objectName == 'System.Out'" ng-model="passo.methodName" ng-change="methodNameChanged(passo)" placeholder="<fmt:message key="label.exercicios.nomemetodo"/>"/>
                                     </td>
                                     <td>
                                         <table >
@@ -167,8 +223,8 @@
                                                     <table>
                                                         <tr>
                                                             <td><span style="cursor: pointer;" class="glyphicon glyphicon-trash" ng-click="deletaParametro(passo, parametro)"></span></td>
-                                                            <td><input type="text" class="form-control passoDataType" ng-focus="updatePassosAutocompletes(passo)" ng-model="parametro.objectType"/></td>
-                                                            <td><input type="text" class="form-control" ng-model="parametro.objectValue"/></td>
+                                                            <td><input type="text" class="form-control passoDataType" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-disabled="isDeclaredObject(parametro.objectValue, passo)" ng-model="parametro.objectType" placeholder="<fmt:message key="label.exercicios.tipoparametro"/>"/></td>
+                                                            <td><input type="text" class="form-control" ng-model="parametro.objectValue" ng-change="parametroValueChanged(passo, parametro)" placeholder="<fmt:message key="label.exercicios.valorparametro"/>"/></td>
                                                             <td>,</td>
                                                         </tr>
                                                     </table>

@@ -2,7 +2,7 @@ package br.unisinos.feeper.corretorjava.StaticTests;
 
 import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucao;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucaoErro;
-import br.unisinos.feeper.corretorjava.Utils.CopyFile;
+import br.unisinos.feeper.corretorjava.Utils.FileUtils;
 import br.unisinos.feeper.corretorjava.Utils.EErrorType;
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,7 +26,7 @@ public class StaticTestRunner {
         String srcFile = this.destPath + File.separator + className + ".class";
 
         //copia o avaliador
-        CopyFile.copy(this.appResourcesPath + File.separator + "FindBugs", this.destPath + File.separator + "FindBugs");
+        FileUtils.copy(this.appResourcesPath + File.separator + "FindBugs", this.destPath + File.separator + "FindBugs");
 
         //executa os testes
         String jarFile = this.destPath + File.separator + "FindBugs" + File.separator + "findbugs.jar";

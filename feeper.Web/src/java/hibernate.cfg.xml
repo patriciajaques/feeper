@@ -2,12 +2,12 @@
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <property name="hibernate.connection.url">jdbc:mysql://mysql42072-feeper2.jelasticlw.com.br/feeper</property>
+        <!--<property name="hibernate.connection.url">jdbc:mysql://mysql42072-feeper2.jelasticlw.com.br/feeper</property>
         <property name="hibernate.connection.username">feeper</property>
-        <property name="hibernate.connection.password">kx8f33p3r</property>
-        <!--<property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/feeper</property>
+        <property name="hibernate.connection.password">kx8f33p3r</property>-->
+        <property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/feeper</property>
         <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password"/>-->
+        <property name="hibernate.connection.password"/>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="hibernate.connection.autoReconnect">true</property>
@@ -53,9 +53,7 @@
         <mapping resource="feeper/Data/entity/ExercicioSolucaoClasse.hbm.xml"/>
         <mapping resource="feeper/Data/entity/ExercicioSolucaoClasseMarcacao.hbm.xml"/>
         <mapping resource="feeper/Data/entity/ExercicioSolucaoErro.hbm.xml"/>
-        <mapping resource="feeper/Data/entity/ExercicioInterface.hbm.xml"/>
-        <mapping resource="feeper/Data/entity/ExercicioInterfaceMembro.hbm.xml"/>
-        <mapping resource="feeper/Data/entity/ExercicioInterfaceMembroParametro.hbm.xml"/>
+        <mapping resource="feeper/Data/entity/ExercicioClasseAuxiliar.hbm.xml"/>
         <mapping resource="feeper/Data/entity/ConfiguracaoSistema.hbm.xml"/>
         <mapping resource="feeper/Data/entity/MensagemPersonalizada.hbm.xml"/>
     </session-factory>

@@ -19,8 +19,8 @@ $(function () {
         'width': 154,
         'height': 22,
         'removeCompleted': true,
-        'queueID': 'fileQueue',
-        'itemTemplate': '<div style="margin-top:40px;" id="' + fileID + '"><div class="uploadify-progress"><div class="uploadify-progress-bar"><!--Progress Bar--></div></div></div>',
+        'queueId':'fileQueue',
+        'itemTemplate': '<div style="margin-top:40px;" id="' + fileID + '"><div class="uploadify-progress"><div class="uploadify-progress-bar"></div></div></div>',
         'onUploadSuccess': function (file, data, response) {
             $("#fileQueue").html("");
             adicionarClasse(data);

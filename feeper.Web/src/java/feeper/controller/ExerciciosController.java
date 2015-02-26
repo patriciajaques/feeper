@@ -3,9 +3,7 @@ package feeper.controller;
 import feeper.Data.entity.Exercicio;
 import feeper.Data.entity.ExercicioCasoTeste;
 import feeper.Data.entity.ExercicioClasse;
-import feeper.Data.entity.ExercicioInterface;
-import feeper.Data.entity.ExercicioInterfaceMembro;
-import feeper.Data.entity.ExercicioInterfaceMembroParametro;
+import feeper.Data.entity.ExercicioClasseAuxiliar;
 import feeper.Data.entity.ExercicioSolucao;
 import feeper.Data.entity.MeusExercicios;
 import feeper.Data.entity.Pessoa;
@@ -13,7 +11,7 @@ import feeper.Data.entity.Turma;
 import feeper.Data.entity.UploadTemp;
 import feeper.Data.model.EPerfil;
 import feeper.Data.model.ETipoLog;
-import feeper.Data.model.EmemberType;
+import feeper.Data.model.FileUtils;
 import feeper.Data.model.IntegerResult;
 import feeper.Data.model.ScalarResult;
 import feeper.Data.model.Util;
@@ -22,18 +20,13 @@ import feeper.Data.service.ExercicioService;
 import feeper.Data.service.ExercicioClasseService;
 import feeper.Data.service.ExercicioSolucaoService;
 import feeper.Data.service.ExercicioCasoTesteService;
-import feeper.Data.service.ExercicioInterfaceService;
+import feeper.Data.service.ExercicioClasseAuxiliarService;
 import feeper.Data.service.UploadTempService;
-import feeper.model.InterfaceHandler;
+import feeper.model.AssinaturaLoader;
 import feeper.model.PaginadorUtil;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -157,9 +150,12 @@ public class ExerciciosController extends ApplicationController {
 
     @RequestMapping(value = "/getJson", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public Exercicio getJson(@RequestParam(value = "exercicioId", defaultValue = "0") String exercicioId, HttpServletRequest request) {
+    public List<Object> getJson(@RequestParam(value = "exercicioId", defaultValue = "0") String exercicioId, HttpServletRequest request) {
 
         int exercId = Integer.parseInt(exercicioId);
+
+        HttpSession session = request.getSession();
+        Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
 
         ExercicioService service = new ExercicioService();
         Exercicio exercicio = service.getById(exercId);
@@ -170,10 +166,6 @@ public class ExerciciosController extends ApplicationController {
             exercicio.setId(0);
             exercicio.setDataCadastro(new Date());
             exercicio.setAtivo(true);
-
-            HttpSession session = request.getSession();
-            Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
-
             exercicio.setAutor(usuarioLogado);
             exercicio.setIdAutor(usuarioLogado.getId());
 
@@ -182,13 +174,22 @@ public class ExerciciosController extends ApplicationController {
             //esvazia para diminuir o tráfego de dados
             exercicio.setDescricao(null);
 
-            ExercicioInterfaceService repoInterface = new ExercicioInterfaceService();
-            exercicio.setInterfaceSolucao(repoInterface.getbyIdExercicio(exercId));
+            ExercicioClasseAuxiliarService repoClasses = new ExercicioClasseAuxiliarService();
+            List<ExercicioClasseAuxiliar> classes = repoClasses.getAllByIdExercicio(exercId);
+            try {
+                classes = this.carregaAssinaturas(classes, request);
+            } catch (Exception ex) {
+                classes.clear();
+            }
+            exercicio.setClassesAuxiliares(classes);
 
             ExercicioCasoTesteService repoCasoTeste = new ExercicioCasoTesteService();
             exercicio.setCasosTeste(repoCasoTeste.getByIdExercicio(exercId, false));
         }
-        return exercicio;
+        List<Object> resultados = new ArrayList<Object>();
+        resultados.add(exercicio);
+        resultados.add(ExercicioSolucaoService.CODIGO_PADRAO_CLASSE.replaceAll("\n", "#n#"));
+        return resultados;
     }
 
     @RequestMapping(value = "/saveJson", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -214,32 +215,36 @@ public class ExerciciosController extends ApplicationController {
             exercicio.setDescricao(dbExercicio.getDescricao());
         }
 
-        ExercicioInterfaceService repoInterface = new ExercicioInterfaceService();
-
         if (exercicioId != null && exercicioId > 0) {
             service.update(exercicio);
-
-            ExercicioInterface interFace = repoInterface.getbyIdExercicio(exercicioId);
-
-            Integer dbInterfaceID = interFace != null ? interFace.getId() : 0;
-            Integer newInterfaceID = exercicio.getInterfaceSolucao() != null ? exercicio.getInterfaceSolucao().getId() : 0;
-
-            if (newInterfaceID != dbInterfaceID) {
-                repoInterface.delete(interFace);
-            }
-
         } else {
             service.insert(exercicio);
         }
 
-        if (exercicio.getInterfaceSolucao() != null) {
-            repoInterface.salvarInterface(exercicio.getId(), exercicio.getInterfaceSolucao());
+        ExercicioClasseAuxiliarService repoClasses = new ExercicioClasseAuxiliarService();
+        List<ExercicioClasseAuxiliar> classes = exercicio.getClassesAuxiliares();
+        Boolean sucess = repoClasses.SaveClasses(exercicio.getId(), classes);
+        if (sucess == false) {
+            return false;
         }
 
         ExercicioCasoTesteService repoCasoTeste = new ExercicioCasoTesteService();
         List<ExercicioCasoTeste> casosTeste = exercicio.getCasosTeste();
 
         return repoCasoTeste.SaveCasos(exercicio.getId(), casosTeste);
+    }
+
+    @RequestMapping(value = "/carregaAssinaturas", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    public List<ExercicioClasseAuxiliar> carregaAssinaturas(@RequestBody List<ExercicioClasseAuxiliar> classes, HttpServletRequest request) throws Exception {
+
+        HttpSession session = request.getSession();
+        Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
+
+        AssinaturaLoader handler = new AssinaturaLoader();
+        handler.CarregaAssinaturas(classes, usuarioLogado.getId());
+
+        return classes;
     }
 
     @RequestMapping(value = "/uploaddescricao", method = RequestMethod.POST)
@@ -289,86 +294,23 @@ public class ExerciciosController extends ApplicationController {
         }
     }
 
-    @RequestMapping(value = "/uploadinterfacesolucao", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/uploadClasseAuxiliar", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public ExercicioInterface uploadinterfacesolucao(MultipartHttpServletRequest request) throws IOException {
+    public ExercicioClasseAuxiliar uploadClasseAuxiliar(@RequestParam(value = "ehInterface", defaultValue = "false") Boolean ehInterface, MultipartHttpServletRequest request) throws IOException {
 
         MultipartFile file = request.getFile("filedata");
         HttpSession session = request.getSession();
         Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
 
-        File f = new File("tmp/" + file.getOriginalFilename());
-        f.mkdirs();
-        file.transferTo(f);
-
         String className = FilenameUtils.removeExtension(file.getOriginalFilename());
-        InterfaceHandler handler = new InterfaceHandler();
-        Class<?> classe = handler.GetInterface(f.getPath(), className);
+        ExercicioClasseAuxiliar classeAuxiliar = new ExercicioClasseAuxiliar();
+        classeAuxiliar.setNomeClasse(className);
 
-        ExercicioInterface inter = new ExercicioInterface();
-        inter.setNomeClasse(className);
+        String codigo = FileUtils.toString(file.getInputStream());
+        classeAuxiliar.setCodigo(codigo);
+        classeAuxiliar.setEhInterface(ehInterface);
 
-        List<ExercicioInterfaceMembro> membros = new ArrayList();
-
-        //fields pega todos, para testar getters e setters
-        for (Field field : classe.getDeclaredFields()) {
-
-            ExercicioInterfaceMembro membro = new ExercicioInterfaceMembro();
-            membro.setMemberType(EmemberType.FIELD);
-            membro.setModifier(field.getModifiers());
-            membro.setName(field.getName());
-            membro.setType(field.getType().getSimpleName());
-
-            membros.add(membro);
-        }
-
-        //construtores, somente públicos
-        for (Constructor constructor : classe.getConstructors()) {
-
-            ExercicioInterfaceMembro membro = new ExercicioInterfaceMembro();
-            membro.setMemberType(EmemberType.CONSTRUCTOR);
-            membro.setModifier(constructor.getModifiers());
-            membro.setName(constructor.getName());
-
-            Parameter[] parameters = constructor.getParameters();
-            List<ExercicioInterfaceMembroParametro> parametros = new ArrayList();
-            for (Parameter parameter : parameters) {
-                ExercicioInterfaceMembroParametro parametro = new ExercicioInterfaceMembroParametro();
-                parametro.setOrdem(parametros.size() + 1);
-                parametro.setName(parameter.getName());
-                parametro.setType(parameter.getType().getSimpleName());
-                parametros.add(parametro);
-            }
-            membro.setParametros(parametros);
-
-            membros.add(membro);
-        }
-
-        //membros, somente públicos
-        for (Method method : classe.getMethods()) {
-
-            ExercicioInterfaceMembro membro = new ExercicioInterfaceMembro();
-            membro.setMemberType(EmemberType.METHOD);
-            membro.setModifier(method.getModifiers());
-            membro.setType(method.getReturnType().getSimpleName());
-            membro.setName(method.getName());
-
-            Parameter[] parameters = method.getParameters();
-            List<ExercicioInterfaceMembroParametro> parametros = new ArrayList();
-            for (Parameter parameter : parameters) {
-                ExercicioInterfaceMembroParametro parametro = new ExercicioInterfaceMembroParametro();
-                parametro.setName(parameter.getName());
-                parametro.setType(parameter.getType().getSimpleName());
-                parametros.add(parametro);
-            }
-            membro.setParametros(parametros);
-
-            membros.add(membro);
-        }
-
-        inter.setMembros(membros);
-
-        return inter;
+        return classeAuxiliar;
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
@@ -502,6 +444,36 @@ public class ExerciciosController extends ApplicationController {
 
             ExercicioClasseService repoClasses = new ExercicioClasseService();
             List<ExercicioClasse> listaClasses = repoClasses.getAllByIdExercicio(exercicio.getId(), pessoa.getId());
+
+            //carrega classes auxiliares
+            ExercicioClasseAuxiliarService repoClassesAuxiliares = new ExercicioClasseAuxiliarService();
+            List<ExercicioClasseAuxiliar> listaClassesAuxiliares = repoClassesAuxiliares.getAllByIdExercicio(exercicio.getId());
+
+            for (ExercicioClasseAuxiliar classeAuxiliar : listaClassesAuxiliares) {
+
+                if (classeAuxiliar.getEhInterface() == true) {
+                    continue;
+                }
+
+                Boolean finded = false;
+                for (ExercicioClasse classe : listaClasses) {
+                    if (classe.getNomeClasse().equals(classeAuxiliar.getNomeClasse())) {
+                        finded = true;
+                        break;
+                    }
+                }
+                if (finded == false) {
+                    ExercicioClasse classe = new ExercicioClasse();
+                    classe.setIdExercicio(exercicio.getId());
+                    classe.setIdAluno(pessoa.getId());
+                    classe.setDataCadastro(new Date());
+                    classe.setNomeClasse(classeAuxiliar.getNomeClasse());
+                    classe.setCodigo(classeAuxiliar.getCodigo());
+                    repoClasses.insert(classe);
+
+                    listaClasses.add(classe);
+                }
+            }
 
             mav.addObject("Exercicio", exercicio);
             mav.addObject("Solucao", solucao);

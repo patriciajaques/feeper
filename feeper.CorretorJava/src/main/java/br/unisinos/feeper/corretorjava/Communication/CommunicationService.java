@@ -7,12 +7,12 @@ import br.unisinos.feeper.corretorjava.Creators.DinamicTestCreator;
 import br.unisinos.feeper.corretorjava.Creators.JarCreator;
 import br.unisinos.feeper.corretorjava.Creators.MainCreator;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucaoErro;
-import br.unisinos.feeper.corretorjava.Utils.FileToString;
 import br.unisinos.feeper.corretorjava.StaticTests.StaticTestRunner;
 import br.unisinos.feeper.corretorjava.Utils.CompilationException;
 import br.unisinos.feeper.corretorjava.Utils.FeeperCompiler;
 import br.unisinos.feeper.corretorjava.Utils.EErrorType;
 import br.unisinos.feeper.corretorjava.Utils.EStatusSolucao;
+import br.unisinos.feeper.corretorjava.Utils.FileUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -37,46 +37,6 @@ import javax.xml.bind.Unmarshaller;
  */
 @Path("/")
 public class CommunicationService {
-
-    @GET
-    @Path("/javahome")
-    public Response javaHome() throws Exception {
-
-        return Response.status(Response.Status.OK).entity(System.getProperty("java.home")).build();
-
-    }
-
-    @GET
-    @Path("/path")
-    public Response path() throws Exception {
-        return Response.status(Response.Status.OK).entity(System.getProperty("PATH")).build();
-    }
-
-    @GET
-    @Path("/testa")
-    public Response testaJavaC() throws Exception {
-
-        String javaPath = new File(System.getProperty("java.home")).getParent() + File.separator + "bin" + File.separator;
-
-        String destPath = System.getProperty("user.home") + File.separator + "Feeper" + File.separator + "temp" + File.separator;
-        String command = "javac -classpath " + destPath + "junit.jar;" + destPath + "org.hamcrest.core.jar " + destPath + "*.java";
-
-        Runtime rt = Runtime.getRuntime();
-        Process pr = rt.exec(command, null, new File(javaPath));
-
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
-        String error = "";
-        String s = null;
-        while ((s = stdError.readLine()) != null) {
-            error += s + "\n";
-        }
-        if (error.equals("") == false) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(command + ":::::::::::" + error).build();
-        }
-
-        return Response.status(Response.Status.OK).entity("OK").build();
-
-    }
 
     @POST
     @Path("/efetuaCorrecao")
@@ -116,7 +76,7 @@ public class CommunicationService {
 
                 //inicializa a Pasta
                 File dir = new File(tmpPath);
-                dir.delete();
+                FileUtils.deleteDirectory(dir);
                 dir.mkdirs();
 
                 //Escreve a Solucao do aluno na pasta tmp e compila
@@ -187,7 +147,7 @@ public class CommunicationService {
                         jarCreator.Run();
 
                         //carrega os resultados dinâmicos
-                        String dinamicResult = FileToString.toString(tmpPath + File.separator + "dinamic_output.xml");
+                        String dinamicResult = FileUtils.toString(tmpPath + File.separator + "dinamic_output.xml");
                         reader = new StringReader(dinamicResult);
                         jaxbContext = JAXBContext.newInstance(ExercicioSolucao.class);
                         jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -215,6 +175,9 @@ public class CommunicationService {
                     }
 
                 }
+
+                FileUtils.deleteDirectory(dir);
+
             } catch (Exception e) {
                 solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
                 ExercicioSolucaoErro erroCompilacao = new ExercicioSolucaoErro(solucao.getId(), -1, "A solu&ccedil;&atilde;o submetida possui erros de compila&ccedil;&atilde;o", EErrorType.COMPILACAO, e.getMessage());

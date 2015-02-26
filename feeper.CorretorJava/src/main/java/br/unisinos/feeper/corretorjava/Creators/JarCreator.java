@@ -5,7 +5,7 @@
  */
 package br.unisinos.feeper.corretorjava.Creators;
 
-import br.unisinos.feeper.corretorjava.Utils.CopyFile;
+import br.unisinos.feeper.corretorjava.Utils.FileUtils;
 import br.unisinos.feeper.corretorjava.Utils.FeeperCompiler;
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,12 +30,12 @@ public class JarCreator {
 
     public void Prepare() throws IOException {
 
-        CopyFile.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "MANIFEST.MF", this.destPath + File.separator + "MANIFEST.MF");
-        CopyFile.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "junit.jar", this.destPath + File.separator + "junit.jar");
-        CopyFile.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "org.hamcrest.core.jar", this.destPath + File.separator + "org.hamcrest.core.jar");
-        CopyFile.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "policy.txt", this.destPath + File.separator + "policy.txt");
-        CopyFile.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "ExercicioSolucao.java", this.destPath + File.separator + "ExercicioSolucao.java");
-        CopyFile.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "ExercicioSolucaoErro.java", this.destPath + File.separator + "ExercicioSolucaoErro.java");
+        FileUtils.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "MANIFEST.MF", this.destPath + File.separator + "MANIFEST.MF");
+        FileUtils.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "junit.jar", this.destPath + File.separator + "junit.jar");
+        FileUtils.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "org.hamcrest.core.jar", this.destPath + File.separator + "org.hamcrest.core.jar");
+        FileUtils.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "policy.txt", this.destPath + File.separator + "policy.txt");
+        FileUtils.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "ExercicioSolucao.java", this.destPath + File.separator + "ExercicioSolucao.java");
+        FileUtils.copy(this.appResourcesPath + File.separator + "JarComponents" + File.separator + "ExercicioSolucaoErro.java", this.destPath + File.separator + "ExercicioSolucaoErro.java");
     }
 
     public void CompileMain() throws Exception {
