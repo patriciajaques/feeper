@@ -17,100 +17,96 @@ import java.util.UUID;
 
 /**
  *
- * @author
- * fabioalves
+ * @author fabioalves
  */
 public class FilaNovaSenhaService extends HibernateUtil<FilaNovaSenha> {
-    
+
     public FilaNovaSenhaService() {
         super(FilaNovaSenha.class);
     }
-    
-    public FilaNovaSenha getByChave(String chave)
-    {
+
+    public FilaNovaSenha getByChave(String chave) {
         try {
             return getByColumn("Chave", chave).get(0);
         } catch (Exception e) {
             return null;
         }
     }
-    
-    public UUID insert(int idPessoa)
-    {
+
+    public UUID insert(int idPessoa) {
         deleteByIdPessoa(idPessoa);
-        
+
         UUID chave = UUID.randomUUID();
-        
+
         FilaNovaSenha registro = new FilaNovaSenha();
         registro.setChave(chave.toString());
         registro.setDataCadastro(new Date());
         registro.setIdPessoa(idPessoa);
-        if (insert(registro))
+        if (insert(registro)) {
             return chave;
+        }
         return null;
     }
-    
-    public void deleteByIdPessoa(int idPessoa)
-    {
+
+    public void deleteByIdPessoa(int idPessoa) {
         try {
             List<FilaNovaSenha> lista = getByColumn("IdPessoa", idPessoa);
             for (FilaNovaSenha registro : lista) {
-                delete(registro);    
+                delete(registro);
             }
         } catch (Exception e) {
         }
     }
-    
-    public void deleteByChave(String chave)
-    {
+
+    public void deleteByChave(String chave) {
         try {
             FilaNovaSenha registro = getByColumn("Chave", chave).get(0);
             delete(registro);
         } catch (Exception e) {
         }
     }
-    
-    public boolean validaPrazoChave(String chave)
-    {
-        if (chave.isEmpty()) return false;
-        
+
+    public boolean validaPrazoChave(String chave) {
+        if (chave.isEmpty()) {
+            return false;
+        }
+
         FilaNovaSenha registro = getByChave(chave);
         int prazoChave = 24;
         Date dataFila = registro.getDataCadastro();
-        
+
         Calendar cal = Calendar.getInstance();
         cal.setTime(dataFila);
         cal.add(Calendar.HOUR, prazoChave);
-        
+
         Date dataLimite = cal.getTime();
         Date dataAtual = new Date();
-        
+
         int result = dataAtual.compareTo(dataLimite);
         return result > 0;
     }
-    
-    public boolean enviaEmailChave(int idPessoa)
-    {
+
+    public boolean enviaEmailChave(int idPessoa) {
         try {
-            
+
             PessoaService repoPessoa = new PessoaService();
             Pessoa pessoa = repoPessoa.getById(idPessoa);
-            
-            String linkChave = "http://feeper.jelasticlw.com.br/senha/validarchave/" + insert(idPessoa);
+
+            String linkChave = Util.serverUrl + "/senha/validarchave/" + insert(idPessoa);
             String link = "<a href=\"#LINK#\">#LINK#</a>".replace("#LINK#", linkChave);
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.HOUR, 24);
             DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            
+
             StringBuilder html = new StringBuilder();
             html.append("<p>Prezado ").append(pessoa.getNome()).append(",</p><p>Você solicitou a troca de senha no <i>feeper</i>. O sistema gerou uma chave para realizar a troca da sua senha, veja os dados abaixo:</p><p>Validade: ");
             html.append(dateFormat.format(cal.getTime())).append("<br>Chave: ").append(link);
-            
+
             return Util.sendMail(pessoa.getEmail(), "Troca de Senha", html.toString());
-            
+
         } catch (Exception e) {
             return false;
         }
     }
-    
+
 }

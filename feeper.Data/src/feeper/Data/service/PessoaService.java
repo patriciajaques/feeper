@@ -59,7 +59,7 @@ public class PessoaService extends HibernateUtil<Pessoa> {
                                     "<p>Você foi convidado pelo seu professor a utilizar o <i>feeper</i> como uma ferramenta para resolução de exercícios disponibilizados à sua turma.</p>\n" +
                                     "<p>\n" +
                                     "Utilize estes dados para acessá-lo:<br>\n" +
-                                    "Endereço: <a href=\"http://feeper.jelasticlw.com.br\">http://feeper.jelasticlw.com.br</a><br>\n" +
+                                    "Endereço: <a href=\"" + Util.serverUrl + "\">" + Util.serverUrl + "</a><br>\n" +
                                     "Login: #EMAIL#<br>\n" +
                                     "Senha: #SENHA#<br>\n" +
                                     "</p>";
@@ -67,9 +67,9 @@ public class PessoaService extends HibernateUtil<Pessoa> {
                                     "<p>Você foi convidado pelo seu professor a utilizar o <i>feeper</i> como uma ferramenta para resolução de exercícios disponibilizados à sua turma.</p>\n" +
                                     "<p>\n" +
                                     "Utilize estes dados para acessá-lo:<br>\n" +
-                                    "Endereço: <a href=\"http://feeper.jelasticlw.com.br\">http://feeper.jelasticlw.com.br</a><br>\n" +
+                                    "Endereço: <a href=\"" + Util.serverUrl + "\">" + Util.serverUrl + "</a><br>\n" +
                                     "Login: #EMAIL#<br><br>\n" +
-                                    "<i>* Você já tem uma senha cadastrada. Caso você não recorde sua senha utilize este link para lembrar a senha:<br><a href=\"http://feeper.jelasticlw.com.br/senha/esqueciminhasenha\">http://feeper.jelasticlw.com.br/senha/esqueciminhasenha</a></i><br>\n" +
+                                    "<i>* Você já tem uma senha cadastrada. Caso você não recorde sua senha utilize este link para lembrar a senha:<br><a href=\"" + Util.serverUrl + "/senha/esqueciminhasenha\">" + Util.serverUrl + "/senha/esqueciminhasenha</a></i><br>\n" +
                                     "</p>";
         
         if (aluno.getSenha().isEmpty())

@@ -262,7 +262,7 @@ public class ExercicioSolucaoClasseMarcacaoService extends HibernateUtil<Exercic
 
             String html = "<p>Olá #NOME#,</p>\n"
                     + "<p>Você recebeu uma nova mensagem de #AUTOR#.<br>Acesse o <i>feeper</i> para visualizá-la.</p>\n"
-                    + "<p>Endereço: <a href=\"http://feeper.jelasticlw.com.br\">http://feeper.jelasticlw.com.br</a></p>";
+                    + "<p>Endereço: <a href=\"" + Util.serverUrl + "\">" + Util.serverUrl + "</a></p>";
             html = html.replaceAll("#NOME#", destinatario.getNome());
             html = html.replaceAll("#AUTOR#", nomeAutor);
 

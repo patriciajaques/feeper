@@ -41,6 +41,9 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
     $scope.save = function () {
 
+        $("#btnSalvar").prop("disabled", true);
+        $("#btnSalvar").text("Salvando...");
+
         $scope.exercicio.descricaoHtml = $(".jqte_editor").html();
         $http({
             url: baseUrl + 'exercicios/saveJson',
@@ -50,6 +53,18 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             if (sucess) {
                 window.location.href = baseUrl + 'exercicios';
             }
+            else {
+                $("#btnSalvar").prop("disabled", false);
+                $("#btnSalvar").text("Salvar");
+                
+                alert("Ocorreu um erro ao salvar. Favor tentar novamente!");
+            }
+        }
+        ).error(function () {
+            $("#btnSalvar").prop("disabled", false);
+            $("#btnSalvar").text("Salvar");
+            
+            alert("Ocorreu um erro ao salvar. Favor tentar novamente!");
         });
     }
 
@@ -279,6 +294,26 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         $scope.exercicio.casosTeste.unshift(caso);
     }
 
+    $scope.duplicaCasoTeste = function (casoTeste) {
+
+        var novoCaso = JSON.parse(JSON.stringify(casoTeste))
+        novoCaso.id = 0;
+
+        for (var i = 0; i < novoCaso.passos.length; i++) {
+            var passo = novoCaso.passos[i];
+            passo.id = 0;
+            passo.idCasoTeste = 0;
+
+            for (var j = 0; j < passo.inputParameters.length; j++) {
+                var item = passo.inputParameters[j];
+                item.id = 0;
+                item.idPasso = 0;
+            }
+        }
+        var index = $scope.exercicio.casosTeste.indexOf(casoTeste);
+        $scope.exercicio.casosTeste.splice(index, 0, novoCaso);
+    }
+
     $scope.deletaCasoTeste = function (casoTeste) {
 
         var index = $scope.exercicio.casosTeste.indexOf(casoTeste);
@@ -311,6 +346,25 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         passo.ordem = $scope.editingCasoTeste.passos.length + 1;
         passo.operationType = 1;
         $scope.editingCasoTeste.passos.push(passo);
+        $.fancybox.update();
+
+        setTimeout(function () {
+            $scope.updatePassosTexts();
+        }, 100);
+    }
+
+    $scope.duplicaPasso = function (passo) {
+
+        var novoPasso = JSON.parse(JSON.stringify(passo))
+        novoPasso.id = 0;
+
+        for (var j = 0; j < novoPasso.inputParameters.length; j++) {
+            var item = novoPasso.inputParameters[j];
+            item.id = 0;
+        }
+
+        var index = $scope.editingCasoTeste.passos.indexOf(passo);
+        $scope.editingCasoTeste.passos.splice(index, 0, novoPasso);
         $.fancybox.update();
 
         setTimeout(function () {

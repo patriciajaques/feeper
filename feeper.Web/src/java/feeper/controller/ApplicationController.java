@@ -15,64 +15,65 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class ApplicationController {
-    
+
     private LogService repoLog;
-    
+
     public ApplicationController() {
         repoLog = new LogService();
     }
-    
+
     @DontValidateAccess
-    @RequestMapping(value="/closemodal", method=RequestMethod.GET)
+    @RequestMapping(value = "/closemodal", method = RequestMethod.GET)
     public String closeModal() {
         return "closemodal";
     }
-    
+
     @DontValidateAccess
-    @RequestMapping(value="/timeout", method=RequestMethod.GET)
+    @RequestMapping(value = "/timeout", method = RequestMethod.GET)
     @ResponseBody
     public String timeout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        Pessoa pessoa = (Pessoa)session.getAttribute("UsuarioLogado");
+        Pessoa pessoa = (Pessoa) session.getAttribute("UsuarioLogado");
         return pessoa.getNome();
     }
-    
+
     @DontValidateAccess
-    @RequestMapping(value="/tratastring/{text}", method=RequestMethod.GET)
+    @RequestMapping(value = "/tratastring/{text}", method = RequestMethod.GET)
     @ResponseBody
     public String trataString(@PathVariable String text) {
         return Util.prepareStringForSave(text);
     }
-    
+
     @DontValidateAccess
-    @RequestMapping(value="/feedback", method=RequestMethod.POST)
+    @RequestMapping(value = "/feedback", method = RequestMethod.POST)
     @ResponseBody
     public String feedback(
             @ModelAttribute("email") String email,
             @ModelAttribute("mensagem") String mensagem) {
-        
+
         try {
-            
-            if (mensagem.isEmpty())
+
+            if (mensagem.isEmpty()) {
                 return "erro1";
-            
+            }
+
             StringBuilder sb = new StringBuilder();
             sb.append("<p>Novo feedback recebido!</p><p>E-mail: ").append(email).append("<br>Mensagem: ").append(mensagem).append("</p>");
-            
-            if (Util.sendMail("feedback", sb.toString()))
+
+            if (Util.sendMail("feedback", sb.toString())) {
                 return "ok";
-            else
+            } else {
                 return "erro2";
-            
+            }
+
         } catch (Exception e) {
             return "erro3";
         }
     }
-    
-    public void log(int idPessoa, String msg, int idTipoLog)
-    {
+
+    public void log(int idPessoa, String msg, int idTipoLog) {
         //int idPessoa = ((Pessoa)session.getAttribute("UsuarioLogado")).getId();
         repoLog.log(idPessoa, msg, idTipoLog);
     }
-    
+
 }

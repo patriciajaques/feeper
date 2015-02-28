@@ -39,11 +39,10 @@
             #divEditPassos input{min-width: 100px;}
         </style>
         <script type="text/javascript">
-            var baseUrl = "<c:url value='/'/>";
-            var escolherArquivoText = '<fmt:message key="button.escolherarquivo"/>';
-            var adicionarclasseexistenteText = '<fmt:message key="button.adicionarclasseexistente"/>';
-            var erroCarregarAssinaturas = '<fmt:message key="label.exercicios.errocarregarassinaturas"/>';
-        </script>
+                    var baseUrl = "<c:url value='/'/>";
+                    var escolherArquivoText = '<fmt:message key="button.escolherarquivo"/>';
+                    var adicionarclasseexistenteText = '<fmt:message key="button.adicionarclasseexistente"/>';
+                    var erroCarregarAssinaturas = '<fmt:message key="label.exercicios.errocarregarassinaturas"/>';</script>
 
     </jsp:attribute>
     <jsp:body>
@@ -102,7 +101,9 @@
                         <br/>
                         <br/>
                         <div class="list-group">
-                            <a ng-repeat="classe in exercicio.classesAuxiliares| filter: { ehInterface: false }" href="#" ng-click="showClasseCode(classe)" class="list-group-item"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;{{classe.nomeClasse}}</a>
+                            <a ng-repeat="classe in exercicio.classesAuxiliares| filter: {
+                                        ehInterface: false
+                                        }" href="#" ng-click="showClasseCode(classe)" class="list-group-item"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;{{classe.nomeClasse}}</a>
                             <a href="#" ng-click="visualizaTelaClasse()" class="list-group-item"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;<fmt:message key="label.exercicios.adicionarclasseauxiliar"/></a>
 
                         </div>
@@ -126,19 +127,22 @@
                         </div>
                         <button type="button" ng-click="adicionaCasoTeste()" class="btn btn-primary"><fmt:message key="label.exercicios.adicionarcasoteste"/></button>
 
-                        <table class="table table-striped table-hover" style="margin-bottom: 0px;">
+                        <table class="table table-striped table-hover" style="margin-top: 10px; margin-bottom: 0px;">
                             <thead>
                                 <tr>
-                                    <th><fmt:message key="label.exercicios.acoes"/></th>
+                                    <th style="width:10px;">#</th>
+                                    <th><fmt:message key="label.exercicios.acoes"/></th>   
                                     <th><fmt:message key="label.exercicios.mensagempersonalizada"/></th>
                                     <th><fmt:message key="label.exercicios.ativo"/></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="casoTeste in exercicio.casosTeste">
-                                    <td style="width: 160px">
-                                        <button type="button" ng-click="deletaCasoTeste(casoTeste)" class="btn btn-default btn-xs"><fmt:message key="button.excluir"/></button>
-                                        <button type="button" ng-click="editaPassosCasoTeste(casoTeste)" class="btn btn-default btn-xs"><fmt:message key="label.exercicios.editarpassoscasosteste"/></button>
+                                <tr ng-repeat="casoTeste in exercicio.casosTeste track by $index">
+                                    <td>{{$index + 1}}</td>
+                                    <td style="width: 145px">
+                                        <button type="button" ng-click="deletaCasoTeste(casoTeste)" class="btn btn-default glyphicon glyphicon-trash" title="Excluir"></button>
+                                        <button type="button" ng-click="duplicaCasoTeste(casoTeste)" class="btn btn-default glyphicon glyphicon-file" title="Duplicar"></button>
+                                        <button type="button" ng-click="editaPassosCasoTeste(casoTeste)" class="btn btn-default glyphicon glyphicon-pencil" title="Editar"></button>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control mensagemPersonalizada" ng-focus="updateMessagesAutocompletes()" ng-model="casoTeste.mensagemPersonalizada">
@@ -151,7 +155,7 @@
                         </table>
                     </div>
 
-                    <button type="button" ng-click="save()" class="btn btn-primary"><fmt:message key="button.salvar"/></button>
+                                    <button type="button" id="btnSalvar" ng-click="save()" class="btn btn-primary"><fmt:message key="button.salvar"/></button>
                     <button type="button" ng-click="voltar()" class="btn btn-default btn-voltar"><fmt:message key="button.voltarlistagem"/></button>
 
                     <!--Modal exibida para carregar Interface-->
@@ -192,9 +196,10 @@
                         <label><fmt:message key="label.exercicios.passoscasosteste"/>:</label>
                         <table>
                             <tbody>
-                                <tr ng-repeat="passo in editingCasoTeste.passos">
-                                    <td>
-                                        <span style="cursor: pointer;" class="glyphicon glyphicon-trash" ng-click="deletaPasso(passo)"></span>
+                                <tr ng-repeat="passo in editingCasoTeste.passos track by $index">
+                                    <td style="width: 100px">
+                                        <button type="button" ng-click="deletaPasso(passo)" class="btn btn-default glyphicon glyphicon-trash" title="Excluir"></button>
+                                        <button type="button" ng-click="duplicaPasso(passo)" class="btn btn-default glyphicon glyphicon-file" title="Duplicar"></button>
                                     </td>
                                     <td>
                                         <select class="form-control" ng-model="passo.operationType"  ng-options="o.value as o.label for o in OperationTypes" ng-change="operationTypeChanged(passo)">                                                
@@ -222,15 +227,21 @@
                                                 <td ng-repeat="parametro in passo.inputParameters">
                                                     <table>
                                                         <tr>
-                                                            <td><span style="cursor: pointer;" class="glyphicon glyphicon-trash" ng-click="deletaParametro(passo, parametro)"></span></td>
-                                                            <td><input type="text" class="form-control passoDataType" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-disabled="isDeclaredObject(parametro.objectValue, passo)" ng-model="parametro.objectType" placeholder="<fmt:message key="label.exercicios.tipoparametro"/>"/></td>
-                                                            <td><input type="text" class="form-control" ng-model="parametro.objectValue" ng-change="parametroValueChanged(passo, parametro)" placeholder="<fmt:message key="label.exercicios.valorparametro"/>"/></td>
+                                                            <td>
+                                                                <button type="button" ng-click="deletaParametro(passo, parametro)" class="btn btn-default glyphicon glyphicon-trash" title="Excluir"></button>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" class="form-control passoDataType" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-disabled="isDeclaredObject(parametro.objectValue, passo)" ng-model="parametro.objectType" placeholder="<fmt:message key="label.exercicios.tipoparametro"/>"/>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" class="form-control" ng-model="parametro.objectValue" ng-change="parametroValueChanged(passo, parametro)" placeholder="<fmt:message key="label.exercicios.valorparametro"/>"/>
+                                                            </td>
                                                             <td>,</td>
                                                         </tr>
                                                     </table>
                                                 </td>
                                                 <td>
-                                                    <span style="cursor: pointer;" class="glyphicon glyphicon-plus" ng-click="adicionaParametro(passo)"></span> 
+                                                    <button type="button" ng-click="adicionaParametro(passo)" class="btn btn-default glyphicon glyphicon-plus" title="Adicionar"></button>
                                                 </td>
                                                 <td>);</td>
                                             </tr>
@@ -241,7 +252,7 @@
                             <tfoot>
                                 <tr>
                                     <td colspan="9">
-                                        <button type="button" ng-click="adicionaPasso()" class="btn btn-primary"><fmt:message key="label.exercicios.adicionarpassocasoteste"/></button>
+                                        <button type="button" ng-click="adicionaPasso()" class="btn btn-primary" style="margin-top: 20px;"><fmt:message key="label.exercicios.adicionarpassocasoteste"/></button>
                                     </td>
                                 </tr>
                             </tfoot>
