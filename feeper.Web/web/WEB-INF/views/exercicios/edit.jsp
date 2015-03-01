@@ -32,11 +32,12 @@
 
             .ace_gutter-cell.ace_breakpoint{ 
                 border-radius: 20px 0px 0px 20px; 
-                box-shadow: 0px 0px 1px 1px red inset;              } 
+                box-shadow: 0px 0px 1px 1px red inset;
+            } 
 
             .ui-state-highlight { height: 91px; }
             #divEditPassos select{min-width: 120px;}
-            #divEditPassos input{min-width: 100px;}
+            #divEditPassos input[type=text]{min-width: 100px;}
         </style>
         <script type="text/javascript">
                     var baseUrl = "<c:url value='/'/>";
@@ -125,7 +126,6 @@
                         <div class="form-group" style="margin-top: 60px;">                     
                             <label><fmt:message key="label.exercicios.casosteste"/>:</label>
                         </div>
-                        <button type="button" ng-click="adicionaCasoTeste()" class="btn btn-primary"><fmt:message key="label.exercicios.adicionarcasoteste"/></button>
 
                         <table class="table table-striped table-hover" style="margin-top: 10px; margin-bottom: 0px;">
                             <thead>
@@ -138,11 +138,12 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="casoTeste in exercicio.casosTeste track by $index">
-                                    <td>{{$index + 1}}</td>
-                                    <td style="width: 145px">
-                                        <button type="button" ng-click="deletaCasoTeste(casoTeste)" class="btn btn-default glyphicon glyphicon-trash" title="Excluir"></button>
-                                        <button type="button" ng-click="duplicaCasoTeste(casoTeste)" class="btn btn-default glyphicon glyphicon-file" title="Duplicar"></button>
-                                        <button type="button" ng-click="editaPassosCasoTeste(casoTeste)" class="btn btn-default glyphicon glyphicon-pencil" title="Editar"></button>
+                                    <td>{{casoTeste.ordem}}</td>
+                                    <td style="width: 160px">
+                                        <button type="button" ng-click="deletaCasoTeste(casoTeste)" class="btn btn-default btn-sm" title="Excluir"><i class="fa fa-trash-o"></i></button>
+                                        <button type="button" ng-click="duplicaCasoTeste(casoTeste)" class="btn btn-default btn-sm" title="Duplicar"><i class="fa fa-files-o"></i></button>
+                                        <button type="button" ng-click="copiaCasoTeste(casoTeste)" class="btn btn-default btn-sm" title="Copiar"><i class="fa fa-file-o"></i></button>
+                                        <button type="button" ng-click="editaPassosCasoTeste(casoTeste)" class="btn btn-default btn-sm" title="Editar"><i class="fa fa-pencil"></i></button>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control mensagemPersonalizada" ng-focus="updateMessagesAutocompletes()" ng-model="casoTeste.mensagemPersonalizada">
@@ -153,9 +154,11 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <button type="button" ng-click="colaCasoTeste()" ng-show="possuiCasoTesteCopiado() == true" class="btn btn-primary" style="margin-top: 20px;margin-bottom: 20px"><i class="fa fa-clipboard"></i>&nbsp;&nbsp;<fmt:message key="label.exercicios.colarcasoteste"/></button>
+                        <button type="button" ng-click="adicionaCasoTeste()" class="btn btn-primary" style="margin-top: 20px;margin-bottom: 20px"><i class="fa fa-plus"></i></span>&nbsp;&nbsp;<fmt:message key="label.exercicios.adicionarcasoteste"/></button>
                     </div>
 
-                                    <button type="button" id="btnSalvar" ng-click="save()" class="btn btn-primary"><fmt:message key="button.salvar"/></button>
+                    <button type="button" id="btnSalvar" ng-click="save()" class="btn btn-primary"><fmt:message key="button.salvar"/></button>
                     <button type="button" ng-click="voltar()" class="btn btn-default btn-voltar"><fmt:message key="button.voltarlistagem"/></button>
 
                     <!--Modal exibida para carregar Interface-->
@@ -197,9 +200,12 @@
                         <table>
                             <tbody>
                                 <tr ng-repeat="passo in editingCasoTeste.passos track by $index">
-                                    <td style="width: 100px">
-                                        <button type="button" ng-click="deletaPasso(passo)" class="btn btn-default glyphicon glyphicon-trash" title="Excluir"></button>
-                                        <button type="button" ng-click="duplicaPasso(passo)" class="btn btn-default glyphicon glyphicon-file" title="Duplicar"></button>
+                                    <td style="width: 15px">
+                                        <input type="checkbox" ng-model="passo.selected" />
+                                    </td>
+                                    <td style="width: 80px">
+                                        <button type="button" ng-click="deletaPasso(passo)" class="btn btn-default btn-sm" title="Excluir"><i class="fa fa-trash-o"></i></button>
+                                        <button type="button" ng-click="duplicaPasso(passo)" class="btn btn-default btn-sm" title="Duplicar"><i class="fa fa-files-o"></i></button>
                                     </td>
                                     <td>
                                         <select class="form-control" ng-model="passo.operationType"  ng-options="o.value as o.label for o in OperationTypes" ng-change="operationTypeChanged(passo)">                                                
@@ -228,7 +234,7 @@
                                                     <table>
                                                         <tr>
                                                             <td>
-                                                                <button type="button" ng-click="deletaParametro(passo, parametro)" class="btn btn-default glyphicon glyphicon-trash" title="Excluir"></button>
+                                                                <button type="button" ng-click="deletaParametro(passo, parametro)" class="btn btn-default btn-sm" title="Excluir"><i class="fa fa-trash-o"></i></button>
                                                             </td>
                                                             <td>
                                                                 <input type="text" class="form-control passoDataType" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-disabled="isDeclaredObject(parametro.objectValue, passo)" ng-model="parametro.objectType" placeholder="<fmt:message key="label.exercicios.tipoparametro"/>"/>
@@ -241,7 +247,7 @@
                                                     </table>
                                                 </td>
                                                 <td>
-                                                    <button type="button" ng-click="adicionaParametro(passo)" class="btn btn-default glyphicon glyphicon-plus" title="Adicionar"></button>
+                                                    <button type="button" ng-click="adicionaParametro(passo)" class="btn btn-default btn-sm" title="Adicionar"><i class="fa fa-plus"></i></button>
                                                 </td>
                                                 <td>);</td>
                                             </tr>
@@ -252,7 +258,9 @@
                             <tfoot>
                                 <tr>
                                     <td colspan="9">
-                                        <button type="button" ng-click="adicionaPasso()" class="btn btn-primary" style="margin-top: 20px;"><fmt:message key="label.exercicios.adicionarpassocasoteste"/></button>
+                                        <button type="button" ng-click="copiaPassos()" ng-show="possuiPassoSelecionado() == true" class="btn btn-primary" style="margin-top: 20px;"><i class="fa fa-file-o"></i>&nbsp;&nbsp;<fmt:message key="label.exercicios.copiarpassocasoteste"/></button>
+                                        <button type="button" ng-click="colaPassos()" ng-show="possuiPassoCopiado() == true" class="btn btn-primary" style="margin-top: 20px;"><i class="fa fa-clipboard"></i>&nbsp;&nbsp;<fmt:message key="label.exercicios.colarpassocasoteste"/></button>
+                                        <button type="button" ng-click="adicionaPasso()" class="btn btn-primary" style="margin-top: 20px;"><i class="fa fa-plus"></i>&nbsp;&nbsp;<fmt:message key="label.exercicios.adicionarpassocasoteste"/></button>
                                     </td>
                                 </tr>
                             </tfoot>
