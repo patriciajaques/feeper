@@ -22,6 +22,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
@@ -212,13 +214,18 @@ public class Util {
         }
     }
 
-    public static void saveToPNG(byte[] source, String path, int width, int height) throws Exception {
+    public static void saveToPNG(byte[] source, String path, int width, int height) {
 
-        ByteArrayInputStream bis = new ByteArrayInputStream(source);
-        BufferedImage original = ImageIO.read(bis);
-        int type = original.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : original.getType();
-        BufferedImage resize = resizeImageWithHint(original, type, width, height);
-        ImageIO.write(resize, "png", new File(path));
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(source);
+            BufferedImage original = ImageIO.read(bis);
+            int type = original.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : original.getType();
+            BufferedImage resize = resizeImageWithHint(original, type, width, height);
+
+            ImageIO.write(resize, "png", new File(path));
+        } catch (IOException ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
