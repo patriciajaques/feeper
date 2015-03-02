@@ -43,7 +43,9 @@
                     var baseUrl = "<c:url value='/'/>";
                     var escolherArquivoText = '<fmt:message key="button.escolherarquivo"/>';
                     var adicionarclasseexistenteText = '<fmt:message key="button.adicionarclasseexistente"/>';
-                    var erroCarregarAssinaturas = '<fmt:message key="label.exercicios.errocarregarassinaturas"/>';</script>
+                    var erroCarregarAssinaturasText = '<fmt:message key="label.exercicios.errocarregarassinaturas"/>';
+                    var confirmarExcluirText = '<fmt:message key="label.confirmaexclusao"/>';        </script>
+
 
     </jsp:attribute>
     <jsp:body>
@@ -220,7 +222,7 @@
                                     </td>
                                     <td align="center"> {{ passo.operationType == 3?"==":"=" }} </td>
                                     <td>
-                                        <input type="text"  class="form-control passoDataTypeOrObject" data-index='{{$index}}' onfocus="$(this).trigger('input');"  ng-model="passo.objectName" ng-change="objectNameChanged(passo)" placeholder="<fmt:message key="label.exercicios.nomeclassevariavel"/>"/>
+                                        <input type="text"  class="form-control passoDataTypeOrObject" data-index='{{$index}}' onfocus="$(this).trigger('input');"  ng-model="passo.objectName" ng-change="objectNameChanged(passo)" placeholder="<fmt:message key="label.exercicios.classevariavelValor"/>"/>
                                     </td>
                                     <td>.</td>
                                     <td>

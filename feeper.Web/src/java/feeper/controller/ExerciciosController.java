@@ -1,41 +1,59 @@
 package feeper.controller;
 
+import feeper.Data.entity.ConfiguracaoSistema;
 import feeper.Data.entity.Exercicio;
 import feeper.Data.entity.ExercicioCasoTeste;
 import feeper.Data.entity.ExercicioClasse;
 import feeper.Data.entity.ExercicioClasseAuxiliar;
 import feeper.Data.entity.ExercicioSolucao;
+import feeper.Data.entity.ExercicioSolucaoClasse;
+import feeper.Data.entity.ExercicioSolucaoErro;
 import feeper.Data.entity.MeusExercicios;
 import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.Turma;
 import feeper.Data.entity.UploadTemp;
+import feeper.Data.model.EErrorType;
 import feeper.Data.model.EPerfil;
+import feeper.Data.model.EStatusSolucao;
 import feeper.Data.model.ETipoLog;
 import feeper.Data.model.FileUtils;
 import feeper.Data.model.IntegerResult;
 import feeper.Data.model.ScalarResult;
 import feeper.Data.model.Util;
+import feeper.Data.service.ConfiguracaoService;
 import feeper.Data.service.ExercicioClasseMarcacaoService;
 import feeper.Data.service.ExercicioService;
 import feeper.Data.service.ExercicioClasseService;
 import feeper.Data.service.ExercicioSolucaoService;
 import feeper.Data.service.ExercicioCasoTesteService;
 import feeper.Data.service.ExercicioClasseAuxiliarService;
+import feeper.Data.service.ExercicioSolucaoClasseService;
+import feeper.Data.service.ExercicioSolucaoErroService;
 import feeper.Data.service.UploadTempService;
 import feeper.model.AssinaturaLoader;
 import feeper.model.PaginadorUtil;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.type.BinaryType;
@@ -517,14 +535,9 @@ public class ExerciciosController extends ApplicationController {
                 //enviar para correção
                 log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId(), ETipoLog.CODIGO_ENVIADO);
 
-                ExercicioSolucao solucao = null;
-                try {
-                    solucao = repoSolucao.enviarCorrecao(idSolucao.getResult());
-                    log(pessoa.getId(), "CORRETOR ID SOLUÇÃO: " + idSolucao.getResult() + " RESULTADO: " + solucao.getIdStatus(), ETipoLog.CODIGO_ENVIADO);
+                ExercicioSolucao solucao = this.enviarCorrecao(idSolucao.getResult());
+                log(pessoa.getId(), "CORRETOR ID SOLUÇÃO: " + idSolucao.getResult() + " RESULTADO: " + solucao.getIdStatus(), ETipoLog.CODIGO_ENVIADO);
 
-                } catch (IOException ex) {
-                    log(pessoa.getId(), "ERRO ID SOLUÇÃO: " + idSolucao.getResult(), ETipoLog.CODIGO_ENVIADO);
-                }
             }
         }
 
@@ -830,9 +843,7 @@ public class ExerciciosController extends ApplicationController {
 
     @RequestMapping(value = "/getstatus/{idExercicio}", method = RequestMethod.GET)
     @ResponseBody
-    public int getstatus(
-            @PathVariable int idExercicio,
-            HttpSession session) {
+    public int getstatus(@PathVariable int idExercicio, HttpSession session) {
 
         Pessoa pessoa = (Pessoa) session.getAttribute("UsuarioLogado");
         Turma turma = (Turma) session.getAttribute("TurmaSelecionada");
@@ -848,6 +859,98 @@ public class ExerciciosController extends ApplicationController {
         }
 
         return 0;
+    }
+
+    public ExercicioSolucao enviarCorrecao(int idSolucao) {
+
+        ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();
+        ExercicioSolucao solucao = repoSolucao.getById(idSolucao);
+        int idExercicio = solucao.getIdExercicio();
+
+        ExercicioSolucaoClasseService repoClassesSolucao = new ExercicioSolucaoClasseService();
+        solucao.setClasses(repoClassesSolucao.getbyIdSolucao(solucao.getId()));
+
+        ExercicioCasoTesteService repoTestes = new ExercicioCasoTesteService();
+        solucao.setTestes(repoTestes.getByIdExercicio(idExercicio, true));
+
+        try {
+
+            Charset charset = Charset.forName("UTF8");
+            ConfiguracaoService confService = new ConfiguracaoService();
+            ConfiguracaoSistema conf = confService.getConfiguracao();
+            String serverURL = conf.getEnderecoSistemaCorretorJava();
+            URL url = new URL(serverURL);
+            URLConnection connection = url.openConnection();
+
+            String xmlData = this.solucaoToXML(solucao);
+
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Accept-Charset", "UTF-8");
+            connection.setRequestProperty("Content-Type", "application/xml");
+            connection.setConnectTimeout(6000000);
+            connection.setReadTimeout(6000000);
+            OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream(), charset);
+            out.write(xmlData);
+            out.close();
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), charset));
+            StringBuilder builder = new StringBuilder();
+            String line = null;
+            while ((line = in.readLine()) != null) {
+                builder.append(line);
+            }
+            solucao = this.solucaoFromXML(builder.toString());
+
+            if (solucao.getErros() != null) {
+                ExercicioSolucaoErroService repoErrosSolucao = new ExercicioSolucaoErroService();
+
+                for (ExercicioSolucaoErro erro : solucao.getErros()) {
+
+                    repoErrosSolucao.insert(erro);
+                }
+            }
+            repoSolucao.update(solucao);
+
+        } catch (Exception ex) {
+            solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
+            solucao.setErrosCount(1);
+            repoSolucao.update(solucao);
+
+            ExercicioSolucaoErro erro = new ExercicioSolucaoErro();
+            erro.setIdSolucao(solucao.getId());
+            erro.setIdCasoTeste(-1);
+            erro.setErrorType(EErrorType.COMPILACAO);
+            erro.setLinhaErro(-1);
+            erro.setMensagemErro(ex.getMessage());
+
+            ExercicioSolucaoErroService repoErrosSolucao = new ExercicioSolucaoErroService();
+            repoErrosSolucao.insert(erro);
+
+            log(solucao.getIdAluno(), "ERRO ID SOLUÇÃO: " + idSolucao, ETipoLog.CODIGO_ENVIADO);
+        }
+
+        return solucao;
+    }
+
+    private String solucaoToXML(ExercicioSolucao solucao) throws JAXBException {
+
+        for (ExercicioSolucaoClasse classe : solucao.getClasses()) {
+            classe.setCodigo(classe.getCodigo().replaceAll("\n", "#n").replaceAll("\r", "#r"));
+        }
+        JAXBContext context = JAXBContext.newInstance(ExercicioSolucao.class);
+        Marshaller m = context.createMarshaller();
+        StringWriter sw = new StringWriter();
+        m.marshal(solucao, sw);
+
+        return sw.toString();
+    }
+
+    private ExercicioSolucao solucaoFromXML(String xmlString) throws JAXBException {
+
+        StringReader reader = new StringReader(xmlString);
+        JAXBContext jaxbContext = JAXBContext.newInstance(ExercicioSolucao.class);
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        return (ExercicioSolucao) jaxbUnmarshaller.unmarshal(reader);
     }
 
 }

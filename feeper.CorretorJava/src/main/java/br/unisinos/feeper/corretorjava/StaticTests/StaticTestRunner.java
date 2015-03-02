@@ -53,16 +53,19 @@ public class StaticTestRunner {
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         BugCollection correcaoEstatica = (BugCollection) jaxbUnmarshaller.unmarshal(file);
 
-        for (ClassResult result : correcaoEstatica.file) {
+        if (correcaoEstatica.file != null) {
 
-            Filter_Translator filterTranslate = new Filter_Translator();
-            List<BugInstance> bugs = filterTranslate.FilterAndTranslate(result);
+            for (ClassResult result : correcaoEstatica.file) {
 
-            for (BugInstance bug : bugs) {
-                ExercicioSolucaoErro erro = new ExercicioSolucaoErro(solucao.getId(), -1, "", EErrorType.ESTATICO, bug.message);
-                erro.setLinhaErro(bug.line);
-                erro.setStaticErrorType(bug.type);
-                solucao.getErros().add(erro);
+                Filter_Translator filterTranslate = new Filter_Translator();
+                List<BugInstance> bugs = filterTranslate.FilterAndTranslate(result);
+
+                for (BugInstance bug : bugs) {
+                    ExercicioSolucaoErro erro = new ExercicioSolucaoErro(solucao.getId(), -1, "", EErrorType.ESTATICO, bug.message);
+                    erro.setLinhaErro(bug.line);
+                    erro.setStaticErrorType(bug.type);
+                    solucao.getErros().add(erro);
+                }
             }
         }
     }

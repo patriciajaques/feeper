@@ -14,15 +14,18 @@ import br.unisinos.feeper.corretorjava.Utils.EErrorType;
 import br.unisinos.feeper.corretorjava.Utils.EStatusSolucao;
 import br.unisinos.feeper.corretorjava.Utils.FileUtils;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
@@ -44,9 +47,10 @@ public class CommunicationService {
     public Response efetuaCorrecao(InputStream incomingData) {
 
         try {
+            Charset charset = Charset.forName("UTF8");
 
             StringBuilder builder = new StringBuilder();
-            BufferedReader in = new BufferedReader(new InputStreamReader(incomingData));
+            BufferedReader in = new BufferedReader(new InputStreamReader(incomingData, charset));
             String line = null;
             while ((line = in.readLine()) != null) {
                 builder.append(line);
@@ -64,31 +68,36 @@ public class CommunicationService {
             }
             solucao.setErros(new ArrayList<ExercicioSolucaoErro>());
 
+            String alunoID = String.valueOf(solucao.getIdAluno());
+            String exercicioID = String.valueOf(solucao.getIdExercicio());
+            String solucaoID = String.valueOf(solucao.getId());
+
+            String partialPath = getClass().getClassLoader().getResource("FindBugs").toURI().getPath();
+            String appResourcesPath = new File(partialPath).getParentFile().getPath();
+            String tmpPath = System.getProperty("user.home") + File.separator + "Feeper" + File.separator + "temp" + File.separator + alunoID + File.separator + exercicioID + File.separator + solucaoID;
+
+            //inicializa a Pasta
+            File dir = new File(tmpPath);
+
             try {
 
-                String alunoID = String.valueOf(solucao.getIdAluno());
-                String exercicioID = String.valueOf(solucao.getIdExercicio());
-                String solucaoID = String.valueOf(solucao.getId());
-
-                String partialPath = getClass().getClassLoader().getResource("FindBugs").toURI().getPath();
-                String appResourcesPath = new File(partialPath).getParentFile().getPath();
-                String tmpPath = System.getProperty("user.home") + File.separator + "Feeper" + File.separator + "temp" + File.separator + alunoID + File.separator + exercicioID + File.separator + solucaoID;
-
-                //inicializa a Pasta
-                File dir = new File(tmpPath);
                 FileUtils.deleteDirectory(dir);
                 dir.mkdirs();
 
-                //Escreve a Solucao do aluno na pasta tmp e compila
+                //Escreve a Solucao do aluno na pasta tmp
+                for (ExercicioSolucaoClasse classe : solucao.getClasses()) {
+
+                    String fileName = tmpPath + File.separator + classe.getNomeClasse() + ".java";
+                    Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"));
+                    writer.write(classe.getCodigo());
+                    writer.close();
+                }
+
+                //compila as classes do aluno
                 FeeperCompiler compiler = new FeeperCompiler();
                 try {
                     for (ExercicioSolucaoClasse classe : solucao.getClasses()) {
-
                         String fileName = tmpPath + File.separator + classe.getNomeClasse() + ".java";
-                        PrintWriter writer = new PrintWriter(fileName);
-                        writer.write(classe.getCodigo());
-                        writer.close();
-                        //compila as classes do aluno
                         compiler.CompileClass(fileName);
 
                     }
@@ -119,7 +128,7 @@ public class CommunicationService {
                             String testString = testCreator.CreateTest(teste);
                             String fileName = tmpPath + File.separator + "test_" + teste.getId() + ".java";
 
-                            PrintWriter writer = new PrintWriter(fileName);
+                            Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"));
                             writer.write(testString);
                             writer.close();
 
@@ -137,7 +146,7 @@ public class CommunicationService {
                         //Cria a main do jar na pasta tmp
                         MainCreator creator = new MainCreator();
                         String mainString = creator.CreateMain(solucao);
-                        PrintWriter writer = new PrintWriter(tmpPath + File.separator + "Main.java");
+                        Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmpPath + File.separator + "Main.java"), "UTF-8"));
                         writer.write(mainString);
                         writer.close();
 
@@ -176,13 +185,13 @@ public class CommunicationService {
 
                 }
 
-                FileUtils.deleteDirectory(dir);
-
             } catch (Exception e) {
                 solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
                 ExercicioSolucaoErro erroCompilacao = new ExercicioSolucaoErro(solucao.getId(), -1, "A solu&ccedil;&atilde;o submetida possui erros de compila&ccedil;&atilde;o", EErrorType.COMPILACAO, e.getMessage());
                 solucao.getErros().add(erroCompilacao);
             }
+
+            FileUtils.deleteDirectory(dir);
 
             solucao.setErrosCount(solucao.getErros().size());
 
