@@ -212,15 +212,14 @@ public class Util {
         }
     }
 
-    public static void saveToPNG(byte[] source, String path, int width, int height) {
-        try {
-            ByteArrayInputStream bis = new ByteArrayInputStream(source);
-            BufferedImage original = ImageIO.read(bis);
-            int type = original.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : original.getType();
-            BufferedImage resize = resizeImageWithHint(original, type, width, height);
-            ImageIO.write(resize, "png", new File(path));
-        } catch (Exception e) {
-        }
+    public static void saveToPNG(byte[] source, String path, int width, int height) throws Exception {
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(source);
+        BufferedImage original = ImageIO.read(bis);
+        int type = original.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : original.getType();
+        BufferedImage resize = resizeImageWithHint(original, type, width, height);
+        ImageIO.write(resize, "png", new File(path));
+
     }
 
     public static String removeExtension(String filename) {

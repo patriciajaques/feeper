@@ -93,8 +93,10 @@
 
             <c:if test="${not empty Solucao.getErros()}">
                 <div class="list-group">
-                    <h4><fmt:message key="label.exercicios.errosalertas"/></h4>         
-                    <table class="table table-striped" style="margin-bottom: 0px;">
+                    <h4>
+                        <fmt:message key="label.exercicios.errosalertas"/>
+                    </h4>         
+                    <table class="table table-bordered" style="margin-bottom: 0px;">
                         <thead>
                             <tr>
                                 <th></th>
@@ -108,9 +110,9 @@
                                     <td>
                                         ${erro.getErrorType() == 2
                                           ?
-                                          "<button type=\"button\" class=\"btn btn-warning btn-xs\"><span class=\"glyphicon glyphicon-warning-sign\"></span></button>"
+                                          "<button type=\"button\" class=\"btn btn-warning btn-xs\"><span class=\"glyphicon glyphicon-warning-sign\"></span> Alerta</button>"
                                           :
-                                          "<button type=\"button\" class=\"btn btn-danger btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span></button>"
+                                          "<button type=\"button\" class=\"btn btn-danger btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span> Erro</button>"
                                         }
                                     </td>
                                     <td>${erro.getLinhaErro()>0 ? erro.getLinhaErro() : ""}</td>

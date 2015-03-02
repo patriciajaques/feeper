@@ -124,7 +124,7 @@ public class DinamicTestCreator {
                     } else {
                         object = passo.getObjectName();
                     }
-                    builder.append("assertEquals(" + passo.getExpectedOutputValue() + "," + object + ");");
+                    builder.append("assertEquals((Object)" + passo.getExpectedOutputValue() + ",(Object)" + object + ");");
                 } else if (passo.getMethodName() == null || passo.getMethodName().isEmpty()) {
 
                     //compara valor com objeto
@@ -141,7 +141,7 @@ public class DinamicTestCreator {
                         object = passo.getObjectName();
                     }
 
-                    builder.append("assertEquals(" + value + "," + object + ");");
+                    builder.append("assertEquals((Object)" + value + ",(Object)" + object + ");");
                 } else {
 
                     //compara valor com retorno do Método
@@ -151,7 +151,7 @@ public class DinamicTestCreator {
                         value = "\"" + value + "\"";
                     }
 
-                    builder.append("assertEquals(" + value + "," + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ");");
+                    builder.append("assertEquals((Object)" + value + ",(Object)" + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ");");
                 }
 
             } else {

@@ -203,7 +203,7 @@ public class PessoaController extends ApplicationController {
             @ModelAttribute("idUploadTemp") String idUploadTemp,
             HttpSession session,
             BindingResult result,
-            final RedirectAttributes flash) {
+            final RedirectAttributes flash) throws Exception {
         
         ModelAndView mav = new ModelAndView();
         mav.setView(new RedirectView("/pessoa/perfil", true, true, false));
