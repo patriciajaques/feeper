@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -226,18 +228,22 @@ public class PessoaController extends ApplicationController {
             pessoaBanco.setSenha(Util.criptoMD5(senha));
         }
 
-        if (idUploadTemp != null && !idUploadTemp.isEmpty()) {
-            pessoaBanco.setPossuiFoto(true);
-            UploadTempService repoUploadTemp = new UploadTempService();
-            UploadTemp uploadTemp = repoUploadTemp.getByGuid(idUploadTemp);
+        try {
+            if (idUploadTemp != null && !idUploadTemp.isEmpty()) {
+                pessoaBanco.setPossuiFoto(true);
+                UploadTempService repoUploadTemp = new UploadTempService();
+                UploadTemp uploadTemp = repoUploadTemp.getByGuid(idUploadTemp);
 
-            String path = session.getServletContext().getRealPath("/resources/img/photo/photo-" + usuarioLogado.getId() + ".png");
+                String path = session.getServletContext().getRealPath("/resources/img/photo/photo-" + usuarioLogado.getId() + ".png");
 
-            Util.saveToPNG(
-                    uploadTemp.getArquivo(),
-                    path,
-                    45,
-                    45);
+                Util.saveToPNG(
+                        uploadTemp.getArquivo(),
+                        path,
+                        45,
+                        45);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(PessoaController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         if (service.update(pessoaBanco)) {
