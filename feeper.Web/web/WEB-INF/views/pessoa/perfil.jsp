@@ -51,7 +51,7 @@
         <div class="panel panel-default" style="width:500px;">
             <div class="panel-body">
 
-                <div class="pull-right" style="margin-right:3px;display: none;">
+                <div class="pull-right" style="margin-right:3px;">
                     <input type="file" name="file_upload" id="file_upload" />
                     <div id="fileQueue"></div>
                 </div>

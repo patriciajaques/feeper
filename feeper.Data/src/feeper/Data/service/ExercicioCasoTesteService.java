@@ -46,6 +46,10 @@ public class ExercicioCasoTesteService extends HibernateUtil<ExercicioCasoTeste>
 
     public boolean SaveCasos(int idExercicio, List<ExercicioCasoTeste> casosTeste) {
 
+        if (casosTeste == null) {
+            return true;
+        }
+        
         List<Integer> idsCasosTeste = new ArrayList<Integer>();
         ExercicioCasoTestePassoService repoPasso = new ExercicioCasoTestePassoService();
 

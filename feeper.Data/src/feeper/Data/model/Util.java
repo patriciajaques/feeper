@@ -312,7 +312,7 @@ public class Util {
             }
 
             message.setSubject("[feeper] " + subject);
-            message.setContent(html, "text/html");
+            message.setContent(html, "text/html; charset=UTF-8");
 
             Transport.send(message);
 

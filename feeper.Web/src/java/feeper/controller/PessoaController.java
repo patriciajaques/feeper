@@ -2,6 +2,7 @@ package feeper.controller;
 
 import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.UploadTemp;
+import feeper.Data.model.EPerfil;
 import feeper.Data.model.ETipoLog;
 import feeper.Data.model.HibernateUtil;
 import feeper.Data.model.StringResult;
@@ -126,6 +127,11 @@ public class PessoaController extends ApplicationController {
         pessoa.setSenha("");
 
         if (service.insert(pessoa)) {
+
+            if (pessoa.getIdPerfil() == EPerfil.ADMIN || pessoa.getIdPerfil() == EPerfil.PROFESSOR) {
+                service.enviarEmailCadastro(pessoa);
+            }
+
             log(usuarioLogado.getId(), "SUCESSO: ID: " + pessoa.getId(), ETipoLog.CADASTRAR_PESSOA);
             flash.addFlashAttribute("MSG_SUCESSO", "Registro inserido com sucesso");
         } else {
@@ -234,8 +240,12 @@ public class PessoaController extends ApplicationController {
                 UploadTempService repoUploadTemp = new UploadTempService();
                 UploadTemp uploadTemp = repoUploadTemp.getByGuid(idUploadTemp);
 
-                String path = session.getServletContext().getRealPath("/resources/img/photo/photo-" + usuarioLogado.getId() + ".png");
+                String path = session.getServletContext().getRealPath("/WEB-INF");
+                File file = new File(path);
 
+                path = file.getParentFile().getAbsolutePath() + File.separator + "resources" + File.separator + "img" + File.separator + "photo" + File.separator + "photo-" + usuarioLogado.getId() + ".png";
+                new File(path).mkdirs();
+                
                 Util.saveToPNG(
                         uploadTemp.getArquivo(),
                         path,

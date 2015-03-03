@@ -5,6 +5,7 @@
 package feeper.Data.service;
 
 import feeper.Data.entity.Pessoa;
+import feeper.Data.model.EPerfil;
 import feeper.Data.model.HibernateUtil;
 import feeper.Data.model.StringResult;
 import feeper.Data.model.Util;
@@ -12,117 +13,126 @@ import org.hibernate.SQLQuery;
 
 /**
  *
- * @author
- * fabioalves
+ * @author fabioalves
  */
 public class PessoaService extends HibernateUtil<Pessoa> {
-    
+
     public PessoaService() {
         super(Pessoa.class);
     }
-    
-    public Pessoa validaLoginSenha(String email, String senha)
-    {
+
+    public Pessoa validaLoginSenha(String email, String senha) {
         try {
             senha = Util.criptoMD5(senha);
-            
+
             SQLQuery query = query("SELECT * FROM Pessoa WHERE Email = :email AND Senha = :senha AND Ativo = 1").addEntity(Pessoa.class);
             query.setString("email", email);
             query.setString("senha", senha);
-            
-            return (Pessoa)query.list().get(0);
+
+            return (Pessoa) query.list().get(0);
         } catch (Exception e) {
             return null;
         }
     }
-    
-    public Pessoa validaLogin(String email)
-    {
+
+    public Pessoa validaLogin(String email) {
         try {
             SQLQuery query = query("SELECT * FROM Pessoa WHERE Email = :email AND Ativo = 1").addEntity(Pessoa.class);
             query.setString("email", email);
-            
-            return (Pessoa)query.list().get(0);
+
+            return (Pessoa) query.list().get(0);
         } catch (Exception e) {
             return null;
         }
     }
-    
-    public boolean enviarTrocaSenha(Pessoa pessoa)
-    {
+
+    public boolean enviarTrocaSenha(Pessoa pessoa) {
         return false;
     }
-    
-    public boolean enviarConvite(Pessoa aluno)
-    {
-        String htmlEmailComSenha = "<p>Olá #NOME#,</p>\n" +
-                                    "<p>Você foi convidado pelo seu professor a utilizar o <i>feeper</i> como uma ferramenta para resolução de exercícios disponibilizados à sua turma.</p>\n" +
-                                    "<p>\n" +
-                                    "Utilize estes dados para acessá-lo:<br>\n" +
-                                    "Endereço: <a href=\"" + Util.serverUrl + "\">" + Util.serverUrl + "</a><br>\n" +
-                                    "Login: #EMAIL#<br>\n" +
-                                    "Senha: #SENHA#<br>\n" +
-                                    "</p>";
-        String htmlEmailSemSenha = "<p>Olá #NOME#,</p>\n" +
-                                    "<p>Você foi convidado pelo seu professor a utilizar o <i>feeper</i> como uma ferramenta para resolução de exercícios disponibilizados à sua turma.</p>\n" +
-                                    "<p>\n" +
-                                    "Utilize estes dados para acessá-lo:<br>\n" +
-                                    "Endereço: <a href=\"" + Util.serverUrl + "\">" + Util.serverUrl + "</a><br>\n" +
-                                    "Login: #EMAIL#<br><br>\n" +
-                                    "<i>* Você já tem uma senha cadastrada. Caso você não recorde sua senha utilize este link para lembrar a senha:<br><a href=\"" + Util.serverUrl + "/senha/esqueciminhasenha\">" + Util.serverUrl + "/senha/esqueciminhasenha</a></i><br>\n" +
-                                    "</p>";
-        
-        if (aluno.getSenha().isEmpty())
-        {
+
+    public boolean enviarEmailCadastro(Pessoa pessoa) {
+        String htmlEmailComSenha = "<p>Olá #NOME#,</p>\n"
+                + "<p>Você foi cadastrado como " + (pessoa.getIdPerfil() == EPerfil.ADMIN ? "Administrador" : "Professor") + " para utilizar o <i>feeper</i>.<br>\nCom o feeper você pode cadastrar seus alunos turmas e exercícios e deixe que o <i>feeper</i> cuide da avaliação das soluções submetidas pelos alunos!</p>\n"
+                + "<p>\n"
+                + "Utilize estes dados para acessá-lo:<br>\n"
+                + "Endereço: <a href=\"" + Util.serverUrl + "\">" + Util.serverUrl + "</a><br>\n"
+                + "Login: #EMAIL#<br>\n"
+                + "Senha: #SENHA#<br>\n"
+                + "</p>";
+
+        String novaSenha = Util.gerarSenha(8);
+        String novaSenhaCripto = Util.criptoMD5(novaSenha);
+        pessoa.setSenha(novaSenhaCripto);
+        if (update(pessoa)) {
+            htmlEmailComSenha = htmlEmailComSenha.replaceAll("#NOME#", pessoa.getNome());
+            htmlEmailComSenha = htmlEmailComSenha.replaceAll("#EMAIL#", pessoa.getEmail());
+            htmlEmailComSenha = htmlEmailComSenha.replaceAll("#SENHA#", novaSenha);
+            return Util.sendMail(pessoa.getEmail(), "Bem vindo ao feeper!", htmlEmailComSenha);
+        }
+
+        return true;
+    }
+
+    public boolean enviarConvite(Pessoa aluno) {
+        String htmlEmailComSenha = "<p>Olá #NOME#,</p>\n"
+                + "<p>Você foi convidado pelo seu professor a utilizar o <i>feeper</i> como uma ferramenta para resolução de exercícios disponibilizados à sua turma.</p>\n"
+                + "<p>\n"
+                + "Utilize estes dados para acessá-lo:<br>\n"
+                + "Endereço: <a href=\"" + Util.serverUrl + "\">" + Util.serverUrl + "</a><br>\n"
+                + "Login: #EMAIL#<br>\n"
+                + "Senha: #SENHA#<br>\n"
+                + "</p>";
+        String htmlEmailSemSenha = "<p>Olá #NOME#,</p>\n"
+                + "<p>Você foi convidado pelo seu professor a utilizar o <i>feeper</i> como uma ferramenta para resolução de exercícios disponibilizados à sua turma.</p>\n"
+                + "<p>\n"
+                + "Utilize estes dados para acessá-lo:<br>\n"
+                + "Endereço: <a href=\"" + Util.serverUrl + "\">" + Util.serverUrl + "</a><br>\n"
+                + "Login: #EMAIL#<br><br>\n"
+                + "<i>* Você já tem uma senha cadastrada. Caso você não recorde sua senha utilize este link para lembrar a senha:<br><a href=\"" + Util.serverUrl + "/senha/esqueciminhasenha\">" + Util.serverUrl + "/senha/esqueciminhasenha</a></i><br>\n"
+                + "</p>";
+
+        if (aluno.getSenha().isEmpty()) {
             String novaSenha = Util.gerarSenha(8);
             String novaSenhaCripto = Util.criptoMD5(novaSenha);
             aluno.setSenha(novaSenhaCripto);
-            if (update(aluno))
-            {
+            if (update(aluno)) {
                 htmlEmailComSenha = htmlEmailComSenha.replaceAll("#NOME#", aluno.getNome());
                 htmlEmailComSenha = htmlEmailComSenha.replaceAll("#EMAIL#", aluno.getEmail());
                 htmlEmailComSenha = htmlEmailComSenha.replaceAll("#SENHA#", novaSenha);
                 return Util.sendMail(aluno.getEmail(), "Bem vindo ao feeper!", htmlEmailComSenha);
             }
-        }
-        else
-        {
+        } else {
             htmlEmailSemSenha = htmlEmailSemSenha.replaceAll("#NOME#", aluno.getNome());
             htmlEmailSemSenha = htmlEmailSemSenha.replaceAll("#EMAIL#", aluno.getEmail());
             return Util.sendMail(aluno.getEmail(), "Bem vindo ao feeper!", htmlEmailSemSenha);
         }
         return true;
     }
-    
-    public boolean validaSenha(String senha, String repeteSenha, StringResult msgSaida)
-    {
+
+    public boolean validaSenha(String senha, String repeteSenha, StringResult msgSaida) {
         //Caso tenha alguma validação na senha, adicionaremos aqui neste método
-        if (!senha.equals(repeteSenha))
-        {
+        if (!senha.equals(repeteSenha)) {
             msgSaida.setResult("As senhas informadas não conferem.");
             return false;
         }
-        if (senha.length() > 10 || senha.length() < 6)
-        {
+        if (senha.length() > 10 || senha.length() < 6) {
             msgSaida.setResult("O tamanho da senha é inválido. Deve conter de 6 a 10 caracteres.");
             return false;
         }
-        if (!Util.validarFormatoSenha(senha))
-        {
+        if (!Util.validarFormatoSenha(senha)) {
             msgSaida.setResult("O formato da senha é inválido. Deve conter pelo menos uma letra maiúscula, pelo menos uma letra minúscula e pelo menos um número.");
             return false;
         }
 
         return true;
     }
-    
-    public Pessoa getByEmail(String email)
-    {
+
+    public Pessoa getByEmail(String email) {
         try {
-            return getByColumn("Email", email).get(0);    
+            return getByColumn("Email", email).get(0);
         } catch (Exception e) {
             return null;
         }
     }
-    
+
 }
