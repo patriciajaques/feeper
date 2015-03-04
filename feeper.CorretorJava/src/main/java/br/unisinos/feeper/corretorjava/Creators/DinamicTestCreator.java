@@ -180,13 +180,8 @@ public class DinamicTestCreator {
             for (int i = 0; i < nrParametros; i++) {
                 ExercicioCasoTestePassoParametro parametro = passo.getInputParameters().get(i);
 
-                String value = parametro.getObjectValue();
                 //tratamento para dados
-                if (parametro.getObjectType().equals("String") && value.startsWith("\"") == false) {
-                    value = "\"" + value + "\"";
-                } else if (parametro.getObjectType().equals("Double") && value.indexOf(".") < 0) {
-                    value = value + ".0";
-                }
+                String value = trataDados(parametro.getObjectType(),parametro.getObjectValue());               
 
                 if (i < nrParametros - 1) {
                     builder.append(value + ",");

@@ -267,10 +267,12 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 var passo = novoCaso.passos[i];
                 passo.id = 0;
                 passo.idCasoTeste = 0;
-                for (var j = 0; j < passo.inputParameters.length; j++) {
-                    var item = passo.inputParameters[j];
-                    item.id = 0;
-                    item.idPasso = 0;
+                if (passo.inputParameters != null) {
+                    for (var j = 0; j < passo.inputParameters.length; j++) {
+                        var item = passo.inputParameters[j];
+                        item.id = 0;
+                        item.idPasso = 0;
+                    }
                 }
             }
 
