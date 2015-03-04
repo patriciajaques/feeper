@@ -17,7 +17,7 @@ public class ExercicioClasseAuxiliar {
     private int idExercicio;
     private String nomeClasse;
     private String codigo;
-    private Boolean ehInterface;
+    private Boolean mostrarParaAluno;
     private Assinatura assinatura;
 
     public int getId() {
@@ -52,12 +52,12 @@ public class ExercicioClasseAuxiliar {
         this.codigo = codigo;
     }
 
-    public Boolean getEhInterface() {
-        return ehInterface;
+    public Boolean getMostrarParaAluno() {
+        return mostrarParaAluno;
     }
 
-    public void setEhInterface(Boolean ehInterface) {
-        this.ehInterface = ehInterface;
+    public void setMostrarParaAluno(Boolean mostrarParaAluno) {
+        this.mostrarParaAluno = mostrarParaAluno;
     }
 
     public Assinatura getAssinatura() {

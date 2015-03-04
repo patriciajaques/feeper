@@ -5,7 +5,6 @@
  */
 package feeper.Data.service;
 
-import feeper.Data.entity.ExercicioCasoTestePassoParametro;
 import feeper.Data.entity.MensagemPersonalizada;
 import feeper.Data.model.HibernateUtil;
 import static feeper.Data.model.HibernateUtil.currentSession;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 

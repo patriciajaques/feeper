@@ -38,7 +38,7 @@ import javax.tools.ToolProvider;
  */
 public class AssinaturaLoader {
 
-    public void CarregaAssinaturas(List<ExercicioClasseAuxiliar> classesAuxiliares, int usuarioID) throws Exception {
+    public List<ExercicioClasseAuxiliar> CarregaAssinaturas(List<ExercicioClasseAuxiliar> classesAuxiliares, int usuarioID) throws Exception {
 
         String basePath = "tmp" + File.separator + usuarioID + File.separator;
         File dir = new File(basePath);
@@ -150,5 +150,6 @@ public class AssinaturaLoader {
             } catch (Exception e) {
             }
         }
+        return classesAuxiliares;
     }
 }

@@ -47,6 +47,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -166,7 +168,7 @@ public class ExerciciosController extends ApplicationController {
         return "exercicios/edit";
     }
 
-    @RequestMapping(value = "/getJson", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/getJson", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public List<Object> getJson(@RequestParam(value = "exercicioId", defaultValue = "0") String exercicioId, HttpServletRequest request) {
 
@@ -188,7 +190,6 @@ public class ExerciciosController extends ApplicationController {
             exercicio.setIdAutor(usuarioLogado.getId());
 
         } else {
-
             //esvazia para diminuir o tráfego de dados
             exercicio.setDescricao(null);
 
@@ -197,7 +198,6 @@ public class ExerciciosController extends ApplicationController {
             try {
                 classes = this.carregaAssinaturas(classes, request);
             } catch (Exception ex) {
-                classes.clear();
             }
             exercicio.setClassesAuxiliares(classes);
 
@@ -260,9 +260,7 @@ public class ExerciciosController extends ApplicationController {
         Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
 
         AssinaturaLoader handler = new AssinaturaLoader();
-        handler.CarregaAssinaturas(classes, usuarioLogado.getId());
-
-        return classes;
+        return handler.CarregaAssinaturas(classes, usuarioLogado.getId());
     }
 
     @RequestMapping(value = "/uploaddescricao", method = RequestMethod.POST)
@@ -314,7 +312,7 @@ public class ExerciciosController extends ApplicationController {
 
     @RequestMapping(value = "/uploadClasseAuxiliar", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public ExercicioClasseAuxiliar uploadClasseAuxiliar(@RequestParam(value = "ehInterface", defaultValue = "false") Boolean ehInterface, MultipartHttpServletRequest request) throws IOException {
+    public ExercicioClasseAuxiliar uploadClasseAuxiliar(MultipartHttpServletRequest request) throws IOException {
 
         MultipartFile file = request.getFile("filedata");
         HttpSession session = request.getSession();
@@ -326,7 +324,7 @@ public class ExerciciosController extends ApplicationController {
 
         String codigo = FileUtils.toString(file.getInputStream());
         classeAuxiliar.setCodigo(codigo);
-        classeAuxiliar.setEhInterface(ehInterface);
+        classeAuxiliar.setMostrarParaAluno(false);
 
         return classeAuxiliar;
     }
@@ -469,7 +467,7 @@ public class ExerciciosController extends ApplicationController {
 
             for (ExercicioClasseAuxiliar classeAuxiliar : listaClassesAuxiliares) {
 
-                if (classeAuxiliar.getEhInterface() == true) {
+                if (classeAuxiliar.getMostrarParaAluno() != true) {
                     continue;
                 }
 

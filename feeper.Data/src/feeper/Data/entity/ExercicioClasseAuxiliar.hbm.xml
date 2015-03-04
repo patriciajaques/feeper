@@ -16,8 +16,8 @@
         <property name="codigo" type="string">
             <column  name="Codigo" length="16777215"/>
         </property>
-        <property name="ehInterface" type="boolean">
-            <column name="EhInterface" />
+        <property name="mostrarParaAluno" type="boolean">
+            <column name="MostrarParaAluno" />
         </property>
     </class>
 </hibernate-mapping>

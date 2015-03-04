@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
@@ -33,9 +34,15 @@ public class ExercicioCasoTestePassoParametroService extends HibernateUtil<Exerc
 
     public boolean SaveParametros(int idPasso, List<ExercicioCasoTestePassoParametro> parametros) {
 
+        if (parametros == null) {
+            return true;
+        }
+
         List<Integer> idsParametros = new ArrayList<Integer>();
 
-        for (ExercicioCasoTestePassoParametro parametro : parametros) {
+        for (int i = 0; i < parametros.size(); i++) {
+
+            ExercicioCasoTestePassoParametro parametro = parametros.get(i);
             parametro.setIdPasso(idPasso);
 
             Integer parametroId = parametro.getId();
@@ -62,7 +69,7 @@ public class ExercicioCasoTestePassoParametroService extends HibernateUtil<Exerc
             if (ids.isEmpty()) {
                 query = session_.createSQLQuery("delete from ExercicioCasoTestePassoParametro where IdPasso = " + idPasso);
             } else {
-                query = session_.createSQLQuery("delete from ExercicioCasoTestePassoParametro where ID not in (" +ids.toString().replace("[", "").replace("]", "") + ") and IdPasso = " + idPasso);
+                query = session_.createSQLQuery("delete from ExercicioCasoTestePassoParametro where ID not in (" + ids.toString().replace("[", "").replace("]", "") + ") and IdPasso = " + idPasso);
             }
 
             query.executeUpdate();

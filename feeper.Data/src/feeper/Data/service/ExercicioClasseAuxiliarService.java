@@ -5,9 +5,6 @@
  */
 package feeper.Data.service;
 
-import feeper.Data.entity.ExercicioCasoTeste;
-import feeper.Data.entity.ExercicioCasoTestePasso;
-import feeper.Data.entity.ExercicioClasse;
 import feeper.Data.entity.ExercicioClasseAuxiliar;
 import feeper.Data.model.HibernateUtil;
 import static feeper.Data.model.HibernateUtil.currentSession;
@@ -15,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
@@ -44,10 +42,12 @@ public class ExercicioClasseAuxiliarService extends HibernateUtil<ExercicioClass
         if (classes == null) {
             return true;
         }
-        
+
         List<Integer> idsClasses = new ArrayList<Integer>();
 
-        for (ExercicioClasseAuxiliar classe : classes) {
+        for (int i = 0; i < classes.size(); i++) {
+
+            ExercicioClasseAuxiliar classe = classes.get(i);
             classe.setIdExercicio(idExercicio);
 
             Integer classeId = classe.getId();

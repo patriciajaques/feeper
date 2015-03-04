@@ -17,7 +17,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         }, 0);
         $http({
             url: baseUrl + 'exercicios/getJson',
-            method: 'GET',
+            method: 'POST',
             params: {
                 'exercicioId': exercicioId
             }
@@ -75,7 +75,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         $scope.arquivoPDFURLs.push(url);
     }
 
-    $scope.visualizaTelaClasse = function () {
+    $scope.visualizaNovaClasse = function () {
 
         $scope.NomeNovaClasse = "";
         $.fancybox("#divNovaClasse", {
@@ -93,21 +93,10 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
     $scope.onClasseCarregada = function (data) {
 
         var classe = JSON.parse(data);
-        if (classe.ehInterface == true) {
-
-            var interface = $scope.getInterface();
-            if (interface != null) {
-                var index = $scope.exercicio.classesAuxiliares.indexOf(interface);
-                $scope.exercicio.classesAuxiliares.splice(index, 1);
-            }
-        }
-
-        if (classe.ehInterface != true) {
-            $.fancybox.close();
-        }
 
         $scope.exercicio.classesAuxiliares.push(classe);
         $scope.carregarAssinaturas();
+        $.fancybox.close();
     }
 
     $scope.carregarAssinaturas = function () {
@@ -133,7 +122,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
         var novaClasse = new Object();
         novaClasse.nomeClasse = $scope.NomeNovaClasse;
-        novaClasse.ehInterface = false;
+        novaClasse.mostrarParaAluno = false;
         novaClasse.codigo = $scope.NewClassContent.replace(/#@#CLASSE#@#/gi, novaClasse.nomeClasse).replace(/#n#/gi, "\n");
         $scope.exercicio.classesAuxiliares.push(novaClasse);
         $.fancybox.close();
@@ -165,18 +154,25 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         $(".ace_content").css("background-color", "");
     }
 
-    $scope.deletaClasse = function () {
+    $scope.ocultaEditorClasses = function () {
+        $("#containerEditor").hide();
+        $scope.editingClass = null;
+    }
+
+    $scope.deletaClasse = function (classe) {
 
         if (!confirm(confirmarExcluirText))
             return;
 
-        $("#containerEditor").hide();
-        var index = $scope.exercicio.classesAuxiliares.indexOf($scope.editingClass);
+        $scope.ocultaEditorClasses();
+        var index = $scope.exercicio.classesAuxiliares.indexOf(classe);
         $scope.exercicio.classesAuxiliares.splice(index, 1);
     }
 
-    $scope.visualizaTelaInterface = function () {
-        $.fancybox("#divInterface", {
+    $scope.visualizaOpcoesClasse = function (classe) {
+
+        $scope.editingClass = classe;
+        $.fancybox("#divOpcoesClasse", {
             'openEffect': 'fade',
             'closeEffect': 'fade',
             'closeClick': false,
@@ -188,31 +184,17 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         });
     }
 
-    $scope.getInterface = function () {
-
-        if ($scope.exercicio == null)
-            return null;
-        for (var i = 0; i < $scope.exercicio.classesAuxiliares.length; i++) {
-            if ($scope.exercicio.classesAuxiliares[i].ehInterface) {
-                return $scope.exercicio.classesAuxiliares[i];
-            }
-        }
-        return null;
-    }
-
-    $scope.concluiTelaInterface = function () {
+    $scope.concluiOpcoesClasse = function () {
 
         $.fancybox.close();
-        var interface = $scope.getInterface();
-        if (interface == null || interface.assinatura == null)
-            return;
+
         if ($scope.gerarTestesGetSet == true) {
             if ($scope.exercicio.casosTeste == null)
                 $scope.exercicio.casosTeste = [];
-            for (var i = 0; i < interface.assinatura.membros.length; i++) {
-                var membro = interface.assinatura.membros[i];
-                //somente fields não publicas de determinados tipos
-                if (membro.memberType == 1 && membro.modifier != 1 && $scope.canAutomateFieldTest(membro)) {
+            for (var i = 0; i < $scope.editingClass.assinatura.membros.length; i++) {
+                var membro = $scope.editingClass.assinatura.membros[i];
+                //somente fields não publicas
+                if (membro.memberType == 1 && membro.modifier != 1) {
 
                     var setName = 'set' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
                     var getName = 'get' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
@@ -225,14 +207,14 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                     var passo1 = new Object();
                     passo1.ordem = $scope.getnextPassoOrdem(caso);
                     passo1.operationType = 1;
-                    passo1.expectedOutputType = interface.nomeClasse;
-                    passo1.expectedOutputName = interface.nomeClasse.toLowerCase() + '1';
-                    passo1.objectName = interface.nomeClasse;
+                    passo1.expectedOutputType = $scope.editingClass.nomeClasse;
+                    passo1.expectedOutputName = $scope.editingClass.nomeClasse.toLowerCase() + '1';
+                    passo1.objectName = $scope.editingClass.nomeClasse;
                     caso.passos.push(passo1);
                     var passo2 = new Object();
                     passo2.ordem = $scope.getnextPassoOrdem(caso);
                     passo2.operationType = 2;
-                    passo2.objectName = interface.nomeClasse.toLowerCase() + '1';
+                    passo2.objectName = $scope.editingClass.nomeClasse.toLowerCase() + '1';
                     passo2.methodName = setName;
                     passo2.inputParameters = []
                     var parametro = new Object();
@@ -256,7 +238,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                     passo3.operationType = 3;
                     passo3.expectedOutputType = membro.type;
                     passo3.expectedOutputValue = valor;
-                    passo3.objectName = passo2.objectName = interface.nomeClasse.toLowerCase() + '1';
+                    passo3.objectName = passo2.objectName = $scope.editingClass.nomeClasse.toLowerCase() + '1';
                     passo3.methodName = getName;
                     caso.passos.push(passo3);
                     $scope.exercicio.casosTeste.push(caso);
@@ -409,7 +391,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             $scope.saveClipBoardData("passosCopiados", JSON.stringify(passos));
     }
 
-
     $scope.possuiPassoSelecionado = function () {
 
         if ($scope.editingCasoTeste == null || $scope.editingCasoTeste.passos == null)
@@ -543,7 +524,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                         return;
                     }
                 }
-//se é um método
+                //se é um método
                 if (membro.memberType == 3 && passo.methodName == membro.name) {
 
                     passo.inputParameters = [];
@@ -601,11 +582,20 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             return passo.inputParameters[passo.inputParameters.length - 1].ordem + 1;
     }
 
+    $scope.onAddParametroKeyDown = function (passo, evento) {
+
+        //Tab
+        if (evento.which == 9) {
+            var index = $scope.editingCasoTeste.passos.indexOf(passo);
+            if (index == $scope.editingCasoTeste.passos.length - 1) {
+                $scope.adicionaPasso();
+            }
+        }
+    }
+
     $scope.canAutomateFieldTest = function (membro) {
 
         switch (membro.type.toLowerCase()) {
-            case 'object':
-                return true;
             case 'string':
                 return true;
             case 'short':
@@ -619,14 +609,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 return true;
             case 'boolean':
                 return true;
-        }
-
-        for (var i = 0; i < $scope.exercicio.classesAuxiliares.length; i++) {
-
-            var assinatura = $scope.exercicio.classesAuxiliares[i].assinatura;
-            if (assinatura != null && membro.type.toLowerCase() == assinatura.nomeClasse) {
-                return true;
-            }
         }
         return false;
     }
@@ -809,27 +791,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 alert('The file ' + file.name + ' could not be uploaded: ' + errorString);
             }
         });
-        $('#upload_Interface_Solucao').uploadify({
-            'swf': baseUrl + 'resources/uploadify/uploadify.swf',
-            'uploader': baseUrl + 'exercicios/uploadClasseAuxiliar?ehInterface=true',
-            'fileTypeDesc': 'Arquivos Java',
-            'fileTypeExts': '*.Java',
-            'fileSizeLimit': '500KB',
-            'buttonText': escolherArquivoText,
-            'multi': false,
-            'fileObjName': 'filedata',
-            'checkExisting': false,
-            'width': 146,
-            'height': 34,
-            'removeCompleted': true,
-            'onUploadSuccess': function (file, data, response) {
 
-                $scope.$apply($scope.onClasseCarregada(data));
-            },
-            'onUploadError': function (file, errorCode, errorMsg, errorString) {
-                alert('The file ' + file.name + ' could not be uploaded: ' + errorString);
-            }
-        });
         $('#upload_Classe_Auxiliar').uploadify({
             'swf': baseUrl + 'resources/uploadify/uploadify.swf',
             'uploader': baseUrl + 'exercicios/uploadClasseAuxiliar',

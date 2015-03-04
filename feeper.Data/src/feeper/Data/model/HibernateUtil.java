@@ -5,9 +5,11 @@
 package feeper.Data.model;
 
 import java.util.List;
+import org.hibernate.CacheMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
@@ -53,7 +55,10 @@ public class HibernateUtil<T> {
 
     public SQLQuery query(String sqlQuery) {
         session = currentSession();
-        return session.createSQLQuery(sqlQuery);
+
+        SQLQuery query = session.createSQLQuery(sqlQuery);
+        //query.setCacheable(false);
+        return query;
     }
 
     public List<T> search(String coluna, String dado) {
@@ -150,7 +155,6 @@ public class HibernateUtil<T> {
             session = currentSession();
             transaction = session.beginTransaction();
             session.insert(obj);
-            session.refresh(obj);
             transaction.commit();
             return true;
         } catch (HibernateException e) {

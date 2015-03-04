@@ -7,11 +7,11 @@ package feeper.Data.service;
 import feeper.Data.entity.ExercicioCasoTeste;
 import feeper.Data.entity.ExercicioCasoTestePasso;
 import feeper.Data.model.HibernateUtil;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
@@ -49,11 +49,14 @@ public class ExercicioCasoTesteService extends HibernateUtil<ExercicioCasoTeste>
         if (casosTeste == null) {
             return true;
         }
-        
+
         List<Integer> idsCasosTeste = new ArrayList<Integer>();
         ExercicioCasoTestePassoService repoPasso = new ExercicioCasoTestePassoService();
 
-        for (ExercicioCasoTeste casoTeste : casosTeste) {
+        for (int i = 0; i < casosTeste.size(); i++) {
+
+            ExercicioCasoTeste casoTeste = casosTeste.get(i);
+
             casoTeste.setIdExercicio(idExercicio);
 
             Integer casoTesteId = casoTeste.getId();

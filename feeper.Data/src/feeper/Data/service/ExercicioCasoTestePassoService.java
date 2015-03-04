@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
@@ -42,10 +43,27 @@ public class ExercicioCasoTestePassoService extends HibernateUtil<ExercicioCasoT
 
     public boolean SavePassos(int idCasoTeste, List<ExercicioCasoTestePasso> passos) {
 
+        if (passos == null) {    
+            return true;
+        }
         List<Integer> idsPassos = new ArrayList<Integer>();
         ExercicioCasoTestePassoParametroService repoParametro = new ExercicioCasoTestePassoParametroService();
 
-        for (ExercicioCasoTestePasso passo : passos) {
+        for (int i = passos.size() - 1; i >= 0; i--) {
+
+            ExercicioCasoTestePasso passo = passos.get(i);
+            if ((passo.getExpectedOutputType() == null || passo.getExpectedOutputType().isEmpty())
+                    && (passo.getExpectedOutputName() == null || passo.getExpectedOutputName().isEmpty())
+                    && (passo.getExpectedOutputValue() == null || passo.getExpectedOutputValue().isEmpty())
+                    && (passo.getObjectName() == null || passo.getObjectName().isEmpty())) {
+
+                passos.remove(i);
+            }
+        }
+
+        for (int i = 0; i < passos.size(); i++) {
+
+            ExercicioCasoTestePasso passo = passos.get(i);
             passo.setIdCasoTeste(idCasoTeste);
 
             Integer passoId = passo.getId();

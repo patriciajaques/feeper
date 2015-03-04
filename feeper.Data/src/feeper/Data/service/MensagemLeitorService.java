@@ -10,6 +10,7 @@ import feeper.Data.model.Util;
 import java.util.Date;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
