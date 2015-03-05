@@ -14,7 +14,6 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 /**
@@ -43,7 +42,7 @@ public class ExercicioCasoTestePassoService extends HibernateUtil<ExercicioCasoT
 
     public boolean SavePassos(int idCasoTeste, List<ExercicioCasoTestePasso> passos) {
 
-        if (passos == null) {    
+        if (passos == null) {
             return true;
         }
         List<Integer> idsPassos = new ArrayList<Integer>();
@@ -89,26 +88,24 @@ public class ExercicioCasoTestePassoService extends HibernateUtil<ExercicioCasoT
     }
 
     public boolean deleteNotIn(int idCasoTeste, List<Integer> ids) {
-        Transaction transaction_;
-        StatelessSession session_;
 
-        session_ = currentSession();
-        transaction_ = session_.beginTransaction();
+        Session session = currentSession();
+        Transaction transaction = session.beginTransaction();
 
         try {
             SQLQuery query = null;
             if (ids.isEmpty()) {
-                query = session_.createSQLQuery("delete from ExercicioCasoTestePasso where IdCasoTeste = " + idCasoTeste);
+                query = session.createSQLQuery("delete from ExercicioCasoTestePasso where IdCasoTeste = " + idCasoTeste);
             } else {
-                query = session_.createSQLQuery("delete from ExercicioCasoTestePasso where ID not in (" + ids.toString().replace("[", "").replace("]", "") + ") and IdCasoTeste = " + idCasoTeste);
+                query = session.createSQLQuery("delete from ExercicioCasoTestePasso where ID not in (" + ids.toString().replace("[", "").replace("]", "") + ") and IdCasoTeste = " + idCasoTeste);
             }
 
             query.executeUpdate();
-            transaction_.commit();
+            transaction.commit();
 
             return true;
         } catch (HibernateException e) {
-            transaction_.rollback();
+            transaction.rollback();
             return false;
         }
     }

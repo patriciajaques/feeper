@@ -5,7 +5,6 @@
 package feeper.Data.model;
 
 import java.util.List;
-import org.hibernate.CacheMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -23,29 +22,32 @@ import org.hibernate.type.Type;
 public class HibernateUtil<T> {
 
     private static final SessionFactory SESSION_FACTORY;
-    private static final ServiceRegistry SERVICE_REGISTRY;
+    private static final ThreadLocal sessionThread = new ThreadLocal();
 
-    private static StatelessSession session;
-    private static Transaction transaction;
     private Class objClass;
 
     static {
         try {
+
             Configuration configuration = new Configuration();
             configuration.configure();
-            SERVICE_REGISTRY = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-            SESSION_FACTORY = configuration.buildSessionFactory(SERVICE_REGISTRY);
+            ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+            SESSION_FACTORY = configuration.buildSessionFactory(serviceRegistry);
+
         } catch (Throwable ex) {
             System.err.println("Initial SessionFactory creation failed." + ex);
             throw new ExceptionInInitializerError(ex);
         }
     }
 
-    public static StatelessSession currentSession() throws HibernateException {
-        // Open a new Session, if this is none yet
-        if (session == null) {
-            session = SESSION_FACTORY.openStatelessSession();
+    public static Session currentSession() throws HibernateException {
+
+        Session session = (Session) sessionThread.get();
+        if (session == null || session.isConnected() || session.isOpen() == false) {
+            session = SESSION_FACTORY.openSession();
+            sessionThread.set(session);
         }
+
         return session;
     }
 
@@ -54,11 +56,8 @@ public class HibernateUtil<T> {
     }
 
     public SQLQuery query(String sqlQuery) {
-        session = currentSession();
 
-        SQLQuery query = session.createSQLQuery(sqlQuery);
-        //query.setCacheable(false);
-        return query;
+        return currentSession().createSQLQuery(sqlQuery);
     }
 
     public List<T> search(String coluna, String dado) {
@@ -120,8 +119,7 @@ public class HibernateUtil<T> {
         List<T> lista = null;
         Query query = null;
         try {
-            session = currentSession();
-            query = session.createQuery("From " + objClass.getSimpleName() + " Where " + column + " = :p ");
+            query = currentSession().createQuery("From " + objClass.getSimpleName() + " Where " + column + " = :p ");
 
             if (type == IntegerType.INSTANCE) {
                 query.setInteger("p", Integer.parseInt(value.toString()));
@@ -139,8 +137,7 @@ public class HibernateUtil<T> {
     public T getById(Integer id) {
         T objGet = null;
         try {
-            session = currentSession();
-            objGet = (T) session.get(objClass, id);
+            objGet = (T) currentSession().get(objClass, id);
         } catch (HibernateException e) {
             System.err.println(e.fillInStackTrace());
         }
@@ -151,10 +148,10 @@ public class HibernateUtil<T> {
         if (obj == null) {
             return false;
         }
+
+        Transaction transaction = currentSession().beginTransaction();
         try {
-            session = currentSession();
-            transaction = session.beginTransaction();
-            session.insert(obj);
+            currentSession().save(obj);
             transaction.commit();
             return true;
         } catch (HibernateException e) {
@@ -168,10 +165,10 @@ public class HibernateUtil<T> {
         if (obj == null) {
             return false;
         }
+
+        Transaction transaction = currentSession().beginTransaction();
         try {
-            session = currentSession();
-            transaction = session.beginTransaction();
-            session.update(obj);
+            currentSession().update(obj);
             transaction.commit();
             return true;
         } catch (HibernateException e) {
@@ -185,10 +182,10 @@ public class HibernateUtil<T> {
         if (obj == null) {
             return false;
         }
+
+        Transaction transaction = currentSession().beginTransaction();
         try {
-            session = currentSession();
-            transaction = session.beginTransaction();
-            session.delete(obj);
+            currentSession().delete(obj);
             transaction.commit();
             return true;
         } catch (HibernateException e) {

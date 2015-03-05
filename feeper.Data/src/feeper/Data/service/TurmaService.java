@@ -12,7 +12,6 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 import org.hibernate.type.BooleanType;
 import org.hibernate.type.IntegerType;
@@ -63,64 +62,58 @@ public class TurmaService extends HibernateUtil<Turma> {
     }
 
     public boolean removeExercicio(int idTurma, int idExercicio) {
-        Transaction transaction_;
-        StatelessSession session_;
 
-        session_ = currentSession();
-        transaction_ = session_.beginTransaction();
+        Session session = currentSession();
+        Transaction transaction = session.beginTransaction();
 
         try {
 
-            SQLQuery query = session_.createSQLQuery("delete from TurmaExercicio where IdTurma = " + idTurma + " and IdExercicio = " + idExercicio);
+            SQLQuery query = session.createSQLQuery("delete from TurmaExercicio where IdTurma = " + idTurma + " and IdExercicio = " + idExercicio);
 
             query.executeUpdate();
-            transaction_.commit();
+            transaction.commit();
             return true;
 
         } catch (HibernateException e) {
-            transaction_.rollback();
+            transaction.rollback();
             return false;
         }
     }
 
     public boolean visibilidadeExercicio(int idTurma, int idExercicio) {
-        Transaction transaction_;
-        StatelessSession session_;
 
-        session_ = currentSession();
-        transaction_ = session_.beginTransaction();
+        Session session = currentSession();
+        Transaction transaction = session.beginTransaction();
 
         try {
 
-            SQLQuery query = session_.createSQLQuery("update TurmaExercicio set Visivel = NOT(Visivel) where IdTurma = " + idTurma + " and IdExercicio = " + idExercicio);
+            SQLQuery query = session.createSQLQuery("update TurmaExercicio set Visivel = NOT(Visivel) where IdTurma = " + idTurma + " and IdExercicio = " + idExercicio);
 
             query.executeUpdate();
-            transaction_.commit();
+            transaction.commit();
             return true;
 
         } catch (HibernateException e) {
-            transaction_.rollback();
+            transaction.rollback();
             return false;
         }
     }
 
     public boolean removeAluno(int idTurma, int idAluno) {
-        Transaction transaction_;
-        StatelessSession session_;
 
-        session_ = currentSession();
-        transaction_ = session_.beginTransaction();
+        Session session = currentSession();
+        Transaction transaction = session.beginTransaction();
 
         try {
 
-            SQLQuery query = session_.createSQLQuery("delete from TurmaPessoa where IdTurma = " + idTurma + " and IdPessoa = " + idAluno);
+            SQLQuery query = session.createSQLQuery("delete from TurmaPessoa where IdTurma = " + idTurma + " and IdPessoa = " + idAluno);
 
             query.executeUpdate();
-            transaction_.commit();
+            transaction.commit();
             return true;
 
         } catch (HibernateException e) {
-            transaction_.rollback();
+            transaction.rollback();
             return false;
         }
     }
@@ -170,9 +163,9 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "  on TE.IdTurma = T.ID "
                     + "  inner join Exercicio E "
                     + "  on E.ID = TE.IdExercicio "
-                    + "  left join ( " 
+                    + "  left join ( "
                     + "    select ES.* "
-                    + "    from ExercicioSolucao ES " 
+                    + "    from ExercicioSolucao ES "
                     + "    inner join ( "
                     + "      select IdExercicio, IdAluno, max(DataCadastro) as DataCadastro  "
                     + "      from ExercicioSolucao "
@@ -183,7 +176,7 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "    and RR.DataCadastro = ES.DataCadastro "
                     + "  ) RRR "
                     + "  on RRR.IdExercicio = E.ID "
-                    + "  and RRR.IdAluno = P.ID "                   
+                    + "  and RRR.IdAluno = P.ID "
                     + "where "
                     + "  T.Ativo = 1 "
                     + "  and P.Ativo = 1 "
@@ -201,7 +194,7 @@ public class TurmaService extends HibernateUtil<Turma> {
             query.addScalar("IdSolucao", StringType.INSTANCE);
             query.addScalar("IdStatusSolucao", IntegerType.INSTANCE);
             query.addScalar("ErrosCount", IntegerType.INSTANCE);
-            
+
             query.setInteger("idTurma", idTurma);
 
             return query.list();
@@ -234,7 +227,7 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "  on E.ID = TE.IdExercicio "
                     + "  left join ( "
                     + "    select ES.* "
-                    + "    from ExercicioSolucao ES "   
+                    + "    from ExercicioSolucao ES "
                     + "    inner join ( "
                     + "      select IdExercicio, IdAluno, max(DataCadastro) as DataCadastro  "
                     + "      from ExercicioSolucao "
@@ -264,7 +257,7 @@ public class TurmaService extends HibernateUtil<Turma> {
             query.addScalar("IdSolucao", IntegerType.INSTANCE);
             query.addScalar("IdStatusSolucao", IntegerType.INSTANCE);
             query.addScalar("ErrosCount", IntegerType.INSTANCE);
-            
+
             query.setInteger("idTurma", idTurma);
             query.setInteger("idAluno", idAluno);
 

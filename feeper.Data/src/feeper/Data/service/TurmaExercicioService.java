@@ -10,92 +10,80 @@ import java.math.BigInteger;
 import java.util.List;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 /**
  *
- * @author
- * fabioalves
+ * @author fabioalves
  */
 public class TurmaExercicioService extends HibernateUtil<TurmaExercicio> {
-    
+
     public TurmaExercicioService() {
         super(TurmaExercicio.class);
     }
-    
-    public List<TurmaExercicio> getByIdTurma(int idTurma)
-    {
+
+    public List<TurmaExercicio> getByIdTurma(int idTurma) {
         SQLQuery query = query("select * from TurmaExercicio where IdTurma = :idTurma").addEntity(TurmaExercicio.class);
         query.setInteger("idTurma", idTurma);
         return query.list();
     }
-    
-    public List<TurmaExercicio> getByIdExercicio(int idExercicio)
-    {
+
+    public List<TurmaExercicio> getByIdExercicio(int idExercicio) {
         SQLQuery query = query("select * from TurmaExercicio where IdExercicio = :idExercicio").addEntity(TurmaExercicio.class);
         query.setInteger("idExercicio", idExercicio);
         return query.list();
     }
-    
-    public boolean existsByIdTurmaIdExercicio(int idTurma, int idExercicio)
-    {
+
+    public boolean existsByIdTurmaIdExercicio(int idTurma, int idExercicio) {
         SQLQuery query = query("select count(*) from TurmaExercicio where IdTurma = :idTurma and IdExercicio = :idExercicio");
         query.setInteger("idTurma", idTurma);
         query.setInteger("idExercicio", idExercicio);
         Object result = query.uniqueResult();
-        return result != null && ((BigInteger)result).intValue() >= 1;
+        return result != null && ((BigInteger) result).intValue() >= 1;
     }
-    
-    public boolean insertIfNotExist(int idTurma, int idExercicio)
-    {
-        Transaction transaction_;
-        StatelessSession session_;
+
+    public boolean insertIfNotExist(int idTurma, int idExercicio) {
         
-        session_ = currentSession();
-        transaction_ = session_.beginTransaction();
-        
+        Session session = currentSession();
+        Transaction transaction = session.beginTransaction();
+
         try {
-            if (!existsByIdTurmaIdExercicio(idTurma, idExercicio))
-            {
+            if (!existsByIdTurmaIdExercicio(idTurma, idExercicio)) {
                 SQLQuery query = query("insert into TurmaExercicio (IdTurma, IdExercicio) values ( :idTurma , :idExercicio )");
                 query.setInteger("idTurma", idTurma);
                 query.setInteger("idExercicio", idExercicio);
                 query.executeUpdate();
             }
             //session_.flush();
-            transaction_.commit();
-            
+            transaction.commit();
+
             return true;
         } catch (Exception e) {
-            transaction_.rollback();
+            transaction.rollback();
             return false;
-        } 
+        }
     }
-    
-    public boolean deleteAllByIdTurma(int idTurma)
-    {
-        Transaction transaction_;
-        StatelessSession session_;
+
+    public boolean deleteAllByIdTurma(int idTurma) {
         
-        session_ = currentSession();
-        transaction_ = session_.beginTransaction();
-        
+        Session session = currentSession();
+        Transaction transaction = session.beginTransaction();
+
         try {
-            
+
             SQLQuery query = query("delete from TurmaExercicio where IdTurma = :idTurma ");
             query.setInteger("idTurma", idTurma);
             query.executeUpdate();
-            
+
             //session_.flush();
-            transaction_.commit();
-            
+            transaction.commit();
+
             return true;
-            
+
         } catch (Exception e) {
-            transaction_.rollback();
+            transaction.rollback();
             return false;
-        } 
+        }
     }
-    
+
 }

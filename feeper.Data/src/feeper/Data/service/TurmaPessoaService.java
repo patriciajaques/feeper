@@ -10,54 +10,44 @@ import java.math.BigInteger;
 import java.util.List;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 /**
  *
- * @author
- * fabioalves
+ * @author fabioalves
  */
 public class TurmaPessoaService extends HibernateUtil<TurmaPessoa> {
-    
+
     public TurmaPessoaService() {
         super(TurmaPessoa.class);
     }
-    
-    public List<TurmaPessoa> getByIdTurma(int idTurma)
-    {
+
+    public List<TurmaPessoa> getByIdTurma(int idTurma) {
         SQLQuery query = query("select * from TurmaPessoa where IdTurma = :idTurma").addEntity(TurmaPessoa.class);
         query.setInteger("idTurma", idTurma);
         return query.list();
     }
-    
-    public List<TurmaPessoa> getByIdPessoa(int idPessoa)
-    {
+
+    public List<TurmaPessoa> getByIdPessoa(int idPessoa) {
         SQLQuery query = query("select * from TurmaPessoa where IdPessoa = :idPessoa").addEntity(TurmaPessoa.class);
         query.setInteger("idPessoa", idPessoa);
         return query.list();
     }
-    
-    public boolean existsByIdTurmaIdPessoa(int idTurma, int idPessoa)
-    {
+
+    public boolean existsByIdTurmaIdPessoa(int idTurma, int idPessoa) {
         SQLQuery query = query("select count(*) from TurmaPessoa where IdTurma = :idTurma and IdPessoa = :idPessoa");
         query.setInteger("idTurma", idTurma);
         query.setInteger("idPessoa", idPessoa);
         Object result = query.uniqueResult();
-        return result != null && ((BigInteger)result).intValue() >= 1;
+        return result != null && ((BigInteger) result).intValue() >= 1;
     }
-    
-    public boolean insertIfNotExist(int idTurma, int idPessoa)
-    {
-        Transaction transaction_;
-        StatelessSession session_;
-        
-        session_ = currentSession();
-        transaction_ = session_.beginTransaction();
-        
+
+    public boolean insertIfNotExist(int idTurma, int idPessoa) {
+        Session session = currentSession();
+        Transaction transaction = session.beginTransaction();
+
         try {
-            if (!existsByIdTurmaIdPessoa(idTurma, idPessoa))
-            {
+            if (!existsByIdTurmaIdPessoa(idTurma, idPessoa)) {
                 SQLQuery query = query("insert into TurmaPessoa (IdTurma, IdPessoa) values ( :idTurma , :idPessoa )");
                 query.setInteger("idTurma", idTurma);
                 query.setInteger("idPessoa", idPessoa);
@@ -65,38 +55,32 @@ public class TurmaPessoaService extends HibernateUtil<TurmaPessoa> {
                 query.executeUpdate();
             }
             //session_.flush();
-            transaction_.commit();
-            
+            transaction.commit();
+
             return true;
         } catch (Exception e) {
-            transaction_.rollback();
+            transaction.rollback();
             return false;
         }
     }
-    
-    public boolean deleteAllByIdTurma(int idTurma)
-    {
-        Transaction transaction_;
-        StatelessSession session_;
-        
-        session_ = currentSession();
-        transaction_ = session_.beginTransaction();
-        
+
+    public boolean deleteAllByIdTurma(int idTurma) {
+        Session session = currentSession();
+        Transaction transaction = session.beginTransaction();
+
         try {
-            
+
             SQLQuery query = query("delete from TurmaPessoa where IdTurma = :idTurma ");
             query.setInteger("idTurma", idTurma);
             query.executeUpdate();
-            
-            //session_.flush();
-            transaction_.commit();
-            
+
+            transaction.commit();
+
             return true;
-            
         } catch (Exception e) {
-            transaction_.rollback();
+            transaction.rollback();
             return false;
-        } 
+        }
     }
-    
+
 }

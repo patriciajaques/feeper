@@ -13,7 +13,6 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 /**
@@ -58,26 +57,24 @@ public class ExercicioCasoTestePassoParametroService extends HibernateUtil<Exerc
     }
 
     public boolean deleteNotIn(int idPasso, List<Integer> ids) {
-        Transaction transaction_;
-        StatelessSession session_;
 
-        session_ = currentSession();
-        transaction_ = session_.beginTransaction();
+        Session session = currentSession();
+        Transaction transaction = session.beginTransaction();
 
         try {
             SQLQuery query = null;
             if (ids.isEmpty()) {
-                query = session_.createSQLQuery("delete from ExercicioCasoTestePassoParametro where IdPasso = " + idPasso);
+                query = session.createSQLQuery("delete from ExercicioCasoTestePassoParametro where IdPasso = " + idPasso);
             } else {
-                query = session_.createSQLQuery("delete from ExercicioCasoTestePassoParametro where ID not in (" + ids.toString().replace("[", "").replace("]", "") + ") and IdPasso = " + idPasso);
+                query = session.createSQLQuery("delete from ExercicioCasoTestePassoParametro where ID not in (" + ids.toString().replace("[", "").replace("]", "") + ") and IdPasso = " + idPasso);
             }
 
             query.executeUpdate();
-            transaction_.commit();
+            transaction.commit();
 
             return true;
         } catch (HibernateException e) {
-            transaction_.rollback();
+            transaction.rollback();
             return false;
         }
     }

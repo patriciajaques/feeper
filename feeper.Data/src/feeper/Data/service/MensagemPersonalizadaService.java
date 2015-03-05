@@ -13,7 +13,6 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 /**
@@ -53,26 +52,24 @@ public class MensagemPersonalizadaService extends HibernateUtil<MensagemPersonal
     }
 
     public boolean deleteNotIn(int idAutor, List<Integer> ids) {
-        Transaction transaction_;
-        StatelessSession session_;
-
-        session_ = currentSession();
-        transaction_ = session_.beginTransaction();
+        
+        Session session = currentSession();
+        Transaction transaction = session.beginTransaction();
 
         try {
             SQLQuery query = null;
             if (ids.isEmpty()) {
-                query = session_.createSQLQuery("delete from MensagemPersonalizada where IdAutor = " + idAutor);
+                query = session.createSQLQuery("delete from MensagemPersonalizada where IdAutor = " + idAutor);
             } else {
-                query = session_.createSQLQuery("delete from MensagemPersonalizada where ID not in (" +ids.toString().replace("[", "").replace("]", "") + ") and IdAutor = " + idAutor);
+                query = session.createSQLQuery("delete from MensagemPersonalizada where ID not in (" +ids.toString().replace("[", "").replace("]", "") + ") and IdAutor = " + idAutor);
             }
 
             query.executeUpdate();
-            transaction_.commit();
+            transaction.commit();
 
             return true;
         } catch (HibernateException e) {
-            transaction_.rollback();
+            transaction.rollback();
             return false;
         }
     }
