@@ -120,7 +120,7 @@
                                     </tr>
                                 </table>
                             </div>
-                            <a href="#" ng-click="visualizaNovaClasse()" class="list-group-item"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;<fmt:message key="label.exercicios.adicionarclasseauxiliar"/></a>
+                            <a  ng-click="visualizaNovaClasse()" style="cursor:pointer;" class="list-group-item"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;<fmt:message key="label.exercicios.adicionarclasseauxiliar"/></a>
                         </div>
                     </div>
                     <div id="containerEditor" style="display: none;">
@@ -225,8 +225,8 @@
                                         <input type="text" class="form-control passoDataType" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-disabled="passo.operationType == 2 || isDeclaredObject(passo.expectedOutputName, passo) || isDeclaredObject(passo.expectedOutputValue, passo)" ng-model="passo.expectedOutputType" placeholder="<fmt:message key="label.exercicios.tipovariavel"/>" />
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control passoObject" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-show="passo.operationType != 3" ng-disabled="passo.operationType == 2"  ng-model="passo.expectedOutputName" ng-change="expectedOutputNameChanged(passo)" placeholder="<fmt:message key="label.exercicios.nomevariavel"/>"/>
-                                        <input type="text" class="form-control passoObject" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-show="passo.operationType == 3" ng-model="passo.expectedOutputValue" ng-change="expectedOutputValueChanged(passo)" placeholder="<fmt:message key="label.exercicios.valornomevariavel"/>"/>
+                                        <input type="text" class="form-control passoObject" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-show="passo.operationType != 3" ng-disabled="passo.operationType == 2"  ng-model="passo.expectedOutputName" ng-blur="expectedOutputNameBlured(passo)" placeholder="<fmt:message key="label.exercicios.nomevariavel"/>"/>
+                                        <input type="text" class="form-control passoObject" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-show="passo.operationType == 3" ng-model="passo.expectedOutputValue" ng-blur="expectedOutputValueBlured(passo)" placeholder="<fmt:message key="label.exercicios.valornomevariavel"/>"/>
                                     </td>
                                     <td align="center"> {{ passo.operationType == 3?"==":"=" }} </td>
                                     <td>
@@ -250,7 +250,7 @@
                                                                 <input type="text" class="form-control passoDataType" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-disabled="isDeclaredObject(parametro.objectValue, passo)" ng-model="parametro.objectType" placeholder="<fmt:message key="label.exercicios.tipoparametro"/>"/>
                                                             </td>
                                                             <td>
-                                                                <input type="text" class="form-control" ng-model="parametro.objectValue" ng-change="parametroValueChanged(passo, parametro)" placeholder="<fmt:message key="label.exercicios.valorparametro"/>"/>
+                                                                <input type="text" class="form-control" ng-model="parametro.objectValue" ng-blur="parametroValueBlured(passo, parametro)" placeholder="<fmt:message key="label.exercicios.valorparametro"/>"/>
                                                             </td>
                                                             <td>,</td>
                                                         </tr>

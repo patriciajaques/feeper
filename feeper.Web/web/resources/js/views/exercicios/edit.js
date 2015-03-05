@@ -28,16 +28,24 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             var url = {domain: $sce.trustAsResourceUrl(baseUrl + 'exercicios/verdescricao?exercicioId=' + $scope.exercicio.id)};
             $scope.arquivoPDFURLs.push(url);
             $(".jqte_editor").html($scope.exercicio.descricaoHtml);
-            for (var i = 0; i < $scope.exercicio.classesAuxiliares.length; i++) {
-                if ($scope.exercicio.classesAuxiliares[i].assinatura == null) {
-                    alert(erroCarregarAssinaturasText);
-                    break;
+
+            if ($scope.exercicio.classesAuxiliares != null) {
+                for (var i = 0; i < $scope.exercicio.classesAuxiliares.length; i++) {
+                    if ($scope.exercicio.classesAuxiliares[i].assinatura == null) {
+                        alert(erroCarregarAssinaturasText);
+                        break;
+                    }
                 }
             }
         });
     }
 
     $scope.save = function () {
+
+        if ($scope.exercicio.nome == null || $scope.exercicio.nome.length == 0) {
+            alert('Informe primeiramente o título do exercício');
+            return;
+        }
 
         $("#btnSalvar").prop("disabled", true);
         $("#btnSalvar").text("Salvando...");
@@ -94,6 +102,10 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
         var classe = JSON.parse(data);
 
+        if ($scope.exercicio.classesAuxiliares == null) {
+            $scope.exercicio.classesAuxiliares = [];
+        }
+
         $scope.exercicio.classesAuxiliares.push(classe);
         $scope.carregarAssinaturas();
         $.fancybox.close();
@@ -124,6 +136,11 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         novaClasse.nomeClasse = $scope.NomeNovaClasse;
         novaClasse.mostrarParaAluno = false;
         novaClasse.codigo = $scope.NewClassContent.replace(/#@#CLASSE#@#/gi, novaClasse.nomeClasse).replace(/#n#/gi, "\n");
+
+        if ($scope.exercicio.classesAuxiliares == null) {
+            $scope.exercicio.classesAuxiliares = [];
+        }
+
         $scope.exercicio.classesAuxiliares.push(novaClasse);
         $.fancybox.close();
         $scope.showClasseCode(novaClasse);
@@ -194,7 +211,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             for (var i = 0; i < $scope.editingClass.assinatura.membros.length; i++) {
                 var membro = $scope.editingClass.assinatura.membros[i];
                 //somente fields não publicas
-                if (membro.memberType == 1 && membro.modifier != 1) {
+                if (membro.memberType == 1 && membro.modifier != 1 && $scope.canAutomateFieldTest(membro)) {
 
                     var setName = 'set' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
                     var getName = 'get' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
@@ -287,18 +304,18 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
     $scope.copiaCasoTeste = function (casoTeste) {
 
-        $scope.saveClipBoardData("casoTesteCopiado", JSON.stringify(casoTeste));
+        $.cookie('casoTesteCopiado', JSON.stringify(casoTeste));
     }
 
     $scope.possuiCasoTesteCopiado = function () {
 
-        var data = $scope.getClipboardData("casoTesteCopiado");
-        return data != null & data.length > 0;
+        var data = $.cookie('casoTesteCopiado');
+        return data != null && data.length > 0;
     }
 
     $scope.colaCasoTeste = function () {
 
-        var data = $scope.getClipboardData("casoTesteCopiado");
+        var data = $.cookie('casoTesteCopiado');
         if (data == null || data.length == 0)
             return;
         var caso = JSON.parse(data);
@@ -389,8 +406,9 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             if ($scope.editingCasoTeste.passos[i].selected)
                 passos.push($scope.editingCasoTeste.passos[i]);
         }
-        if (passos.length > 0)
-            $scope.saveClipBoardData("passosCopiados", JSON.stringify(passos));
+        if (passos.length > 0) {
+            $.cookie('passosCopiados', JSON.stringify(passos));
+        }
     }
 
     $scope.possuiPassoSelecionado = function () {
@@ -406,13 +424,13 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
     $scope.possuiPassoCopiado = function () {
 
-        var data = $scope.getClipboardData("passosCopiados");
-        return data != null & data.length > 0;
+        var data = $.cookie('passosCopiados');
+        return data != null && data.length > 0;
     }
 
     $scope.colaPassos = function () {
 
-        var data = $scope.getClipboardData("passosCopiados");
+        var data = $.cookie('passosCopiados');
         if (data == null || data.length == 0)
             return;
         if ($scope.editingCasoTeste.passos == null)
@@ -473,13 +491,13 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         }, 100);
     }
 
-    $scope.expectedOutputNameChanged = function (passo) {
+    $scope.expectedOutputNameBlured = function (passo) {
         if ($scope.isDeclaredObject(passo.expectedOutputName, passo)) {
             passo.expectedOutputType = "";
         }
     }
 
-    $scope.expectedOutputValueChanged = function (passo) {
+    $scope.expectedOutputValueBlured = function (passo) {
         if ($scope.isDeclaredObject(passo.expectedOutputValue, passo)) {
             passo.expectedOutputType = "";
         }
@@ -500,6 +518,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
         if ($scope.exercicio.classesAuxiliares == null || (passo.inputParameters != null && passo.inputParameters.length > 0))
             return;
+
         var objectType = $scope.getObjectType(passo.objectName);
         for (var i = 0; i < $scope.exercicio.classesAuxiliares.length; i++) {
 
@@ -548,8 +567,10 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
     }
 
     $scope.adicionaParametro = function (passo) {
-        if (passo.inputParameters == null)
+        if (passo.inputParameters == null) {
             passo.inputParameters = [];
+        }
+
         var parametro = new Object();
         //iniciar aqui o Parametro
         parametro.ordem = $scope.getnextParametroOrdem(passo);
@@ -570,7 +591,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         $.fancybox.update();
     }
 
-    $scope.parametroValueChanged = function (passo, parametro) {
+    $scope.parametroValueBlured = function (passo, parametro) {
 
         if ($scope.isDeclaredObject(parametro.objectValue, passo)) {
             parametro.objectType = "";
@@ -617,14 +638,16 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
     $scope.getKnowTypes = function (request, passo, showSystemOut) {
         var knowTypes = [];
-        for (var i = 0; i < $scope.exercicio.classesAuxiliares.length; i++) {
 
-            var assinatura = $scope.exercicio.classesAuxiliares[i].assinatura;
-            if (assinatura != null && assinatura.nomeClasse.toLowerCase().indexOf(request.term.toLowerCase()) >= 0) {
-                knowTypes.push({label: assinatura.nomeClasse, value: assinatura.nomeClasse});
+        if ($scope.exercicio.classesAuxiliares != null) {
+            for (var i = 0; i < $scope.exercicio.classesAuxiliares.length; i++) {
+
+                var assinatura = $scope.exercicio.classesAuxiliares[i].assinatura;
+                if (assinatura != null && assinatura.nomeClasse.toLowerCase().indexOf(request.term.toLowerCase()) >= 0) {
+                    knowTypes.push({label: assinatura.nomeClasse, value: assinatura.nomeClasse});
+                }
             }
         }
-
 
         for (var i = 0; i < $scope.editingCasoTeste.passos.length; i++) {
             var item = $scope.editingCasoTeste.passos[i];
@@ -663,34 +686,36 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
         var knowMethods = [];
         var objectType = $scope.getObjectType(passo.objectName);
-        for (var i = 0; i < $scope.exercicio.classesAuxiliares.length; i++) {
+        if ($scope.exercicio.classesAuxiliares != null) {
+            for (var i = 0; i < $scope.exercicio.classesAuxiliares.length; i++) {
 
-            var assinatura = $scope.exercicio.classesAuxiliares[i].assinatura;
-            if (assinatura != null && assinatura.nomeClasse == objectType) {
+                var assinatura = $scope.exercicio.classesAuxiliares[i].assinatura;
+                if (assinatura != null && assinatura.nomeClasse == objectType) {
 
-                for (var i = 0; i < assinatura.membros.length; i++) {
-                    var membro = assinatura.membros[i];
-                    if (membro.memberType == 1) {
+                    for (var i = 0; i < assinatura.membros.length; i++) {
+                        var membro = assinatura.membros[i];
+                        if (membro.memberType == 1) {
 
-                        var getter = 'get' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
-                        if ($scope.containsValue(knowMethods, getter) == false
-                                && getter.toLowerCase().indexOf(request.term.toLowerCase()) >= 0) {
+                            var getter = 'get' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
+                            if ($scope.containsValue(knowMethods, getter) == false
+                                    && getter.toLowerCase().indexOf(request.term.toLowerCase()) >= 0) {
 
-                            knowMethods.push({label: getter, value: getter});
+                                knowMethods.push({label: getter, value: getter});
+                            }
+
+                            var setter = 'set' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
+                            if ($scope.containsValue(knowMethods, setter) == false
+                                    && setter.toLowerCase().indexOf(request.term.toLowerCase()) >= 0) {
+
+                                knowMethods.push({label: setter, value: setter});
+                            }
                         }
+                        else if (membro.memberType == 3
+                                && $scope.containsValue(knowMethods, membro.name) == false
+                                && membro.name.toLowerCase().indexOf(request.term.toLowerCase()) >= 0) {
 
-                        var setter = 'set' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
-                        if ($scope.containsValue(knowMethods, setter) == false
-                                && setter.toLowerCase().indexOf(request.term.toLowerCase()) >= 0) {
-
-                            knowMethods.push({label: setter, value: setter});
+                            knowMethods.push({label: membro.name, value: membro.name});
                         }
-                    }
-                    else if (membro.memberType == 3
-                            && $scope.containsValue(knowMethods, membro.name) == false
-                            && membro.name.toLowerCase().indexOf(request.term.toLowerCase()) >= 0) {
-
-                        knowMethods.push({label: membro.name, value: membro.name});
                     }
                 }
             }
@@ -752,8 +777,10 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         if (objectName == null)
             return  false;
 
-        if (objectName.indexOf("[") > 0)
-            objectName = objectName.substr(0, objectName.indexOf("["));
+        var StringObjName = objectName.toString();
+
+        if (StringObjName.indexOf("[") > 0)
+            StringObjName = StringObjName.substr(0, StringObjName.indexOf("["));
 
         var index = $scope.editingCasoTeste.passos.indexOf(passo);
         for (var i = 0; i < index; i++) {
@@ -763,7 +790,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             if (outputName != null && outputName.indexOf("[") > 0)
                 outputName = outputName.substr(0, outputName.indexOf("["));
 
-            if (outputName != null && outputName.length > 0 && outputName == objectName)
+            if (outputName != null && outputName.length > 0 && outputName == StringObjName)
                 return true;
         }
         return false;
@@ -902,26 +929,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             },
             minLength: 0
         });
-    }
-
-    $scope.saveClipBoardData = function (name, value) {
-        var d = new Date();
-        d.setTime(d.getTime() + (1 * 24 * 60 * 60 * 1000));
-        var expires = "expires=" + d.toUTCString();
-        document.cookie = name + "=" + value + "; " + expires;
-    }
-
-    $scope.getClipboardData = function (name) {
-        var name = name + "=";
-        var ca = document.cookie.split(';');
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) == ' ')
-                c = c.substring(1);
-            if (c.indexOf(name) == 0)
-                return c.substring(name.length, c.length);
-        }
-        return "";
     }
 
     $.ajaxSetup({cache: false});
