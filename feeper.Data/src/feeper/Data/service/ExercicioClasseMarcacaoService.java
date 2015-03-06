@@ -17,6 +17,7 @@ import feeper.Data.model.Util;
 import java.util.Date;
 import java.util.List;
 import org.hibernate.SQLQuery;
+import org.hibernate.Transaction;
 import org.hibernate.type.BooleanType;
 import org.hibernate.type.IntegerType;
 import org.hibernate.type.StringType;
@@ -33,8 +34,10 @@ public class ExercicioClasseMarcacaoService extends HibernateUtil<ExercicioClass
     }
 
     public ExercicioClasseMarcacao getByIdExercicioClasse(int idExercicioClasse, int linha, int idTipoMarcacao) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
-            SQLQuery query = query("select * from ExercicioClasseMarcacao "
+
+            SQLQuery query = currentSession().createSQLQuery("select * from ExercicioClasseMarcacao "
                     + "where IdExercicioClasse = :idExercicioClasse "
                     + "and LinhaInicio = :linha "
                     + "and IdTipoMarcacao = :idTipoMarcacao "
@@ -42,16 +45,25 @@ public class ExercicioClasseMarcacaoService extends HibernateUtil<ExercicioClass
             query.setInteger("idExercicioClasse", idExercicioClasse);
             query.setInteger("linha", linha);
             query.setInteger("idTipoMarcacao", idTipoMarcacao);
-            return (ExercicioClasseMarcacao) query.list().get(0);
+            List<ExercicioClasseMarcacao> data = query.list();
+            transaction.commit();
+            if (data.isEmpty()) {
+                return null;
+                    
+            } else {
+                return data.get(0);
+            }
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return null;
         }
     }
 
     public Object getAnotacao(int idExercicio, int idExercicioClasse, int linha) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
-
-            SQLQuery query = query("select "
+            SQLQuery query = currentSession().createSQLQuery("select "
                     + "  CM.DataCadastro, "
                     + "  CM.Anotacao, "
                     + "  CM.LinhaInicio "
@@ -73,17 +85,26 @@ public class ExercicioClasseMarcacaoService extends HibernateUtil<ExercicioClass
             query.setInteger("linha", linha);
             query.setInteger("idTipoMarcacao", ETipoMarcacao.ANOTACAO);
 
-            return query.list().get(0);
-
+            List<Object> data = query.list();
+            transaction.commit();
+            if (data.isEmpty()) {
+                return null;
+                    
+            } else {
+                return data.get(0);
+            }
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return null;
         }
     }
 
     public List<Object> getMarcacaoAutor(int idExercicio, int idAutor, int idExercicioClasse, int linha) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
 
-            SQLQuery query = query("select "
+            SQLQuery query = currentSession().createSQLQuery("select "
                     + "  M.IdPessoa, "
                     + "  P.Nome, "
                     + "  GET_TIMEDURATION(M.DataCadastro) AS DataCadastro, "
@@ -123,17 +144,22 @@ public class ExercicioClasseMarcacaoService extends HibernateUtil<ExercicioClass
             query.setInteger("linha", linha);
             query.setInteger("idTipoMarcacao", ETipoMarcacao.DUVIDA);
 
-            return query.list();
+            List<Object> data = query.list();
 
+            transaction.commit();
+            return data;
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return null;
         }
     }
 
     public List<Object> getMarcacaoLeitor(int idExercicio, int idExercicioClasse, int linha) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
 
-            SQLQuery query = query("select "
+            SQLQuery query = currentSession().createSQLQuery("select "
                     + "  M.IdPessoa, "
                     + "  P.Nome, "
                     + "  GET_TIMEDURATION(M.DataCadastro) AS DataCadastro, "
@@ -171,9 +197,14 @@ public class ExercicioClasseMarcacaoService extends HibernateUtil<ExercicioClass
             query.setInteger("linha", linha);
             query.setInteger("idTipoMarcacao", ETipoMarcacao.DUVIDA);
 
-            return query.list();
+            List<Object> data = query.list();
+
+            transaction.commit();
+            return data;
 
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return null;
         }
     }
@@ -291,12 +322,19 @@ public class ExercicioClasseMarcacaoService extends HibernateUtil<ExercicioClass
     }
 
     private List<Object> getLinhasMarcadas(int idExercicioClasse, int idTipoMarcacao) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
-            SQLQuery query = query("select LinhaInicio from ExercicioClasseMarcacao where IdExercicioClasse = :idExercicioClasse and Ativo = 1 and IdTipoMarcacao = :idTipoMarcacao ");
+
+            SQLQuery query = currentSession().createSQLQuery("select LinhaInicio from ExercicioClasseMarcacao where IdExercicioClasse = :idExercicioClasse and Ativo = 1 and IdTipoMarcacao = :idTipoMarcacao ");
             query.setInteger("idExercicioClasse", idExercicioClasse);
             query.setInteger("idTipoMarcacao", idTipoMarcacao);
-            return query.list();
+            List<Object> data = query.list();
+
+            transaction.commit();
+            return data;
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return null;
         }
     }

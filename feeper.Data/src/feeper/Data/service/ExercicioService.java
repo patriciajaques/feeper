@@ -9,6 +9,7 @@ import feeper.Data.entity.Pessoa;
 import feeper.Data.model.HibernateUtil;
 import java.util.List;
 import org.hibernate.SQLQuery;
+import org.hibernate.Transaction;
 
 public class ExercicioService extends HibernateUtil<Exercicio> {
 
@@ -23,9 +24,10 @@ public class ExercicioService extends HibernateUtil<Exercicio> {
     }
 
     public List<Exercicio> getExercioByTurma(int idTurma) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
 
-            SQLQuery query = query("select "
+            SQLQuery query = currentSession().createSQLQuery("select "
                     + "  E.* "
                     + "from  "
                     + "  TurmaExercicio TE "
@@ -40,16 +42,21 @@ public class ExercicioService extends HibernateUtil<Exercicio> {
                     + "  and T.Ativo = 1").addEntity(Exercicio.class);
             query.setInteger("idTurma", idTurma);
 
-            return query.list();
-
+            List<Exercicio> data = query.list();
+            transaction.commit();
+            return data;
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return null;
         }
     }
 
     public Exercicio getMeuExercicio(int idTurma, int idExercicio) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
-            SQLQuery query = query("select "
+
+            SQLQuery query = currentSession().createSQLQuery("select "
                     + "  E.* "
                     + "from  "
                     + "  TurmaExercicio TE "
@@ -65,8 +72,16 @@ public class ExercicioService extends HibernateUtil<Exercicio> {
             query.setInteger("idTurma", idTurma);
             query.setInteger("idExercicio", idExercicio);
 
-            return (Exercicio) query.list().get(0);
+            List<Exercicio> data = query.list();
+            transaction.commit();
+            if (data.isEmpty()) {
+                return null;
+            } else {
+                return data.get(0);
+            }
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return null;
         }
     }

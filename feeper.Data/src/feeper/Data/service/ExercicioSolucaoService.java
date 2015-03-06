@@ -14,6 +14,7 @@ import feeper.Data.model.IntegerResult;
 import java.util.Date;
 import java.util.List;
 import org.hibernate.SQLQuery;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -37,40 +38,52 @@ public class ExercicioSolucaoService extends HibernateUtil<ExercicioSolucao> {
     }
 
     public ExercicioSolucao getLastByIdExercicio(int idExercicio, int idAluno) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
 
-            SQLQuery query = query("select * from ExercicioSolucao where IdExercicio = :idExercicio and IdAluno = :idAluno order by ID desc limit 1").addEntity(ExercicioSolucao.class);
+            SQLQuery query = currentSession().createSQLQuery("select * from ExercicioSolucao where IdExercicio = :idExercicio and IdAluno = :idAluno order by ID desc limit 1").addEntity(ExercicioSolucao.class);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAluno", idAluno);
 
-            ExercicioSolucao solucao = (ExercicioSolucao) query.list().get(0);
-
+            List<ExercicioSolucao> data = query.list();
+            transaction.commit();
+            
+            if (data.isEmpty()) {
+                return null;
+            }
+            
+            ExercicioSolucao solucao = data.get(0);
+            
             ExercicioSolucaoErroService repoErros = new ExercicioSolucaoErroService();
             solucao.setErros(repoErros.getAllByIdSolucao(solucao.getId()));
 
             return solucao;
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return null;
         }
     }
 
     public List<ExercicioSolucao> getByIdExercicio(int idExercicio, int idAluno) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
 
-            SQLQuery query = query("select * from ExercicioSolucao where IdExercicio = :idExercicio and IdAluno = :idAluno order by ID desc").addEntity(ExercicioSolucao.class);
+            SQLQuery query = currentSession().createSQLQuery("select * from ExercicioSolucao where IdExercicio = :idExercicio and IdAluno = :idAluno order by ID desc").addEntity(ExercicioSolucao.class);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAluno", idAluno);
 
             List<ExercicioSolucao> data = query.list();
-
+            transaction.commit();
             ExercicioSolucaoErroService repoErros = new ExercicioSolucaoErroService();
             for (ExercicioSolucao solucao : data) {
                 solucao.setErros(repoErros.getAllByIdSolucao(solucao.getId()));
             }
 
             return data;
-
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return null;
         }
     }

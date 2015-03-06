@@ -7,7 +7,6 @@ package feeper.Data.service;
 
 import feeper.Data.entity.MensagemPersonalizada;
 import feeper.Data.model.HibernateUtil;
-import static feeper.Data.model.HibernateUtil.currentSession;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -27,11 +26,20 @@ public class MensagemPersonalizadaService extends HibernateUtil<MensagemPersonal
 
     public List<MensagemPersonalizada> getbyIdAutor(int idAutor) {
 
-        SQLQuery query = query("select * from MensagemPersonalizada where IdAutor=:idAutor").addEntity(MensagemPersonalizada.class);
-        query.setInteger("idAutor", idAutor);
-        return query.list();
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+            SQLQuery query = currentSession().createSQLQuery("select * from MensagemPersonalizada where IdAutor=:idAutor").addEntity(MensagemPersonalizada.class);
+            query.setInteger("idAutor", idAutor);
+            List<MensagemPersonalizada> data = query.list();
+            transaction.commit();
+            return data;
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return null;
+        }
     }
-    
+
     public boolean SaveMensagens(int idAutor, List<MensagemPersonalizada> mensagens) {
 
         List<Integer> idsMensagens = new ArrayList<Integer>();
@@ -52,7 +60,7 @@ public class MensagemPersonalizadaService extends HibernateUtil<MensagemPersonal
     }
 
     public boolean deleteNotIn(int idAutor, List<Integer> ids) {
-        
+
         Session session = currentSession();
         Transaction transaction = session.beginTransaction();
 
@@ -61,15 +69,16 @@ public class MensagemPersonalizadaService extends HibernateUtil<MensagemPersonal
             if (ids.isEmpty()) {
                 query = session.createSQLQuery("delete from MensagemPersonalizada where IdAutor = " + idAutor);
             } else {
-                query = session.createSQLQuery("delete from MensagemPersonalizada where ID not in (" +ids.toString().replace("[", "").replace("]", "") + ") and IdAutor = " + idAutor);
+                query = session.createSQLQuery("delete from MensagemPersonalizada where ID not in (" + ids.toString().replace("[", "").replace("]", "") + ") and IdAutor = " + idAutor);
             }
 
             query.executeUpdate();
             transaction.commit();
 
             return true;
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return false;
         }
     }

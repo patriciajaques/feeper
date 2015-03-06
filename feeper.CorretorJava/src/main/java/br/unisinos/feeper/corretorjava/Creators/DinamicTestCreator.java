@@ -87,10 +87,12 @@ public class DinamicTestCreator {
                         //mexe em um array ou cria um novo objeto
                         String objectType = getObjectType(teste, passo.getExpectedOutputName(), i);
 
-                        if (passo.getExpectedOutputName().indexOf("[") > 0) {
-                            //mexendo no array quando tem colchetes no nome
-                            objectType = objectType.substring(0, objectType.indexOf("["));
-                        }
+//Java os colchetes vão no nome
+//if (passo.getExpectedOutputName().indexOf("[") > 0) {
+////mexendo no array quando tem colchetes no nome
+//objectType = objectType.substring(0, objectType.indexOf("["));
+//}
+                        
                         Boolean needsNew = needsNewAcessor(objectType);
 
                         if (needsNew == true) {
@@ -181,7 +183,7 @@ public class DinamicTestCreator {
                 ExercicioCasoTestePassoParametro parametro = passo.getInputParameters().get(i);
 
                 //tratamento para dados
-                String value = trataDados(parametro.getObjectType(),parametro.getObjectValue());               
+                String value = trataDados(parametro.getObjectType(), parametro.getObjectValue());
 
                 if (i < nrParametros - 1) {
                     builder.append(value + ",");

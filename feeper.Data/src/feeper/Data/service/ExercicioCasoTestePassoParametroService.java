@@ -7,7 +7,6 @@ package feeper.Data.service;
 
 import feeper.Data.entity.ExercicioCasoTestePassoParametro;
 import feeper.Data.model.HibernateUtil;
-import static feeper.Data.model.HibernateUtil.currentSession;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -26,9 +25,19 @@ public class ExercicioCasoTestePassoParametroService extends HibernateUtil<Exerc
     }
 
     public List<ExercicioCasoTestePassoParametro> getByIdPasso(int idPasso) {
-        SQLQuery query = query("select * from ExercicioCasoTestePassoParametro where IdPasso = :idPasso order by Ordem, ID").addEntity(ExercicioCasoTestePassoParametro.class);
-        query.setInteger("idPasso", idPasso);
-        return query.list();
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+            SQLQuery query = currentSession().createSQLQuery("select * from ExercicioCasoTestePassoParametro where IdPasso = :idPasso order by Ordem, ID").addEntity(ExercicioCasoTestePassoParametro.class);
+            query.setInteger("idPasso", idPasso);
+
+            List<ExercicioCasoTestePassoParametro> data = query.list();
+            transaction.commit();
+            return data;
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return null;
+        }
     }
 
     public boolean SaveParametros(int idPasso, List<ExercicioCasoTestePassoParametro> parametros) {
@@ -58,23 +67,23 @@ public class ExercicioCasoTestePassoParametroService extends HibernateUtil<Exerc
 
     public boolean deleteNotIn(int idPasso, List<Integer> ids) {
 
-        Session session = currentSession();
-        Transaction transaction = session.beginTransaction();
+        Transaction transaction = currentSession().beginTransaction();
 
         try {
             SQLQuery query = null;
             if (ids.isEmpty()) {
-                query = session.createSQLQuery("delete from ExercicioCasoTestePassoParametro where IdPasso = " + idPasso);
+                query = currentSession().createSQLQuery("delete from ExercicioCasoTestePassoParametro where IdPasso = " + idPasso);
             } else {
-                query = session.createSQLQuery("delete from ExercicioCasoTestePassoParametro where ID not in (" + ids.toString().replace("[", "").replace("]", "") + ") and IdPasso = " + idPasso);
+                query = currentSession().createSQLQuery("delete from ExercicioCasoTestePassoParametro where ID not in (" + ids.toString().replace("[", "").replace("]", "") + ") and IdPasso = " + idPasso);
             }
 
             query.executeUpdate();
             transaction.commit();
 
             return true;
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return false;
         }
     }

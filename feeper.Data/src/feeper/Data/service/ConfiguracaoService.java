@@ -9,6 +9,7 @@ import feeper.Data.entity.ConfiguracaoSistema;
 import feeper.Data.model.HibernateUtil;
 import java.util.List;
 import org.hibernate.SQLQuery;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -21,16 +22,25 @@ public class ConfiguracaoService extends HibernateUtil<ConfiguracaoSistema> {
     }
 
     public ConfiguracaoSistema getConfiguracao() {
-        
-        SQLQuery query = query("select * from ConfiguracaoSistema order by ID desc limit 1").addEntity(ConfiguracaoSistema.class);
 
-        List<ConfiguracaoSistema> data = query.list();
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+            SQLQuery query = currentSession().createSQLQuery("select * from ConfiguracaoSistema order by ID desc limit 1").addEntity(ConfiguracaoSistema.class);
 
-        if (data.isEmpty()) {
-            ConfiguracaoSistema configuracao = new ConfiguracaoSistema();
-            return configuracao;
-        } else {
-            return data.get(0);
+            List<ConfiguracaoSistema> data = query.list();
+
+            transaction.commit();
+
+            if (data.isEmpty()) {
+                ConfiguracaoSistema configuracao = new ConfiguracaoSistema();
+                return configuracao;
+            } else {
+                return data.get(0);
+            }
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return null;
         }
     }
 

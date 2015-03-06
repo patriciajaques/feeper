@@ -385,8 +385,8 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
         var index = $scope.editingCasoTeste.passos.indexOf(passo);
         $scope.editingCasoTeste.passos.splice(index + 1, 0, novoPasso);
-        $scope.expectedOutputNameChanged(novoPasso);
-        $scope.expectedOutputValueChanged(novoPasso);
+        $scope.expectedOutputNameBlured(novoPasso);
+        $scope.expectedOutputValueBlured(novoPasso);
 
         for (var i = index + 1; i < $scope.editingCasoTeste.passos.length; i++) {
 
@@ -449,8 +449,8 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             }
 
             $scope.editingCasoTeste.passos.push(passo);
-            $scope.expectedOutputNameChanged(passo);
-            $scope.expectedOutputValueChanged(passo);
+            $scope.expectedOutputNameBlured(passo);
+            $scope.expectedOutputValueBlured(passo);
         }
 
         $.fancybox.update();

@@ -26,10 +26,13 @@ public class FilaNovaSenhaService extends HibernateUtil<FilaNovaSenha> {
     }
 
     public FilaNovaSenha getByChave(String chave) {
-        try {
-            return getByColumn("Chave", chave).get(0);
-        } catch (Exception e) {
+
+        List<FilaNovaSenha> data = getByColumn("Chave", chave);
+        if (data.isEmpty()) {
             return null;
+
+        } else {
+            return data.get(0);
         }
     }
 
@@ -49,21 +52,23 @@ public class FilaNovaSenhaService extends HibernateUtil<FilaNovaSenha> {
     }
 
     public void deleteByIdPessoa(int idPessoa) {
-        try {
-            List<FilaNovaSenha> lista = getByColumn("IdPessoa", idPessoa);
-            for (FilaNovaSenha registro : lista) {
-                delete(registro);
-            }
-        } catch (Exception e) {
+
+        List<FilaNovaSenha> lista = getByColumn("IdPessoa", idPessoa);
+        for (FilaNovaSenha registro : lista) {
+            delete(registro);
         }
+
     }
 
     public void deleteByChave(String chave) {
-        try {
-            FilaNovaSenha registro = getByColumn("Chave", chave).get(0);
-            delete(registro);
-        } catch (Exception e) {
+
+        List<FilaNovaSenha> data = getByColumn("Chave", chave);
+        if (data.isEmpty()) {
+            return;
+
         }
+        delete(data.get(0));
+
     }
 
     public boolean validaPrazoChave(String chave) {

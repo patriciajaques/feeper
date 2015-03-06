@@ -8,28 +8,36 @@ import feeper.Data.entity.TelaPerfil;
 import feeper.Data.model.HibernateUtil;
 import java.util.List;
 import org.hibernate.SQLQuery;
+import org.hibernate.Transaction;
 
 /**
  *
- * @author
- * fabioalves
+ * @author fabioalves
  */
 public class TelaPerfilService extends HibernateUtil<TelaPerfil> {
-    
+
     public TelaPerfilService() {
         super(TelaPerfil.class);
     }
-    
-    public boolean verificaAcesso(int idTela, int idPessoa)
-    {
-        SQLQuery query = query("select 1 from TelaPerfil TP\n" +
-                                "inner join Pessoa P\n" +
-                                "on P.IdPerfil = TP.IdPerfil\n" +
-                                "and P.ID = :idPessoa \n" +
-                                "and TP.IdTela = :idTela ");
-        query.setInteger("idTela", idTela);
-        query.setInteger("idPessoa", idPessoa);
-        return query.list().size() > 0;
+
+    public boolean verificaAcesso(int idTela, int idPessoa) {
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+            SQLQuery query = currentSession().createSQLQuery("select 1 from TelaPerfil TP\n"
+                    + "inner join Pessoa P\n"
+                    + "on P.IdPerfil = TP.IdPerfil\n"
+                    + "and P.ID = :idPessoa \n"
+                    + "and TP.IdTela = :idTela ");
+            query.setInteger("idTela", idTela);
+            query.setInteger("idPessoa", idPessoa);
+            Boolean data = query.list().size() > 0;
+            transaction.commit();
+            return data;
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return false;
+        }
     }
-    
+
 }

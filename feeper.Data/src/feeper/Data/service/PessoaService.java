@@ -9,7 +9,9 @@ import feeper.Data.model.EPerfil;
 import feeper.Data.model.HibernateUtil;
 import feeper.Data.model.StringResult;
 import feeper.Data.model.Util;
+import java.util.List;
 import org.hibernate.SQLQuery;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -22,26 +24,46 @@ public class PessoaService extends HibernateUtil<Pessoa> {
     }
 
     public Pessoa validaLoginSenha(String email, String senha) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
             senha = Util.criptoMD5(senha);
 
-            SQLQuery query = query("SELECT * FROM Pessoa WHERE Email = :email AND Senha = :senha AND Ativo = 1").addEntity(Pessoa.class);
+            SQLQuery query = currentSession().createSQLQuery("SELECT * FROM Pessoa WHERE Email = :email AND Senha = :senha AND Ativo = 1").addEntity(Pessoa.class);
             query.setString("email", email);
             query.setString("senha", senha);
 
-            return (Pessoa) query.list().get(0);
+            List<Pessoa> data = query.list();
+            transaction.commit();
+            if (data.isEmpty()) {
+                return null;
+
+            } else {
+                return data.get(0);
+            }
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return null;
         }
     }
 
     public Pessoa validaLogin(String email) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
-            SQLQuery query = query("SELECT * FROM Pessoa WHERE Email = :email AND Ativo = 1").addEntity(Pessoa.class);
+            SQLQuery query = currentSession().createSQLQuery("SELECT * FROM Pessoa WHERE Email = :email AND Ativo = 1").addEntity(Pessoa.class);
             query.setString("email", email);
 
-            return (Pessoa) query.list().get(0);
+            List<Pessoa> data = query.list();
+            transaction.commit();
+            if (data.isEmpty()) {
+                return null;
+
+            } else {
+                return data.get(0);
+            }
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return null;
         }
     }
@@ -128,10 +150,13 @@ public class PessoaService extends HibernateUtil<Pessoa> {
     }
 
     public Pessoa getByEmail(String email) {
-        try {
-            return getByColumn("Email", email).get(0);
-        } catch (Exception e) {
+
+        List<Pessoa> data = getByColumn("Email", email);
+        if (data.isEmpty()) {
             return null;
+
+        } else {
+            return data.get(0);
         }
     }
 

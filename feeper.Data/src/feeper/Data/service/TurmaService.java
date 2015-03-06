@@ -28,25 +28,41 @@ public class TurmaService extends HibernateUtil<Turma> {
     }
 
     public List<Object> getExercicios(int idTurma) {
-        SQLQuery query = query("select E.ID, E.Nome, TE.Visivel from TurmaExercicio TE inner join Exercicio E on E.ID = TE.IdExercicio where E.Ativo = 1 and TE.IdTurma = :idTurma order by E.Nome");
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+            SQLQuery query = currentSession().createSQLQuery("select E.ID, E.Nome, TE.Visivel from TurmaExercicio TE inner join Exercicio E on E.ID = TE.IdExercicio where E.Ativo = 1 and TE.IdTurma = :idTurma order by E.Nome");
 
-        query.addScalar("ID", IntegerType.INSTANCE);
-        query.addScalar("Nome", StringType.INSTANCE);
-        query.addScalar("Visivel", BooleanType.INSTANCE);
-
-        query.setInteger("idTurma", idTurma);
-
-        return query.list();
+            query.addScalar("ID", IntegerType.INSTANCE);
+            query.addScalar("Nome", StringType.INSTANCE);
+            query.addScalar("Visivel", BooleanType.INSTANCE);
+            query.setInteger("idTurma", idTurma);
+            List<Object> data = query.list();
+            transaction.commit();
+            return data;
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return null;
+        }
     }
 
     public List<Exercicio> getExerciciosNotIn(int idTurma) {
-        SQLQuery query = query("select E.* from Exercicio E where not exists (\n"
-                + "	select 1 from TurmaExercicio TE where TE.IdExercicio = E.ID and TE.IdTurma = :idTurma \n"
-                + ") and E.Ativo = 1").addEntity(Exercicio.class);
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+            SQLQuery query = currentSession().createSQLQuery("select E.* from Exercicio E where not exists (\n"
+                    + "	select 1 from TurmaExercicio TE where TE.IdExercicio = E.ID and TE.IdTurma = :idTurma \n"
+                    + ") and E.Ativo = 1").addEntity(Exercicio.class);
 
-        query.setInteger("idTurma", idTurma);
+            query.setInteger("idTurma", idTurma);
 
-        return query.list();
+            List<Exercicio> data = query.list();
+            transaction.commit();
+            return data;
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return null;
+        }
     }
 
     public Pessoa getProfessor(int idTurma) {
@@ -56,96 +72,112 @@ public class TurmaService extends HibernateUtil<Turma> {
     }
 
     public List<Pessoa> getAlunos(int idTurma) {
-        SQLQuery query = query("select P.* from TurmaPessoa TP inner join Pessoa P on P.ID = TP.IdPessoa where P.Ativo = 1 and TP.IdTurma = :idTurma order by P.Nome").addEntity(Pessoa.class);
-        query.setInteger("idTurma", idTurma);
-        return query.list();
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+            SQLQuery query = currentSession().createSQLQuery("select P.* from TurmaPessoa TP inner join Pessoa P on P.ID = TP.IdPessoa where P.Ativo = 1 and TP.IdTurma = :idTurma order by P.Nome").addEntity(Pessoa.class);
+            query.setInteger("idTurma", idTurma);
+            List<Pessoa> data = query.list();
+            transaction.commit();
+            return data;
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return null;
+        }
     }
 
     public boolean removeExercicio(int idTurma, int idExercicio) {
-
-        Session session = currentSession();
-        Transaction transaction = session.beginTransaction();
+        Transaction transaction = currentSession().beginTransaction();
 
         try {
 
-            SQLQuery query = session.createSQLQuery("delete from TurmaExercicio where IdTurma = " + idTurma + " and IdExercicio = " + idExercicio);
+            SQLQuery query = currentSession().createSQLQuery("delete from TurmaExercicio where IdTurma = " + idTurma + " and IdExercicio = " + idExercicio);
 
             query.executeUpdate();
             transaction.commit();
             return true;
-
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return false;
         }
     }
 
     public boolean visibilidadeExercicio(int idTurma, int idExercicio) {
 
-        Session session = currentSession();
-        Transaction transaction = session.beginTransaction();
+        Transaction transaction = currentSession().beginTransaction();
 
         try {
 
-            SQLQuery query = session.createSQLQuery("update TurmaExercicio set Visivel = NOT(Visivel) where IdTurma = " + idTurma + " and IdExercicio = " + idExercicio);
+            SQLQuery query = currentSession().createSQLQuery("update TurmaExercicio set Visivel = NOT(Visivel) where IdTurma = " + idTurma + " and IdExercicio = " + idExercicio);
 
             query.executeUpdate();
             transaction.commit();
             return true;
-
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return false;
         }
     }
 
     public boolean removeAluno(int idTurma, int idAluno) {
-
-        Session session = currentSession();
-        Transaction transaction = session.beginTransaction();
+        Transaction transaction = currentSession().beginTransaction();
 
         try {
 
-            SQLQuery query = session.createSQLQuery("delete from TurmaPessoa where IdTurma = " + idTurma + " and IdPessoa = " + idAluno);
+            SQLQuery query = currentSession().createSQLQuery("delete from TurmaPessoa where IdTurma = " + idTurma + " and IdPessoa = " + idAluno);
 
             query.executeUpdate();
             transaction.commit();
             return true;
-
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return false;
         }
     }
 
     public List<Turma> getTurmasByIdPessoa(int idPessoa) {
-        SQLQuery query = query("select T.* from Turma T inner join TurmaPessoa TP on T.ID = TP.IdTurma where TP.IdPessoa = :idPessoa and T.Ativo = 1 "
-                + "union all "
-                + "select T.* from Turma T where T.IdProfessor = :idPessoa and T.Ativo = 1 "
-                + "order by Nome").addEntity(Turma.class);
-        query.setInteger("idPessoa", idPessoa);
-        return query.list();
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+            SQLQuery query = currentSession().createSQLQuery("select T.* from Turma T inner join TurmaPessoa TP on T.ID = TP.IdTurma where TP.IdPessoa = :idPessoa and T.Ativo = 1 "
+                    + "union all "
+                    + "select T.* from Turma T where T.IdProfessor = :idPessoa and T.Ativo = 1 "
+                    + "order by Nome").addEntity(Turma.class);
+            query.setInteger("idPessoa", idPessoa);
+            List<Turma> data = query.list();
+            transaction.commit();
+            return data;
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return null;
+        }
     }
 
     public boolean verificaProfessorDoAluno(int idProfessor, int idAluno) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
-
-            SQLQuery query = query("select T.* from Turma T inner join TurmaPessoa TP on TP.IdTurma = T.ID "
+            SQLQuery query = currentSession().createSQLQuery("select T.* from Turma T inner join TurmaPessoa TP on TP.IdTurma = T.ID "
                     + "where T.IdProfessor = :idProfessor and TP.IdPessoa = :idAluno and T.Ativo = 1").addEntity(Turma.class);
             query.setInteger("idProfessor", idProfessor);
             query.setInteger("idAluno", idAluno);
 
-            return query.list().size() > 0;
-
+            boolean data = query.list().size() > 0;
+            transaction.commit();
+            return data;
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return false;
         }
     }
 
     public List<Object> getGradeResultadosTurma(int idTurma) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
-
-            SQLQuery query = query("select "
+            SQLQuery query = currentSession().createSQLQuery("select "
                     + "  P.ID as IdPessoa, "
                     + "  P.Nome as NomePessoa, "
                     + "  E.ID as IdExercicio, "
@@ -197,17 +229,20 @@ public class TurmaService extends HibernateUtil<Turma> {
 
             query.setInteger("idTurma", idTurma);
 
-            return query.list();
+            List<Object> data = query.list();
+            transaction.commit();
+            return data;
 
-        } catch (Exception e) {
+        } catch (HibernateException e) {
+            transaction.rollback();
             return null;
         }
     }
 
     public List<Object> getGradeResultadosAluno(int idTurma, int idAluno) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
-
-            SQLQuery query = query("select "
+            SQLQuery query = currentSession().createSQLQuery("select "
                     + "  P.ID as IdPessoa, "
                     + "  P.Nome as NomePessoa, "
                     + "  E.ID as IdExercicio, "
@@ -261,30 +296,35 @@ public class TurmaService extends HibernateUtil<Turma> {
             query.setInteger("idTurma", idTurma);
             query.setInteger("idAluno", idAluno);
 
-            return query.list();
-
+            List<Object> data = query.list();
+            transaction.commit();
+            return data;
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return null;
         }
     }
 
     public boolean enviarConvites(int idTurma) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
 
             PessoaService repoPessoa = new PessoaService();
 
-            SQLQuery query = query("select P.* from TurmaPessoa TP inner join Pessoa P on P.ID = TP.IdPessoa and TP.IdTurma = :idTurma ").addEntity(Pessoa.class);
+            SQLQuery query = currentSession().createSQLQuery("select P.* from TurmaPessoa TP inner join Pessoa P on P.ID = TP.IdPessoa and TP.IdTurma = :idTurma ").addEntity(Pessoa.class);
             query.setInteger("idTurma", idTurma);
             List<Pessoa> alunos = query.list();
-
+            transaction.commit();
             boolean retorno = false;
 
             for (Pessoa aluno : alunos) {
                 retorno = repoPessoa.enviarConvite(aluno);
             }
             return retorno;
-
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return false;
         }
     }
