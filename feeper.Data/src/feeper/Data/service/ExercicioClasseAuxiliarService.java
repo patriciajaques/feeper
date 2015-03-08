@@ -7,7 +7,6 @@ package feeper.Data.service;
 
 import feeper.Data.entity.ExercicioClasseAuxiliar;
 import feeper.Data.model.HibernateUtil;
-import static feeper.Data.model.HibernateUtil.currentSession;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -26,12 +25,18 @@ public class ExercicioClasseAuxiliarService extends HibernateUtil<ExercicioClass
     }
 
     public List<ExercicioClasseAuxiliar> getAllByIdExercicio(int idExercicio) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
 
-            SQLQuery query = query("select * from ExercicioClasseAuxiliar where IdExercicio = :idExercicio").addEntity(ExercicioClasseAuxiliar.class);
+            SQLQuery query = currentSession().createSQLQuery("select * from ExercicioClasseAuxiliar where IdExercicio = :idExercicio").addEntity(ExercicioClasseAuxiliar.class);
             query.setInteger("idExercicio", idExercicio);
-            return query.list();
+            List<ExercicioClasseAuxiliar> data = query.list();
+            transaction.commit();
+
+            return data;
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return null;
         }
     }
@@ -62,7 +67,7 @@ public class ExercicioClasseAuxiliarService extends HibernateUtil<ExercicioClass
     }
 
     public boolean deleteNotIn(int idExercicio, List<Integer> ids) {
-        
+
         Session session = currentSession();
         Transaction transaction = session.beginTransaction();
 
@@ -79,8 +84,9 @@ public class ExercicioClasseAuxiliarService extends HibernateUtil<ExercicioClass
             transaction.commit();
 
             return true;
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return false;
         }
     }

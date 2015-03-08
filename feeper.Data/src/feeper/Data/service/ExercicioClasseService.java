@@ -9,6 +9,7 @@ import feeper.Data.entity.ExercicioClasse;
 import feeper.Data.model.HibernateUtil;
 import java.util.List;
 import org.hibernate.SQLQuery;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -21,13 +22,18 @@ public class ExercicioClasseService extends HibernateUtil<ExercicioClasse> {
     }
 
     public List<ExercicioClasse> getAllByIdExercicio(int idExercicio, int idAluno) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
 
-            SQLQuery query = query("select * from ExercicioClasse where IdExercicio = :idExercicio and IdAluno = :idAluno").addEntity(ExercicioClasse.class);
+            SQLQuery query = currentSession().createSQLQuery("select * from ExercicioClasse where IdExercicio = :idExercicio and IdAluno = :idAluno").addEntity(ExercicioClasse.class);
             query.setInteger("idExercicio", idExercicio);
             query.setInteger("idAluno", idAluno);
-            return query.list();
+            List<ExercicioClasse> data = query.list();
+            transaction.commit();
+            return data;
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return null;
         }
     }

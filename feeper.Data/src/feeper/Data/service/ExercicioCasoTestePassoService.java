@@ -8,7 +8,6 @@ package feeper.Data.service;
 import feeper.Data.entity.ExercicioCasoTestePasso;
 import feeper.Data.entity.ExercicioCasoTestePassoParametro;
 import feeper.Data.model.HibernateUtil;
-import static feeper.Data.model.HibernateUtil.currentSession;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -27,17 +26,25 @@ public class ExercicioCasoTestePassoService extends HibernateUtil<ExercicioCasoT
     }
 
     public List<ExercicioCasoTestePasso> getByIdCasoTeste(int idCasoTeste) {
-        SQLQuery query = query("select * from ExercicioCasoTestePasso where IdCasoTeste = :idCasoTeste order by Ordem, ID").addEntity(ExercicioCasoTestePasso.class);
-        query.setInteger("idCasoTeste", idCasoTeste);
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+            SQLQuery query = currentSession().createSQLQuery("select * from ExercicioCasoTestePasso where IdCasoTeste = :idCasoTeste order by Ordem, ID").addEntity(ExercicioCasoTestePasso.class);
+            query.setInteger("idCasoTeste", idCasoTeste);
 
-        List<ExercicioCasoTestePasso> data = query.list();
+            List<ExercicioCasoTestePasso> data = query.list();
+            transaction.commit();
 
-        ExercicioCasoTestePassoParametroService repoParametro = new ExercicioCasoTestePassoParametroService();
-        for (ExercicioCasoTestePasso passo : data) {
-            passo.setInputParameters(repoParametro.getByIdPasso(passo.getId()));
+            ExercicioCasoTestePassoParametroService repoParametro = new ExercicioCasoTestePassoParametroService();
+            for (ExercicioCasoTestePasso passo : data) {
+                passo.setInputParameters(repoParametro.getByIdPasso(passo.getId()));
+            }
+
+            return data;
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return null;
         }
-
-        return data;
     }
 
     public boolean SavePassos(int idCasoTeste, List<ExercicioCasoTestePasso> passos) {
@@ -53,7 +60,6 @@ public class ExercicioCasoTestePassoService extends HibernateUtil<ExercicioCasoT
             ExercicioCasoTestePasso passo = passos.get(i);
             if ((passo.getExpectedOutputType() == null || passo.getExpectedOutputType().isEmpty())
                     && (passo.getExpectedOutputName() == null || passo.getExpectedOutputName().isEmpty())
-                    && (passo.getExpectedOutputValue() == null || passo.getExpectedOutputValue().isEmpty())
                     && (passo.getObjectName() == null || passo.getObjectName().isEmpty())) {
 
                 passos.remove(i);
@@ -89,23 +95,23 @@ public class ExercicioCasoTestePassoService extends HibernateUtil<ExercicioCasoT
 
     public boolean deleteNotIn(int idCasoTeste, List<Integer> ids) {
 
-        Session session = currentSession();
-        Transaction transaction = session.beginTransaction();
+        Transaction transaction = currentSession().beginTransaction();
 
         try {
             SQLQuery query = null;
             if (ids.isEmpty()) {
-                query = session.createSQLQuery("delete from ExercicioCasoTestePasso where IdCasoTeste = " + idCasoTeste);
+                query = currentSession().createSQLQuery("delete from ExercicioCasoTestePasso where IdCasoTeste = " + idCasoTeste);
             } else {
-                query = session.createSQLQuery("delete from ExercicioCasoTestePasso where ID not in (" + ids.toString().replace("[", "").replace("]", "") + ") and IdCasoTeste = " + idCasoTeste);
+                query = currentSession().createSQLQuery("delete from ExercicioCasoTestePasso where ID not in (" + ids.toString().replace("[", "").replace("]", "") + ") and IdCasoTeste = " + idCasoTeste);
             }
 
             query.executeUpdate();
             transaction.commit();
 
             return true;
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return false;
         }
     }

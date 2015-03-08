@@ -31,7 +31,7 @@
             </div>
             <div class="panel-body" id="pnlMensagens" style="height: 300px; overflow-y: auto">...</div>
             <div class="panel-footer">
-                <form role="form" action="<c:url value='/'/>exercicios/savequestion" id="frmQuestao" method="POST" enctype="multipart/form-data">
+                <form role="form" action="<c:url value='/'/>exercicios/savequestion" id="frmQuestao" method="POST">
                     <input type="hidden" id="hdnQuestaoIdExercicioClasse" name="hdnQuestaoIdExercicioClasse">
                     <input type="hidden" id="hdnQuestaoLinha" name="hdnQuestaoLinha">
                     <input type="hidden" id="hdnQuestaoIdExercicio" name="hdnQuestaoIdExercicio">

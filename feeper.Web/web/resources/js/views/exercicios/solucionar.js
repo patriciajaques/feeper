@@ -7,27 +7,24 @@ $(function () {
     $("#menu-lista-exercicios").addClass("active");
     ControlaBotoes();
 
-    $('#file_upload').uploadify({'swf': baseUrl + 'resources/uploadify/uploadify.swf',
-        'uploader': baseUrl + 'exercicios/uploadclass',
-        'fileTypeDesc': 'Arquivos JAVA',
-        'fileTypeExts': '*.java',
-        'fileSizeLimit': '500KB',
-        'buttonText': adicionarclasseexistenteText,
-        'multi': false,
-        'fileObjName': 'filedata',
-        'checkExisting': false,
-        'width': 154,
-        'height': 22,
-        'removeCompleted': true,
-        'queueId':'fileQueue',
-        'itemTemplate': '<div style="margin-top:40px;" id="' + fileID + '"><div class="uploadify-progress"><div class="uploadify-progress-bar"></div></div></div>',
-        'onUploadSuccess': function (file, data, response) {
-            $("#fileQueue").html("");
+    settings = {
+        url: baseUrl + 'exercicios/uploadclass',
+        dragDrop: false,
+        allowedTypes: "java",
+        returnType: "text",
+        onSuccess: function (files, data, xhr)
+        {
             adicionarClasse(data);
         },
-        'onUploadError': function (file, errorCode, errorMsg, errorString) {
-        }
-    });
+        showDelete: false,
+        showDone: false,
+        showAbort: false,
+        showStatusAfterSuccess: false,
+        maxFileSize: 512000,
+        multiple: false,
+        uploadButtonClass: "btn btn-primary btn-xs"
+    }
+    $("#file_upload").uploadFile(settings);
 
     var ajaxFormOptions = {
         target: '#pnlMensagens',

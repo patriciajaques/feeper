@@ -270,7 +270,7 @@ public class PessoaController extends ApplicationController {
     @ResponseBody
     public String uploadphoto(MultipartHttpServletRequest request) {
 
-        MultipartFile file = request.getFile("filedata");
+        MultipartFile file = request.getFile("file");
         HttpSession session = request.getSession();
         Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
 

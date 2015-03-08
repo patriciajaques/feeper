@@ -9,6 +9,7 @@ import feeper.Data.entity.ExercicioSolucaoErro;
 import feeper.Data.model.HibernateUtil;
 import java.util.List;
 import org.hibernate.SQLQuery;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -19,14 +20,19 @@ public class ExercicioSolucaoErroService extends HibernateUtil<ExercicioSolucaoE
     public ExercicioSolucaoErroService() {
         super(ExercicioSolucaoErro.class);
     }
-    
-     public List<ExercicioSolucaoErro> getAllByIdSolucao(int idSolucao) {
+
+    public List<ExercicioSolucaoErro> getAllByIdSolucao(int idSolucao) {
+        Transaction transaction = currentSession().beginTransaction();
         try {
 
-            SQLQuery query = query("select * from ExercicioSolucaoErro where IdSolucao = :idSolucao").addEntity(ExercicioSolucaoErro.class);
+            SQLQuery query = currentSession().createSQLQuery("select * from ExercicioSolucaoErro where IdSolucao = :idSolucao").addEntity(ExercicioSolucaoErro.class);
             query.setInteger("idSolucao", idSolucao);
-            return query.list();
+            List<ExercicioSolucaoErro> data = query.list();
+            transaction.commit();
+            return data;
         } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return null;
         }
     }

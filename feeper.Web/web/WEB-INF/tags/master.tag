@@ -20,7 +20,7 @@
         <link href="<c:url value='/resources/assets/google-code-prettify/prettify.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/css/site.css'/>" rel="stylesheet" type="text/css" />
         <link href="<c:url value='/resources/fancybox/jquery.fancybox.css'/>" rel="stylesheet" type="text/css" />
-        <link href="<c:url value='/resources/uploadify/uploadify.css'/>" rel="stylesheet" type="text/css" />
+        <link href="<c:url value='/resources/JQueryFileUpload/uploadfile.css'/>" rel="stylesheet" type="text/css"/>
         <link href="<c:url value='/resources/jquery-te/jquery-te-1.4.0.css'/>" rel="stylesheet" type="text/css" />
         <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" >
 
@@ -39,8 +39,8 @@
         <script src="<c:url value='/resources/jquery/jquery.form.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/jquery/jquery.meio.mask.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/assets/google-code-prettify/prettify.js'/>" type="text/javascript"></script>
-        <script src="<c:url value='/resources/fancybox/jquery.fancybox.pack.js'/>" type="text/javascript"></script>
-        <script src="<c:url value='/resources/uploadify/jquery.uploadify.min.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/fancybox/jquery.fancybox.pack.js'/>" type="text/javascript">
+        </script><script src="<c:url value='/resources/JQueryFileUpload/jquery.uploadfile.min.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/jquery-te/jquery-te-1.4.0.min.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/jquery/jquery.cookie.js'/>" type="text/javascript"></script>
 

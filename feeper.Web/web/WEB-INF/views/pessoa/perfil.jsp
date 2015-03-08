@@ -16,25 +16,27 @@
             });
 
             function initFileUpload() {
-                $('#file_upload').uploadify({
-                    'swf': '<c:url value='/resources/uploadify/uploadify.swf'/>',
-                    'uploader': '<c:url value='/'/>pessoa/uploadphoto',
-                    'fileTypeDesc': 'Imagens',
-                    'fileTypeExts': '*.jpg; *.png',
-                    'fileSizeLimit': '500KB',
-                    'buttonText': '<c:choose><c:when test="${pessoa.isPossuiFoto()}"><fmt:message key="button.trocarfoto"/></c:when><c:otherwise><fmt:message key="button.adicionarfoto"/></c:otherwise></c:choose>',
-                    'multi': false,
-                    'fileObjName': 'filedata',
-                    'checkExisting': false,
-                    'width': 120,
-                    'height': 22,
-                    'removeCompleted': false,
-                    'onUploadSuccess': function (file, data, response) {
+
+                settings = {
+                    url: '<c:url value='/'/>pessoa/uploadphoto',
+                    dragDrop: false,
+                    allowedTypes: "jpg,png",
+                    returnType: "text",
+                    onSuccess: function (files, data, xhr)
+                    {
                         $("#idUploadTemp").val(data);
-                    }
-                });
+                    },
+                    showDelete: false,
+                    showDone: false,
+                    showAbort: false,
+                    showStatusAfterSuccess: true,
+                    maxFileSize: 512000,
+                    multiple: false,
+                    uploadButtonClass: "btn btn-primary btn-xs"
+                }
+                $("#file_upload").uploadFile(settings);
             }
-                </script>
+        </script>
 
     </jsp:attribute>
     <jsp:body>
@@ -51,11 +53,6 @@
         <div class="panel panel-default" style="width:500px;">
             <div class="panel-body">
 
-                <div class="pull-right" style="margin-right:3px;">
-                    <input type="file" name="file_upload" id="file_upload" />
-                    <div id="fileQueue"></div>
-                </div>
-
                 <c:choose>
                     <c:when test="${pessoa.isPossuiFoto()}">
                         <img src="<c:url value='/resources/img/photo/photo-${pessoa.getId()}.png'/>" style="width:45px; height:45px;" alt="<c:out value="${pessoa.getNome()}"/>" class="img-circle">
@@ -64,6 +61,18 @@
                         <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="<c:out value="${pessoa.getNome()}"/>" class="img-circle">
                     </c:otherwise>
                 </c:choose>
+                <div class="pull-right" style="margin-right:3px;">
+                    <div id="file_upload">
+                        <c:choose>
+                            <c:when test="${pessoa.isPossuiFoto()}">
+                                <fmt:message key="button.trocarfoto"/>
+                            </c:when>
+                            <c:otherwise>
+                                <fmt:message key="button.adicionarfoto"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                </div>
 
                 <br><br>
 

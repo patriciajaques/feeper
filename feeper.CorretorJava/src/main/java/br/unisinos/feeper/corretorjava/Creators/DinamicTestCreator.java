@@ -66,97 +66,29 @@ public class DinamicTestCreator {
         builder.append("public void test() {");
 
         for (int i = 0; i < teste.getPassos().size(); i++) {
+
             ExercicioCasoTestePasso passo = teste.getPassos().get(i);
 
             //escreve o passo
-            if (passo.getExpectedOutputName() != null && passo.getExpectedOutputName().isEmpty() == false) {
+            if (passo.getOperationType() == 1) {//Atribuicao
 
-                //Operação de atribuir
-                if (passo.getMethodName() == null || passo.getMethodName().isEmpty()) {
-                    //construtor ou primitivo ou designação
-                    Boolean isFirstPrevDeclared = isObjectDeclared(teste, passo.getExpectedOutputName(), i);
-                    Boolean isSecondPrevDeclared = isObjectDeclared(teste, passo.getObjectName(), i);
+                builder.append(this.GetAtribuicao(teste, passo, i));
 
-                    if (isFirstPrevDeclared && isSecondPrevDeclared) {
-                        //seta um objeto para outro;
-                        builder.append(passo.getExpectedOutputName() + " = " + passo.getObjectName() + ";");
-                    } else if (isSecondPrevDeclared) {
-                        //passa de um objeto para um novo
-                        builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = " + passo.getObjectName() + ";");
-                    } else if (isFirstPrevDeclared) {
-                        //mexe em um array ou cria um novo objeto
-                        String objectType = getObjectType(teste, passo.getExpectedOutputName(), i);
+            } else if (passo.getOperationType() == 2) {//Execução 
 
-                        if (passo.getExpectedOutputName().indexOf("[") > 0) {
-                            //mexendo no array quando tem colchetes no nome
-                            objectType = objectType.substring(0, objectType.indexOf("["));
-                        }
-                        Boolean needsNew = needsNewAcessor(objectType);
+                builder.append(this.GetExecucao(passo));
 
-                        if (needsNew == true) {
-                            builder.append(passo.getExpectedOutputName() + " = new " + passo.getObjectName() + this.getParameters(passo) + ";");
-                        } else {
-                            String value = trataDados(objectType, passo.getObjectName());
-                            builder.append(passo.getExpectedOutputName() + " = " + value + ";");
-                        }
-                    } else {
-                        Boolean needsNew = needsNewAcessor(passo.getExpectedOutputType());
-                        if (needsNew == true) {
-                            builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = new " + passo.getObjectName() + this.getParameters(passo) + ";");
-                        } else {
-                            String value = trataDados(passo.getExpectedOutputType(), passo.getObjectName());
-                            builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = " + value + ";");
-                        }
-                    }
-                } else {
-                    //método
-                    builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = " + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ";");
-                }
-            } else if (passo.getExpectedOutputValue() != null && passo.getExpectedOutputValue().isEmpty() == false) {
+            } else if (passo.getOperationType() == 3) {//Verificação
 
-                //valida dados
-                if ((passo.getExpectedOutputType() == null || passo.getExpectedOutputType().isEmpty()) && (passo.getMethodName() == null || passo.getMethodName().isEmpty())) {
+                builder.append(this.GetVerificacao(passo));
 
-                    //compara 2 objetos
-                    String object = "";
-                    if (passo.getObjectName().equals("System.Out")) {
-                        object = "outContent.toString().replaceAll(\"\\r\\n\", \"\").replaceAll(\"\\r\", \"\")";
-                    } else {
-                        object = passo.getObjectName();
-                    }
-                    builder.append("assertEquals((Object)" + passo.getExpectedOutputValue() + ",(Object)" + object + ");");
-                } else if (passo.getMethodName() == null || passo.getMethodName().isEmpty()) {
+            } else if (passo.getOperationType() == 4) {//While
 
-                    //compara valor com objeto
-                    String value = trataDados(passo.getExpectedOutputType(), passo.getExpectedOutputValue());
-                    if (passo.getObjectName().equals("System.Out") && value.startsWith("\"") == false) {
-                        //tratamento para strings
-                        value = "\"" + value + "\"";
-                    }
+                builder.append(this.GetWhile(teste, passo, i));
 
-                    String object = "";
-                    if (passo.getObjectName().equals("System.Out")) {
-                        object = "outContent.toString().replaceAll(\"\\r\\n\", \"\").replaceAll(\"\\r\", \"\")";
-                    } else {
-                        object = passo.getObjectName();
-                    }
+            } else if (passo.getOperationType() == 6) {//Fim Laço
 
-                    builder.append("assertEquals((Object)" + value + ",(Object)" + object + ");");
-                } else {
-
-                    //compara valor com retorno do Método
-                    String value = trataDados(passo.getExpectedOutputType(), passo.getExpectedOutputValue());
-                    if (passo.getObjectName().equals("System.Out") && value.startsWith("\"") == false) {
-                        //tratamento para strings
-                        value = "\"" + value + "\"";
-                    }
-
-                    builder.append("assertEquals((Object)" + value + ",(Object)" + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ");");
-                }
-
-            } else {
-                //somente executa
-                builder.append(passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ";");
+                builder.append(this.GetFimLaco(passo));
             }
         }
 
@@ -181,7 +113,7 @@ public class DinamicTestCreator {
                 ExercicioCasoTestePassoParametro parametro = passo.getInputParameters().get(i);
 
                 //tratamento para dados
-                String value = trataDados(parametro.getObjectType(),parametro.getObjectValue());               
+                String value = trataDados(parametro.getObjectType(), parametro.getObjectValue());
 
                 if (i < nrParametros - 1) {
                     builder.append(value + ",");
@@ -194,15 +126,194 @@ public class DinamicTestCreator {
         return builder.toString();
     }
 
-    private String getAfter() {
+    private String GetAtribuicao(ExercicioCasoTeste teste, ExercicioCasoTestePasso passo, int passoIndex) {
 
         StringBuilder builder = new StringBuilder();
-        builder.append("@After ");
-        builder.append("public void cleanUpStreams() {");
-        builder.append("System.setOut(stdout);");
-        builder.append("}");
+        if (passo.getMethodName() == null || passo.getMethodName().isEmpty()) {
+            //construtor ou primitivo ou designação
+            Boolean isFirstPrevDeclared = isObjectDeclared(teste, passo.getExpectedOutputName(), passoIndex);
+            Boolean isSecondPrevDeclared = isObjectDeclared(teste, passo.getObjectName(), passoIndex);
 
+            if (isFirstPrevDeclared && isSecondPrevDeclared) {
+                //seta um objeto para outro;
+                builder.append(passo.getExpectedOutputName() + " = " + passo.getObjectName() + ";");
+            } else if (isSecondPrevDeclared) {
+                //passa de um objeto para um novo
+                builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = " + passo.getObjectName() + ";");
+            } else if (isFirstPrevDeclared) {
+                //mexe em um array ou cria um novo objeto
+                String objectType = getObjectType(teste, passo.getExpectedOutputName(), passoIndex);
+
+                Boolean needsNew = needsNewAcessor(objectType);
+
+                if (needsNew == true) {
+                    builder.append(passo.getExpectedOutputName() + " = new " + passo.getObjectName() + this.getParameters(passo) + ";");
+                } else {
+                    String value = trataDados(objectType, passo.getObjectName());
+                    builder.append(passo.getExpectedOutputName() + " = " + value + ";");
+                }
+            } else {
+                //Cria 2 objetos novos
+                Boolean needsNew = needsNewAcessor(passo.getExpectedOutputType());
+                if (needsNew == true) {
+                    builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = new " + passo.getObjectName() + this.getParameters(passo) + ";");
+                } else {
+                    String value = trataDados(passo.getExpectedOutputType(), passo.getObjectName());
+                    builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = " + value + ";");
+                }
+            }
+        } else {
+
+            //método
+            Boolean isFirstPrevDeclared = isObjectDeclared(teste, passo.getExpectedOutputName(), passoIndex);
+            Boolean isSecondPrevDeclared = isObjectDeclared(teste, passo.getObjectName(), passoIndex);
+            if (isFirstPrevDeclared && isSecondPrevDeclared) {
+                builder.append(passo.getExpectedOutputName() + " = " + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ";");
+            } else if (isSecondPrevDeclared) {
+                //passa de um objeto para um novo
+                builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = " + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ";");
+            } else if (isFirstPrevDeclared) {
+                // mexe em um array ou cria um novo objeto
+                String objectType = getObjectType(teste, passo.getExpectedOutputName(), passoIndex);
+
+                Boolean needsNew = needsNewAcessor(objectType);
+
+                if (needsNew == true) {
+                    builder.append(passo.getExpectedOutputName() + " = new " + passo.getObjectName() + "()" + "." + passo.getMethodName() + this.getParameters(passo) + ";");
+                } else {
+                    String value = trataDados(objectType, passo.getObjectName());
+                    builder.append(passo.getExpectedOutputName() + " = " + value + "." + passo.getMethodName() + this.getParameters(passo) + ";");
+                }
+            } else {
+                //Cria 2 objetos novo
+                Boolean needsNew = needsNewAcessor(passo.getExpectedOutputType());
+                if (needsNew == true) {
+                    builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = new " + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ";");
+                } else {
+                    String value = trataDados(passo.getExpectedOutputType(), passo.getObjectName());
+                    builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = " + value + "." + passo.getMethodName() + this.getParameters(passo) + ";");
+                }
+            }
+        }
         return builder.toString();
+    }
+
+    private String GetExecucao(ExercicioCasoTestePasso passo) {
+        return passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ";";
+    }
+
+    private String GetVerificacao(ExercicioCasoTestePasso passo) {
+
+        String first = "";
+        String second = "";
+        if ((passo.getExpectedOutputType() == null || passo.getExpectedOutputType().isEmpty()) && (passo.getMethodName() == null || passo.getMethodName().isEmpty())) {
+            //compara 2 objetos
+            first = passo.getExpectedOutputName();
+
+            if (passo.getObjectName().equals("System.Out")) {
+                second = "outContent.toString().replaceAll(\"\\r\\n\", \"\").replaceAll(\"\\r\", \"\")";
+            } else {
+                second = passo.getObjectName();
+            }
+        } else if (passo.getMethodName() == null || passo.getMethodName().isEmpty()) {
+
+            //compara valor com objeto
+            first = trataDados(passo.getExpectedOutputType(), passo.getExpectedOutputName());
+            if (passo.getObjectName().equals("System.Out") && first.startsWith("\"") == false) {
+                //tratamento para strings
+                first = "\"" + first + "\"";
+            }
+
+            if (passo.getObjectName().equals("System.Out")) {
+                second = "outContent.toString().replaceAll(\"\\r\\n\", \"\").replaceAll(\"\\r\", \"\")";
+            } else {
+                second = passo.getObjectName();
+            }
+        } else {
+
+            //compara valor com retorno do Método
+            first = trataDados(passo.getExpectedOutputType(), passo.getExpectedOutputName());
+            if (passo.getObjectName().equals("System.Out") && first.startsWith("\"") == false) {
+                //tratamento para strings
+                first = "\"" + first + "\"";
+            }
+
+            second = passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo);
+        }
+
+        return "assertEquals(((Object)" + first + "),((Object)" + second + "));";
+    }
+
+    private String GetWhile(ExercicioCasoTeste teste, ExercicioCasoTestePasso passo, int passoIndex) {
+
+        String first = "";
+        String second = "";
+        if ((passo.getExpectedOutputType() == null || passo.getExpectedOutputType().isEmpty()) && (passo.getMethodName() == null || passo.getMethodName().isEmpty())) {
+            //compara 2 objetos
+            first = passo.getExpectedOutputName();
+
+            if (passo.getObjectName().equals("System.Out")) {
+                second = "outContent.toString().replaceAll(\"\\r\\n\", \"\").replaceAll(\"\\r\", \"\")";
+            } else {
+                second = passo.getObjectName();
+            }
+        } else if (passo.getMethodName() == null || passo.getMethodName().isEmpty()) {
+
+            //compara valor com objeto
+            first = trataDados(passo.getExpectedOutputType(), passo.getExpectedOutputName());
+            if (passo.getObjectName().equals("System.Out") && first.startsWith("\"") == false) {
+                //tratamento para strings
+                first = "\"" + first + "\"";
+            }
+
+            if (passo.getObjectName().equals("System.Out")) {
+                second = "outContent.toString().replaceAll(\"\\r\\n\", \"\").replaceAll(\"\\r\", \"\")";
+            } else {
+                second = passo.getObjectName();
+            }
+        } else {
+
+            //compara valor com retorno do Método
+            first = trataDados(passo.getExpectedOutputType(), passo.getExpectedOutputName());
+            if (passo.getObjectName().equals("System.Out") && first.startsWith("\"") == false) {
+                //tratamento para strings
+                first = "\"" + first + "\"";
+            }
+
+            second = passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo);
+        }
+
+        if (passo.getComparisionType() == 1) {//==
+
+            return "while(" + first + ".equals(" + second + ")){";
+
+        } else if (passo.getComparisionType() == 2) {//!=
+
+            return "while(" + first + ".equals(" + second + ")==false){";
+
+        } else if (passo.getComparisionType() == 3) {//>
+
+            return "while(" + first + " > " + second + "){";
+
+        } else if (passo.getComparisionType() == 4) {//>=
+
+            return "while(" + first + " >= " + second + "){";
+
+        } else if (passo.getComparisionType() == 5) {//<
+
+            return "while(" + first + " < " + second + "){";
+
+        } else if (passo.getComparisionType() == 6) {//<=
+
+            return "while(" + first + " <= " + second + "){";
+        }
+
+        return "{";
+    }
+
+    private String GetFimLaco(ExercicioCasoTestePasso passo) {
+
+        return "}";
     }
 
     private String getObjectType(ExercicioCasoTeste teste, String objectName, int endIndex) {
@@ -264,5 +375,16 @@ public class DinamicTestCreator {
         }
 
         return dataValue;
+    }
+
+    private String getAfter() {
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("@After ");
+        builder.append("public void cleanUpStreams() {");
+        builder.append("System.setOut(stdout);");
+        builder.append("}");
+
+        return builder.toString();
     }
 }

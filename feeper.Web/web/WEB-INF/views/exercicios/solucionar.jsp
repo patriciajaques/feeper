@@ -39,7 +39,6 @@
             var baseUrl = "<c:url value='/'/>";
             var newClassContent = "${CodigoFontePadraoClasse}";
             var confirmaExclusaoText = '<fmt:message key="label.confirmaexclusao"/>';
-            var adicionarclasseexistenteText = '<fmt:message key="button.adicionarclasseexistente"/>';
             var desmarcarfavoritaText = '<fmt:message key="button.desmarcarfavorita"/>';
             var marcarfavoritaText = '<fmt:message key="button.marcarfavorita"/>';
         </script>
@@ -176,7 +175,7 @@
         </button>
 
         <!--Modal exibida para adicionar novas classes-->
-        <div style="display:none;" id="divNovaClasse">
+        <div style="display:none;width: 600px;height: 150px;" id="divNovaClasse">
             <div class="input-group" style="width:400px; margin-bottom:3px">
                 <input type="text" class="form-control" id="txtNomeClasse" placeholder="<fmt:message key="label.exercicios.nomeclasseinforme"/>" maxlength="45">
                 <span class="input-group-addon">.java</span>
@@ -185,12 +184,13 @@
                 <button type="button" class="btn btn-primary btn-xs" onclick="adicionarClasse('');"><fmt:message key="button.adicionarnovaclasse"/></button>
             </div>
             <div class="pull-left" style="margin-left:3px">
-                <input type="file" name="file_upload" id="file_upload" />
+                <div id="file_upload">
+                    <fmt:message key="button.adicionarclasseexistente"/>
+                </div>
             </div>
             <div class="pull-left" style="margin-left:3px">
                 <button type="button" class="btn btn-default btn-xs" onclick="cancelarClasse();"><fmt:message key="button.cancelar"/></button>
             </div>
-            <div id="fileQueue" style="display:block;"></div>
         </div>
 
         <!--Modal exibida para adicionar perguntas-->

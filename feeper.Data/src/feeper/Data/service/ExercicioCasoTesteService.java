@@ -25,22 +25,30 @@ public class ExercicioCasoTesteService extends HibernateUtil<ExercicioCasoTeste>
     }
 
     public List<ExercicioCasoTeste> getByIdExercicio(int idExercicio, boolean somenteAtivos) {
-        SQLQuery query = null;
-        if (somenteAtivos) {
-            query = query("select * from ExercicioCasoTeste where IdExercicio = :idExercicio and Ativo = 1 order by Ordem, ID").addEntity(ExercicioCasoTeste.class);
-        } else {
-            query = query("select * from ExercicioCasoTeste where IdExercicio = :idExercicio order by Ordem, ID").addEntity(ExercicioCasoTeste.class);
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+            SQLQuery query = null;
+            if (somenteAtivos) {
+                query = currentSession().createSQLQuery("select * from ExercicioCasoTeste where IdExercicio = :idExercicio and Ativo = 1 order by Ordem, ID").addEntity(ExercicioCasoTeste.class);
+            } else {
+                query = currentSession().createSQLQuery("select * from ExercicioCasoTeste where IdExercicio = :idExercicio order by Ordem, ID").addEntity(ExercicioCasoTeste.class);
+            }
+            query.setInteger("idExercicio", idExercicio);
+
+            List<ExercicioCasoTeste> data = query.list();
+            transaction.commit();
+
+            ExercicioCasoTestePassoService repoPasso = new ExercicioCasoTestePassoService();
+            for (ExercicioCasoTeste casoTeste : data) {
+                casoTeste.setPassos(repoPasso.getByIdCasoTeste(casoTeste.getId()));
+            }
+
+            return data;
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return null;
         }
-        query.setInteger("idExercicio", idExercicio);
-
-        List<ExercicioCasoTeste> data = query.list();
-
-        ExercicioCasoTestePassoService repoPasso = new ExercicioCasoTestePassoService();
-        for (ExercicioCasoTeste casoTeste : data) {
-            casoTeste.setPassos(repoPasso.getByIdCasoTeste(casoTeste.getId()));
-        }
-
-        return data;
     }
 
     public boolean SaveCasos(int idExercicio, List<ExercicioCasoTeste> casosTeste) {
@@ -78,25 +86,25 @@ public class ExercicioCasoTesteService extends HibernateUtil<ExercicioCasoTeste>
     }
 
     public boolean deleteNotIn(int idExercicio, List<Integer> ids) {
-        
-        Session session = currentSession();
-        Transaction transaction = session.beginTransaction();
+
+        Transaction transaction = currentSession().beginTransaction();
 
         try {
 
             SQLQuery query = null;
             if (ids.isEmpty()) {
-                query = session.createSQLQuery("delete from ExercicioCasoTeste where IdExercicio = " + idExercicio);
+                query = currentSession().createSQLQuery("delete from ExercicioCasoTeste where IdExercicio = " + idExercicio);
             } else {
-                query = session.createSQLQuery("delete from ExercicioCasoTeste where ID not in (" + ids.toString().replace("[", "").replace("]", "") + ") and IdExercicio = " + idExercicio);
+                query = currentSession().createSQLQuery("delete from ExercicioCasoTeste where ID not in (" + ids.toString().replace("[", "").replace("]", "") + ") and IdExercicio = " + idExercicio);
             }
 
             query.executeUpdate();
             transaction.commit();
 
             return true;
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return false;
         }
     }

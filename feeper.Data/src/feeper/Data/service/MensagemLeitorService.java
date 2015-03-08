@@ -27,20 +27,19 @@ public class MensagemLeitorService extends HibernateUtil<MensagemLeitor> {
     
     public boolean atualizarDataLeitura(int idLeitor, char tipoLeitor, Date dataLeitura)
     {
-        Session session = currentSession();
-        Transaction transaction = session.beginTransaction();
-        
+        Transaction transaction = currentSession().beginTransaction(); 
         try {
-            SQLQuery query = query("update MensagemLeitor set DataUltimaLeitura = '" + Util.formatDate(dataLeitura, "yyyy/MM/dd HH:mm:ss") + "' where IdLeitor = " + idLeitor + " and TipoLeitor = '" + tipoLeitor + "'");
+            SQLQuery query = currentSession().createSQLQuery("update MensagemLeitor set DataUltimaLeitura = '" + Util.formatDate(dataLeitura, "yyyy/MM/dd HH:mm:ss") + "' where IdLeitor = " + idLeitor + " and TipoLeitor = '" + tipoLeitor + "'");
             query.executeUpdate();
             
             transaction.commit();
             
             return true;
-        } catch (HibernateException e) { 
+        } catch (Exception e) {
             transaction.rollback();
+            System.err.println(e.fillInStackTrace());
             return false;
-        } 
+        }
     }
     
 }

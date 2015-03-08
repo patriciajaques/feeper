@@ -100,13 +100,11 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
     $scope.onClasseCarregada = function (data) {
 
-        var classe = JSON.parse(data);
-
         if ($scope.exercicio.classesAuxiliares == null) {
             $scope.exercicio.classesAuxiliares = [];
         }
 
-        $scope.exercicio.classesAuxiliares.push(classe);
+        $scope.exercicio.classesAuxiliares.push(data);
         $scope.carregarAssinaturas();
         $.fancybox.close();
     }
@@ -385,8 +383,8 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
         var index = $scope.editingCasoTeste.passos.indexOf(passo);
         $scope.editingCasoTeste.passos.splice(index + 1, 0, novoPasso);
-        $scope.expectedOutputNameChanged(novoPasso);
-        $scope.expectedOutputValueChanged(novoPasso);
+        $scope.expectedOutputNameBlured(novoPasso);
+        $scope.expectedOutputValueBlured(novoPasso);
 
         for (var i = index + 1; i < $scope.editingCasoTeste.passos.length; i++) {
 
@@ -449,8 +447,8 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             }
 
             $scope.editingCasoTeste.passos.push(passo);
-            $scope.expectedOutputNameChanged(passo);
-            $scope.expectedOutputValueChanged(passo);
+            $scope.expectedOutputNameBlured(passo);
+            $scope.expectedOutputValueBlured(passo);
         }
 
         $.fancybox.update();
@@ -799,49 +797,44 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
     $scope.initControls = function () {
 
         $("#menu-lista-exercicio").addClass("active");
-        $('#upload_descricao').uploadify({
-            'swf': baseUrl + 'resources/uploadify/uploadify.swf',
-            'uploader': baseUrl + 'exercicios/uploaddescricao',
-            'fileTypeDesc': 'Arquivos PDF',
-            'fileTypeExts': '*.pdf',
-            'fileSizeLimit': '500KB',
-            'buttonText': escolherArquivoText,
-            'multi': false,
-            'fileObjName': 'filedata',
-            'checkExisting': false,
-            'width': 146,
-            'height': 34,
-            'removeCompleted': true,
-            'onUploadSuccess': function (file, data, response) {
 
+        var settings = {
+            url: baseUrl + 'exercicios/uploaddescricao',
+            dragDrop: false,
+            allowedTypes: "pdf",
+            returnType: "json",
+            onSuccess: function (files, data, xhr)
+            {
                 $scope.$apply($scope.onDescricaoCarregada(data));
             },
-            'onUploadError': function (file, errorCode, errorMsg, errorString) {
-                alert('The file ' + file.name + ' could not be uploaded: ' + errorString);
-            }
-        });
+            showDelete: false,
+            showDone:false,
+            showAbort:false,
+            showStatusAfterSuccess:false,
+            maxFileSize: 512000,
+            multiple: false,
+            uploadButtonClass: "btn btn-primary"
+        }
+        $("#upload_descricao").uploadFile(settings);
 
-        $('#upload_Classe_Auxiliar').uploadify({
-            'swf': baseUrl + 'resources/uploadify/uploadify.swf',
-            'uploader': baseUrl + 'exercicios/uploadClasseAuxiliar',
-            'fileTypeDesc': 'Arquivos Java',
-            'fileTypeExts': '*.Java',
-            'fileSizeLimit': '500KB',
-            'buttonText': adicionarclasseexistenteText,
-            'multi': false,
-            'fileObjName': 'filedata',
-            'checkExisting': false,
-            'width': 160,
-            'height': 22,
-            'removeCompleted': true,
-            'onUploadSuccess': function (file, data, response) {
-
+        settings = {
+            url: baseUrl + 'exercicios/uploadClasseAuxiliar',
+            dragDrop: false,
+            allowedTypes: "java",
+            returnType: "json",
+            onSuccess: function (files, data, xhr)
+            {
                 $scope.$apply($scope.onClasseCarregada(data));
             },
-            'onUploadError': function (file, errorCode, errorMsg, errorString) {
-                alert('The file ' + file.name + ' could not be uploaded: ' + errorString);
-            }
-        });
+            showDelete: false,
+            showDone:false,
+            showAbort:false,
+            showStatusAfterSuccess:false,
+            maxFileSize: 512000,
+            multiple: false,
+            uploadButtonClass: "btn btn-primary btn-xs"
+        }
+        $("#upload_Classe_Auxiliar").uploadFile(settings);
     }
 
     $scope.updateMessagesAutocompletes = function () {

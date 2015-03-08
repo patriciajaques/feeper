@@ -267,7 +267,7 @@ public class ExerciciosController extends ApplicationController {
     @ResponseBody
     public int uploaddescricao(MultipartHttpServletRequest request) throws IOException {
 
-        MultipartFile file = request.getFile("filedata");
+        MultipartFile file = request.getFile("file");
         HttpSession session = request.getSession();
         Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
 
@@ -314,7 +314,7 @@ public class ExerciciosController extends ApplicationController {
     @ResponseBody
     public ExercicioClasseAuxiliar uploadClasseAuxiliar(MultipartHttpServletRequest request) throws IOException {
 
-        MultipartFile file = request.getFile("filedata");
+        MultipartFile file = request.getFile("file");
         HttpSession session = request.getSession();
         Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
 
@@ -725,10 +725,10 @@ public class ExerciciosController extends ApplicationController {
             @ModelAttribute("hdnQuestaoIdExercicio") int id,
             @ModelAttribute("hdnQuestaoIdClasse") int idClasse,
             @ModelAttribute("hdnQuestaoLinha") int linha,
-            HttpSession session,
-            HttpServletRequest request,
-            BindingResult result) {
+            HttpServletRequest request) {
 
+        HttpSession session = request.getSession(false);
+        
         ModelAndView mav = new ModelAndView();
 
         Pessoa pessoa = (Pessoa) session.getAttribute("UsuarioLogado");
@@ -831,7 +831,7 @@ public class ExerciciosController extends ApplicationController {
     public String uploadclass(MultipartHttpServletRequest request) {
 
         try {
-            MultipartFile file = request.getFile("filedata");
+            MultipartFile file = request.getFile("file");
             String fileName = Util.prepareStringForSave(Util.removeExtension(file.getOriginalFilename()));
             return fileName + "#@#" + IOUtils.toString(file.getInputStream(), "UTF-8");
         } catch (IOException ex) {

@@ -41,12 +41,8 @@
         </style>
         <script type="text/javascript">
                     var baseUrl = "<c:url value='/'/>";
-                    var escolherArquivoText = '<fmt:message key="button.escolherarquivo"/>';
-                    var adicionarclasseexistenteText = '<fmt:message key="button.adicionarclasseexistente"/>';
                     var erroCarregarAssinaturasText = '<fmt:message key="label.exercicios.errocarregarassinaturas"/>';
-                    var confirmarExcluirText = '<fmt:message key="label.confirmaexclusao"/>';</script>
-
-
+                    var confirmarExcluirText = '<fmt:message key="label.confirmaexclusao"/>';                                      </script>
     </jsp:attribute>
     <jsp:body>
         <div ng-app="feeper" ng-controller="editExercicios" >
@@ -86,7 +82,10 @@
                         </textarea>
                     </div>
                     <div id="uploadpdf" ng-show="exercicio.usaDescricaoPDF == true" class="div-detalhamento">
-                        <input type="file" name="upload_descricao" id="upload_descricao" />
+
+                        <button id="upload_descricao" type="button"  class="btn btn-primary btn-sm" >
+                            <fmt:message key="button.escolherarquivo"/>
+                        </button>
                         <!--Este ng-repeat é uma gambiarra para não dar o erro 404, mas o que é um programador sem gambiarra-->
                         <div ng-repeat="url in arquivoPDFURLs">                            
                             <iframe border="0" width="100%" height="600px" ng-src="{{url.domain}}" >
@@ -176,8 +175,8 @@
                     <button type="button" ng-click="voltar()" class="btn btn-default btn-voltar"><fmt:message key="button.voltarlistagem"/></button>
 
                     <!--Modal exibida para adicionar novas classes-->
-                    <div style="display:none;" id="divNovaClasse">
-                        <div class="input-group" style="width:400px; margin-bottom:3px">
+                    <div style="display:none;width: 600px;height: 150px;" id="divNovaClasse">
+                        <div class="input-group" style="width:100%; margin-bottom:3px">
                             <input type="text" class="form-control" ng-model="NomeNovaClasse" placeholder="<fmt:message key="label.exercicios.nomeclasseinforme"/>" maxlength="45">
                             <span class="input-group-addon">.java</span>
                         </div>
@@ -185,7 +184,7 @@
                             <button type="button" class="btn btn-primary btn-xs" ng-click="adicionaClasse();"><fmt:message key="button.adicionarnovaclasse"/></button>
                         </div>
                         <div class="pull-left" style="margin-left:3px">
-                            <input type="file" id="upload_Classe_Auxiliar" />
+                            <button id="upload_Classe_Auxiliar" type="button" class="btn btn-primary btn-xs"><fmt:message key="button.adicionarclasseexistente"/></button>
                         </div>
                     </div>
 
@@ -250,7 +249,7 @@
                                                                 <input type="text" class="form-control passoDataType" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-disabled="isDeclaredObject(parametro.objectValue, passo)" ng-model="parametro.objectType" placeholder="<fmt:message key="label.exercicios.tipoparametro"/>"/>
                                                             </td>
                                                             <td>
-                                                                <input type="text" class="form-control" ng-model="parametro.objectValue" ng-blur="parametroValueBlured(passo, parametro)" placeholder="<fmt:message key="label.exercicios.valorparametro"/>"/>
+                                                                <input type="text" class="form-control passoObject" ng-model="parametro.objectValue" ng-blur="parametroValueBlured(passo, parametro)" placeholder="<fmt:message key="label.exercicios.valorparametro"/>"/>
                                                             </td>
                                                             <td>,</td>
                                                         </tr>
