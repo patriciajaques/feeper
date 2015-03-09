@@ -1,5 +1,9 @@
 package feeper.controller;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.async.Callback;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import feeper.Data.entity.ConfiguracaoSistema;
 import feeper.Data.entity.Exercicio;
 import feeper.Data.entity.ExercicioCasoTeste;
@@ -37,18 +41,14 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.Future;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -532,10 +532,7 @@ public class ExerciciosController extends ApplicationController {
 
                 //enviar para correção
                 log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId(), ETipoLog.CODIGO_ENVIADO);
-
-                ExercicioSolucao solucao = this.enviarCorrecao(idSolucao.getResult());
-                log(pessoa.getId(), "CORRETOR ID SOLUÇÃO: " + idSolucao.getResult() + " RESULTADO: " + solucao.getIdStatus(), ETipoLog.CODIGO_ENVIADO);
-
+                this.enviarCorrecao(idSolucao.getResult());
             }
         }
 
@@ -723,12 +720,12 @@ public class ExerciciosController extends ApplicationController {
     @RequestMapping(value = "/savequestion", method = RequestMethod.POST)
     public ModelAndView savequestion(
             @ModelAttribute("hdnQuestaoIdExercicio") int id,
-            @ModelAttribute("hdnQuestaoIdClasse") int idClasse,
+            @ModelAttribute("hdnQuestaoIdExercicioClasse") int idClasse,
             @ModelAttribute("hdnQuestaoLinha") int linha,
             HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
-        
+
         ModelAndView mav = new ModelAndView();
 
         Pessoa pessoa = (Pessoa) session.getAttribute("UsuarioLogado");
@@ -859,7 +856,7 @@ public class ExerciciosController extends ApplicationController {
         return 0;
     }
 
-    public ExercicioSolucao enviarCorrecao(int idSolucao) {
+    public void enviarCorrecao(int idSolucao) {
 
         ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();
         ExercicioSolucao solucao = repoSolucao.getById(idSolucao);
@@ -872,81 +869,108 @@ public class ExerciciosController extends ApplicationController {
         solucao.setTestes(repoTestes.getByIdExercicio(idExercicio, true));
 
         try {
-
-            Charset charset = Charset.forName("UTF8");
             ConfiguracaoService confService = new ConfiguracaoService();
             ConfiguracaoSistema conf = confService.getConfiguracao();
             String serverURL = conf.getEnderecoSistemaCorretorJava();
-            URL url = new URL(serverURL);
-            URLConnection connection = url.openConnection();
 
             String xmlData = this.solucaoToXML(solucao);
 
-            connection.setDoOutput(true);
-            connection.setRequestProperty("Accept-Charset", "UTF-8");
-            connection.setRequestProperty("Content-Type", "application/xml");
-            connection.setConnectTimeout(6000000);
-            connection.setReadTimeout(6000000);
-            OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream(), charset);
-            out.write(xmlData);
-            out.close();
+            Unirest.setTimeouts(600000, 600000);
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), charset));
-            StringBuilder builder = new StringBuilder();
-            String line = null;
-            while ((line = in.readLine()) != null) {
-                builder.append(line);
-            }
-            solucao = this.solucaoFromXML(builder.toString());
+            Future<HttpResponse<String>> future = Unirest.post(serverURL)
+                    .header("accept", "application/xml")
+                    .header("Accept-Charset", "UTF-8")
+                    .header("Content-Type", "application/xml")
+                    .body(xmlData)
+                    .asStringAsync(new Callback<String>() {
 
-            if (solucao.getErros() != null) {
-                ExercicioSolucaoErroService repoErrosSolucao = new ExercicioSolucaoErroService();
+                        public void failed(UnirestException ex) {
+                            ExerciciosController.setaErroSolucao(solucao, ex.getMessage());
+                        }
 
-                for (ExercicioSolucaoErro erro : solucao.getErros()) {
+                        public void completed(HttpResponse<String> response) {
+                            try {
+                                Charset charset = Charset.forName("UTF8");
+                                BufferedReader in = new BufferedReader(new InputStreamReader(response.getRawBody(), charset));
+                                StringBuilder builder = new StringBuilder();
+                                String line = null;
 
-                    repoErrosSolucao.insert(erro);
-                }
-            }
-            repoSolucao.update(solucao);
+                                while ((line = in.readLine()) != null) {
+                                    builder.append(line);
+                                }
+                                ExerciciosController.setaResultadoSolucao(builder.toString());
+                            } catch (Exception ex) {
+                                ExerciciosController.setaErroSolucao(solucao, ex.getMessage());
+                            }
+                        }
+
+                        public void cancelled() {
+                            ExerciciosController.setaErroSolucao(solucao, "The request has been cancelled");
+                        }
+                    });
 
         } catch (Exception ex) {
-            solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
-            solucao.setErrosCount(1);
-            repoSolucao.update(solucao);
-
-            ExercicioSolucaoErro erro = new ExercicioSolucaoErro();
-            erro.setIdSolucao(solucao.getId());
-            erro.setIdCasoTeste(-1);
-            erro.setErrorType(EErrorType.COMPILACAO);
-            erro.setLinhaErro(-1);
-            erro.setMensagemErro(ex.getMessage());
-
-            ExercicioSolucaoErroService repoErrosSolucao = new ExercicioSolucaoErroService();
-            repoErrosSolucao.insert(erro);
-
-            log(solucao.getIdAluno(), "ERRO ID SOLUÇÃO: " + idSolucao, ETipoLog.CODIGO_ENVIADO);
+            ExerciciosController.setaErroSolucao(solucao, ex.getMessage());
+            log(solucao.getIdAluno(), "ERRO ID SOLUÇÃO: " + solucao.getId(), ETipoLog.CODIGO_ENVIADO);
         }
-
-        return solucao;
     }
 
-    private String solucaoToXML(ExercicioSolucao solucao) throws JAXBException {
+    public static void setaErroSolucao(ExercicioSolucao solucao, String mensagem) {
+
+        ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();
+
+        solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
+        solucao.setErrosCount(1);
+        repoSolucao.update(solucao);
+
+        ExercicioSolucaoErro erro = new ExercicioSolucaoErro();
+        erro.setIdSolucao(solucao.getId());
+        erro.setIdCasoTeste(-1);
+        erro.setErrorType(EErrorType.COMPILACAO);
+        erro.setLinhaErro(-1);
+        erro.setMensagemErro(mensagem);
+
+        ExercicioSolucaoErroService repoErrosSolucao = new ExercicioSolucaoErroService();
+        repoErrosSolucao.insert(erro);
+    }
+
+    public static void setaResultadoSolucao(String responseText) throws JAXBException {
+
+        ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();
+        ExercicioSolucao solucao = ExerciciosController.solucaoFromXML(responseText);
+
+        if (solucao.getErros() != null) {
+            ExercicioSolucaoErroService repoErrosSolucao = new ExercicioSolucaoErroService();
+
+            for (ExercicioSolucaoErro erro : solucao.getErros()) {
+
+                repoErrosSolucao.insert(erro);
+            }
+        }
+        repoSolucao.update(solucao);
+    }
+
+    private static String solucaoToXML(ExercicioSolucao solucao) throws JAXBException {
 
         for (ExercicioSolucaoClasse classe : solucao.getClasses()) {
             classe.setCodigo(classe.getCodigo().replaceAll("\n", "#n").replaceAll("\r", "#r"));
+
         }
-        JAXBContext context = JAXBContext.newInstance(ExercicioSolucao.class);
+        JAXBContext context = JAXBContext.newInstance(ExercicioSolucao.class
+        );
         Marshaller m = context.createMarshaller();
         StringWriter sw = new StringWriter();
+
         m.marshal(solucao, sw);
 
         return sw.toString();
     }
 
-    private ExercicioSolucao solucaoFromXML(String xmlString) throws JAXBException {
+    private static ExercicioSolucao solucaoFromXML(String xmlString) throws JAXBException {
 
         StringReader reader = new StringReader(xmlString);
-        JAXBContext jaxbContext = JAXBContext.newInstance(ExercicioSolucao.class);
+        JAXBContext jaxbContext = JAXBContext.newInstance(ExercicioSolucao.class
+        );
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         return (ExercicioSolucao) jaxbUnmarshaller.unmarshal(reader);
     }

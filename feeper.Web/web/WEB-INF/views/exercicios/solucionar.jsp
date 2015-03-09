@@ -58,17 +58,6 @@
     <jsp:body>
         <h2><c:out value="${Exercicio.getNome()}"/></h2>
 
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <c:if test="${Exercicio.getUsaDescricaoPDF() != true}">
-                    ${Exercicio.getDescricaoHtml()}
-                </c:if>
-                <c:if test="${Exercicio.getUsaDescricaoPDF() == true}">
-                    <iframe border="0" width="100%" height="600px" src="<c:url value='/'/>exercicios/verdescricao?exercicioId=${Exercicio.getId()}">
-                    </iframe>
-                </c:if>
-            </div>
-        </div>
         <c:if test="${Solucao != null}">
             <h4><fmt:message key="label.exercicios.resultado"/></h4>
             <c:choose>
@@ -136,6 +125,17 @@
             </script>
         </c:if>
 
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <c:if test="${Exercicio.getUsaDescricaoPDF() != true}">
+                    ${Exercicio.getDescricaoHtml()}
+                </c:if>
+                <c:if test="${Exercicio.getUsaDescricaoPDF() == true}">
+                    <iframe border="0" width="100%" height="600px" src="<c:url value='/'/>exercicios/verdescricao?exercicioId=${Exercicio.getId()}">
+                    </iframe>
+                </c:if>
+            </div>
+        </div>
         <h3><fmt:message key="label.exercicios.classes"/></h3>
         <div class="list-group">
             <c:if test="${not empty Classes}">
@@ -201,8 +201,8 @@
             </div>
             <div class="panel-body" id="pnlMensagens" style="height: 300px; overflow-y: auto">...</div>
             <div class="panel-footer">
-                <form role="form" action="<c:url value='/'/>exercicios/savequestion" id="frmQuestao" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" id="hdnQuestaoIdClasse" name="hdnQuestaoIdClasse">
+                <form role="form" action="<c:url value='/'/>exercicios/savequestion" id="frmQuestao" method="POST">
+                    <input type="hidden" id="hdnQuestaoIdExercicioClasse" name="hdnQuestaoIdExercicioClasse">
                     <input type="hidden" id="hdnQuestaoLinha" name="hdnQuestaoLinha">
                     <input type="hidden" id="hdnQuestaoIdExercicio" name="hdnQuestaoIdExercicio" value="${Exercicio.getId()}">
                     <textarea class="form-control input-sm" rows="3" name="questaoClasse"></textarea>

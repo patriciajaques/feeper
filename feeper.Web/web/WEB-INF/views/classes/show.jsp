@@ -35,7 +35,7 @@
                     <input type="hidden" id="hdnQuestaoIdExercicioClasse" name="hdnQuestaoIdExercicioClasse">
                     <input type="hidden" id="hdnQuestaoLinha" name="hdnQuestaoLinha">
                     <input type="hidden" id="hdnQuestaoIdExercicio" name="hdnQuestaoIdExercicio">
-                    <textarea class="form-control input-sm" rows="3" name="questaoExercicioClasse"></textarea>
+                    <textarea class="form-control input-sm" rows="3" name="questaoClasse"></textarea>
                     <button class="btn btn-success btn-xs" type="submit"><span class="glyphicon glyphicon-ok"></span> <fmt:message key="button.enviarpergunta"/></button>
                 </form>
             </div>

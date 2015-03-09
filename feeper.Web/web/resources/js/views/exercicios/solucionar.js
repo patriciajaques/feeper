@@ -204,7 +204,7 @@ function exibeQuadroDuvida(row)
     $("#panel-markedquestions").show("slide", "fast");
     MostraCarregando();
     var idClasse = $("#hdnIdClasse").val();
-    $("#hdnQuestaoIdClasse").val(idClasse);
+    $("#hdnQuestaoIdExercicioClasse").val(idClasse);
     $("#hdnQuestaoLinha").val(row);
     $("#panel-markedquestions .panel-body").load(baseUrl + "exercicios/showquestion/" + exercicioID + "/" + idClasse + "/" + row, function () {
         RemoveCarregando();
