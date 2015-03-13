@@ -31,7 +31,7 @@ public class MensagensPredefinidasController extends ApplicationController {
         return "mensagenspredefinidas/edit";
     }
 
-    @RequestMapping(value = "/getJson", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/getJson", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public List<MensagemPredefinida> getJson(HttpServletRequest request) {
 

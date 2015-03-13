@@ -27,7 +27,7 @@ public class ConfiguracoesController extends ApplicationController {
         return "configuracoes/edit";
     }
 
-    @RequestMapping(value = "/getJson", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/getJson", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public ConfiguracaoSistema getJson(HttpServletRequest request) {
 
