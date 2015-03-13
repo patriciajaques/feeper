@@ -64,7 +64,6 @@ public class MainCreator {
             builder.append("ExercicioSolucaoErro erro = new ExercicioSolucaoErro(" + solucao.getId() + "," + teste.getId() + ",\"" + mensagem.replace("\"", "") + "\"," + ((int) EErrorType.DINAMICO) + ",message);");
 
             builder.append("erros.add(erro);");
-            builder.append("break;");//retorna somente 1 erro dinâmico para reduzir a carga cognitiva;
             builder.append("}");
         }
 

@@ -169,6 +169,7 @@ public class CommunicationService {
                         if (resultadoDinamico != null && resultadoDinamico.getErros() != null) {
                             for (ExercicioSolucaoErro erroDinamico : resultadoDinamico.getErros()) {
                                 solucao.getErros().add(erroDinamico);
+                                break;// só mostra o primeiro para diminuir a carga cognitiva
                             }
                         }
 

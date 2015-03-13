@@ -5,7 +5,7 @@ app.controller('editMensagensPredefinidas', function ($scope, $http) {
 
         $http({
             url: baseUrl + 'mensagenspredefinidas/getJson',
-            method: 'GET'
+            method: 'POST'
         }).success(function (data) {
             $scope.mensagens = data;
         });

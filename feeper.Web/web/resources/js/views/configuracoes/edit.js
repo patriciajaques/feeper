@@ -5,7 +5,7 @@ app.controller('editConfiguracoes', function ($scope, $http) {
 
         $http({
             url: baseUrl + 'configuracoes/getJson',
-            method: 'GET'
+            method: 'POST'
         }).success(function (data) {
             $scope.configuracao = data;
         });
