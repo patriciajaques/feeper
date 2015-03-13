@@ -5,9 +5,6 @@
         <property name="hibernate.connection.url">jdbc:mysql://mysql42072-feeper2.jelasticlw.com.br/feeper</property>
         <property name="hibernate.connection.username">feeper</property>
         <property name="hibernate.connection.password">kx8f33p3r</property>
-        <!--<property name="hibernate.connection.url">jdbc:mysql://mysql43319-testeFeeper.jelasticlw.com.br/feeper</property>
-        <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password">Hk21xuApU3</property>-->
         <!--<property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/feeper</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password"/>-->
@@ -59,6 +56,6 @@
         <mapping resource="feeper/Data/entity/ExercicioSolucaoErro.hbm.xml"/>
         <mapping resource="feeper/Data/entity/ExercicioClasseAuxiliar.hbm.xml"/>
         <mapping resource="feeper/Data/entity/ConfiguracaoSistema.hbm.xml"/>
-        <mapping resource="feeper/Data/entity/MensagemPersonalizada.hbm.xml"/>
+        <mapping resource="feeper/Data/entity/MensagemPredefinida.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

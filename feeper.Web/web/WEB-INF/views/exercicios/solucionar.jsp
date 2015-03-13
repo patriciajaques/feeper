@@ -31,7 +31,7 @@
 
         </style>
         <script src="<c:url value='/resources/ace/ace.js'/>" type="text/javascript"></script>
-        <script src="<c:url value='/resources/js/views/exercicios/solucionar.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/js/views/exercicios/solucionar.js?v=1.01'/>" type="text/javascript"></script>
         <script type="text/javascript">
             var exercicioID = "${Exercicio.getId()}";
             var fileID = "${fileID}";

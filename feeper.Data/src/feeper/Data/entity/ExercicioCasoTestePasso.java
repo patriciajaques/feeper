@@ -19,13 +19,13 @@ public class ExercicioCasoTestePasso {
     private int operationType;
     private String expectedOutputType;
     private String expectedOutputName;
-    private String expectedOutputValue;
+    private int comparisionType;
     private String objectName;
     private String methodName;
-    
+
     //Dummy property, only for Json Compability
     private Boolean selected;
-    
+
     //auxiliar no angular
     private List<ExercicioCasoTestePassoParametro> inputParameters;
 
@@ -52,8 +52,6 @@ public class ExercicioCasoTestePasso {
     public void setOrdem(int ordem) {
         this.ordem = ordem;
     }
-    
-    
 
     public int getOperationType() {
         return operationType;
@@ -79,12 +77,12 @@ public class ExercicioCasoTestePasso {
         this.expectedOutputName = ExpectedOutputName;
     }
 
-    public String getExpectedOutputValue() {
-        return expectedOutputValue;
+    public int getComparisionType() {
+        return comparisionType;
     }
 
-    public void setExpectedOutputValue(String ExpectedOutputValue) {
-        this.expectedOutputValue = ExpectedOutputValue;
+    public void setComparisionType(int comparisionType) {
+        this.comparisionType = comparisionType;
     }
 
     public String getObjectName() {

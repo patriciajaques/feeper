@@ -23,9 +23,6 @@ public class ExercicioCasoTestePasso {
     private String objectName;
     private String methodName;
     
-    //Dummy property, only for Json Compability
-    private Boolean selected;
-    
     //auxiliar no angular
     private List<ExercicioCasoTestePassoParametro> inputParameters;
 
@@ -109,13 +106,5 @@ public class ExercicioCasoTestePasso {
 
     public void setInputParameters(List<ExercicioCasoTestePassoParametro> inputParameters) {
         this.inputParameters = inputParameters;
-    }
-
-    public Boolean getSelected() {
-        return selected;
-    }
-
-    public void setSelected(Boolean selected) {
-        this.selected = selected;
     }
 }

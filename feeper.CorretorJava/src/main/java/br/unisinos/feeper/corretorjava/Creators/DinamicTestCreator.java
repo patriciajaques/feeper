@@ -100,7 +100,7 @@ public class DinamicTestCreator {
     private String getParameters(ExercicioCasoTestePasso passo) {
 
         StringBuilder builder = new StringBuilder();
-        if (passo.getObjectName().indexOf("[") > 0) {
+        if (passo.getObjectName().indexOf("[") > 0 && (passo.getMethodName() == null || passo.getMethodName().isEmpty())) {
             builder.append("");
         } else if (passo.getInputParameters() == null || passo.getInputParameters().isEmpty()) {
             builder.append("()");

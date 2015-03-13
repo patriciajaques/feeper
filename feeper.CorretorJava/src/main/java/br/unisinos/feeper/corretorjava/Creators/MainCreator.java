@@ -59,9 +59,12 @@ public class MainCreator {
             builder.append("failures = result.getFailures();");
 
             builder.append("for (Failure failure : failures) {");
-            builder.append("ExercicioSolucaoErro erro = new ExercicioSolucaoErro(" + solucao.getId() + "," + teste.getId() + ",\"" + teste.getMensagemPersonalizada().replace("\"", "") + "\"," + ((int) EErrorType.DINAMICO) + ",\"O resultado obtido difere do esperado!\");");
+            String mensagem = teste.getMensagemPersonalizada() == null ? "" : teste.getMensagemPersonalizada();
+            builder.append("String message = failure.getTrace().contains(\"java.lang.AssertionError\")? \"O resultado obtido difere do esperado\" : failure.getTrace();");
+            builder.append("ExercicioSolucaoErro erro = new ExercicioSolucaoErro(" + solucao.getId() + "," + teste.getId() + ",\"" + mensagem.replace("\"", "") + "\"," + ((int) EErrorType.DINAMICO) + ",message);");
 
             builder.append("erros.add(erro);");
+            builder.append("break;");//retorna somente 1 erro dinâmico para reduzir a carga cognitiva;
             builder.append("}");
         }
 

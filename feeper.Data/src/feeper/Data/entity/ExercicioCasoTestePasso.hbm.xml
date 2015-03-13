@@ -22,8 +22,8 @@
         <property name="expectedOutputName" type="string">
             <column length="200" name="ExpectedOutputName"/>
         </property>
-        <property name="expectedOutputValue" type="string">
-            <column length="200" name="ExpectedOutputValue"/>
+        <property name="comparisionType" type="int">
+            <column name="ComparisionType"/>
         </property>
         <property name="objectName" type="string">
             <column length="200" name="ObjectName"/>

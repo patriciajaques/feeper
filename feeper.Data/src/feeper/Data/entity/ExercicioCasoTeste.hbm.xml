@@ -16,6 +16,9 @@
         <property name="mensagemPersonalizada" type="string">
             <column length="5000" name="MensagemPersonalizada"/>
         </property>
+        <property name="mensagemCompilacao" type="string">
+            <column length="5000" name="MensagemCompilacao"/>
+        </property>
         <property name="ordem" type="int">
             <column name="Ordem" />
         </property>

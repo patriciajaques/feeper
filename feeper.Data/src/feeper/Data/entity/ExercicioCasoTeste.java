@@ -17,6 +17,7 @@ public class ExercicioCasoTeste {
     private int idExercicio;
     private Boolean ativo;
     private String mensagemPersonalizada;
+    private String mensagemCompilacao;
     private int ordem;
     
     //auxiliar no Angular
@@ -52,6 +53,14 @@ public class ExercicioCasoTeste {
 
     public void setMensagemPersonalizada(String mensagemPersonalizada) {
         this.mensagemPersonalizada = mensagemPersonalizada;
+    }
+
+    public String getMensagemCompilacao() {
+        return mensagemCompilacao;
+    }
+
+    public void setMensagemCompilacao(String mensagemCompilacao) {
+        this.mensagemCompilacao = mensagemCompilacao;
     }
 
     public int getOrdem() {

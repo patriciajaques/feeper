@@ -161,7 +161,7 @@
                                     <li class="divider"></li>
                                     </c:if>
                                     <c:if test="${UsuarioLogado.getIdPerfil() == 2}">
-                                    <li><a href="<c:url value='/'/>mensagenspersonalizadas/edit"><span class="glyphicon glyphicon-bookmark"></span>&nbsp;&nbsp;<fmt:message key="menu.mensagenspersonalizadas"/></a></li>
+                                    <li><a href="<c:url value='/'/>mensagenspredefinidas/edit"><span class="glyphicon glyphicon-bookmark"></span>&nbsp;&nbsp;<fmt:message key="menu.mensagenspredefinidas"/></a></li>
                                     <li class="divider"></li>
                                     </c:if>
 

@@ -1,10 +1,10 @@
 var app = angular.module('feeper', []);
-app.controller('editMensagensPersonalizadas', function ($scope, $http) {
+app.controller('editMensagensPredefinidas', function ($scope, $http) {
 
     $scope.init = function () {
 
         $http({
-            url: baseUrl + 'mensagenspersonalizadas/getJson',
+            url: baseUrl + 'mensagenspredefinidas/getJson',
             method: 'GET'
         }).success(function (data) {
             $scope.mensagens = data;
@@ -29,7 +29,7 @@ app.controller('editMensagensPersonalizadas', function ($scope, $http) {
     $scope.save = function () {
 
         $http({
-            url: baseUrl + 'mensagenspersonalizadas/saveJson',
+            url: baseUrl + 'mensagenspredefinidas/saveJson',
             method: 'POST',
             data: $scope.mensagens,
         }).success(function (sucess) {

@@ -1,5 +1,6 @@
 package br.unisinos.feeper.corretorjava.Communication;
 
+import br.unisinos.feeper.corretorjava.Creators.ClassCreator;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioCasoTeste;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucao;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucaoClasse;
@@ -84,12 +85,15 @@ public class CommunicationService {
                 FileUtils.deleteDirectory(dir);
                 dir.mkdirs();
 
+                ClassCreator classCreator = new ClassCreator();
                 //Escreve a Solucao do aluno na pasta tmp
                 for (ExercicioSolucaoClasse classe : solucao.getClasses()) {
 
                     String fileName = tmpPath + File.separator + classe.getNomeClasse() + ".java";
                     Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"));
-                    writer.write(classe.getCodigo());
+
+                    String codigoAdaptado = classCreator.getCodigoAdaptado(classe.getCodigo());
+                    writer.write(codigoAdaptado);
                     writer.close();
                 }
 
@@ -136,7 +140,7 @@ public class CommunicationService {
                             compiler.CompileTest(fileName, classPathFileNames);
                         } catch (CompilationException e) {
                             solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
-                            ExercicioSolucaoErro erroDinamico = new ExercicioSolucaoErro(solucao.getId(), teste.getId(), teste.getMensagemPersonalizada(), EErrorType.DINAMICO, e.getMessage());
+                            ExercicioSolucaoErro erroDinamico = new ExercicioSolucaoErro(solucao.getId(), teste.getId(), teste.getMensagemCompilacao(), EErrorType.DINAMICO, e.getMessage());
                             solucao.getErros().add(erroDinamico);
                         }
                     }

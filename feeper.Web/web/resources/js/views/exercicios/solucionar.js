@@ -238,11 +238,19 @@ function adicionarClasse(content) {
             return;
         }
         var fileName = trataString($("#txtNomeClasse").val());
+        if (fileName.toLowerCase() == "main") {
+            alert("Atenção!\n\nVocê não precisa criar a classe principal aqui!");
+            return;
+        }
         content = newClassContent.replace(/#@#CLASSE#@#/gi, fileName).replace(/#n#/gi, "\n");
     }
     else
     {
         var fileName = content.split("#@#")[0];
+        if (fileName.toLowerCase() == "main") {
+            alert("Atenção!\n\nVocê não precisa criar a classe principal aqui!");
+            return;
+        }
         content = content.replace(fileName + "#@#", "");
     }
 

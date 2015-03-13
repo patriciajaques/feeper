@@ -10,7 +10,7 @@
         <script src="<c:url value='/resources/ace/ace.js'/>" type="text/javascript"></script>
         <link href="<c:url value='/resources/jquery/themes/base/jquery.ui.all.css'/>" rel="stylesheet" type="text/css" />
         <script src="<c:url value='/resources/js/angular.min.js'/>" type="text/javascript"></script>
-        <script src="<c:url value='/resources/js/views/exercicios/edit.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/js/views/exercicios/edit.js?v=1.01'/>" type="text/javascript"></script>
 
         <style type="text/css" media="screen">
             .line-selected {
@@ -42,9 +42,9 @@
         <script type="text/javascript">
                     var baseUrl = "<c:url value='/'/>";
                     var erroCarregarAssinaturasText = '<fmt:message key="label.exercicios.errocarregarassinaturas"/>';
-                    var confirmarExcluirText = '<fmt:message key="label.confirmaexclusao"/>';                                      </script>
-    </jsp:attribute>
-    <jsp:body>
+                    var confirmarExcluirText = '<fmt:message key="label.confirmaexclusao"/>';</script>
+        </jsp:attribute>
+        <jsp:body>
         <div ng-app="feeper" ng-controller="editExercicios" >
             <h2 ng-show="exercicio.id == 0">
                 <fmt:message key="label.exercicios.novo"/>
@@ -145,7 +145,8 @@
                                 <tr>
                                     <th style="width:10px;">#</th>
                                     <th><fmt:message key="label.exercicios.acoes"/></th>   
-                                    <th><fmt:message key="label.exercicios.mensagempersonalizada"/></th>
+                                    <th><fmt:message key="label.exercicios.mensagemcompilacao"/></th>
+                                    <th><fmt:message key="label.exercicios.mensagempersonalizada"/></th>                            
                                     <th><fmt:message key="label.exercicios.ativo"/></th>
                                 </tr>
                             </thead>
@@ -159,8 +160,11 @@
                                         <button type="button" ng-click="editaPassosCasoTeste(casoTeste)" class="btn btn-default btn-sm" title="Editar"><i style="color: green;" class="fa fa-pencil"></i></button>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control mensagemPersonalizada" ng-focus="updateMessagesAutocompletes()" ng-model="casoTeste.mensagemPersonalizada">
+                                        <textarea rows="3" class="form-control mensagemProfessor" ng-focus="updateMessagesAutocompletes()" ng-model="casoTeste.mensagemCompilacao" placeholder="<fmt:message key="label.exercicios.mensagemcompilacaoinforme"/>"></textarea>
                                     </td>
+                                    <td>
+                                        <textarea rows="3" class="form-control mensagemProfessor" ng-focus="updateMessagesAutocompletes()" ng-model="casoTeste.mensagemPersonalizada" placeholder="<fmt:message key="label.exercicios.mensagempersonalizadainforme"/>"></textarea>
+                                    </td>                      
                                     <td style="width: 50px">
                                         <input type="checkbox" ng-model="casoTeste.ativo">
                                     </td>
@@ -196,8 +200,20 @@
                         </div>
                         <div class="checkbox">
                             <label>
+                                <input type="checkbox" ng-model="gerarTestesContrutores">
+                                <fmt:message key="label.exercicios.gerarcasostesteconstrutores"/>
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
                                 <input type="checkbox" ng-model="gerarTestesGetSet">
                                 <fmt:message key="label.exercicios.gerarcasostestegetset"/>
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="gerarTestesMetodos">
+                                <fmt:message key="label.exercicios.gerarcasostestemetodos"/>
                             </label>
                         </div>
                         <button type="button" ng-click="concluiOpcoesClasse()" class="btn btn-primary"><fmt:message key="button.concluir"/></button>
@@ -212,7 +228,7 @@
                                     <td style="width: 15px">
                                         <input type="checkbox" ng-model="passo.selected" />
                                     </td>
-                                    <td style="width: 80px">
+                                    <td style="width: 80px;white-space: nowrap;">
                                         <button type="button" ng-click="deletaPasso(passo)" class="btn btn-default btn-sm" title="Excluir"><i style="color: red;" class="fa fa-remove"></i></button>
                                         <button type="button" ng-click="duplicaPasso(passo)" class="btn btn-default btn-sm" title="Duplicar"><i class="fa fa-files-o"></i></button>
                                     </td>
@@ -224,10 +240,12 @@
                                         <input type="text" class="form-control passoDataType" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-disabled="passo.operationType == 2 || isDeclaredObject(passo.expectedOutputName, passo) || isDeclaredObject(passo.expectedOutputValue, passo)" ng-model="passo.expectedOutputType" placeholder="<fmt:message key="label.exercicios.tipovariavel"/>" />
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control passoObject" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-show="passo.operationType != 3" ng-disabled="passo.operationType == 2"  ng-model="passo.expectedOutputName" ng-blur="expectedOutputNameBlured(passo)" placeholder="<fmt:message key="label.exercicios.nomevariavel"/>"/>
-                                        <input type="text" class="form-control passoObject" data-index='{{$index}}' onfocus="$(this).trigger('input');" ng-show="passo.operationType == 3" ng-model="passo.expectedOutputValue" ng-blur="expectedOutputValueBlured(passo)" placeholder="<fmt:message key="label.exercicios.valornomevariavel"/>"/>
+                                        <input type="text" class="form-control passoObject" data-index='{{$index}}' onfocus="$(this).trigger('input');"  ng-disabled="passo.operationType == 2"  ng-model="passo.expectedOutputName" ng-blur="expectedOutputNameBlured(passo)" placeholder="<fmt:message key="label.exercicios.nomevariavel"/>"/>
                                     </td>
-                                    <td align="center"> {{ passo.operationType == 3?"==":"=" }} </td>
+                                    <td align="center"> 
+                                        <span ng-show="passo.operationType == 1 || passo.operationType == 2">=</span>
+                                        <span ng-show="passo.operationType == 3">==</span>
+                                    </td>
                                     <td>
                                         <input type="text"  class="form-control passoDataTypeOrObject" data-index='{{$index}}' onfocus="$(this).trigger('input');"  ng-model="passo.objectName" ng-change="objectNameChanged(passo)" placeholder="<fmt:message key="label.exercicios.classevariavelValor"/>"/>
                                     </td>

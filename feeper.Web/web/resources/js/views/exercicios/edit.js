@@ -144,7 +144,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         $scope.showClasseCode(novaClasse);
     }
 
-
     $scope.showClasseCode = function (classe) {
 
         $scope.editingClass = classe;
@@ -203,63 +202,331 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
         $.fancybox.close();
 
+        if ($scope.gerarTestesContrutores == true) {
+            $scope.criaTesteConstrutores();
+        }
         if ($scope.gerarTestesGetSet == true) {
-            if ($scope.exercicio.casosTeste == null)
-                $scope.exercicio.casosTeste = [];
-            for (var i = 0; i < $scope.editingClass.assinatura.membros.length; i++) {
-                var membro = $scope.editingClass.assinatura.membros[i];
-                //somente fields não publicas
-                if (membro.memberType == 1 && membro.modifier != 1 && $scope.canAutomateFieldTest(membro)) {
+            $scope.criaTesteSetters();
+            $scope.criaTesteGetters();
+        }
+        if ($scope.gerarTestesMetodos == true) {
+            $scope.criaTesteMetodos();
+        }
+    }
 
-                    var setName = 'set' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
-                    var getName = 'get' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
-                    var caso = new Object();
-                    //iniciar aqui o caso
-                    caso.ativo = true;
-                    caso.ordem = $scope.getnextCasoOrdem();
-                    caso.mensagemPersonalizada = "Os métodos " + setName + "/" + getName + " não apresentaram o comportamento correto!";
-                    caso.passos = [];
-                    var passo1 = new Object();
-                    passo1.ordem = $scope.getnextPassoOrdem(caso);
-                    passo1.operationType = 1;
-                    passo1.expectedOutputType = $scope.editingClass.nomeClasse;
-                    passo1.expectedOutputName = $scope.editingClass.nomeClasse.toLowerCase() + '1';
-                    passo1.objectName = $scope.editingClass.nomeClasse;
-                    caso.passos.push(passo1);
-                    var passo2 = new Object();
-                    passo2.ordem = $scope.getnextPassoOrdem(caso);
-                    passo2.operationType = 2;
-                    passo2.objectName = $scope.editingClass.nomeClasse.toLowerCase() + '1';
-                    passo2.methodName = setName;
-                    passo2.inputParameters = []
-                    var parametro = new Object();
-                    parametro.ordem = $scope.getnextParametroOrdem(passo2);
-                    parametro.objectType = membro.type;
-                    var valor = null
-                    if (membro.type.toLowerCase() == 'string') {
-                        valor = membro.name + '_Teste';
+    $scope.criaTesteConstrutores = function () {
+
+        for (var i = 0; i < $scope.editingClass.assinatura.membros.length; i++) {
+            var membro = $scope.editingClass.assinatura.membros[i];
+            //somente construtores publicos
+            if (membro.memberType == 2 && membro.modifier == 1 && $scope.canAutomateConstructorTest(membro)) {
+
+                var caso = new Object();
+                //iniciar aqui o caso
+                caso.ativo = true;
+                caso.ordem = $scope.getnextCasoOrdem();
+                caso.mensagemCompilacao = "Você não inseriu um construtor com " + (membro.parametros == null ? 0 : membro.parametros.length) + " parâmetros na classe " + $scope.editingClass.nomeClasse;
+                caso.passos = [];
+                var passo = new Object();
+                passo.ordem = $scope.getnextPassoOrdem(caso);
+                passo.operationType = 1;
+                passo.expectedOutputType = $scope.editingClass.nomeClasse;
+                passo.expectedOutputName = $scope.editingClass.nomeClasse.toLowerCase() + '1';
+                passo.objectName = $scope.editingClass.nomeClasse;
+                passo.inputParameters = [];
+
+                if (membro.parametros != null) {
+                    for (var j = 0; j < membro.parametros.length; j++) {
+                        var parametroConstrutor = membro.parametros[j];
+
+                        var parametro = new Object();
+                        parametro.ordem = $scope.getnextParametroOrdem(passo);
+                        parametro.objectType = parametroConstrutor.type;
+                        var valor = null
+                        if (parametroConstrutor.type.toLowerCase() == 'string') {
+                            valor = 'teste';
+                        }
+                        else if (parametroConstrutor.type.toLowerCase() == 'bool' || parametroConstrutor.type.toLowerCase() == 'boolean') {
+                            valor = true;
+                        }
+                        else {
+                            valor = 666;
+                        }
+                        parametro.objectValue = valor;
+                        passo.inputParameters.push(parametro);
                     }
-                    else if (membro.type.toLowerCase() == 'bool' || membro.type.toLowerCase() == 'boolean') {
-                        valor = true;
-                    }
-                    else {
-                        valor = 666;
-                    }
-                    parametro.objectValue = valor;
-                    passo2.inputParameters.push(parametro);
-                    caso.passos.push(passo2);
-                    var passo3 = new Object();
-                    passo3.ordem = $scope.getnextPassoOrdem(caso);
-                    passo3.operationType = 3;
-                    passo3.expectedOutputType = membro.type;
-                    passo3.expectedOutputValue = valor;
-                    passo3.objectName = passo2.objectName = $scope.editingClass.nomeClasse.toLowerCase() + '1';
-                    passo3.methodName = getName;
-                    caso.passos.push(passo3);
-                    $scope.exercicio.casosTeste.push(caso);
+                }
+                caso.passos.push(passo);
+                $scope.exercicio.casosTeste.push(caso);
+            }
+        }
+    }
+
+    $scope.canAutomateConstructorTest = function (constructor) {
+
+        if (constructor.parametros != null) {
+            for (var i = 0; i < constructor.parametros.length; i++) {
+                var parametro = constructor.parametros[i];
+                switch (parametro.type.toLowerCase()) {
+                    case 'string':
+                    case 'short':
+                    case 'int':
+                    case 'integer':
+                    case 'long':
+                    case 'double':
+                    case 'boolean':
+                        continue;
+                    default :
+                        return false;
                 }
             }
         }
+        return true;
+    }
+
+    $scope.criaTesteSetters = function () {
+        for (var i = 0; i < $scope.editingClass.assinatura.membros.length; i++) {
+            var membro = $scope.editingClass.assinatura.membros[i];
+            //somente fields não publicas
+            if (membro.memberType == 1 && membro.modifier != 1 && $scope.canAutomateFieldTest(membro)) {
+
+                var setName = 'set' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
+                var caso = new Object();
+                //iniciar aqui o caso
+                caso.ativo = true;
+                caso.ordem = $scope.getnextCasoOrdem();
+                caso.mensagemPersonalizada = "O método " + setName + " não está setando o valor do atributo " + membro.name + ". Verifique o método " + setName + "!";
+                caso.mensagemCompilacao = " O método de modificação do atributo " + membro.name + " não possui a assinatura esperada. Revise o nome(" + setName + "), parâmetros recebidos e retornados desse método!";
+                caso.passos = [];
+                var passo1 = new Object();
+                passo1.ordem = $scope.getnextPassoOrdem(caso);
+                passo1.operationType = 1;
+                passo1.expectedOutputType = $scope.editingClass.nomeClasse;
+                passo1.expectedOutputName = $scope.editingClass.nomeClasse.toLowerCase() + '1';
+                passo1.objectName = $scope.editingClass.nomeClasse;
+                caso.passos.push(passo1);
+                var passo2 = new Object();
+                passo2.ordem = $scope.getnextPassoOrdem(caso);
+                passo2.operationType = 2;
+                passo2.objectName = $scope.editingClass.nomeClasse.toLowerCase() + '1';
+                passo2.methodName = setName;
+                passo2.inputParameters = []
+                var parametro = new Object();
+                parametro.ordem = $scope.getnextParametroOrdem(passo2);
+                parametro.objectType = membro.type;
+                var valor = null
+                if (membro.type.toLowerCase() == 'string') {
+                    valor = membro.name + '_Teste';
+                }
+                else if (membro.type.toLowerCase() == 'bool' || membro.type.toLowerCase() == 'boolean') {
+                    valor = true;
+                }
+                else {
+                    valor = 666;
+                }
+                parametro.objectValue = valor;
+                passo2.inputParameters.push(parametro);
+                caso.passos.push(passo2);
+                var passo3 = new Object();
+                passo3.ordem = $scope.getnextPassoOrdem(caso);
+                passo3.operationType = 3;
+                passo3.expectedOutputType = membro.type;
+                passo3.expectedOutputName = valor;
+                passo3.objectName = passo2.objectName = $scope.editingClass.nomeClasse.toLowerCase() + '1';
+                passo3.methodName = "get_Private_Field_Acessor";
+                passo3.inputParameters = [];
+                parametro = new Object();
+                parametro.ordem = $scope.getnextParametroOrdem(passo3);
+                parametro.objectType = "String";
+                parametro.objectValue = membro.name;
+                passo3.inputParameters.push(parametro);
+                caso.passos.push(passo3);
+                $scope.exercicio.casosTeste.push(caso);
+            }
+        }
+    }
+
+    $scope.criaTesteGetters = function () {
+        for (var i = 0; i < $scope.editingClass.assinatura.membros.length; i++) {
+            var membro = $scope.editingClass.assinatura.membros[i];
+            //somente fields não publicas
+            if (membro.memberType == 1 && membro.modifier != 1 && $scope.canAutomateFieldTest(membro)) {
+
+                var setName = 'set' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
+                var getName = 'get' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
+                var caso = new Object();
+                //iniciar aqui o caso
+                caso.ativo = true;
+                caso.ordem = $scope.getnextCasoOrdem();
+                caso.mensagemPersonalizada = "O método " + getName + "() deveria ter retornado o valor do atributo " + membro.name + " , mas retornou outro valor. Verifique esse método!";
+                caso.mensagemCompilacao = "O método de acesso ao atributo " + membro.name + " não possui a assinatura esperada(" + getName + "()).Revise esse método!";
+                caso.passos = [];
+                var passo1 = new Object();
+                passo1.ordem = $scope.getnextPassoOrdem(caso);
+                passo1.operationType = 1;
+                passo1.expectedOutputType = $scope.editingClass.nomeClasse;
+                passo1.expectedOutputName = $scope.editingClass.nomeClasse.toLowerCase() + '1';
+                passo1.objectName = $scope.editingClass.nomeClasse;
+                caso.passos.push(passo1);
+                var passo2 = new Object();
+                passo2.ordem = $scope.getnextPassoOrdem(caso);
+                passo2.operationType = 2;
+                passo2.objectName = $scope.editingClass.nomeClasse.toLowerCase() + '1';
+                passo2.methodName = setName;
+                passo2.inputParameters = []
+                var parametro = new Object();
+                parametro.ordem = $scope.getnextParametroOrdem(passo2);
+                parametro.objectType = membro.type;
+                var valor = null
+                if (membro.type.toLowerCase() == 'string') {
+                    valor = membro.name + '_Teste';
+                }
+                else if (membro.type.toLowerCase() == 'bool' || membro.type.toLowerCase() == 'boolean') {
+                    valor = true;
+                }
+                else {
+                    valor = 666;
+                }
+                parametro.objectValue = valor;
+                passo2.inputParameters.push(parametro);
+                caso.passos.push(passo2);
+                var passo3 = new Object();
+                passo3.ordem = $scope.getnextPassoOrdem(caso);
+                passo3.operationType = 3;
+                passo3.expectedOutputType = membro.type;
+                passo3.expectedOutputName = valor;
+                passo3.objectName = passo2.objectName = $scope.editingClass.nomeClasse.toLowerCase() + '1';
+                passo3.methodName = getName;
+                caso.passos.push(passo3);
+                $scope.exercicio.casosTeste.push(caso);
+            }
+        }
+    }
+
+    $scope.canAutomateFieldTest = function (membro) {
+
+        switch (membro.type.toLowerCase()) {
+            case 'string':
+                return true;
+            case 'short':
+                return true;
+            case 'int':
+            case 'integer':
+                return true;
+            case 'long':
+                return true;
+            case 'double':
+                return true;
+            case 'boolean':
+                return true;
+        }
+        return false;
+    }
+
+    $scope.criaTesteMetodos = function () {
+
+        for (var i = 0; i < $scope.editingClass.assinatura.membros.length; i++) {
+            var membro = $scope.editingClass.assinatura.membros[i];
+            //somente métodos publicos
+            if (membro.memberType == 3 && membro.modifier == 1 && $scope.canAutomateMethodTest(membro) && $scope.methodIsGetterOrSetter(membro.name) == false) {
+
+                var caso = new Object();
+                //iniciar aqui o caso
+                caso.ativo = true;
+                caso.ordem = $scope.getnextCasoOrdem();
+                if (membro.type == "void")
+                {
+                    caso.mensagemCompilacao = "Você deveria ter implementado um método " + membro.name + " que recebe " + (membro.parametros == null ? 0 : membro.parametros.length) + " parâmetros!";
+                }
+                else
+                {
+                    caso.mensagemCompilacao = "Você deveria ter implementado um método " + membro.name + " que recebe " + (membro.parametros == null ? 0 : membro.parametros.length) + " parâmetros e retorna um valor do tipo " + membro.type + "!";
+                }
+                caso.passos = [];
+                var passo1 = new Object();
+                passo1.ordem = $scope.getnextPassoOrdem(caso);
+                passo1.operationType = 1;
+                passo1.expectedOutputType = $scope.editingClass.nomeClasse;
+                passo1.expectedOutputName = $scope.editingClass.nomeClasse.toLowerCase() + '1';
+                passo1.objectName = $scope.editingClass.nomeClasse;
+                caso.passos.push(passo1);
+                var passo2 = new Object();
+                passo2.ordem = $scope.getnextPassoOrdem(caso);
+                if (membro.type == "void") {
+                    passo2.operationType = 2;
+                }
+                else {
+                    passo2.operationType = 1;
+                    passo2.expectedOutputType = membro.type;
+                    passo2.expectedOutputName = membro.type.toLowerCase() + '1';
+                }
+                passo2.objectName = $scope.editingClass.nomeClasse.toLowerCase() + '1';
+                passo2.methodName = membro.name;
+                passo2.inputParameters = []
+
+                if (membro.parametros != null) {
+                    for (var j = 0; j < membro.parametros.length; j++) {
+                        var parametroConstrutor = membro.parametros[j];
+
+                        var parametro = new Object();
+                        parametro.ordem = $scope.getnextParametroOrdem(passo2);
+                        parametro.objectType = parametroConstrutor.type;
+                        var valor = null
+                        if (parametroConstrutor.type.toLowerCase() == 'string') {
+                            valor = 'teste';
+                        }
+                        else if (parametroConstrutor.type.toLowerCase() == 'bool' || parametroConstrutor.type.toLowerCase() == 'boolean') {
+                            valor = true;
+                        }
+                        else {
+                            valor = 666;
+                        }
+                        parametro.objectValue = valor;
+                        passo2.inputParameters.push(parametro);
+                    }
+                }
+                caso.passos.push(passo2);
+                $scope.exercicio.casosTeste.push(caso);
+            }
+        }
+    }
+
+    $scope.canAutomateMethodTest = function (method) {
+
+        if (method.parametros != null) {
+            for (var i = 0; i < method.parametros.length; i++) {
+                var parametro = method.parametros[i];
+                switch (parametro.type.toLowerCase()) {
+                    case 'string':
+                    case 'short':
+                    case 'int':
+                    case 'integer':
+                    case 'long':
+                    case 'double':
+                    case 'boolean':
+                        continue;
+                    default :
+                        return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    $scope.methodIsGetterOrSetter = function (methodName) {
+        for (var i = 0; i < $scope.editingClass.assinatura.membros.length; i++) {
+            var membro = $scope.editingClass.assinatura.membros[i];
+            //somente fields não publicas
+            if (membro.memberType == 1 && membro.modifier != 1 && $scope.canAutomateFieldTest(membro)) {
+
+                var setName = 'set' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
+                var getName = 'get' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
+
+                if (methodName == setName || methodName == getName)
+                    return true;
+            }
+        }
+        return false;
     }
 
     $scope.adicionaCasoTeste = function () {
@@ -384,7 +651,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         var index = $scope.editingCasoTeste.passos.indexOf(passo);
         $scope.editingCasoTeste.passos.splice(index + 1, 0, novoPasso);
         $scope.expectedOutputNameBlured(novoPasso);
-        $scope.expectedOutputValueBlured(novoPasso);
 
         for (var i = index + 1; i < $scope.editingCasoTeste.passos.length; i++) {
 
@@ -448,7 +714,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
             $scope.editingCasoTeste.passos.push(passo);
             $scope.expectedOutputNameBlured(passo);
-            $scope.expectedOutputValueBlured(passo);
         }
 
         $.fancybox.update();
@@ -481,7 +746,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         }
 
         if (passo.operationType != 3) {
-            passo.expectedOutputValue = "";
+            passo.expectedOutputName = "";
         }
 
         setTimeout(function () {
@@ -491,12 +756,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
     $scope.expectedOutputNameBlured = function (passo) {
         if ($scope.isDeclaredObject(passo.expectedOutputName, passo)) {
-            passo.expectedOutputType = "";
-        }
-    }
-
-    $scope.expectedOutputValueBlured = function (passo) {
-        if ($scope.isDeclaredObject(passo.expectedOutputValue, passo)) {
             passo.expectedOutputType = "";
         }
     }
@@ -612,26 +871,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 $scope.adicionaPasso();
             }
         }
-    }
-
-    $scope.canAutomateFieldTest = function (membro) {
-
-        switch (membro.type.toLowerCase()) {
-            case 'string':
-                return true;
-            case 'short':
-                return true;
-            case 'int':
-            case 'integer':
-                return true;
-            case 'long':
-                return true;
-            case 'double':
-                return true;
-            case 'boolean':
-                return true;
-        }
-        return false;
     }
 
     $scope.getKnowTypes = function (request, passo, showSystemOut) {
@@ -808,9 +1047,9 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 $scope.$apply($scope.onDescricaoCarregada(data));
             },
             showDelete: false,
-            showDone:false,
-            showAbort:false,
-            showStatusAfterSuccess:false,
+            showDone: false,
+            showAbort: false,
+            showStatusAfterSuccess: false,
             maxFileSize: 512000,
             multiple: false,
             uploadButtonClass: "btn btn-primary"
@@ -827,9 +1066,9 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 $scope.$apply($scope.onClasseCarregada(data));
             },
             showDelete: false,
-            showDone:false,
-            showAbort:false,
-            showStatusAfterSuccess:false,
+            showDone: false,
+            showAbort: false,
+            showStatusAfterSuccess: false,
             maxFileSize: 512000,
             multiple: false,
             uploadButtonClass: "btn btn-primary btn-xs"
@@ -839,10 +1078,10 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
     $scope.updateMessagesAutocompletes = function () {
 
-        $(".mensagemPersonalizada").autocomplete({
+        $(".mensagemProfessor").autocomplete({
             source: function (request, response) {
                 $.ajax({
-                    url: baseUrl + 'mensagenspersonalizadas/search?term=' + request.term,
+                    url: baseUrl + 'mensagenspredefinidas/search?term=' + request.term,
                     type: 'GET',
                     dataType: 'json'
                 }).done(function (data) {

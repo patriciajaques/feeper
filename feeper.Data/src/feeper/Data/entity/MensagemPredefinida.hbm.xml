@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <class catalog="feeper" name="feeper.Data.entity.MensagemPredefinida" table="MensagemPredefinida">
+    <id name="id" type="int">
+      <column name="ID"/>
+      <generator class="identity"/>
+    </id>
+    <property name="idAutor" type="int">
+      <column name="IdAutor" not-null="true"/>
+    </property>
+    <property name="mensagemPredefinida" type="string">
+      <column length="10000" name="MensagemPredefinida"/>
+    </property>
+  </class>
+</hibernate-mapping>
