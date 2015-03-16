@@ -341,7 +341,16 @@ public class DinamicTestCreator {
         for (int i = 0; i < endIndex; i++) {
             ExercicioCasoTestePasso passo = teste.getPassos().get(i);
 
-            if (passo.getExpectedOutputName() != null && passo.getExpectedOutputName().equals(objectName)) {
+            if (passo.getOperationType() == 3) {
+                continue;
+            }
+
+            String outputName = passo.getExpectedOutputName();
+            if (outputName != null && outputName.indexOf("[") > 0) {
+                outputName = outputName.substring(0, outputName.indexOf("["));
+            }
+
+            if (outputName != null && outputName.equals(objectName)) {
                 return true;
             }
         }

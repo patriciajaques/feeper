@@ -1023,6 +1023,10 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         for (var i = 0; i < index; i++) {
             var item = $scope.editingCasoTeste.passos[i];
 
+            if (item.operationType == 3) {
+                continue;
+            }
+
             var outputName = item.expectedOutputName;
             if (outputName != null && outputName.indexOf("[") > 0)
                 outputName = outputName.substr(0, outputName.indexOf("["));
