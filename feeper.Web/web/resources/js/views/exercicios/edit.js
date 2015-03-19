@@ -37,6 +37,9 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                     }
                 }
             }
+            setTimeout(function () {
+                $scope.updateCasosControls();
+            }, 100);
         });
     }
 
@@ -212,6 +215,10 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         if ($scope.gerarTestesMetodos == true) {
             $scope.criaTesteMetodos();
         }
+
+        setTimeout(function () {
+            $scope.updateCasosControls();
+        }, 100);
     }
 
     $scope.criaTesteConstrutores = function () {
@@ -537,6 +544,10 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         caso.ativo = true;
         caso.ordem = $scope.getnextCasoOrdem();
         $scope.exercicio.casosTeste.push(caso);
+
+        setTimeout(function () {
+            $scope.updateCasosControls();
+        }, 100);
     }
 
     $scope.duplicaCasoTeste = function (casoTeste) {
@@ -565,6 +576,10 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
             $scope.exercicio.casosTeste[i].ordem += 1;
         }
+
+        setTimeout(function () {
+            $scope.updateCasosControls();
+        }, 100);
     }
 
     $scope.copiaCasoTeste = function (casoTeste) {
@@ -587,6 +602,10 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         caso.id = 0;
         caso.ordem = $scope.getnextCasoOrdem();
         $scope.exercicio.casosTeste.push(caso);
+
+        setTimeout(function () {
+            $scope.updateCasosControls();
+        }, 100);
     }
 
     $scope.deletaCasoTeste = function (casoTeste) {
@@ -604,6 +623,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             'openEffect': 'fade',
             'closeEffect': 'fade',
             'closeClick': false,
+            'closeBtn': false,
             helpers: {
                 overlay: {
                     locked: false
@@ -611,10 +631,137 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             }
         });
         setTimeout(function () {
-            $scope.updatePassosTexts();
+            $scope.updatePassosControls();
         }, 100);
     }
 
+    $scope.concluiEdicaoPassosCasoTeste = function () {
+
+        if ($scope.validaCasoTeste() != true) {
+            return;
+        }
+
+        $.fancybox.close();
+    }
+    $scope.validaCasoTeste = function () {
+
+        if ($scope.editingCasoTeste.passos == null || $scope.editingCasoTeste.passos.length == 0)
+            return true;
+
+        var lacosAbertos = 0;
+        var openLacoIndex = 0;
+
+        for (var i = 0; i < $scope.editingCasoTeste.passos.length; i++) {
+            var item = $scope.editingCasoTeste.passos[i];
+
+            var outputType = item.expectedOutputType;
+            var outputName = item.expectedOutputName;
+            var comparisionType = item.comparisionType;
+            var objectName = item.objectName;
+            var methodName = item.methodName;
+
+            if (item.operationType == 1) {
+                if (outputName == null || outputName.length == 0) {
+                    $scope.showToolTip('expectedOutputName_' + i, 'right', 'Por favor especificar aqui o nome do objeto a qual o valor será atribuído.');
+                    return false;
+                } else if ((outputType == null || outputType.length == 0) && $scope.isDeclaredObject(outputName, item) == false) {
+                    $scope.showToolTip('expectedOutputType_' + i, 'right', 'É necessário especificar o tipo dos objetos que não foram inicializados anteriormente.');
+                    return false;
+                } else if ((objectName == null || objectName.length == 0)) {
+
+                    $scope.showToolTip('objectName_' + i, 'left', 'Por favor especificar aqui alguma das seguintes opções:<br/><br/>1. O nome da classe para chamar o construtor.<br/>2. O nome de algum objeto instanciado anteriormente.<br/>3. O valor caso esteja instanciando um tipo primitivo.');
+                    return false;
+                }
+            }
+            else if (item.operationType == 2) {
+
+                if (objectName == null || objectName.length == 0 || $scope.isDeclaredObject(objectName, item) == false) {
+
+                    $scope.showToolTip('objectName_' + i, 'left', 'Por favor especificar aqui o nome de algum objeto instanciado anteriormente.');
+                    return false;
+                } else if (methodName == null || methodName.length == 0) {
+
+                    $scope.showToolTip('methodName_' + i, 'left', 'Por favor especificar aqui o método do objeto especificado que será executado.');
+                    return false;
+                }
+            }
+            else if (item.operationType == 3) {
+                if (outputName == null || outputName.length == 0) {
+                    $scope.showToolTip('expectedOutputName_' + i, 'right', 'Por favor especificar aqui alguma das seguintes opções:<br/><br/>1. O nome de algum objeto inicializado anteriormente.<br/>2. O valor a ser comparado caso esteja comparando tipos primitivos.');
+                    return false;
+                } else if ((outputType == null || outputType.length == 0) && $scope.isDeclaredObject(outputName, item) == false) {
+                    $scope.showToolTip('expectedOutputType_' + i, 'right', 'É necessário especificar o tipo dos objetos que não foram inicializados anteriormente.');
+                    return false;
+                } else if ((objectName == null || objectName.length == 0)) {
+
+                    $scope.showToolTip('objectName_' + i, 'left', 'Por favor especificar aqui alguma das seguintes opções:<br/><br/>1. O nome de algum objeto instanciado anteriormente.<br/>2. O valor a ser comparado caso esteja comparando tipos primitivos.');
+                    return false;
+                }
+            }
+            else if (item.operationType == 4) {
+                lacosAbertos += 1;
+                openLacoIndex = i;
+                if (outputName == null || outputName.length == 0) {
+
+                    $scope.showToolTip('expectedOutputName_' + i, 'right', 'Por favor especificar aqui alguma das seguintes opções:<br/><br/>1. O nome de algum objeto inicializado anteriormente.<br/>2. O valor a ser interado caso esteja interando tipos primitivos.');
+                    return false;
+                } else if ((outputType == null || outputType.length == 0) && $scope.isDeclaredObject(outputName, item) == false) {
+
+                    $scope.showToolTip('expectedOutputType_' + i, 'right', 'É necessário especificar o tipo dos objetos que não foram inicializados anteriormente.');
+                    return false;
+                } else if ((comparisionType == null || comparisionType.length == 0)) {
+
+                    $scope.showToolTip('comparisionType_' + i, 'right', 'É necessário especificar o tipo de comparação da interação.');
+                    return false;
+                }
+                else if ((objectName == null || objectName.length == 0)) {
+
+                    $scope.showToolTip('objectName_' + i, 'left', 'Por favor especificar aqui alguma das seguintes opções:<br/><br/>1. O nome de algum objeto instanciado anteriormente.<br/>2. O valor a ser interado caso esteja interando tipos primitivos.');
+                    return false;
+                }
+            }
+            else if (item.operationType == 5) {
+                lacosAbertos -= 1;
+            }
+
+            if (item.inputParameters != null) {
+                for (var j = 0; j < item.inputParameters.length; j++) {
+                    var parametro = item.inputParameters[j];
+
+                    var parameterType = parametro.objectType;
+                    var parameterValue = parametro.objectValue;
+
+                    if (parameterValue == null || parameterValue.length == 0) {
+
+                        $scope.showToolTip('parameterValue_' + i + '_' + j, 'left', 'Por favor especificar aqui alguma das seguintes opções:<br/><br/>1. O nome de algum objeto inicializado anteriormente.<br/>2. O valor do parâmetro caso ele seja de um tipo primitivo.');
+                        return false;
+                    } else if ((parameterType == null || parameterType.length == 0) && $scope.isDeclaredObject(parameterValue, item) == false) {
+
+                        $scope.showToolTip('parameterType_' + i + '_' + j, 'left', 'É necessário especificar o tipo dos objetos que não foram inicializados anteriormente.');
+                        return false;
+                    }
+                }
+            }
+        }
+
+        if (lacosAbertos > 0) {
+            $scope.showToolTip('operationType_' + openLacoIndex, 'right', 'Você deve fechar todos os laços abertos.');
+            return false;
+        }
+        return true;
+    }
+
+    $scope.showToolTip = function (elementID, placement, message) {
+        $('#' + elementID).tooltip({
+            html: true, placement: placement,
+            title: message
+        });
+        $('#' + elementID).focus();
+        $('#' + elementID).blur(function () {
+            $('#' + elementID).tooltip('hide');
+            $('#' + elementID).tooltip('destroy');
+        });
+    }
     $scope.getnextCasoOrdem = function () {
         if ($scope.exercicio.casosTeste == null || $scope.exercicio.casosTeste.length == 0)
             return 1;
@@ -632,12 +779,11 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         $scope.editingCasoTeste.passos.push(passo);
         $.fancybox.update();
         setTimeout(function () {
-            $scope.updatePassosTexts();
+            $scope.updatePassosControls();
         }, 100);
     }
 
     $scope.duplicaPasso = function (passo) {
-
         var novoPasso = JSON.parse(JSON.stringify(passo))
         novoPasso.id = 0;
         novoPasso.ordem = passo.ordem + 1;
@@ -656,13 +802,11 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
             $scope.editingCasoTeste.passos[i].ordem += 1;
         }
-
         $.fancybox.update();
         setTimeout(function () {
-            $scope.updatePassosTexts();
+            $scope.updatePassosControls();
         }, 100);
     }
-
     $scope.copiaPassos = function () {
 
         var passos = new Array();
@@ -718,7 +862,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
         $.fancybox.update();
         setTimeout(function () {
-            $scope.updatePassosTexts();
+            $scope.updatePassosControls();
         }, 100);
     }
 
@@ -726,7 +870,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
         if (!confirm(confirmarExcluirText))
             return;
-
         var index = $scope.editingCasoTeste.passos.indexOf(passo);
         $scope.editingCasoTeste.passos.splice(index, 1);
         $.fancybox.update();
@@ -739,18 +882,77 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             return casoDeTeste.passos[casoDeTeste.passos.length - 1].ordem + 1;
     }
 
+    $scope.isExpectedOutputTypeDisabled = function (passo) {
+
+        if (passo.operationType == 2)
+            return true;
+        else if (passo.operationType == 5)
+            return true;
+        else if ($scope.isDeclaredObject(passo.expectedOutputName, passo))
+            return true;
+
+        return false;
+    }
+
+    $scope.isExpectedOutputNameDisabled = function (passo) {
+
+        if (passo.operationType == 2)
+            return true;
+        else if (passo.operationType == 5)
+            return true;
+
+        return false;
+    }
+
+    $scope.isObjectNameDisabled = function (passo) {
+
+        if (passo.operationType == 5)
+            return true;
+
+        return false;
+    }
+
+    $scope.isMethodNameDisabled = function (passo) {
+
+        if (passo.objectName == 'System.Out')
+            return true;
+        if (passo.operationType == 5)
+            return true;
+
+        return false;
+    }
+
+    $scope.isParameterTypeDisabled = function (passo, parametro) {
+
+        if ($scope.isDeclaredObject(parametro.objectValue, passo))
+            return true;
+
+        return false;
+    }
+
+    $scope.isAddParameterDisabled = function (passo) {
+
+        if (passo.operationType == 5)
+            return true;
+
+        return false;
+    }
+
     $scope.operationTypeChanged = function (passo) {
         if (passo.operationType == 2) {
             passo.expectedOutputName = "";
             passo.expectedOutputType = "";
-        }
-
-        if (passo.operationType != 3) {
+        } else if (passo.operationType == 5) {
             passo.expectedOutputName = "";
+            passo.expectedOutputType = "";
+            passo.comparisionType = "";
+            passo.objectName = "";
+            passo.methodName = "";
+            passo.inputParameters = [];
         }
 
         setTimeout(function () {
-            $scope.updatePassosTexts();
+            $scope.updatePassosControls();
         }, 100);
     }
 
@@ -767,7 +969,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         }
 
         setTimeout(function () {
-            $scope.updatePassosTexts();
+            $scope.updatePassosControls();
         }, 100);
     }
 
@@ -775,10 +977,8 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
         if ($scope.exercicio.classesAuxiliares == null || (passo.inputParameters != null && passo.inputParameters.length > 0))
             return;
-
         var objectType = $scope.getObjectType(passo.objectName);
         for (var i = 0; i < $scope.exercicio.classesAuxiliares.length; i++) {
-
             var assinatura = $scope.exercicio.classesAuxiliares[i].assinatura;
             if (assinatura == null || assinatura.nomeClasse != objectType)
                 continue;
@@ -797,7 +997,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                         passo.inputParameters.push(parametro);
                         $.fancybox.update();
                         setTimeout(function () {
-                            $scope.updatePassosTexts();
+                            $scope.updatePassosControls();
                         }, 100);
                         return;
                     }
@@ -807,7 +1007,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
                     passo.inputParameters = [];
                     for (var i = 0; i < membro.parametros.length; i++) {
-
                         var parametro = new Object();
                         parametro.ordem = $scope.getnextParametroOrdem(passo);
                         parametro.objectType = membro.parametros[i].type;
@@ -815,7 +1014,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                     }
                     $.fancybox.update();
                     setTimeout(function () {
-                        $scope.updatePassosTexts();
+                        $scope.updatePassosControls();
                     }, 100);
                     return;
                 }
@@ -828,13 +1027,12 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             passo.inputParameters = [];
         }
 
-        var parametro = new Object();
-        //iniciar aqui o Parametro
+        var parametro = new Object();         //iniciar aqui o Parametro
         parametro.ordem = $scope.getnextParametroOrdem(passo);
         passo.inputParameters.push(parametro);
         $.fancybox.update();
         setTimeout(function () {
-            $scope.updatePassosTexts();
+            $scope.updatePassosControls();
         }, 100);
     }
 
@@ -875,7 +1073,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
     $scope.getKnowTypes = function (request, passo, showSystemOut) {
         var knowTypes = [];
-
         if ($scope.exercicio.classesAuxiliares != null) {
             for (var i = 0; i < $scope.exercicio.classesAuxiliares.length; i++) {
 
@@ -920,7 +1117,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
     }
 
     $scope.getKnowMethods = function (request, passo) {
-
         var knowMethods = [];
         var objectType = $scope.getObjectType(passo.objectName);
         if ($scope.exercicio.classesAuxiliares != null) {
@@ -936,7 +1132,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                             var getter = 'get' + membro.name.substr(0, 1).toUpperCase() + membro.name.substr(1);
                             if ($scope.containsValue(knowMethods, getter) == false
                                     && getter.toLowerCase().indexOf(request.term.toLowerCase()) >= 0) {
-
                                 knowMethods.push({label: getter, value: getter});
                             }
 
@@ -946,8 +1141,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
                                 knowMethods.push({label: setter, value: setter});
                             }
-                        }
-                        else if (membro.memberType == 3
+                        } else if (membro.memberType == 3
                                 && $scope.containsValue(knowMethods, membro.name) == false
                                 && membro.name.toLowerCase().indexOf(request.term.toLowerCase()) >= 0) {
 
@@ -962,8 +1156,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             var item = $scope.editingCasoTeste.passos[i];
             if (item != passo
                     && item.methodName != null
-                    && item.methodName.length > 0
-                    && $scope.getObjectType(item.objectName) == objectType
+                    && item.methodName.length > 0 && $scope.getObjectType(item.objectName) == objectType
                     && $scope.containsValue(knowMethods, item.methodName) == false
                     && item.methodName.toLowerCase().indexOf(request.term.toLowerCase()) >= 0) {
 
@@ -1020,10 +1213,21 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             StringObjName = StringObjName.substr(0, StringObjName.indexOf("["));
 
         var index = $scope.editingCasoTeste.passos.indexOf(passo);
-        for (var i = 0; i < index; i++) {
+        var anotherLacoOpened = false;
+        for (var i = index - 1; i >= 0; i--) {
             var item = $scope.editingCasoTeste.passos[i];
 
             if (item.operationType == 3) {
+                continue;
+            } else if (item.operationType == 5) {
+                anotherLacoOpened = true;
+                continue;
+            }
+            else if (item.operationType == 4) {
+                anotherLacoOpened = false;
+                continue;
+            }
+            else if (anotherLacoOpened == true) {
                 continue;
             }
 
@@ -1080,7 +1284,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         $("#upload_Classe_Auxiliar").uploadFile(settings);
     }
 
-    $scope.updateMessagesAutocompletes = function () {
+    $scope.updateCasosControls = function () {
 
         $(".mensagemProfessor").autocomplete({
             source: function (request, response) {
@@ -1096,17 +1300,57 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                     $('.ui-autocomplete-loading').removeClass("ui-autocomplete-loading");
                 });
             },
-            change: function (event, ui) {
-                $(event.target).trigger("change");
-            },
             select: function (event, ui) {
+                $(event.target).val(ui.item.value);
                 $(event.target).trigger("change");
             },
             minLength: 0
         });
+
+        try {
+            $("#casosTable tbody").sortable('destroy');
+        } catch (e) {
+        }
+
+        var fixHelperModified = function (e, ui) {
+            var $originals = ui.children();
+            var $helper = ui.clone();
+            $helper.children().each(function (index) {
+                $(this).width($originals.eq(index).width());
+            });
+            return $helper;
+        }
+
+        $("#casosTable tbody").sortable({
+            axis: "y",
+            handle: ".casoHandle",
+            helper: fixHelperModified,
+            start: $scope.onStartDragCasos,
+            stop: $scope.onStopDragCasos
+        }).disableSelection();
     }
 
-    $scope.updatePassosTexts = function () {
+    $scope.onStartDragCasos = function (e, ui) {
+        ui.item.data('start', ui.item.index());
+    }
+
+    $scope.onStopDragCasos = function (e, ui) {
+        var start = ui.item.data('start');
+        var end = ui.item.index();
+
+        // Remove item to prevent DOM desynchronization.
+        $(ui.item).remove();
+        
+        $scope.$apply(function () {
+            $scope.exercicio.casosTeste.splice(end, 0, $scope.exercicio.casosTeste.splice(start, 1)[0]);
+
+            for (var i = 0; i < $scope.exercicio.casosTeste.length; i++) {
+                $scope.exercicio.casosTeste[i].ordem = i + 1;
+            }
+        });
+    }
+
+    $scope.updatePassosControls = function () {
 
         $(".passoDataType").autocomplete({
             source: function (request, response) {
@@ -1114,13 +1358,16 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 var passo = $scope.editingCasoTeste.passos[index];
                 response($scope.getKnowTypes(request, passo, false));
             },
-            change: function (event, ui) {
-                $(event.target).trigger("change");
-            },
             select: function (event, ui) {
+                $(event.target).val(ui.item.value);
                 $(event.target).trigger("change");
             },
             minLength: 0
+        }).focus(function () {
+            if (this.value == "")
+            {
+                $(this).autocomplete("search");
+            }
         });
         $(".passoObject").autocomplete({
             source: function (request, response) {
@@ -1128,28 +1375,33 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 var passo = $scope.editingCasoTeste.passos[index];
                 response($scope.getKnowObjects(request, passo));
             },
-            change: function (event, ui) {
-                $(event.target).trigger("change");
-            },
             select: function (event, ui) {
+                $(event.target).val(ui.item.value);
                 $(event.target).trigger("change");
             },
             minLength: 0
+        }).focus(function () {
+            if (this.value == "")
+            {
+                $(this).autocomplete("search");
+            }
         });
-        $(".passoDataTypeOrObject").autocomplete({
-            source: function (request, response) {
+        $(".passoDataTypeOrObject").autocomplete({source: function (request, response) {
                 var index = $(this.element[0]).attr("data-index");
                 var passo = $scope.editingCasoTeste.passos[index];
                 var data = $.merge($scope.getKnowObjects(request, passo), $scope.getKnowTypes(request, passo, passo.operationType == 3));
                 response(data);
             },
-            change: function (event, ui) {
-                $(event.target).trigger("change");
-            },
             select: function (event, ui) {
+                $(event.target).val(ui.item.value);
                 $(event.target).trigger("change");
             },
             minLength: 0
+        }).focus(function () {
+            if (this.value == "")
+            {
+                $(this).autocomplete("search");
+            }
         });
         $(".passoMethod").autocomplete({
             source: function (request, response) {
@@ -1157,14 +1409,54 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 var passo = $scope.editingCasoTeste.passos[index];
                 response($scope.getKnowMethods(request, passo));
             },
-            change: function (event, ui) {
-                $(event.target).trigger("change");
-            },
             select: function (event, ui) {
+                $(event.target).val(ui.item.value);
                 $(event.target).trigger("change");
-            },
-            minLength: 0
+            }, minLength: 0
+        }).focus(function () {
+            if (this.value == "")
+            {
+                $(this).autocomplete("search");
+            }
         });
+
+        var fixHelperModified = function (e, ui) {
+            var $originals = ui.children();
+            var $helper = ui.clone();
+            $helper.children().each(function (index) {
+                $(this).width($originals.eq(index).width());
+            });
+            return $helper;
+        }
+
+        $("#passosTable tbody").sortable({
+            axis: "y",
+            handle: ".passoHandle",
+            helper: fixHelperModified,
+            start: $scope.onStartDragPassos,
+            update: $scope.onUpdateDragPassos
+        }).disableSelection();
+    }
+
+    $scope.onStartDragPassos = function (e, ui) {
+        ui.item.data('startIndex', ui.item.index());
+    }
+
+    $scope.onUpdateDragPassos = function (e, ui) {
+        var start = ui.item.data('startIndex');
+        var end = ui.item.index();
+
+        // Remove item to prevent DOM desynchronization.
+        $(ui.item).remove();
+
+        $scope.$apply(function () {
+            $scope.editingCasoTeste.passos.splice(end, 0, $scope.editingCasoTeste.passos.splice(start, 1)[0]);
+
+            for (var i = 0; i < $scope.editingCasoTeste.passos.length; i++) {
+                $scope.editingCasoTeste.passos[i].ordem = i + 1;
+            }
+        });
+
     }
 
     $.ajaxSetup({cache: false});
@@ -1172,7 +1464,17 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
     $scope.OperationTypes = [
         {value: 1, label: 'Atribui à'},
         {value: 2, label: 'Executa'},
-        {value: 3, label: 'Verifica se'}
+        {value: 3, label: 'Verifica se'},
+        {value: 4, label: 'Abre Laço'},
+        {value: 5, label: 'Fecha Laço'}
+    ]
+    $scope.ComparisionTypes = [
+        {value: 1, label: '=='},
+        {value: 2, label: '!='},
+        {value: 3, label: '>'},
+        {value: 4, label: '>='},
+        {value: 5, label: '<'},
+        {value: 6, label: '<='}
     ]
 });
 function CreateEditor(source, readOnly)

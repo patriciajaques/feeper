@@ -55,17 +55,6 @@ public class ExercicioCasoTestePassoService extends HibernateUtil<ExercicioCasoT
         List<Integer> idsPassos = new ArrayList<Integer>();
         ExercicioCasoTestePassoParametroService repoParametro = new ExercicioCasoTestePassoParametroService();
 
-        for (int i = passos.size() - 1; i >= 0; i--) {
-
-            ExercicioCasoTestePasso passo = passos.get(i);
-            if ((passo.getExpectedOutputType() == null || passo.getExpectedOutputType().isEmpty())
-                    && (passo.getExpectedOutputName() == null || passo.getExpectedOutputName().isEmpty())
-                    && (passo.getObjectName() == null || passo.getObjectName().isEmpty())) {
-
-                passos.remove(i);
-            }
-        }
-
         for (int i = 0; i < passos.size(); i++) {
 
             ExercicioCasoTestePasso passo = passos.get(i);

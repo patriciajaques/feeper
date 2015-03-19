@@ -6,7 +6,6 @@
 <t:master>
     <jsp:attribute name="title"><fmt:message key="title.logs"/></jsp:attribute>
     <jsp:attribute name="header">
-        <link href="<c:url value='/resources/jquery/themes/base/jquery.ui.all.css'/>" rel="stylesheet" type="text/css" />
         <script type="text/javascript">
             $(function(){
                 $("#menu-lista-logs").addClass("active");

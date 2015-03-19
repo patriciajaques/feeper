@@ -86,7 +86,7 @@ public class DinamicTestCreator {
 
                 builder.append(this.GetWhile(teste, passo, i));
 
-            } else if (passo.getOperationType() == 6) {//Fim Laço
+            } else if (passo.getOperationType() == 5) {//Fim Laço
 
                 builder.append(this.GetFimLaco(passo));
             }
@@ -338,10 +338,19 @@ public class DinamicTestCreator {
             objectName = objectName.substring(0, objectName.indexOf("["));
         }
 
-        for (int i = 0; i < endIndex; i++) {
+        Boolean anotherLacoOpened = false;
+        for (int i = endIndex - 1; i >= 0; i--) {
             ExercicioCasoTestePasso passo = teste.getPassos().get(i);
 
             if (passo.getOperationType() == 3) {
+                continue;
+            } else if (passo.getOperationType() == 5) {
+                anotherLacoOpened = true;
+                continue;
+            } else if (passo.getOperationType() == 4) {
+                anotherLacoOpened = false;
+                continue;
+            } else if (anotherLacoOpened == true) {
                 continue;
             }
 
