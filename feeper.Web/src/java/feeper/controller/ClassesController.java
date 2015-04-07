@@ -15,6 +15,7 @@ import feeper.Data.service.ExercicioClasseService;
 import feeper.Data.service.ExercicioSolucaoClasseMarcacaoService;
 import feeper.Data.service.ExercicioSolucaoClasseService;
 import feeper.Data.service.ExercicioSolucaoService;
+import feeper.Data.service.PessoaService;
 import feeper.Data.service.TurmaService;
 import feeper.model.PaginadorUtil;
 import java.io.ByteArrayInputStream;
@@ -503,4 +504,44 @@ public class ClassesController extends ApplicationController {
 
     }
 
+    @RequestMapping(value = "/diffclasses/{idClasseAluno}/{idClasseColega}", method = RequestMethod.GET)
+    public ModelAndView diffclasses(
+            @PathVariable int idClasseAluno,
+            @PathVariable int idClasseColega,
+            HttpSession session,
+            Model model) {
+
+        ModelAndView mav = new ModelAndView();
+
+        ExercicioSolucaoClasseService repoClasse = new ExercicioSolucaoClasseService();
+        ExercicioSolucaoClasse classeAluno = repoClasse.getById(idClasseAluno);
+        ExercicioSolucaoClasse classeColega = repoClasse.getById(idClasseColega);
+
+        ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();
+        PessoaService repoPessoa = new PessoaService();
+
+        ExercicioSolucao solucao = repoSolucao.getById(classeAluno.getIdSolucao());
+        Pessoa aluno = repoPessoa.getById(solucao.getIdAluno());
+
+        solucao = repoSolucao.getById(classeColega.getIdSolucao());
+        Pessoa colega = repoPessoa.getById(solucao.getIdAluno());
+
+        Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
+        if (usuarioLogado.getIdPerfil() == EPerfil.PROFESSOR) {
+            //Validação para verificar se a pessoa logada é professor do autor do código fonte
+            TurmaService repoTurma = new TurmaService();
+            if (!repoTurma.verificaProfessorDoAluno(usuarioLogado.getId(), aluno.getId())) {
+                mav.setView(new RedirectView("/closemodal", true, true, false));
+                return mav;
+            }
+        }
+
+        mav.setViewName("classes/diffclasses");
+        mav.addObject("nomeAluno", aluno.getNome());
+        mav.addObject("nomeColega", colega.getNome());
+        mav.addObject("textoClasseAluno", classeAluno.getCodigo());
+        mav.addObject("textoClasseColega", classeColega.getCodigo());
+
+        return mav;
+    }
 }

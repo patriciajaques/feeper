@@ -199,6 +199,9 @@
                                 <a href="<c:url value='/'/>notas" class="list-group-item" id="menu-minhas-notas">
                                     <span class="glyphicon glyphicon-th"></span>&nbsp;&nbsp;<fmt:message key="menu.resultadoexercicios"/>
                                 </a>
+                                <a href="<c:url value='/'/>plagiarism/list" class="list-group-item" id="menu-plagiarism-detector">
+                                    <span class="glyphicon glyphicon-copyright-mark"></span>&nbsp;&nbsp;<fmt:message key="menu.plagiarismdetector"/>
+                                </a>
                             </div>
 
                             <jsp:invoke fragment="rightmenu"/>

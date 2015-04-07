@@ -1338,9 +1338,13 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         var start = ui.item.data('start');
         var end = ui.item.index();
 
+        if (start == end) {
+            return;
+        }
+
         // Remove item to prevent DOM desynchronization.
         $(ui.item).remove();
-        
+
         $scope.$apply(function () {
             $scope.exercicio.casosTeste.splice(end, 0, $scope.exercicio.casosTeste.splice(start, 1)[0]);
 
@@ -1445,6 +1449,10 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
     $scope.onUpdateDragPassos = function (e, ui) {
         var start = ui.item.data('startIndex');
         var end = ui.item.index();
+
+        if (start == end) {
+            return;
+        }
 
         // Remove item to prevent DOM desynchronization.
         $(ui.item).remove();
