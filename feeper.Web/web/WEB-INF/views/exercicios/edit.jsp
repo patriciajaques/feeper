@@ -10,7 +10,8 @@
         <script src="<c:url value='/resources/ace/ace.js'/>" type="text/javascript"></script>
 
         <script src="<c:url value='/resources/js/angular.min.js'/>" type="text/javascript"></script>
-        <script src="<c:url value='/resources/js/views/exercicios/edit.js?v=1.02'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/js/sortable.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/js/views/exercicios/edit.js?v=1.03'/>" type="text/javascript"></script>
 
         <style type="text/css" media="screen">
             .line-selected {
@@ -154,7 +155,7 @@
                                     <th><fmt:message key="label.exercicios.ativo"/></th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody ui-sortable="sortableCasosOptions" ng-model="exercicio.casosTeste">
                                 <tr ng-repeat="casoTeste in exercicio.casosTeste track by casoTeste.ordem">
                                     <td style="width: 15px">
                                         <i class="fa fa-arrows casoHandle"></i>
@@ -231,7 +232,7 @@
                         <label><fmt:message key="label.exercicios.passoscasosteste"/>:</label>
                         <div style="margin-top: 30px;">
                             <table id="passosTable" >
-                                <tbody>
+                                <tbody ui-sortable="sortablePassosOptions" ng-model="editingCasoTeste.passos">
                                     <tr ng-repeat="passo in editingCasoTeste.passos track by passo.ordem">
                                         <td style="width: 15px">
                                             <input type="checkbox" ng-model="passo.selected" />

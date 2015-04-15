@@ -41,7 +41,7 @@
         <c:if test="${not empty listaExercicios}">
             <c:forEach var="item" varStatus="status" items="${listaExercicios}">
                 <blockquote>
-                    <p><b><c:out value="${item[1]}"/>:</b> <c:out value="${item[3]}"/></p>
+                    <p><b><c:out value="${item[1]}"/>:<br/></b> ${item[3]}</p>
                     <small class="pull-left"><c:out value="${item[4]}"/></small>
                     <small class="pull-right"><fmt:message key="label.exercicios.dataultimaresposta"/> <fmt:formatDate value="${item[5]}" pattern="dd/MM/yyyy HH:mm" /></small>
                     <br>

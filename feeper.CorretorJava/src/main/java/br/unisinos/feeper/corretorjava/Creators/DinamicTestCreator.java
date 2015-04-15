@@ -80,7 +80,7 @@ public class DinamicTestCreator {
 
             } else if (passo.getOperationType() == 3) {//Verificação
 
-                builder.append(this.GetVerificacao(passo));
+                builder.append(this.GetVerificacao(teste, passo, i));
 
             } else if (passo.getOperationType() == 4) {//While
 
@@ -143,18 +143,27 @@ public class DinamicTestCreator {
             } else if (isFirstPrevDeclared) {
                 //mexe em um array ou cria um novo objeto
                 String objectType = getObjectType(teste, passo.getExpectedOutputName(), passoIndex);
-
                 Boolean needsNew = needsNewAcessor(objectType);
+                if (passo.getExpectedOutputName().contains("[]")) {
+                    needsNew = true;
+                }
 
                 if (needsNew == true) {
                     builder.append(passo.getExpectedOutputName() + " = new " + passo.getObjectName() + this.getParameters(passo) + ";");
                 } else {
+                    if (objectType.indexOf("[") > 0) {
+                        objectType = objectType.substring(0, objectType.indexOf("["));
+                    }
                     String value = trataDados(objectType, passo.getObjectName());
                     builder.append(passo.getExpectedOutputName() + " = " + value + ";");
                 }
             } else {
                 //Cria 2 objetos novos
                 Boolean needsNew = needsNewAcessor(passo.getExpectedOutputType());
+                if (passo.getExpectedOutputType().contains("[]") || passo.getExpectedOutputName().contains("[]")) {
+                    needsNew = true;
+                }
+
                 if (needsNew == true) {
                     builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = new " + passo.getObjectName() + this.getParameters(passo) + ";");
                 } else {
@@ -177,16 +186,26 @@ public class DinamicTestCreator {
                 String objectType = getObjectType(teste, passo.getExpectedOutputName(), passoIndex);
 
                 Boolean needsNew = needsNewAcessor(objectType);
+                if (passo.getExpectedOutputName().contains("[]")) {
+                    needsNew = true;
+                }
 
                 if (needsNew == true) {
                     builder.append(passo.getExpectedOutputName() + " = new " + passo.getObjectName() + "()" + "." + passo.getMethodName() + this.getParameters(passo) + ";");
                 } else {
+                    if (objectType.indexOf("[") > 0) {
+                        objectType = objectType.substring(0, objectType.indexOf("["));
+                    }
                     String value = trataDados(objectType, passo.getObjectName());
                     builder.append(passo.getExpectedOutputName() + " = " + value + "." + passo.getMethodName() + this.getParameters(passo) + ";");
                 }
             } else {
                 //Cria 2 objetos novo
                 Boolean needsNew = needsNewAcessor(passo.getExpectedOutputType());
+                if (passo.getExpectedOutputType().contains("[]") || passo.getExpectedOutputName().contains("[]")) {
+                    needsNew = true;
+                }
+
                 if (needsNew == true) {
                     builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = new " + passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ";");
                 } else {
@@ -202,18 +221,32 @@ public class DinamicTestCreator {
         return passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(passo) + ";";
     }
 
-    private String GetVerificacao(ExercicioCasoTestePasso passo) {
+    private String GetVerificacao(ExercicioCasoTeste teste, ExercicioCasoTestePasso passo, int passoIndex) {
 
         String first = "";
         String second = "";
         if ((passo.getExpectedOutputType() == null || passo.getExpectedOutputType().isEmpty()) && (passo.getMethodName() == null || passo.getMethodName().isEmpty())) {
-            //compara 2 objetos
+            //compara 2 objetos ou objeto e valor primitivo
             first = passo.getExpectedOutputName();
 
             if (passo.getObjectName().equals("System.Out")) {
                 second = "outContent.toString().replaceAll(\"\\r\\n\", \"\").replaceAll(\"\\r\", \"\")";
+                if (first.startsWith("\"") == false) {
+                    //tratamento para strings
+                    first = "\"" + first + "\"";
+                }
             } else {
                 second = passo.getObjectName();
+                Boolean isSecondPrevDeclared = isObjectDeclared(teste, second, passoIndex);
+
+                if (isSecondPrevDeclared == false) {
+                    //é valor primitivo
+                    String objectType = getObjectType(teste, first, passoIndex);
+                    if (objectType.indexOf("[") > 0) {
+                        objectType = objectType.substring(0, objectType.indexOf("["));
+                    }
+                    second = trataDados(objectType, second);
+                }
             }
         } else if (passo.getMethodName() == null || passo.getMethodName().isEmpty()) {
 
@@ -324,11 +357,18 @@ public class DinamicTestCreator {
 
         for (int i = 0; i <= endIndex; i++) {
             ExercicioCasoTestePasso passo = teste.getPassos().get(i);
-            if (passo.getExpectedOutputName() != null && passo.getExpectedOutputName().equals(objectName)) {
-                return passo.getExpectedOutputType();
+            String outputName = passo.getExpectedOutputName();
+            if (outputName != null) {
+
+                if (outputName.indexOf("[") > 0) {
+                    outputName = outputName.substring(0, outputName.indexOf("["));
+                }
+
+                if (outputName.equals(objectName)) {
+                    return passo.getExpectedOutputType();
+                }
             }
         }
-
         return "";
     }
 
@@ -369,6 +409,10 @@ public class DinamicTestCreator {
 
     private Boolean needsNewAcessor(String objectType) {
 
+        if (objectType.indexOf("[") > 0) {
+            objectType = objectType.substring(0, objectType.indexOf("["));
+        }
+
         switch (objectType.toLowerCase()) {
             case "string":
             case "short":
@@ -386,9 +430,17 @@ public class DinamicTestCreator {
 
     private String trataDados(String dataType, String dataValue) {
 
-        if (dataType.equals("String") && dataValue.startsWith("\"") == false) {
+        if (dataType.contains("[]") || dataValue.contains("[")) {
+            return dataValue;
+        }
+
+        if (dataType.indexOf("[") > 0) {
+            dataType = dataType.substring(0, dataType.indexOf("["));
+        }
+
+        if (dataType != null && dataType.equals("String") && dataValue != null && dataValue.startsWith("\"") == false) {
             dataValue = "\"" + dataValue + "\"";
-        } else if (dataType.equals("Double") && dataValue.indexOf(".") < 0) {
+        } else if (dataType != null && dataType.equals("Double") && dataValue != null && dataValue.indexOf(".") < 0) {
             dataValue = dataValue + ".0";
         }
 

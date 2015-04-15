@@ -1,4 +1,4 @@
-var app = angular.module('feeper', []);
+var app = angular.module('feeper', ['ui.sortable']);
 app.controller('editExercicios', function ($scope, $http, $sce) {
 
     var exercicioId = window.location.pathname.substr(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length);
@@ -554,12 +554,13 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
         var novoCaso = JSON.parse(JSON.stringify(casoTeste))
         novoCaso.id = 0;
-        novoCaso.ordem = casoTeste.ordem + 1;
+        novoCaso.ordem = $scope.getnextCasoOrdem();
         if (novoCaso.passos != null) {
             for (var i = 0; i < novoCaso.passos.length; i++) {
                 var passo = novoCaso.passos[i];
                 passo.id = 0;
                 passo.idCasoTeste = 0;
+
                 if (passo.inputParameters != null) {
                     for (var j = 0; j < passo.inputParameters.length; j++) {
                         var item = passo.inputParameters[j];
@@ -572,9 +573,9 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         }
         var index = $scope.exercicio.casosTeste.indexOf(casoTeste);
         $scope.exercicio.casosTeste.splice(index, 0, novoCaso);
-        for (var i = index + 1; i < $scope.exercicio.casosTeste.length; i++) {
+        for (var i = 0; i < $scope.exercicio.casosTeste.length; i++) {
 
-            $scope.exercicio.casosTeste[i].ordem += 1;
+            $scope.exercicio.casosTeste[i].ordem = i + 1;
         }
 
         setTimeout(function () {
@@ -1284,6 +1285,16 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         $("#upload_Classe_Auxiliar").uploadFile(settings);
     }
 
+    $scope.sortableCasosOptions = {
+        handle: '.casoHandle',
+        axis: 'y',
+        stop: function (e, ui) {
+            for (var i = 0; i < $scope.exercicio.casosTeste.length; i++) {
+                $scope.exercicio.casosTeste[i].ordem = i + 1;
+            }
+        }
+    };
+
     $scope.updateCasosControls = function () {
 
         $(".mensagemProfessor").autocomplete({
@@ -1306,53 +1317,17 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             },
             minLength: 0
         });
-
-        try {
-            $("#casosTable tbody").sortable('destroy');
-        } catch (e) {
-        }
-
-        var fixHelperModified = function (e, ui) {
-            var $originals = ui.children();
-            var $helper = ui.clone();
-            $helper.children().each(function (index) {
-                $(this).width($originals.eq(index).width());
-            });
-            return $helper;
-        }
-
-        $("#casosTable tbody").sortable({
-            axis: "y",
-            handle: ".casoHandle",
-            helper: fixHelperModified,
-            start: $scope.onStartDragCasos,
-            stop: $scope.onStopDragCasos
-        }).disableSelection();
     }
 
-    $scope.onStartDragCasos = function (e, ui) {
-        ui.item.data('start', ui.item.index());
-    }
-
-    $scope.onStopDragCasos = function (e, ui) {
-        var start = ui.item.data('start');
-        var end = ui.item.index();
-
-        if (start == end) {
-            return;
-        }
-
-        // Remove item to prevent DOM desynchronization.
-        $(ui.item).remove();
-
-        $scope.$apply(function () {
-            $scope.exercicio.casosTeste.splice(end, 0, $scope.exercicio.casosTeste.splice(start, 1)[0]);
-
-            for (var i = 0; i < $scope.exercicio.casosTeste.length; i++) {
-                $scope.exercicio.casosTeste[i].ordem = i + 1;
+    $scope.sortablePassosOptions = {
+        handle: '.passoHandle',
+        axis: 'y',
+        stop: function (e, ui) {
+            for (var i = 0; i < $scope.editingCasoTeste.passos.length; i++) {
+                $scope.editingCasoTeste.passos[i].ordem = i + 1;
             }
-        });
-    }
+        }
+    };
 
     $scope.updatePassosControls = function () {
 
@@ -1423,48 +1398,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 $(this).autocomplete("search");
             }
         });
-
-        var fixHelperModified = function (e, ui) {
-            var $originals = ui.children();
-            var $helper = ui.clone();
-            $helper.children().each(function (index) {
-                $(this).width($originals.eq(index).width());
-            });
-            return $helper;
-        }
-
-        $("#passosTable tbody").sortable({
-            axis: "y",
-            handle: ".passoHandle",
-            helper: fixHelperModified,
-            start: $scope.onStartDragPassos,
-            update: $scope.onUpdateDragPassos
-        }).disableSelection();
-    }
-
-    $scope.onStartDragPassos = function (e, ui) {
-        ui.item.data('startIndex', ui.item.index());
-    }
-
-    $scope.onUpdateDragPassos = function (e, ui) {
-        var start = ui.item.data('startIndex');
-        var end = ui.item.index();
-
-        if (start == end) {
-            return;
-        }
-
-        // Remove item to prevent DOM desynchronization.
-        $(ui.item).remove();
-
-        $scope.$apply(function () {
-            $scope.editingCasoTeste.passos.splice(end, 0, $scope.editingCasoTeste.passos.splice(start, 1)[0]);
-
-            for (var i = 0; i < $scope.editingCasoTeste.passos.length; i++) {
-                $scope.editingCasoTeste.passos[i].ordem = i + 1;
-            }
-        });
-
     }
 
     $.ajaxSetup({cache: false});

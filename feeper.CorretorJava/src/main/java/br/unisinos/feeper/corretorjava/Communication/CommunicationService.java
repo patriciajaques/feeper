@@ -103,11 +103,10 @@ public class CommunicationService {
                     for (ExercicioSolucaoClasse classe : solucao.getClasses()) {
                         String fileName = tmpPath + File.separator + classe.getNomeClasse() + ".java";
                         compiler.CompileClass(fileName);
-
                     }
                 } catch (CompilationException e) {
                     solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
-                    ExercicioSolucaoErro erroCompilacao = new ExercicioSolucaoErro(solucao.getId(), -1, "A solu&ccedil;&atilde;o submetida possui erros de compila&ccedil;&atilde;o", EErrorType.COMPILACAO, e.getMessage());
+                    ExercicioSolucaoErro erroCompilacao = new ExercicioSolucaoErro(solucao.getId(), -1, "A solu&ccedil;&atilde;o submetida possui erros de compila&ccedil;&atilde;o", EErrorType.COMPILACAO, e.getLocalizedMessage());
                     erroCompilacao.setLinhaErro((int) e.getLine());
                     solucao.getErros().add(erroCompilacao);
                 }
@@ -140,7 +139,7 @@ public class CommunicationService {
                             compiler.CompileTest(fileName, classPathFileNames);
                         } catch (CompilationException e) {
                             solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
-                            ExercicioSolucaoErro erroDinamico = new ExercicioSolucaoErro(solucao.getId(), teste.getId(), teste.getMensagemCompilacao(), EErrorType.DINAMICO, e.getMessage());
+                            ExercicioSolucaoErro erroDinamico = new ExercicioSolucaoErro(solucao.getId(), teste.getId(), teste.getMensagemCompilacao(), EErrorType.DINAMICO, e.getLocalizedMessage());
                             solucao.getErros().add(erroDinamico);
                         }
                     }
@@ -192,7 +191,7 @@ public class CommunicationService {
 
             } catch (Exception e) {
                 solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
-                ExercicioSolucaoErro erroCompilacao = new ExercicioSolucaoErro(solucao.getId(), -1, "A solu&ccedil;&atilde;o submetida possui erros de compila&ccedil;&atilde;o", EErrorType.COMPILACAO, e.getMessage());
+                ExercicioSolucaoErro erroCompilacao = new ExercicioSolucaoErro(solucao.getId(), -1, "A solu&ccedil;&atilde;o submetida possui erros de compila&ccedil;&atilde;o", EErrorType.COMPILACAO, e.toString());
                 solucao.getErros().add(erroCompilacao);
             }
 

@@ -29,7 +29,7 @@ public class FeeperCompiler {
 
         JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-        StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(diagnostics, Locale.US, Charset.forName("UTF-8"));
+        StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(diagnostics, Locale.forLanguageTag("pt_BR"), Charset.forName("UTF-8"));
 
         File file = new File(fileName);
 
@@ -47,7 +47,7 @@ public class FeeperCompiler {
             if (diagnostic.getKind().equals(Kind.ERROR)) {
                 JavaFileObject fileObject = ((JavaFileObject) diagnostic.getSource());
                 file = new File(fileObject.getName());
-                CompilationException exception = new CompilationException(diagnostic.getMessage(Locale.US) + " in " + file.getName());
+                CompilationException exception = new CompilationException(diagnostic.getMessage(Locale.forLanguageTag("pt_BR")) + " in " + file.getName());
                 exception.setSource(diagnostic.getSource().toString());
                 exception.setLine(diagnostic.getLineNumber());
 
@@ -63,7 +63,7 @@ public class FeeperCompiler {
         JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 
-        StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(diagnostics, Locale.US, Charset.forName("UTF-8"));
+        StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(diagnostics, Locale.forLanguageTag("pt_BR"), Charset.forName("UTF-8"));
         ArrayList classPathfiles = new ArrayList();
         for (String classPathFileName : classPathFileNames) {
             classPathfiles.add(new File(classPathFileName));
@@ -86,7 +86,7 @@ public class FeeperCompiler {
             if (diagnostic.getKind().equals(Kind.ERROR)) {
                 JavaFileObject fileObject = ((JavaFileObject) diagnostic.getSource());
                 file = new File(fileObject.getName());
-                CompilationException exception = new CompilationException(diagnostic.getMessage(Locale.US) + " in " + file.getName());
+                CompilationException exception = new CompilationException(diagnostic.getMessage(Locale.forLanguageTag("pt_BR")));
                 exception.setSource(diagnostic.getSource().toString());
                 exception.setLine(diagnostic.getLineNumber());
 
