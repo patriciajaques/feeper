@@ -33,7 +33,7 @@ public class StaticTestRunner {
         String outFile = this.destPath + File.separator + "findBugs_" + className + "_output.xml";
 
         String command = "java -jar " + jarFile;
-        command += " -textui -low -effort:max -xml:withMessages -xdocs -outputFile " + outFile;
+        command += " -textui -low -effort:min -xml:withMessages -xdocs -outputFile " + outFile;
         command += " " + srcFile;
 
         Runtime rt = Runtime.getRuntime();

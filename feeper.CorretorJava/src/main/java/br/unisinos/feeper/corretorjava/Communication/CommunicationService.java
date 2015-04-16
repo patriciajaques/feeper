@@ -191,7 +191,7 @@ public class CommunicationService {
 
             } catch (Exception e) {
                 solucao.setIdStatus(EStatusSolucao.ERRO_COMPILACAO);
-                ExercicioSolucaoErro erroCompilacao = new ExercicioSolucaoErro(solucao.getId(), -1, "A solu&ccedil;&atilde;o submetida possui erros de compila&ccedil;&atilde;o", EErrorType.COMPILACAO, e.toString());
+                ExercicioSolucaoErro erroCompilacao = new ExercicioSolucaoErro(solucao.getId(), -1, "A solu&ccedil;&atilde;o submetida possui erros de compila&ccedil;&atilde;o", EErrorType.COMPILACAO, e.getLocalizedMessage());
                 solucao.getErros().add(erroCompilacao);
             }
 

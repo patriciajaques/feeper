@@ -74,11 +74,11 @@ public class DinamicTestCreator {
 
                 builder.append(this.GetAtribuicao(teste, passo, i));
 
-            } else if (passo.getOperationType() == 2) {//Execução 
+            } else if (passo.getOperationType() == 2) {//ExecuÃ§Ã£o 
 
                 builder.append(this.GetExecucao(passo));
 
-            } else if (passo.getOperationType() == 3) {//Verificação
+            } else if (passo.getOperationType() == 3) {//VerificaÃ§Ã£o
 
                 builder.append(this.GetVerificacao(teste, passo, i));
 
@@ -86,7 +86,7 @@ public class DinamicTestCreator {
 
                 builder.append(this.GetWhile(teste, passo, i));
 
-            } else if (passo.getOperationType() == 5) {//Fim Laço
+            } else if (passo.getOperationType() == 5) {//Fim LaÃ§o
 
                 builder.append(this.GetFimLaco(passo));
             }
@@ -130,7 +130,7 @@ public class DinamicTestCreator {
 
         StringBuilder builder = new StringBuilder();
         if (passo.getMethodName() == null || passo.getMethodName().isEmpty()) {
-            //construtor ou primitivo ou designação
+            //construtor ou primitivo ou designaÃ§Ã£o
             Boolean isFirstPrevDeclared = isObjectDeclared(teste, passo.getExpectedOutputName(), passoIndex);
             Boolean isSecondPrevDeclared = isObjectDeclared(teste, passo.getObjectName(), passoIndex);
 
@@ -144,7 +144,7 @@ public class DinamicTestCreator {
                 //mexe em um array ou cria um novo objeto
                 String objectType = getObjectType(teste, passo.getExpectedOutputName(), passoIndex);
                 Boolean needsNew = needsNewAcessor(objectType);
-                if (passo.getExpectedOutputName().contains("[]")) {
+                if (passo.getExpectedOutputName().contains("[]") || passo.getObjectName().contains("[")) {
                     needsNew = true;
                 }
 
@@ -173,7 +173,7 @@ public class DinamicTestCreator {
             }
         } else {
 
-            //método
+            //mÃ©todo
             Boolean isFirstPrevDeclared = isObjectDeclared(teste, passo.getExpectedOutputName(), passoIndex);
             Boolean isSecondPrevDeclared = isObjectDeclared(teste, passo.getObjectName(), passoIndex);
             if (isFirstPrevDeclared && isSecondPrevDeclared) {
@@ -186,7 +186,7 @@ public class DinamicTestCreator {
                 String objectType = getObjectType(teste, passo.getExpectedOutputName(), passoIndex);
 
                 Boolean needsNew = needsNewAcessor(objectType);
-                if (passo.getExpectedOutputName().contains("[]")) {
+                if (passo.getExpectedOutputName().contains("[]") || passo.getObjectName().contains("[")) {
                     needsNew = true;
                 }
 
@@ -240,7 +240,7 @@ public class DinamicTestCreator {
                 Boolean isSecondPrevDeclared = isObjectDeclared(teste, second, passoIndex);
 
                 if (isSecondPrevDeclared == false) {
-                    //é valor primitivo
+                    //Ã© valor primitivo
                     String objectType = getObjectType(teste, first, passoIndex);
                     if (objectType.indexOf("[") > 0) {
                         objectType = objectType.substring(0, objectType.indexOf("["));
@@ -264,7 +264,7 @@ public class DinamicTestCreator {
             }
         } else {
 
-            //compara valor com retorno do Método
+            //compara valor com retorno do MÃ©todo
             first = trataDados(passo.getExpectedOutputType(), passo.getExpectedOutputName());
             if (passo.getObjectName().equals("System.Out") && first.startsWith("\"") == false) {
                 //tratamento para strings
@@ -306,7 +306,7 @@ public class DinamicTestCreator {
             }
         } else {
 
-            //compara valor com retorno do Método
+            //compara valor com retorno do MÃ©todo
             first = trataDados(passo.getExpectedOutputType(), passo.getExpectedOutputName());
             if (passo.getObjectName().equals("System.Out") && first.startsWith("\"") == false) {
                 //tratamento para strings

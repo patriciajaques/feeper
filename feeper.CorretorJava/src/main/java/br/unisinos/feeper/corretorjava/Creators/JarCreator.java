@@ -85,19 +85,50 @@ public class JarCreator {
         String command = "java -Djava.security.manager -Djava.security.policy=policy.txt -jar";
         command += " result.jar";
 
+        String error = "";
+
         File dir = new File(this.destPath);
         Runtime rt = Runtime.getRuntime();
         Process pr = rt.exec(command, new String[0], dir);
 
-        //lê o resultado do comando
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
-        String error = "";
-        String s = null;
-        while ((s = stdError.readLine()) != null) {
-            error += s + "\n";
+        Worker worker = new Worker(pr);
+        worker.start();
+        try {
+            worker.join(120000);
+            if (worker.exitValue != null) {
+                //lê o resultado do comando
+                BufferedReader stdError = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
+                String s = null;
+                while ((s = stdError.readLine()) != null) {
+                    error += s + "\n";
+                }
+            } else {
+                error = "A correção do exercício demorou mais que o esperado! Certifique-se que sua solução nao possui um loop infinito!";
+            }
+        } finally {
+            pr.destroy();
         }
+
         if (error.equals("") == false) {
             throw new Exception(error);
+        }
+    }
+
+    private static class Worker extends Thread {
+
+        private final Process process;
+        private Integer exitValue;
+
+        private Worker(Process process) {
+            this.process = process;
+        }
+
+        public void run() {
+            try {
+                exitValue = process.waitFor();
+            } catch (InterruptedException ignore) {
+                return;
+            }
         }
     }
 }

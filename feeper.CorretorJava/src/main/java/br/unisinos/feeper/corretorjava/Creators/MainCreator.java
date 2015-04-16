@@ -62,7 +62,6 @@ public class MainCreator {
             String mensagem = teste.getMensagemPersonalizada() == null ? "" : teste.getMensagemPersonalizada();
             builder.append("String message = failure.getTrace().contains(\"java.lang.AssertionError\")? \"O resultado obtido difere do esperado\" : failure.getTrace();");
             builder.append("ExercicioSolucaoErro erro = new ExercicioSolucaoErro(" + solucao.getId() + "," + teste.getId() + ",\"" + mensagem.replace("\"", "") + "\"," + ((int) EErrorType.DINAMICO) + ",message);");
-
             builder.append("erros.add(erro);");
             builder.append("}");
         }
