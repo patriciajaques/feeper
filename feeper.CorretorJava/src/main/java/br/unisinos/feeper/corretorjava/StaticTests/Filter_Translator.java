@@ -69,6 +69,8 @@ public class Filter_Translator {
             case "RV_RETURN_VALUE_IGNORED_INFERRED":
             case "SA_LOCAL_SELF_ASSIGNMENT":
             case "SF_SWITCH_FALLTHROUGH":
+            case "DE_MIGHT_DROP":
+            case "DE_MIGHT_IGNORE":
                 return true;
         }
 
