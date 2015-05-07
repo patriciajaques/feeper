@@ -232,7 +232,8 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 //iniciar aqui o caso
                 caso.ativo = true;
                 caso.ordem = $scope.getnextCasoOrdem();
-                caso.mensagemCompilacao = "Você não inseriu um construtor com " + (membro.parametros == null ? 0 : membro.parametros.length) + " parâmetros na classe " + $scope.editingClass.nomeClasse;
+                var complemento = (membro.parametros == null || membro.parametros.length == 0) ? "que não recebe" : "que recebe " + membro.parametros.length;
+                caso.mensagemCompilacao = "O construtor " + complemento + " parâmetros da classe " + $scope.editingClass.nomeClasse + ", não foi implementado ou não segue a assinatura especificada.\r\n\r\nRevise este construtor!";
                 caso.passos = [];
                 var passo = new Object();
                 passo.ordem = $scope.getnextPassoOrdem(caso);
@@ -302,8 +303,8 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 //iniciar aqui o caso
                 caso.ativo = true;
                 caso.ordem = $scope.getnextCasoOrdem();
-                caso.mensagemPersonalizada = "O método " + setName + " não está setando o valor do atributo " + membro.name + ". Verifique o método " + setName + "!";
-                caso.mensagemCompilacao = " O método de modificação do atributo " + membro.name + " não possui a assinatura esperada. Revise o nome(" + setName + "), parâmetros recebidos e retornados desse método!";
+                caso.mensagemPersonalizada = "O método " + setName + " da classe " + $scope.editingClass.nomeClasse + ", não está setando o valor do atributo " + membro.name + ".\r\n\r\n Revise o método " + setName + "!";
+                caso.mensagemCompilacao = " O método de modificação do atributo " + membro.name + " da classe " + $scope.editingClass.nomeClasse + ", não foi implementado ou não segue a assinatura especificada.\r\n\r\n Revise o método(" + setName + ") e parâmetros recebidos por ele!";
                 caso.passos = [];
                 var passo1 = new Object();
                 passo1.ordem = $scope.getnextPassoOrdem(caso);
@@ -365,8 +366,8 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 //iniciar aqui o caso
                 caso.ativo = true;
                 caso.ordem = $scope.getnextCasoOrdem();
-                caso.mensagemPersonalizada = "O método " + getName + "() deveria ter retornado o valor do atributo " + membro.name + " , mas retornou outro valor. Verifique esse método!";
-                caso.mensagemCompilacao = "O método de acesso ao atributo " + membro.name + " não possui a assinatura esperada(" + getName + "()).Revise esse método!";
+                caso.mensagemPersonalizada = "O método " + getName + "() da classe " + $scope.editingClass.nomeClasse + ", deveria ter retornado o valor do atributo " + membro.name + ", mas retornou outro valor.\r\n\r\nRevise este método!";
+                caso.mensagemCompilacao = "O método de acesso ao atributo " + membro.name + " da classe " + $scope.editingClass.nomeClasse + ", não foi implementado ou não segue a assinatura especificada(" + getName + "()).\r\n\r\nRevise este método!";
                 caso.passos = [];
                 var passo1 = new Object();
                 passo1.ordem = $scope.getnextPassoOrdem(caso);
@@ -441,13 +442,14 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 //iniciar aqui o caso
                 caso.ativo = true;
                 caso.ordem = $scope.getnextCasoOrdem();
+                var complemento = (membro.parametros == null || membro.parametros.length == 0) ? ", que não recebe" : ", que recebe " + membro.parametros.length;
                 if (membro.type == "void")
                 {
-                    caso.mensagemCompilacao = "Você deveria ter implementado um método " + membro.name + " que recebe " + (membro.parametros == null ? 0 : membro.parametros.length) + " parâmetros!";
+                    caso.mensagemCompilacao = "O método " + membro.name + " da classe " + $scope.editingClass.nomeClasse + complemento + " parâmetros, não foi implementado ou não segue a assinatura especificada.\r\n\r\nRevise este método!";
                 }
                 else
                 {
-                    caso.mensagemCompilacao = "Você deveria ter implementado um método " + membro.name + " que recebe " + (membro.parametros == null ? 0 : membro.parametros.length) + " parâmetros e retorna um valor do tipo " + membro.type + "!";
+                    caso.mensagemCompilacao = "O método " + membro.name + " da classe " + $scope.editingClass.nomeClasse + complemento + " parâmetros e que retorna um valor do tipo " + membro.type + ", não foi implementado ou não segue a assinatura especificada.\r\n\r\nRevise este método!";
                 }
                 caso.passos = [];
                 var passo1 = new Object();
@@ -787,7 +789,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
     $scope.duplicaPasso = function (passo) {
         var novoPasso = JSON.parse(JSON.stringify(passo))
         novoPasso.id = 0;
-        novoPasso.ordem = passo.ordem + 1;
+        novoPasso.ordem = $scope.getnextPassoOrdem($scope.editingCasoTeste);
         if (novoPasso.inputParameters != null) {
             for (var j = 0; j < novoPasso.inputParameters.length; j++) {
                 var item = novoPasso.inputParameters[j];
@@ -796,12 +798,12 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         }
 
         var index = $scope.editingCasoTeste.passos.indexOf(passo);
-        $scope.editingCasoTeste.passos.splice(index + 1, 0, novoPasso);
+        $scope.editingCasoTeste.passos.splice(index, 0, novoPasso);
         $scope.expectedOutputNameBlured(novoPasso);
 
-        for (var i = index + 1; i < $scope.editingCasoTeste.passos.length; i++) {
+        for (var i = 0; i < $scope.editingCasoTeste.passos.length; i++) {
 
-            $scope.editingCasoTeste.passos[i].ordem += 1;
+            $scope.editingCasoTeste.passos[i].ordem = i + 1;
         }
         $.fancybox.update();
         setTimeout(function () {
@@ -1020,6 +1022,15 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                     return;
                 }
             }
+            //fixo do Sistema
+            if (passo.methodName == "get_Private_Field_Acessor") {
+
+                passo.inputParameters = [];
+                var parametro = new Object();
+                parametro.ordem = $scope.getnextParametroOrdem(passo);
+                parametro.objectType = "String";
+                passo.inputParameters.push(parametro);
+            }
         }
     }
 
@@ -1149,6 +1160,14 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                             knowMethods.push({label: membro.name, value: membro.name});
                         }
                     }
+
+                    //fixo do Sistema
+                    var methodName = "get_Private_Field_Acessor";
+                    if ($scope.containsValue(knowMethods, methodName) == false && methodName.toLowerCase().indexOf(request.term.toLowerCase()) >= 0) {
+
+                        knowMethods.push({label: methodName, value: methodName});
+                    }
+
                 }
             }
         }

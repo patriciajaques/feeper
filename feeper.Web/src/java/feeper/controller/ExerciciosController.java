@@ -868,6 +868,16 @@ public class ExerciciosController extends ApplicationController {
         ExercicioCasoTesteService repoTestes = new ExercicioCasoTesteService();
         solucao.setTestes(repoTestes.getByIdExercicio(idExercicio, true));
 
+        for (int i = 0; i < solucao.getTestes().size(); i++) {
+            ExercicioCasoTeste teste = solucao.getTestes().get(i);
+            if (teste.getMensagemCompilacao() != null) {
+                teste.setMensagemCompilacao(teste.getMensagemCompilacao().replaceAll("\r\n", "<br/>").replaceAll("\n", "<br/>"));
+            }
+            if (teste.getMensagemPersonalizada() != null) {
+                teste.setMensagemPersonalizada(teste.getMensagemPersonalizada().replaceAll("\r\n", "<br/>").replaceAll("\n", "<br/>"));
+            }
+        }
+
         try {
             ConfiguracaoService confService = new ConfiguracaoService();
             ConfiguracaoSistema conf = confService.getConfiguracao();
