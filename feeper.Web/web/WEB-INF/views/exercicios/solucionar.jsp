@@ -106,7 +106,7 @@
                                     <td>${erro.getLinhaErro()>0 ? erro.getLinhaErro() : ""}</td>
                                     <td>${erro.getMensagemPersonalizada()}
                                         <c:if test="${not empty erro.getMensagemErro()}">
-                                            <h6><fmt:message key="label.exercicios.mensagemSistema"/></h6>
+                                            <h6 style="color: blue; margin-top: 30px;"><fmt:message key="label.exercicios.mensagemSistema"/></h6>
                                             ${erro.getMensagemErro()}</td>
                                         </c:if>
                                     </td>

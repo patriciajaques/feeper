@@ -37,7 +37,7 @@
                     // set the display titles for each resource
                     baseTextName: "${nomeAluno}",
                     newTextName: "${nomeColega}",
-                    viewType: 1
+                    viewType: 0
                 }));
             });
         </script>
