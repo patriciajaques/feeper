@@ -113,7 +113,7 @@
                         <img src="<c:url value='/resources/img/logo_p.png'/>" style="border:0px; padding-top:8px; padding-right:10px;" />
                     </a>
                 </div>
-                <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <div class="collapse navbar-collapse navbar-ex1-collapse" style="width: 100%;">
                     <ul class="nav navbar-nav">
                         <c:choose>
                             <c:when test="${UsuarioLogado.getIdPerfil() == 1}">

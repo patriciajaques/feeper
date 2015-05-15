@@ -159,12 +159,15 @@ function CreateEditor(source, readOnly, questions, comments)
     } catch (e) {
     }
 
+    $(".column").removeClass("column").addClass("column1");
+    $(".column2").css("display","block");
+     
     $("#panelEditor").append($('<div id="editor"></div>'));
     editor = ace.edit("editor");
     editor.session.setValue(source);
     editor.container.style.opacity = "";
     editor.setOptions({
-        maxLines: 30,
+        maxLines: 200,
         mode: "ace/mode/java",
         autoScrollEditorIntoView: true
     });

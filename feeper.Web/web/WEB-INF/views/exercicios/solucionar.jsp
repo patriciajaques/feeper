@@ -27,11 +27,60 @@
 
             .ace_gutter-cell.ace_breakpoint{ 
                 border-radius: 20px 0px 0px 20px; 
-                box-shadow: 0px 0px 1px 1px red inset;              } 
+                box-shadow: 0px 0px 1px 1px red inset;              
+            }
+
+            .flexContainer {
+                display: -webkit-flex;
+                display: flex;
+            }
+
+            .column{
+                display: block;
+                overflow: hidden;
+                float: left;
+                width: 100%;
+                -webkit-transition: width 0.5s; /* Safari */
+                transition: width 0.5s;
+            }
+
+            .column1{
+                -webkit-flex-grow: 1;
+                -webkit-flex-shrink: 3;
+                flex-grow: 1;
+                flex-shrink: 3;
+                display: block;
+                overflow: hidden;
+                width: 50%;
+                -webkit-transition: width 0.5s; /* Safari */
+                transition: width 0.5s;
+            }
+
+            .column2{
+                -webkit-flex-grow: 1;
+                -webkit-flex-shrink: 1;
+                flex-grow: 1;
+                flex-shrink: 1;
+                display: none;
+                overflow: hidden;
+                width: 50%;
+                -webkit-transition: width 0.5s; /* Safari */
+                transition: width 0.5s;
+            }
+
+            .column1:hover{
+                width: 800px;
+                overflow: auto;
+            }
+
+            .column2:hover{
+                width: 800px;
+                overflow: auto;
+            }
 
         </style>
         <script src="<c:url value='/resources/ace/ace.js'/>" type="text/javascript"></script>
-        <script src="<c:url value='/resources/js/views/exercicios/solucionar.js?v=1.01'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/js/views/exercicios/solucionar.js?v=1.02'/>" type="text/javascript"></script>
         <script type="text/javascript">
             var exercicioID = "${Exercicio.getId()}";
             var fileID = "${fileID}";
@@ -125,18 +174,7 @@
             </script>
         </c:if>
 
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <c:if test="${Exercicio.getUsaDescricaoPDF() != true}">
-                    ${Exercicio.getDescricaoHtml()}
-                </c:if>
-                <c:if test="${Exercicio.getUsaDescricaoPDF() == true}">
-                    <iframe border="0" width="100%" height="600px" src="<c:url value='/'/>exercicios/verdescricao?exercicioId=${Exercicio.getId()}">
-                    </iframe>
-                </c:if>
-            </div>
-        </div>
-        <h3><fmt:message key="label.exercicios.classes"/></h3>
+        <h4><fmt:message key="label.exercicios.classes"/></h4>
         <div class="list-group">
             <c:if test="${not empty Classes}">
                 <c:forEach var="item" varStatus="status" items="${Classes}">
@@ -152,27 +190,48 @@
             <input type="hidden" id="hdnEditor" name="hdnEditor" />
         </form>
 
-        <h3 id="lblFilename"></h3>
-        <div id="panelEditor"></div>
-
-        <button type="button" class="btn btn-primary btn-sm btn-salvar-classe" style="display:none;">
-            <span class="glyphicon glyphicon-save"></span> <fmt:message key="button.salvar"/>
-        </button>
-        <button type="button" class="btn btn-default btn-sm btn-habilitar-edicao" style="display:none;">
-            <span class="glyphicon glyphicon-lock"></span> <fmt:message key="button.habilitaredicao"/>
-        </button>
-        <button type="button" class="btn btn-default btn-sm btn-excluir-classe" style="display:none;">
-            <span class="glyphicon glyphicon-trash"></span> <fmt:message key="button.excluir"/>
-        </button>
-        <button type="button" class="btn btn-default btn-sm btn-registrar-duvida" style="display:none;">
-            <span class="glyphicon glyphicon-comment"></span> <fmt:message key="button.registrarduvida"/>
-        </button>
-        <button type="button" class="btn btn-default btn-sm btn-registrar-anotacao" style="display:none;">
-            <span class="glyphicon glyphicon-eye-open"></span> <fmt:message key="button.registraranotacao"/>
-        </button>
-        <button type="button" class="btn btn-default btn-sm btn-classe-favorita" style="display:none;">
-            <span class="glyphicon glyphicon-star-empty"></span> <fmt:message key="menu.classe.favorita"/>
-        </button>
+        <div class="flexContainer">
+            <div class="column">
+                <h4><fmt:message key="label.exercicios.detalhamento"/></h4>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <c:if test="${Exercicio.getUsaDescricaoPDF() != true}">
+                            ${Exercicio.getDescricaoHtml()}
+                        </c:if>
+                        <c:if test="${Exercicio.getUsaDescricaoPDF() == true}">
+                            <iframe border="0" width="100%" height="600px" src="<c:url value='/'/>exercicios/verdescricao?exercicioId=${Exercicio.getId()}">
+                            </iframe>
+                        </c:if>
+                    </div>
+                </div> 
+            </div>
+            <div class="column2">
+                <h4 id="lblFilename"></h4>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div id="panelEditor"></div>
+                        <button type="button" class="btn btn-primary btn-sm btn-salvar-classe" style="display:none;">
+                            <span class="glyphicon glyphicon-save"></span> <fmt:message key="button.salvar"/>
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm btn-habilitar-edicao" style="display:none;">
+                            <span class="glyphicon glyphicon-lock"></span> <fmt:message key="button.habilitaredicao"/>
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm btn-excluir-classe" style="display:none;">
+                            <span class="glyphicon glyphicon-trash"></span> <fmt:message key="button.excluir"/>
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm btn-registrar-duvida" style="display:none;">
+                            <span class="glyphicon glyphicon-comment"></span> <fmt:message key="button.registrarduvida"/>
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm btn-registrar-anotacao" style="display:none;">
+                            <span class="glyphicon glyphicon-eye-open"></span> <fmt:message key="button.registraranotacao"/>
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm btn-classe-favorita" style="display:none;">
+                            <span class="glyphicon glyphicon-star-empty"></span> <fmt:message key="menu.classe.favorita"/>
+                        </button>
+                    </div>
+                </div> 
+            </div>
+        </div>
 
         <!--Modal exibida para adicionar novas classes-->
         <div style="display:none;width: 600px;height: 150px;" id="divNovaClasse">
