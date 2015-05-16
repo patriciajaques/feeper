@@ -60,7 +60,7 @@ public class MainCreator {
 
             builder.append("for (Failure failure : failures) {");
             String mensagem = teste.getMensagemPersonalizada() == null ? "" : teste.getMensagemPersonalizada();
-            builder.append("String message = failure.getTrace().contains(\"AssertionError\") ? failure.getMessage() : failure.getTrace();");
+            builder.append("String message = failure.getTrace().contains(\"but was\") ? failure.getMessage() : failure.getTrace();");
             builder.append("ExercicioSolucaoErro erro = new ExercicioSolucaoErro(" + solucao.getId() + "," + teste.getId() + ",\"" + mensagem.replace("\"", "") + "\"," + ((int) EErrorType.DINAMICO) + ",message);");
             builder.append("erros.add(erro);");
             builder.append("}");
