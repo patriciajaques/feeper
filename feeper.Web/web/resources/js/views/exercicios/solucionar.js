@@ -97,10 +97,14 @@ $(function () {
             $("#lblFilename").html(data[1]);
             var content = data[2].replace(/#'#/gi, '"');
             CreateEditor(content, data[0] != "0", data[3], data[4]);
-            if (data[5])
-                $(".btn-classe-favorita").html("<span class=\"glyphicon glyphicon-star\"></span>" + desmarcarfavoritaText);
-            else
-                $(".btn-classe-favorita").html("<span class=\"glyphicon glyphicon-star-empty\"></span>" + marcarfavoritaText);
+            if (data[5]) {
+                $(".btn-classe-favorita").html("<span class=\"glyphicon glyphicon-star\"></span>");
+                $(".btn-classe-favorita").prop('title', desmarcarfavoritaText);
+            }
+            else {
+                $(".btn-classe-favorita").html("<span class=\"glyphicon glyphicon-star-empty\"></span>");
+                $(".btn-classe-favorita").prop('title', marcarfavoritaText);
+            }
             ControlaBotoes();
             RemoveCarregando();
             $('html, body').animate({scrollTop: $("#lblFilename").offset().top}, 1000);
@@ -110,10 +114,14 @@ $(function () {
     $(".btn-classe-favorita").click(function () {
         var id = $("#hdnIdClasse").val();
         $.get(baseUrl + "classes/savefavorite/" + exercicioID + "/" + id, function (data) {
-            if (data != "erro" && data == "true")
-                $(".btn-classe-favorita").html("<span class=\"glyphicon glyphicon-star\"></span>" + desmarcarfavoritaText);
-            else if (data != "erro" && data == "false")
-                $(".btn-ckasse-favorita").html("<span class=\"glyphicon glyphicon-star-empty\"></span>" + marcarfavoritaText);
+            if (data != "erro" && data == "true") {
+                $(".btn-classe-favorita").html("<span class=\"glyphicon glyphicon-star\"></span>");
+                $(".btn-classe-favorita").prop('title', desmarcarfavoritaText);
+            }
+            else if (data != "erro" && data == "false") {
+                $(".btn-classe-favorita").html("<span class=\"glyphicon glyphicon-star-empty\"></span>");
+                $(".btn-classe-favorita").prop('title', marcarfavoritaText);
+            }
         });
     });
 
@@ -159,17 +167,29 @@ function CreateEditor(source, readOnly, questions, comments)
     } catch (e) {
     }
 
-    $(".column").removeClass("column").addClass("column1");
-    $(".column2").css("display","block");
-     
+
+    $("#splitContainer").css("height", "585px");
+
+    $("#divDescricao").css("height", "530px");
+    $("#divDescricao").css("overflow", "auto");
+
+    $("#divEditor").show();
+    $("#tablebuttons").show();
+
+    $('#splitContainer').split({
+        orientation: 'vertical',
+        limit: 200,
+        position: '50%' // if there is no percentage it interpret it as pixels
+    });
+
     $("#panelEditor").append($('<div id="editor"></div>'));
     editor = ace.edit("editor");
     editor.session.setValue(source);
     editor.container.style.opacity = "";
     editor.setOptions({
-        maxLines: 200,
+        maxLines: 38,
         mode: "ace/mode/java",
-        autoScrollEditorIntoView: true
+        autoScrollEditorIntoView: false
     });
     editor.setReadOnly(readOnly);
     editor.setTheme("ace/theme/eclipse");

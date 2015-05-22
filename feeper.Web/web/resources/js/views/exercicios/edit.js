@@ -705,7 +705,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 }
             }
             else if (item.operationType == 3) {
-                if (outputName == null || outputName.length == 0) {
+                if (outputType != "String" && (outputName == null || outputName.length == 0)) {
                     $scope.showToolTip('expectedOutputName_' + i, 'right', 'Por favor especificar aqui alguma das seguintes opções:<br/><br/>1. O nome de algum objeto inicializado anteriormente.<br/>2. O valor a ser comparado caso esteja comparando tipos primitivos.');
                     return false;
                 } else if ((outputType == null || outputType.length == 0) && $scope.isDeclaredObject(outputName, item) == false) {

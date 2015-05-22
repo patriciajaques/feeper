@@ -106,7 +106,7 @@
 
     </head>
     <body>
-        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
                     <a href="<c:url value='/'/>">
@@ -236,7 +236,7 @@
         </div>
 
         <jsp:invoke fragment="footer"/>
-        <p style="text-align: center; margin-top: 50px;"><small><fmt:message key="author"/></small></p>
+        <p style="text-align: center; margin-top: 5px;"><small><fmt:message key="author"/></small></p>
 
         <a id="feedback-button" href="#divFeedback">
             <img src="<c:url value='/resources/img/feedback.png'/>" alt="feedback" />

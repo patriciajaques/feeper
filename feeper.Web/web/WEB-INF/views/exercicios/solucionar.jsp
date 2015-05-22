@@ -29,58 +29,12 @@
                 border-radius: 20px 0px 0px 20px; 
                 box-shadow: 0px 0px 1px 1px red inset;              
             }
-
-            .flexContainer {
-                display: -webkit-flex;
-                display: flex;
-            }
-
-            .column{
-                display: block;
-                overflow: hidden;
-                float: left;
-                width: 100%;
-                -webkit-transition: width 0.5s; /* Safari */
-                transition: width 0.5s;
-            }
-
-            .column1{
-                -webkit-flex-grow: 1;
-                -webkit-flex-shrink: 3;
-                flex-grow: 1;
-                flex-shrink: 3;
-                display: block;
-                overflow: hidden;
-                width: 50%;
-                -webkit-transition: width 0.5s; /* Safari */
-                transition: width 0.5s;
-            }
-
-            .column2{
-                -webkit-flex-grow: 1;
-                -webkit-flex-shrink: 1;
-                flex-grow: 1;
-                flex-shrink: 1;
-                display: none;
-                overflow: hidden;
-                width: 50%;
-                -webkit-transition: width 0.5s; /* Safari */
-                transition: width 0.5s;
-            }
-
-            .column1:hover{
-                width: 800px;
-                overflow: auto;
-            }
-
-            .column2:hover{
-                width: 800px;
-                overflow: auto;
-            }
-
         </style>
+        <link href="<c:url value='/resources/css/jquery.splitter.css'/>" rel="stylesheet" type="text/css"/>
+
         <script src="<c:url value='/resources/ace/ace.js'/>" type="text/javascript"></script>
-        <script src="<c:url value='/resources/js/views/exercicios/solucionar.js?v=1.02'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/jquery/jquery.splitter-0.15.0.js'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/js/views/exercicios/solucionar.js?v=1.03'/>" type="text/javascript"></script>
         <script type="text/javascript">
             var exercicioID = "${Exercicio.getId()}";
             var fileID = "${fileID}";
@@ -190,11 +144,11 @@
             <input type="hidden" id="hdnEditor" name="hdnEditor" />
         </form>
 
-        <div class="flexContainer">
-            <div class="column">
-                <h4><fmt:message key="label.exercicios.detalhamento"/></h4>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+        <div class="panel panel-default">
+            <div id="splitContainer" class="panel-body" >
+                <div style="padding: 5px;">
+                    <h4><fmt:message key="label.exercicios.detalhamento"/></h4>
+                    <div id="divDescricao" >
                         <c:if test="${Exercicio.getUsaDescricaoPDF() != true}">
                             ${Exercicio.getDescricaoHtml()}
                         </c:if>
@@ -202,37 +156,50 @@
                             <iframe border="0" width="100%" height="600px" src="<c:url value='/'/>exercicios/verdescricao?exercicioId=${Exercicio.getId()}">
                             </iframe>
                         </c:if>
-                    </div>
+                    </div> 
                 </div> 
-            </div>
-            <div class="column2">
-                <h4 id="lblFilename"></h4>
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <div id="panelEditor"></div>
-                        <button type="button" class="btn btn-primary btn-sm btn-salvar-classe" style="display:none;">
-                            <span class="glyphicon glyphicon-save"></span> <fmt:message key="button.salvar"/>
-                        </button>
-                        <button type="button" class="btn btn-default btn-sm btn-habilitar-edicao" style="display:none;">
-                            <span class="glyphicon glyphicon-lock"></span> <fmt:message key="button.habilitaredicao"/>
-                        </button>
-                        <button type="button" class="btn btn-default btn-sm btn-excluir-classe" style="display:none;">
-                            <span class="glyphicon glyphicon-trash"></span> <fmt:message key="button.excluir"/>
-                        </button>
-                        <button type="button" class="btn btn-default btn-sm btn-registrar-duvida" style="display:none;">
-                            <span class="glyphicon glyphicon-comment"></span> <fmt:message key="button.registrarduvida"/>
-                        </button>
-                        <button type="button" class="btn btn-default btn-sm btn-registrar-anotacao" style="display:none;">
-                            <span class="glyphicon glyphicon-eye-open"></span> <fmt:message key="button.registraranotacao"/>
-                        </button>
-                        <button type="button" class="btn btn-default btn-sm btn-classe-favorita" style="display:none;">
-                            <span class="glyphicon glyphicon-star-empty"></span> <fmt:message key="menu.classe.favorita"/>
-                        </button>
-                    </div>
-                </div> 
+                <div id="divEditor" style="display: none; top:0; padding: 5px;">
+                    <table id="tablebuttons" style="width: 100%" >
+                        <tr>
+                            <td style="width: 100%">
+                                <h4 id="lblFilename"></h4>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm btn-salvar-classe" title="<fmt:message key="button.salvar"/>" style="display:none;">
+                                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                                </button>  
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-default btn-sm btn-habilitar-edicao" title="<fmt:message key="button.habilitaredicao"/>" style="display:none;">
+                                    <span class="glyphicon glyphicon-lock"></span>
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-default btn-sm btn-excluir-classe" title="<fmt:message key="button.excluir"/>" style="display:none;">
+                                    <span class="glyphicon glyphicon-trash"></span> 
+                                </button> 
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-default btn-sm btn-registrar-duvida" title="<fmt:message key="button.registrarduvida"/>" style="display:none;">
+                                    <span class="glyphicon glyphicon-comment"></span>
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-default btn-sm btn-registrar-anotacao" title="<fmt:message key="button.registraranotacao"/>" style="display:none;">
+                                    <span class="glyphicon glyphicon-eye-open"></span>
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-default btn-sm btn-classe-favorita" title="<fmt:message key="menu.classe.favorita"/>" style="display:none;">
+                                    <span class="glyphicon glyphicon-star-empty"></span> 
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                    <div id="panelEditor"></div>
+                </div>
             </div>
         </div>
-
         <!--Modal exibida para adicionar novas classes-->
         <div style="display:none;width: 600px;height: 150px;" id="divNovaClasse">
             <div class="input-group" style="width:400px; margin-bottom:3px">
