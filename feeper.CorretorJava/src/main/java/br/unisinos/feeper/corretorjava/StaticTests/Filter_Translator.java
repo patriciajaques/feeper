@@ -142,6 +142,12 @@ public class Filter_Translator {
                 bug.message = "Uma vari&aacute;vel est&aacute; sendo comparada consigo mesma em " + bug.message.substring(firstPart.length() + variableName.length() + 12);
                 bug.message += ", este tipo de opera&ccedil;&atilde;o geralmente representa um erro de l&oacute;gica";
                 break;
+            case "NM_LCASE_TOSTRING":
+                bug.message = bug.message.replace("Nm: Class ", "A classe ");
+                bug.message = bug.message.replace("defines", "define");
+                bug.message = bug.message.replace(" should it be ", "mas deveria ser ");
+                bug.message = bug.message.replace("?", ", a letra S deve ser mai&uacute;scula");
+                break;
         }
     }
 }
