@@ -48,7 +48,7 @@ public class JarCreator {
         classPathFileNames.add(this.destPath + File.separator + "junit.jar");
         classPathFileNames.add(this.destPath + File.separator + "org.hamcrest.core.jar");
 
-        compiler.CompileTest(this.destPath + File.separator + "Main.java", classPathFileNames);
+        compiler.CompileTest(this.destPath + File.separator + "MainFeeperTests.java", classPathFileNames);
     }
 
     public void Pack() throws Exception {

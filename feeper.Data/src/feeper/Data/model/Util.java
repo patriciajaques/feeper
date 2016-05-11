@@ -42,7 +42,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class Util {
 
-    public static String serverUrl = "http://feeper2.jelasticlw.com.br";
+    public static String serverUrl = "http://feeper2.unisinos.br:8080/feeper";
 
     public static String criptoMD5(String value) {
         try {

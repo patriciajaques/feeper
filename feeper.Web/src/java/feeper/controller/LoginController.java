@@ -1,6 +1,7 @@
 package feeper.controller;
 
 import feeper.Data.entity.Pessoa;
+import feeper.Data.entity.Turma;
 import feeper.Data.model.ETipoLog;
 import feeper.Data.service.PessoaService;
 import feeper.Data.service.TurmaService;
@@ -75,7 +76,15 @@ public class LoginController extends ApplicationController {
             session.setAttribute("UsuarioLogado", pessoa);
 
             if (pessoa.getTurmas().size() > 0) {
-                session.setAttribute("TurmaSelecionada", pessoa.getTurmas().get(0));
+                
+                Turma turmaSelecionada = null;
+                if (pessoa.getIdTurmaSelecionada() > 0) {
+                    turmaSelecionada = repoTurma.getById(pessoa.getIdTurmaSelecionada());
+                }
+                if (turmaSelecionada == null) {
+                    turmaSelecionada = pessoa.getTurmas().get(0);
+                }
+                session.setAttribute("TurmaSelecionada", turmaSelecionada);
             }
 
             mav.setView(new RedirectView("/", true, true, false));

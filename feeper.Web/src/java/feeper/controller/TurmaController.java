@@ -94,7 +94,7 @@ public class TurmaController extends ApplicationController {
                 pageSize,
                 sortField,
                 sortDirection);
-        
+
         for (Turma turma : lista) {
             turma.setProfessor(service.getProfessor(turma.getId()));
         }
@@ -219,6 +219,10 @@ public class TurmaController extends ApplicationController {
             for (Turma turma : minhasTurmas) {
                 if (turma.getId() == id) {
                     session.setAttribute("TurmaSelecionada", turma);
+
+                    pessoa.setIdTurmaSelecionada(id);
+                    PessoaService pessoaService = new PessoaService();
+                    pessoaService.update(pessoa);
                     break;
                 }
             }

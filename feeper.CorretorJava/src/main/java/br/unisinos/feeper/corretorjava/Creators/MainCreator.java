@@ -20,9 +20,9 @@ public class MainCreator {
         StringBuilder builder = new StringBuilder();
         builder.append(this.getImports());
 
-        builder.append("public class Main {");
+        builder.append("public class MainFeeperTests {");
         builder.append("public static void main(String[] args) {");
-
+        
         builder.append(this.getTests(solucao));
 
         builder.append("}");

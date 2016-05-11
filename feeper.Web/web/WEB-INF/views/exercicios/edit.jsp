@@ -11,7 +11,7 @@
 
         <script src="<c:url value='/resources/js/angular.min.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/js/sortable.js'/>" type="text/javascript"></script>
-        <script src="<c:url value='/resources/js/views/exercicios/edit.js?v=1.03'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/js/views/exercicios/edit.js?v=1.04'/>" type="text/javascript"></script>
 
         <style type="text/css" media="screen">
             .line-selected {
@@ -281,7 +281,7 @@
                                                                     <input type="text" id="parameterType_{{$parent.$index}}_{{$index}}" class="form-control passoDataType" data-index='{{$index}}' ng-disabled="isParameterTypeDisabled(passo, parametro)" ng-model="parametro.objectType" placeholder="<fmt:message key="label.exercicios.tipoparametro"/>"/>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="text" id="parameterValue_{{$parent.$index}}_{{$index}}" class="form-control passoObject" ng-model="parametro.objectValue" ng-blur="parametroValueBlured(passo, parametro)" placeholder="<fmt:message key="label.exercicios.valorparametro"/>"/>
+                                                                    <input type="text" id="parameterValue_{{$parent.$index}}_{{$index}}" class="form-control passoObject" data-index='{{$parent.$index}}' ng-model="parametro.objectValue" ng-blur="parametroValueBlured(passo, parametro)" placeholder="<fmt:message key="label.exercicios.valorparametro"/>"/>
                                                                 </td>
                                                                 <td>,</td>
                                                             </tr>

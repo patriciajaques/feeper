@@ -21,6 +21,7 @@ public class Pessoa  implements java.io.Serializable {
     private boolean ativo;
     private boolean possuiFoto;
     private int idPerfil;
+    private int idTurmaSelecionada;
     private List<Turma> turmas;
     //private List<Turma> turmasProfessor;
 
@@ -120,5 +121,11 @@ public class Pessoa  implements java.io.Serializable {
         this.possuiFoto = possuiFoto;
     }
 
+    public int getIdTurmaSelecionada() {
+        return idTurmaSelecionada;
+    }
 
+    public void setIdTurmaSelecionada(int idTurmaSelecionada) {
+        this.idTurmaSelecionada = idTurmaSelecionada;
+    }
 }

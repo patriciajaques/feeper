@@ -149,7 +149,7 @@ public class CommunicationService {
                         //Cria a main do jar na pasta tmp
                         MainCreator creator = new MainCreator();
                         String mainString = creator.CreateMain(solucao);
-                        Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmpPath + File.separator + "Main.java"), "UTF-8"));
+                        Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmpPath + File.separator + "MainFeeperTests.java"), "UTF-8"));
                         writer.write(mainString);
                         writer.close();
 

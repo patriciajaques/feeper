@@ -32,5 +32,8 @@
         <property name="idPerfil" type="int">
             <column name="IdPerfil" not-null="true" />
         </property>
+        <property name="idTurmaSelecionada" type="int">
+            <column name="IdTurmaSelecionada" not-null="true" />
+        </property>
     </class>
 </hibernate-mapping>

@@ -3,6 +3,7 @@ package br.unisinos.feeper.corretorjava.Creators;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioCasoTeste;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioCasoTestePasso;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioCasoTestePassoParametro;
+import java.io.IOException;
 
 public class DinamicTestCreator {
 
@@ -27,10 +28,13 @@ public class DinamicTestCreator {
 
         StringBuilder builder = new StringBuilder();
         builder.append("import static org.junit.Assert.*;");
+        builder.append("import java.io.ByteArrayInputStream;");
         builder.append("import java.io.ByteArrayOutputStream;");
+        builder.append("import java.io.InputStream;");
         builder.append("import java.io.PrintStream;");
         builder.append("import java.util.Arrays;");
         builder.append("import java.util.Collection;");
+        builder.append("import java.util.Scanner;");
         builder.append("import org.junit.After;");
         builder.append("import org.junit.Before;");
         builder.append("import org.junit.Test;");
@@ -41,6 +45,7 @@ public class DinamicTestCreator {
     private String getGlobalVariables() {
 
         StringBuilder builder = new StringBuilder();
+        builder.append("private InputStream stdin = null;");
         builder.append("private PrintStream stdout = null;");
         builder.append("private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();");
 
@@ -52,10 +57,11 @@ public class DinamicTestCreator {
         StringBuilder builder = new StringBuilder();
         builder.append("@Before ");
         builder.append("public void setUpStreams() {");
+        builder.append("stdin = System.in;");
         builder.append("stdout = System.out;");
         builder.append("System.setOut(new PrintStream(outContent));");
         builder.append("}");
-
+       
         return builder.toString();
     }
 
@@ -63,7 +69,7 @@ public class DinamicTestCreator {
 
         StringBuilder builder = new StringBuilder();
         builder.append("@Test ");
-        builder.append("public void test() {");
+        builder.append("public void test() throws Exception {");
 
         for (int i = 0; i < teste.getPassos().size(); i++) {
 
@@ -74,7 +80,7 @@ public class DinamicTestCreator {
 
                 builder.append(this.GetAtribuicao(teste, passo, i));
 
-            } else if (passo.getOperationType() == 2) {//ExecuÃ§Ã£o 
+            } else if (passo.getOperationType() == 2) {//ExecuÃ§Ã£o
 
                 builder.append(this.GetExecucao(teste, passo, i));
 
@@ -135,9 +141,21 @@ public class DinamicTestCreator {
     private String GetAtribuicao(ExercicioCasoTeste teste, ExercicioCasoTestePasso passo, int passoIndex) {
 
         StringBuilder builder = new StringBuilder();
-        if (passo.getMethodName() == null || passo.getMethodName().isEmpty()) {
+        if (passo.getExpectedOutputName().equals("System.In")) {
+
+            String second = passo.getObjectName();
+            //seta uma objeto ou uma string;
+            Boolean isSecondPrevDeclared = isObjectDeclared(teste, second, passoIndex);
+            if (isSecondPrevDeclared == false) {
+                //se não está declarado, é uma string
+                second = "\"" + second + "\"";
+            }
+            builder.append("String userInput_" + passoIndex + " = " + second + ".replace(\"|\", System.getProperty(\"line.separator\"));");
+            builder.append("System.setIn(new ByteArrayInputStream( userInput_" + passoIndex + ".getBytes()));");
+        } else if (passo.getMethodName() == null || passo.getMethodName().isEmpty()) {
             //construtor ou primitivo ou designaÃ§Ã£o
-            Boolean isFirstPrevDeclared = isObjectDeclared(teste, passo.getExpectedOutputName(), passoIndex);
+            String first = passo.getExpectedOutputName();
+            Boolean isFirstPrevDeclared = isObjectDeclared(teste, first, passoIndex);
             Boolean isSecondPrevDeclared = isObjectDeclared(teste, passo.getObjectName(), passoIndex);
 
             if (isFirstPrevDeclared && isSecondPrevDeclared) {
@@ -145,7 +163,7 @@ public class DinamicTestCreator {
                 builder.append(passo.getExpectedOutputName() + " = " + passo.getObjectName() + ";");
             } else if (isSecondPrevDeclared) {
                 //passa de um objeto para um novo
-                builder.append(passo.getExpectedOutputType() + " " + passo.getExpectedOutputName() + " = " + passo.getObjectName() + ";");
+                builder.append(passo.getExpectedOutputType() + " " + first + " = " + passo.getObjectName() + ";");
             } else if (isFirstPrevDeclared) {
                 //mexe em um array ou cria um novo objeto
                 String objectType = getObjectType(teste, passo.getExpectedOutputName(), passoIndex);
@@ -224,6 +242,7 @@ public class DinamicTestCreator {
     }
 
     private String GetExecucao(ExercicioCasoTeste teste, ExercicioCasoTestePasso passo, int passoIndex) {
+
         return passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(teste, passo, passoIndex) + ";";
     }
 
@@ -231,55 +250,52 @@ public class DinamicTestCreator {
 
         String first = "";
         String second = "";
+
+        /*if (passo.getExpectedOutputName().equals("System.Out")) {
+
+            first = "outContent.toString().replace(System.getProperty(\"line.separator\"), \"|\")";
+
+            second = passo.getObjectName();
+            Boolean isSecondPrevDeclared = isObjectDeclared(teste, second, passoIndex);
+
+            if (isSecondPrevDeclared == false) {
+                //se não está declarado, é uma string
+                second = "\"" + second + "\"";
+            }
+
+        }*/
         if ((passo.getExpectedOutputType() == null || passo.getExpectedOutputType().isEmpty()) && (passo.getMethodName() == null || passo.getMethodName().isEmpty())) {
             //compara 2 objetos ou objeto e valor primitivo
             first = passo.getExpectedOutputName();
+            second = passo.getObjectName();
+            Boolean isSecondPrevDeclared = isObjectDeclared(teste, second, passoIndex);
 
-            if (passo.getObjectName().equals("System.Out")) {
-                second = "outContent.toString().replaceAll(\"\\r\\n\", \"\").replaceAll(\"\\r\", \"\")";
-                if (first.startsWith("\"") == false) {
-                    //tratamento para strings
-                    first = "\"" + first + "\"";
+            if (isSecondPrevDeclared == false) {
+                //Ã© valor primitivo
+                String objectType = getObjectType(teste, passo.getExpectedOutputName(), passoIndex);
+                if (objectType.indexOf("[") > 0) {
+                    objectType = objectType.substring(0, objectType.indexOf("["));
                 }
-            } else {
-                second = passo.getObjectName();
-                Boolean isSecondPrevDeclared = isObjectDeclared(teste, second, passoIndex);
-
-                if (isSecondPrevDeclared == false) {
-                    //Ã© valor primitivo
-                    String objectType = getObjectType(teste, first, passoIndex);
-                    if (objectType.indexOf("[") > 0) {
-                        objectType = objectType.substring(0, objectType.indexOf("["));
-                    }
-                    second = trataDados(objectType, second);
-                }
+                second = trataDados(objectType, second);
             }
+
         } else if (passo.getMethodName() == null || passo.getMethodName().isEmpty()) {
 
             //compara valor com objeto
             first = trataDados(passo.getExpectedOutputType(), passo.getExpectedOutputName());
-            if (passo.getObjectName().equals("System.Out") && first.startsWith("\"") == false) {
-                //tratamento para strings
-                first = "\"" + first + "\"";
-            }
+            second = passo.getObjectName();
 
-            if (passo.getObjectName().equals("System.Out")) {
-                second = "outContent.toString().replaceAll(\"\\r\\n\", \"\").replaceAll(\"\\r\", \"\")";
-            } else {
-                second = passo.getObjectName();
-            }
         } else {
 
             //compara valor com retorno do MÃ©todo
             first = trataDados(passo.getExpectedOutputType(), passo.getExpectedOutputName());
-            if (passo.getObjectName().equals("System.Out") && first.startsWith("\"") == false) {
-                //tratamento para strings
-                first = "\"" + first + "\"";
-            }
-
             second = passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(teste, passo, passoIndex);
         }
 
+        if (first.equals("System.Out")) {
+            first = "outContent.toString().replace(System.getProperty(\"line.separator\"), \"|\")";
+            return "assertEquals(((Object)" + second + "),((Object)" + first + "));";
+        }
         return "assertEquals(((Object)" + first + "),((Object)" + second + "));";
     }
 
@@ -287,38 +303,38 @@ public class DinamicTestCreator {
 
         String first = "";
         String second = "";
+        /*if (passo.getExpectedOutputName().equals("System.Out")) {
+
+            first = "outContent.toString().replace(System.getProperty("line.separator"), \"|\")";
+
+            second = passo.getObjectName();
+            Boolean isSecondPrevDeclared = isObjectDeclared(teste, second, passoIndex);
+
+            if (isSecondPrevDeclared == false) {
+                //se não está declarado, é uma string
+                second = "\"" + second + "\"";
+            }
+
+        }*/
+
         if ((passo.getExpectedOutputType() == null || passo.getExpectedOutputType().isEmpty()) && (passo.getMethodName() == null || passo.getMethodName().isEmpty())) {
             //compara 2 objetos
             first = passo.getExpectedOutputName();
-
-            if (passo.getObjectName().equals("System.Out")) {
-                second = "outContent.toString().replaceAll(\"\\r\\n\", \"\").replaceAll(\"\\r\", \"\")";
-            } else {
-                second = passo.getObjectName();
+            if (first.equals("System.Out")) {
+                first = "outContent.toString().replace(System.getProperty(\"line.separator\"), \"|\")";
             }
+            second = passo.getObjectName();
+
         } else if (passo.getMethodName() == null || passo.getMethodName().isEmpty()) {
 
             //compara valor com objeto
             first = trataDados(passo.getExpectedOutputType(), passo.getExpectedOutputName());
-            if (passo.getObjectName().equals("System.Out") && first.startsWith("\"") == false) {
-                //tratamento para strings
-                first = "\"" + first + "\"";
-            }
+            second = passo.getObjectName();
 
-            if (passo.getObjectName().equals("System.Out")) {
-                second = "outContent.toString().replaceAll(\"\\r\\n\", \"\").replaceAll(\"\\r\", \"\")";
-            } else {
-                second = passo.getObjectName();
-            }
         } else {
 
             //compara valor com retorno do MÃ©todo
             first = trataDados(passo.getExpectedOutputType(), passo.getExpectedOutputName());
-            if (passo.getObjectName().equals("System.Out") && first.startsWith("\"") == false) {
-                //tratamento para strings
-                first = "\"" + first + "\"";
-            }
-
             second = passo.getObjectName() + "." + passo.getMethodName() + this.getParameters(teste, passo, passoIndex);
         }
 
@@ -357,6 +373,10 @@ public class DinamicTestCreator {
 
     private String getObjectType(ExercicioCasoTeste teste, String objectName, int endIndex) {
 
+        if (objectName.equals("System.In") || objectName.equals("System.Out")) {
+            return "String";
+        }
+
         if (objectName.indexOf(")") > 0) {
             objectName = objectName.substring(objectName.indexOf(")") + 1);
         }
@@ -382,6 +402,10 @@ public class DinamicTestCreator {
     }
 
     private Boolean isObjectDeclared(ExercicioCasoTeste teste, String objectName, int endIndex) {
+
+        if (objectName.equals("System.In") || objectName.equals("System.Out")) {
+            return true;
+        }
 
         if (objectName.indexOf(")") > 0) {
             objectName = objectName.substring(objectName.indexOf(")") + 1);
@@ -464,7 +488,8 @@ public class DinamicTestCreator {
 
         StringBuilder builder = new StringBuilder();
         builder.append("@After ");
-        builder.append("public void cleanUpStreams() {");
+        builder.append("public void cleanUpStreams() throws Exception {");
+        builder.append("System.setIn(stdin);");
         builder.append("System.setOut(stdout);");
         builder.append("}");
 

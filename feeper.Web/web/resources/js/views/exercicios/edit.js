@@ -60,8 +60,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         }).success(function (sucess) {
             if (sucess) {
                 window.location.href = baseUrl + 'exercicios';
-            }
-            else {
+            } else {
                 $("#btnSalvar").prop("disabled", false);
                 $("#btnSalvar").text("Salvar");
                 alert("Ocorreu um erro ao salvar. Favor tentar novamente!");
@@ -253,11 +252,9 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                         var valor = null
                         if (parametroConstrutor.type.toLowerCase() == 'string') {
                             valor = 'teste';
-                        }
-                        else if (parametroConstrutor.type.toLowerCase() == 'bool' || parametroConstrutor.type.toLowerCase() == 'boolean') {
+                        } else if (parametroConstrutor.type.toLowerCase() == 'bool' || parametroConstrutor.type.toLowerCase() == 'boolean') {
                             valor = true;
-                        }
-                        else {
+                        } else {
                             valor = 666;
                         }
                         parametro.objectValue = valor;
@@ -325,11 +322,9 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 var valor = null
                 if (membro.type.toLowerCase() == 'string') {
                     valor = membro.name + '_Teste';
-                }
-                else if (membro.type.toLowerCase() == 'bool' || membro.type.toLowerCase() == 'boolean') {
+                } else if (membro.type.toLowerCase() == 'bool' || membro.type.toLowerCase() == 'boolean') {
                     valor = true;
-                }
-                else {
+                } else {
                     valor = 666;
                 }
                 parametro.objectValue = valor;
@@ -388,11 +383,9 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 var valor = null
                 if (membro.type.toLowerCase() == 'string') {
                     valor = membro.name + '_Teste';
-                }
-                else if (membro.type.toLowerCase() == 'bool' || membro.type.toLowerCase() == 'boolean') {
+                } else if (membro.type.toLowerCase() == 'bool' || membro.type.toLowerCase() == 'boolean') {
                     valor = true;
-                }
-                else {
+                } else {
                     valor = 666;
                 }
                 parametro.objectValue = valor;
@@ -446,8 +439,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 if (membro.type == "void")
                 {
                     caso.mensagemCompilacao = "O método " + membro.name + " da classe " + $scope.editingClass.nomeClasse + complemento + " parâmetros, não foi implementado ou não segue a assinatura especificada.\r\n\r\nRevise este método!";
-                }
-                else
+                } else
                 {
                     caso.mensagemCompilacao = "O método " + membro.name + " da classe " + $scope.editingClass.nomeClasse + complemento + " parâmetros e que retorna um valor do tipo " + membro.type + ", não foi implementado ou não segue a assinatura especificada.\r\n\r\nRevise este método!";
                 }
@@ -463,8 +455,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                 passo2.ordem = $scope.getnextPassoOrdem(caso);
                 if (membro.type == "void") {
                     passo2.operationType = 2;
-                }
-                else {
+                } else {
                     passo2.operationType = 1;
                     passo2.expectedOutputType = membro.type;
                     passo2.expectedOutputName = membro.type.toLowerCase() + '1';
@@ -483,11 +474,9 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                         var valor = null
                         if (parametroConstrutor.type.toLowerCase() == 'string') {
                             valor = 'teste';
-                        }
-                        else if (parametroConstrutor.type.toLowerCase() == 'bool' || parametroConstrutor.type.toLowerCase() == 'boolean') {
+                        } else if (parametroConstrutor.type.toLowerCase() == 'bool' || parametroConstrutor.type.toLowerCase() == 'boolean') {
                             valor = true;
-                        }
-                        else {
+                        } else {
                             valor = 666;
                         }
                         parametro.objectValue = valor;
@@ -691,8 +680,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                     $scope.showToolTip('objectName_' + i, 'left', 'Por favor especificar aqui alguma das seguintes opções:<br/><br/>1. O nome da classe para chamar o construtor.<br/>2. O nome de algum objeto instanciado anteriormente.<br/>3. O valor caso esteja instanciando um tipo primitivo.');
                     return false;
                 }
-            }
-            else if (item.operationType == 2) {
+            } else if (item.operationType == 2) {
 
                 if (objectName == null || objectName.length == 0 || $scope.isDeclaredObject(objectName, item) == false) {
 
@@ -703,8 +691,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                     $scope.showToolTip('methodName_' + i, 'left', 'Por favor especificar aqui o método do objeto especificado que será executado.');
                     return false;
                 }
-            }
-            else if (item.operationType == 3) {
+            } else if (item.operationType == 3) {
                 if (outputType != "String" && (outputName == null || outputName.length == 0)) {
                     $scope.showToolTip('expectedOutputName_' + i, 'right', 'Por favor especificar aqui alguma das seguintes opções:<br/><br/>1. O nome de algum objeto inicializado anteriormente.<br/>2. O valor a ser comparado caso esteja comparando tipos primitivos.');
                     return false;
@@ -716,8 +703,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
                     $scope.showToolTip('objectName_' + i, 'left', 'Por favor especificar aqui alguma das seguintes opções:<br/><br/>1. O nome de algum objeto instanciado anteriormente.<br/>2. O valor a ser comparado caso esteja comparando tipos primitivos.');
                     return false;
                 }
-            }
-            else if (item.operationType == 4) {
+            } else if (item.operationType == 4) {
                 lacosAbertos += 1;
                 openLacoIndex = i;
                 if (outputName == null || outputName.length == 0) {
@@ -732,14 +718,12 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
                     $scope.showToolTip('comparisionType_' + i, 'right', 'É necessário especificar o tipo de comparação da interação.');
                     return false;
-                }
-                else if ((objectName == null || objectName.length == 0)) {
+                } else if ((objectName == null || objectName.length == 0)) {
 
                     $scope.showToolTip('objectName_' + i, 'left', 'Por favor especificar aqui alguma das seguintes opções:<br/><br/>1. O nome de algum objeto instanciado anteriormente.<br/>2. O valor a ser interado caso esteja interando tipos primitivos.');
                     return false;
                 }
-            }
-            else if (item.operationType == 5) {
+            } else if (item.operationType == 5) {
                 lacosAbertos -= 1;
             }
 
@@ -933,8 +917,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
     $scope.isMethodNameDisabled = function (passo) {
 
-        if (passo.objectName == 'System.Out')
-            return true;
         if (passo.operationType == 5)
             return true;
 
@@ -982,10 +964,6 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
     }
 
     $scope.objectNameChanged = function (passo) {
-        if (passo.objectName == 'System.Out') {
-            passo.methodName = "";
-            passo.inputParameters = [];
-        }
 
         setTimeout(function () {
             $scope.updatePassosControls();
@@ -1099,7 +1077,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         }
     }
 
-    $scope.getKnowTypes = function (request, passo, showSystemOut) {
+    $scope.getKnowTypes = function (request, passo) {
         var knowTypes = [];
         if ($scope.exercicio.classesAuxiliares != null) {
             for (var i = 0; i < $scope.exercicio.classesAuxiliares.length; i++) {
@@ -1139,8 +1117,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             knowTypes.push({label: "Double", value: "Double"});
         if ("boolean".indexOf(request.term.toLowerCase()) >= 0 && $scope.containsValue(knowTypes, "Boolean") == false)
             knowTypes.push({label: "Boolean", value: "Boolean"});
-        if ("system.out".indexOf(request.term.toLowerCase()) >= 0 && $scope.containsValue(knowTypes, "System.Out") == false && showSystemOut)
-            knowTypes.push({label: "System.Out", value: "System.Out"});
+
         return knowTypes;
     }
 
@@ -1203,7 +1180,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         return knowMethods;
     }
 
-    $scope.getKnowObjects = function (request, passo) {
+    $scope.getKnowObjects = function (request, passo, showSystemIn, showSystemOut) {
 
         var knowObjects = [];
         var endIndex = $scope.editingCasoTeste.passos.indexOf(passo);
@@ -1211,12 +1188,20 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             var item = $scope.editingCasoTeste.passos[i];
             if (item.expectedOutputName != null
                     && item.expectedOutputName.length > 0
+                    && item.expectedOutputName != "System.In"
+                    && item.expectedOutputName != "System.Out"
                     && $scope.containsValue(knowObjects, item.expectedOutputName) == false
                     && item.expectedOutputName.toLowerCase().indexOf(request.term.toLowerCase()) >= 0) {
 
                 knowObjects.push({label: item.expectedOutputName, value: item.expectedOutputName});
             }
         }
+
+        if ("system.in".indexOf(request.term.toLowerCase()) >= 0 && showSystemIn)
+            knowObjects.push({label: "System.In", value: "System.In"});
+
+        if ("system.out".indexOf(request.term.toLowerCase()) >= 0 && showSystemOut)
+            knowObjects.push({label: "System.Out", value: "System.Out"});
 
         return knowObjects;
     }
@@ -1245,6 +1230,9 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
 
         var StringObjName = objectName.toString();
 
+        if (StringObjName == "System.Out" || StringObjName == "System.In")
+            return true;
+
         if (StringObjName.indexOf("[") > 0)
             StringObjName = StringObjName.substr(0, StringObjName.indexOf("["));
 
@@ -1258,12 +1246,10 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             } else if (item.operationType == 5) {
                 anotherLacoOpened = true;
                 continue;
-            }
-            else if (item.operationType == 4) {
+            } else if (item.operationType == 4) {
                 anotherLacoOpened = false;
                 continue;
-            }
-            else if (anotherLacoOpened == true) {
+            } else if (anotherLacoOpened == true) {
                 continue;
             }
 
@@ -1370,7 +1356,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             source: function (request, response) {
                 var index = $(this.element[0]).attr("data-index");
                 var passo = $scope.editingCasoTeste.passos[index];
-                response($scope.getKnowTypes(request, passo, false));
+                response($scope.getKnowTypes(request, passo));
             },
             select: function (event, ui) {
                 $(event.target).val(ui.item.value);
@@ -1387,7 +1373,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
             source: function (request, response) {
                 var index = $(this.element[0]).attr("data-index");
                 var passo = $scope.editingCasoTeste.passos[index];
-                response($scope.getKnowObjects(request, passo));
+                response($scope.getKnowObjects(request, passo, passo.operationType == 1, passo.operationType == 3 || passo.operationType == 4));
             },
             select: function (event, ui) {
                 $(event.target).val(ui.item.value);
@@ -1403,7 +1389,7 @@ app.controller('editExercicios', function ($scope, $http, $sce) {
         $(".passoDataTypeOrObject").autocomplete({source: function (request, response) {
                 var index = $(this.element[0]).attr("data-index");
                 var passo = $scope.editingCasoTeste.passos[index];
-                var data = $.merge($scope.getKnowObjects(request, passo), $scope.getKnowTypes(request, passo, passo.operationType == 3));
+                var data = $.merge($scope.getKnowObjects(request, passo), $scope.getKnowTypes(request, passo, false, false));
                 response(data);
             },
             select: function (event, ui) {

@@ -34,7 +34,7 @@
 
         <script src="<c:url value='/resources/ace/ace.js'/>" type="text/javascript"></script>
         <script src="<c:url value='/resources/jquery/jquery.splitter-0.15.0.js'/>" type="text/javascript"></script>
-        <script src="<c:url value='/resources/js/views/exercicios/solucionar.js?v=1.03'/>" type="text/javascript"></script>
+        <script src="<c:url value='/resources/js/views/exercicios/solucionar.js?v=1.04'/>" type="text/javascript"></script>
         <script type="text/javascript">
             var exercicioID = "${Exercicio.getId()}";
             var fileID = "${fileID}";
@@ -110,7 +110,7 @@
                                     <td>${erro.getMensagemPersonalizada()}
                                         <c:if test="${not empty erro.getMensagemErro()}">
                                             <h6 style="color: blue; margin-top: 30px;"><fmt:message key="label.exercicios.mensagemSistema"/></h6>
-                                            ${erro.getMensagemErro()}</td>
+                                            ${erro.getMensagemErro().replace("<"," ").replace(">"," ")}</td>
                                         </c:if>
                                     </td>
                                 </tr>
