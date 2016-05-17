@@ -22,5 +22,8 @@
         <property name="ordem" type="int">
             <column name="Ordem" />
         </property>
+        <property name="codigo" type="string">
+            <column  name="Codigo" length="16777215"/>
+        </property>
     </class>
 </hibernate-mapping>

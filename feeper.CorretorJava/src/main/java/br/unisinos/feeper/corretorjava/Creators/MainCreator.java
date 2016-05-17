@@ -55,13 +55,13 @@ public class MainCreator {
         builder.append("List<Failure> failures = null;");
 
         for (ExercicioCasoTeste teste : solucao.getTestes()) {
-            builder.append("result = junit.run(test_" + teste.getId() + ".class);");
+            builder.append("result = junit.run(teste_" + teste.getId() + ".class);");
             builder.append("failures = result.getFailures();");
 
             builder.append("for (Failure failure : failures) {");
             String mensagem = teste.getMensagemPersonalizada() == null ? "" : teste.getMensagemPersonalizada();
             builder.append("String message = failure.getTrace().contains(\"but was\") ? failure.getMessage() : failure.getTrace();");
-            builder.append("if(message.indexOf(\"at test_\") > 0){message = message.substring(0, message.indexOf(\"at test_\") - 1);}");
+            builder.append("if(message.indexOf(\"at teste_\") > 0){message = message.substring(0, message.indexOf(\"at teste_\") - 1);}");
             builder.append("ExercicioSolucaoErro erro = new ExercicioSolucaoErro(" + solucao.getId() + "," + teste.getId() + ",\"" + mensagem.replace("\"", "") + "\"," + ((int) EErrorType.DINAMICO) + ",message);");
             builder.append("erros.add(erro);");
             builder.append("}");

@@ -52,7 +52,7 @@ public class ExercicioClasseAuxiliarService extends HibernateUtil<ExercicioClass
         for (int i = 0; i < classes.size(); i++) {
 
             ExercicioClasseAuxiliar classe = classes.get(i);
-            classe.setIdExercicio(idExercicio);
+            classe.setIdExercicio(idExercicio);         
 
             Integer classeId = classe.getId();
             if (classeId != null && classeId > 0) {

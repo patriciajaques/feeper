@@ -4,7 +4,6 @@ import br.unisinos.feeper.corretorjava.Creators.ClassCreator;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioCasoTeste;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucao;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucaoClasse;
-import br.unisinos.feeper.corretorjava.Creators.DinamicTestCreator;
 import br.unisinos.feeper.corretorjava.Creators.JarCreator;
 import br.unisinos.feeper.corretorjava.Creators.MainCreator;
 import br.unisinos.feeper.corretorjava.Entities.ExercicioSolucaoErro;
@@ -65,8 +64,13 @@ public class CommunicationService {
             ExercicioSolucao solucao = (ExercicioSolucao) jaxbUnmarshaller.unmarshal(reader);
 
             for (ExercicioSolucaoClasse classe : solucao.getClasses()) {
-                classe.setCodigo(classe.getCodigo().replaceAll("#n", "\n").replaceAll("#r", "\r"));
+                classe.setCodigo(classe.getCodigo().replace("#n#", System.getProperty("line.separator")));
             }
+
+            for (ExercicioCasoTeste teste : solucao.getTestes()) {
+                teste.setCodigo(teste.getCodigo().replace("#n#", System.getProperty("line.separator")));
+            }
+
             solucao.setErros(new ArrayList<ExercicioSolucaoErro>());
 
             String alunoID = String.valueOf(solucao.getIdAluno());
@@ -119,8 +123,6 @@ public class CommunicationService {
                     jarCreator.Prepare();
 
                     //Cria os Testes na pasta tmp
-                    DinamicTestCreator testCreator = new DinamicTestCreator();
-
                     ArrayList<String> classPathFileNames = new ArrayList<>();
                     classPathFileNames.add(tmpPath + File.separator + "junit.jar");
                     classPathFileNames.add(tmpPath + File.separator + "org.hamcrest.core.jar");
@@ -128,11 +130,11 @@ public class CommunicationService {
                     for (ExercicioCasoTeste teste : solucao.getTestes()) {
                         try {
 
-                            String testString = testCreator.CreateTest(teste);
-                            String fileName = tmpPath + File.separator + "test_" + teste.getId() + ".java";
+                            String codigoTeste = teste.getCodigo().replace("public class teste_Feeper", "public class teste_" + teste.getId());
+                            String fileName = tmpPath + File.separator + "teste_" + teste.getId() + ".java";
 
                             Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"));
-                            writer.write(testString);
+                            writer.write(codigoTeste);
                             writer.close();
 
                             //compila cada teste separado

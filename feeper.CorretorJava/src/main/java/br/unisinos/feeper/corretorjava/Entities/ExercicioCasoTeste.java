@@ -19,9 +19,7 @@ public class ExercicioCasoTeste {
     private String mensagemPersonalizada;
     private String mensagemCompilacao;
     private int ordem;
-    
-    //auxiliar no Angular
-    private List<ExercicioCasoTestePasso> passos;
+    private String codigo;
 
     public int getId() {
         return id;
@@ -71,13 +69,11 @@ public class ExercicioCasoTeste {
         this.ordem = ordem;
     }
 
-    public List<ExercicioCasoTestePasso> getPassos() {
-        return passos;
+    public String getCodigo() {
+        return codigo;
     }
 
-    public void setPassos(List<ExercicioCasoTestePasso> passos) {
-        this.passos = passos;
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
-    
-    
 }

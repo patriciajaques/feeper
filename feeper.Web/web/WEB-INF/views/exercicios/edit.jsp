@@ -37,16 +37,21 @@
             } 
 
             .ui-state-highlight { height: 91px; }
-            #divEditPassos select{min-width: 120px;}
-            #divEditPassos input[type=text]{min-width: 100px;}
-            #passosTable .form-control{border-radius: 0;}
-            .casoHandle,.passoHandle{cursor: pointer;}
+            .casoHandle{cursor: pointer;}
             .popover-title{color:red;}
+            #panelEditorCaso{
+                width: 100%;
+                height: calc(100% - 25px);
+            }
+            #editorCaso{
+                width: 100%;
+                height: 100%;
+            }
         </style>
         <script type="text/javascript">
-                    var baseUrl = "<c:url value='/'/>";
-                    var erroCarregarAssinaturasText = '<fmt:message key="label.exercicios.errocarregarassinaturas"/>';
-                    var confirmarExcluirText = '<fmt:message key="label.confirmaexclusao"/>';</script>
+            var baseUrl = "<c:url value='/'/>";
+            var erroCarregarAssinaturasText = '<fmt:message key="label.exercicios.errocarregarassinaturas"/>';
+            var confirmarExcluirText = '<fmt:message key="label.confirmaexclusao"/>';</script>
         </jsp:attribute>
         <jsp:body>
         <div ng-app="feeper" ng-controller="editExercicios" >
@@ -165,7 +170,7 @@
                                         <button type="button" ng-click="deletaCasoTeste(casoTeste)" class="btn btn-default btn-sm" title="Excluir"><i style="color: red;" class="fa fa-remove"></i></button>
                                         <button type="button" ng-click="duplicaCasoTeste(casoTeste)" class="btn btn-default btn-sm" title="Duplicar"><i class="fa fa-files-o"></i></button>
                                         <button type="button" ng-click="copiaCasoTeste(casoTeste)" class="btn btn-default btn-sm" title="Copiar"><i class="fa fa-file-o"></i></button>
-                                        <button type="button" ng-click="editaPassosCasoTeste(casoTeste)" class="btn btn-default btn-sm" title="Editar"><i style="color: green;" class="fa fa-pencil"></i></button>
+                                        <button type="button" ng-click="editaCasoTeste(casoTeste)" class="btn btn-default btn-sm" title="Editar"><i style="color: green;" class="fa fa-pencil"></i></button>
                                     </td>
                                     <td>
                                         <textarea rows="3" class="form-control mensagemProfessor" ng-model="casoTeste.mensagemCompilacao" placeholder="<fmt:message key="label.exercicios.mensagemcompilacaoinforme"/>"></textarea>
@@ -227,87 +232,10 @@
                         <button type="button" ng-click="concluiOpcoesClasse()" class="btn btn-primary"><fmt:message key="button.concluir"/></button>
                     </div>
 
-                    <!--Modal exibida para editar Passos-->
-                    <div style="display:none;" id="divEditPassos">
-                        <label><fmt:message key="label.exercicios.passoscasosteste"/>:</label>
-                        <div style="margin-top: 30px;">
-                            <table id="passosTable" >
-                                <tbody ui-sortable="sortablePassosOptions" ng-model="editingCasoTeste.passos">
-                                    <tr ng-repeat="passo in editingCasoTeste.passos track by passo.ordem">
-                                        <td style="width: 15px">
-                                            <input type="checkbox" ng-model="passo.selected" />
-                                        </td>
-                                        <td style="width: 15px">
-                                            <i class="fa fa-arrows passoHandle"></i>
-                                        </td>
-                                        <td style="width: 80px;white-space: nowrap;">
-                                            <button type="button" ng-click="deletaPasso(passo)" class="btn btn-default btn-sm" title="Excluir"><i style="color: red;" class="fa fa-remove"></i></button>
-                                            <button type="button" ng-click="duplicaPasso(passo)" class="btn btn-default btn-sm" title="Duplicar"><i class="fa fa-files-o"></i></button>
-                                        </td>
-                                        <td>
-                                            <select id="operationType_{{$index}}" class="form-control" ng-model="passo.operationType"  ng-options="o.value as o.label for o in OperationTypes" ng-change="operationTypeChanged(passo)">                                                
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type="text" id="expectedOutputType_{{$index}}" class="form-control passoDataType" data-index='{{$index}}' ng-disabled="isExpectedOutputTypeDisabled(passo)" ng-model="passo.expectedOutputType" placeholder="<fmt:message key="label.exercicios.tipovariavel"/>" />                                            
-                                        </td>
-                                        <td>
-                                            <input type="text" id="expectedOutputName_{{$index}}" class="form-control passoObject" data-index='{{$index}}' ng-disabled="isExpectedOutputNameDisabled(passo)"  ng-model="passo.expectedOutputName" ng-blur="expectedOutputNameBlured(passo)" placeholder="<fmt:message key="label.exercicios.nomevariavel"/>"/>
-                                        </td>
-                                        <td align="center"> 
-                                            <span ng-show="passo.operationType == 1 || passo.operationType == 2">=</span>
-                                            <span ng-show="passo.operationType == 3">==</span>
-                                            <select id="comparisionType_{{$index}}" class="form-control" style="min-width: 50px; width: 50px; padding: 0;" ng-model="passo.comparisionType" ng-show="passo.operationType == 4" ng-options="o.value as o.label for o in ComparisionTypes">                                                
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type="text" id="objectName_{{$index}}" class="form-control passoDataTypeOrObject" data-index='{{$index}}' ng-disabled="isObjectNameDisabled(passo)"  ng-model="passo.objectName" ng-change="objectNameChanged(passo)" placeholder="<fmt:message key="label.exercicios.classevariavelValor"/>"/>
-                                        </td>
-                                        <td>.</td>
-                                        <td>
-                                            <input type="text" id="methodName_{{$index}}" class="form-control passoMethod" data-index='{{$index}}' ng-disabled="isMethodNameDisabled(passo)" ng-model="passo.methodName" ng-change="methodNameChanged(passo)" placeholder="<fmt:message key="label.exercicios.nomemetodo"/>"/>
-                                        </td>
-                                        <td>
-                                            <table >
-                                                <tr>
-                                                    <td>(</td>
-                                                    <td ng-repeat="parametro in passo.inputParameters">
-                                                        <table>
-                                                            <tr>
-                                                                <td>
-                                                                    <button type="button" ng-click="deletaParametro(passo, parametro)" class="btn btn-default btn-sm" title="Excluir"><i style="color: red;" class="fa fa-remove"></i></button>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="text" id="parameterType_{{$parent.$index}}_{{$index}}" class="form-control passoDataType" data-index='{{$index}}' ng-disabled="isParameterTypeDisabled(passo, parametro)" ng-model="parametro.objectType" placeholder="<fmt:message key="label.exercicios.tipoparametro"/>"/>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="text" id="parameterValue_{{$parent.$index}}_{{$index}}" class="form-control passoObject" data-index='{{$parent.$index}}' ng-model="parametro.objectValue" ng-blur="parametroValueBlured(passo, parametro)" placeholder="<fmt:message key="label.exercicios.valorparametro"/>"/>
-                                                                </td>
-                                                                <td>,</td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td>
-                                                        <button type="button" ng-click="adicionaParametro(passo)" ng-disabled="isAddParameterDisabled(passo)" ng-keydown="onAddParametroKeyDown(passo, $event)" class="btn btn-default btn-sm" title="Adicionar"><i style="color: green;" class="fa fa-plus"></i></button>
-                                                    </td>
-                                                    <td>);</td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="9">
-                                            <button type="button" ng-click="concluiEdicaoPassosCasoTeste()" class="btn btn-success" style="margin-top: 20px;"><fmt:message key="button.concluir"/></button>
-                                            <button type="button" ng-click="adicionaPasso()" class="btn btn-primary" style="margin-top: 20px;"><i class="fa fa-plus"></i>&nbsp;&nbsp;<fmt:message key="label.exercicios.adicionarpassocasoteste"/></button>
-                                            <button type="button" ng-click="copiaPassos()" ng-show="possuiPassoSelecionado() == true" class="btn btn-default" style="margin-top: 20px;"><i class="fa fa-file-o"></i>&nbsp;&nbsp;<fmt:message key="label.exercicios.copiarpassocasoteste"/></button>
-                                            <button type="button" ng-click="colaPassos()" ng-show="possuiPassoCopiado() == true" class="btn btn-default" style="margin-top: 20px;"><i class="fa fa-clipboard"></i>&nbsp;&nbsp;<fmt:message key="label.exercicios.colarpassocasoteste"/></button>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                    <!--Modal exibida para editar Casos de Teste-->
+                    <div style="display:none; width: 100%; height: 100%;" id="divEditCaso">
+                        <label><fmt:message key="label.exercicios.edicaoocasosteste"/>:</label>
+                        <div id="panelEditorCaso"></div>
                     </div>
                 </div>
             </div>

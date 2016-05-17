@@ -48,8 +48,6 @@
         <mapping resource="feeper/Data/entity/ExercicioClasse.hbm.xml"/>
         <mapping resource="feeper/Data/entity/ExercicioClasseMarcacao.hbm.xml"/>
         <mapping resource="feeper/Data/entity/ExercicioCasoTeste.hbm.xml"/>
-        <mapping resource="feeper/Data/entity/ExercicioCasoTestePasso.hbm.xml"/>
-        <mapping resource="feeper/Data/entity/ExercicioCasoTestePassoParametro.hbm.xml"/>
         <mapping resource="feeper/Data/entity/ExercicioSolucao.hbm.xml"/>
         <mapping resource="feeper/Data/entity/ExercicioSolucaoClasse.hbm.xml"/>
         <mapping resource="feeper/Data/entity/ExercicioSolucaoClasseMarcacao.hbm.xml"/>
