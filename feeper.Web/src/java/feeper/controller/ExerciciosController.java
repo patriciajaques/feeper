@@ -202,11 +202,12 @@ public class ExerciciosController extends ApplicationController {
             exercicio.setClassesAuxiliares(classes);
 
             ExercicioCasoTesteService repoCasoTeste = new ExercicioCasoTesteService();
-            exercicio.setCasosTeste(repoCasoTeste.getByIdExercicio(exercId, false));
+            List<ExercicioCasoTeste> casosTeste = repoCasoTeste.getByIdExercicio(exercId, false);
+            exercicio.setCasosTeste(casosTeste);
         }
         List<Object> resultados = new ArrayList<Object>();
         resultados.add(exercicio);
-        resultados.add(ExercicioSolucaoService.CODIGO_PADRAO_CLASSE.replaceAll("\n", "#n#"));
+        resultados.add(ExercicioSolucaoService.CODIGO_PADRAO_CLASSE);
         return resultados;
     }
 
@@ -461,6 +462,11 @@ public class ExerciciosController extends ApplicationController {
             ExercicioClasseService repoClasses = new ExercicioClasseService();
             List<ExercicioClasse> listaClasses = repoClasses.getAllByIdExercicio(exercicio.getId(), pessoa.getId());
 
+            for (ExercicioClasse classe : listaClasses) {
+
+                classe.setCodigo(classe.getCodigo().replaceAll("#n#", System.getProperty("line.separator")));
+            }
+
             //carrega classes auxiliares
             ExercicioClasseAuxiliarService repoClassesAuxiliares = new ExercicioClasseAuxiliarService();
             List<ExercicioClasseAuxiliar> listaClassesAuxiliares = repoClassesAuxiliares.getAllByIdExercicio(exercicio.getId());
@@ -484,7 +490,9 @@ public class ExerciciosController extends ApplicationController {
                     classe.setIdAluno(pessoa.getId());
                     classe.setDataCadastro(new Date());
                     classe.setNomeClasse(classeAuxiliar.getNomeClasse());
+
                     classe.setCodigo(classeAuxiliar.getCodigo());
+
                     repoClasses.insert(classe);
 
                     listaClasses.add(classe);
@@ -601,7 +609,9 @@ public class ExerciciosController extends ApplicationController {
         dados[0] = idClasse;
         ExercicioClasse classe = repoClasses.getById(idClasse);
         dados[1] = classe.getNomeClasse();
-        dados[2] = classe.getCodigo().replaceAll("\"", "#'#");
+
+        dados[2] = classe.getCodigo();
+
         dados[3] = repoClasseMarcacao.getLinhasDuvida(idClasse);
         dados[4] = repoClasseMarcacao.getLinhasAnotacao(idClasse);
         dados[5] = classe.isFavorito();
@@ -642,6 +652,7 @@ public class ExerciciosController extends ApplicationController {
                     }
                     entity.setNomeClasse(Util.removeAccent(nomeClasse));
                     entity.setDataCadastro(new Date());
+
                     entity.setCodigo(fonte);
 
                     if (entity.getId() > 0) {
@@ -871,10 +882,10 @@ public class ExerciciosController extends ApplicationController {
         for (int i = 0; i < solucao.getTestes().size(); i++) {
             ExercicioCasoTeste teste = solucao.getTestes().get(i);
             if (teste.getMensagemCompilacao() != null) {
-                teste.setMensagemCompilacao(teste.getMensagemCompilacao().replaceAll("\r\n", "<br/>").replaceAll("\n", "<br/>"));
+                teste.setMensagemCompilacao(teste.getMensagemCompilacao().replace("\r\n", "<br/>").replace("\n", "<br/>"));
             }
             if (teste.getMensagemPersonalizada() != null) {
-                teste.setMensagemPersonalizada(teste.getMensagemPersonalizada().replaceAll("\r\n", "<br/>").replaceAll("\n", "<br/>"));
+                teste.setMensagemPersonalizada(teste.getMensagemPersonalizada().replace("\r\n", "<br/>").replace("\n", "<br/>"));
             }
         }
 
@@ -962,12 +973,21 @@ public class ExerciciosController extends ApplicationController {
 
     private static String solucaoToXML(ExercicioSolucao solucao) throws JAXBException {
 
-        for (ExercicioSolucaoClasse classe : solucao.getClasses()) {
-            classe.setCodigo(classe.getCodigo().replaceAll("\n", "#n").replaceAll("\r", "#r"));
+        for (ExercicioCasoTeste teste : solucao.getTestes()) {
 
+            teste.setCodigo(teste.getCodigo().replace(System.getProperty("line.separator"), "#n#"));
+            teste.setCodigo(teste.getCodigo().replace("\r\n", "#n#"));
+            teste.setCodigo(teste.getCodigo().replace("\n", "#n#"));
         }
-        JAXBContext context = JAXBContext.newInstance(ExercicioSolucao.class
-        );
+        
+        for (ExercicioSolucaoClasse classe : solucao.getClasses()) {
+
+            classe.setCodigo(classe.getCodigo().replace(System.getProperty("line.separator"), "#n#"));
+            classe.setCodigo(classe.getCodigo().replace("\r\n", "#n#"));
+            classe.setCodigo(classe.getCodigo().replace("\n", "#n#"));
+        }
+
+        JAXBContext context = JAXBContext.newInstance(ExercicioSolucao.class);
         Marshaller m = context.createMarshaller();
         StringWriter sw = new StringWriter();
 

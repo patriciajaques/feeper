@@ -303,7 +303,7 @@ public class ClassesController extends ApplicationController {
 
                 for (ExercicioSolucaoClasse classe : classes) {
                     arquivos.add(classe.getCodigo().getBytes("UTF-8"));
-                    nomes.add(classe.getNomeClasse());
+                    nomes.add(classe.getNomeClasse() + ".java");
                 }
 
                 byte[] arquivoZip = Util.zipFiles(arquivos, nomes);
@@ -353,7 +353,7 @@ public class ClassesController extends ApplicationController {
                 ArrayList<String> nomes = new ArrayList<String>();
 
                 arquivos.add(classe.getCodigo().getBytes("UTF-8"));
-                nomes.add(classe.getNomeClasse());
+                nomes.add(classe.getNomeClasse()+".java");
 
                 byte[] arquivoZip = Util.zipFiles(arquivos, nomes);
                 InputStream stream = new ByteArrayInputStream(arquivoZip);
@@ -514,7 +514,9 @@ public class ClassesController extends ApplicationController {
         ModelAndView mav = new ModelAndView();
 
         ExercicioSolucaoClasseService repoClasse = new ExercicioSolucaoClasseService();
+        
         ExercicioSolucaoClasse classeAluno = repoClasse.getById(idClasseAluno);
+        
         ExercicioSolucaoClasse classeColega = repoClasse.getById(idClasseColega);
 
         ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();

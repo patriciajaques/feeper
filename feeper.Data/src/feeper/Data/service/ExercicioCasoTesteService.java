@@ -5,7 +5,6 @@
 package feeper.Data.service;
 
 import feeper.Data.entity.ExercicioCasoTeste;
-import feeper.Data.entity.ExercicioCasoTestePasso;
 import feeper.Data.model.HibernateUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +37,6 @@ public class ExercicioCasoTesteService extends HibernateUtil<ExercicioCasoTeste>
             List<ExercicioCasoTeste> data = query.list();
             transaction.commit();
 
-            ExercicioCasoTestePassoService repoPasso = new ExercicioCasoTestePassoService();
-            for (ExercicioCasoTeste casoTeste : data) {
-                casoTeste.setPassos(repoPasso.getByIdCasoTeste(casoTeste.getId()));
-            }
-
             return data;
         } catch (Exception e) {
             transaction.rollback();
@@ -58,7 +52,6 @@ public class ExercicioCasoTesteService extends HibernateUtil<ExercicioCasoTeste>
         }
 
         List<Integer> idsCasosTeste = new ArrayList<Integer>();
-        ExercicioCasoTestePassoService repoPasso = new ExercicioCasoTestePassoService();
 
         for (int i = 0; i < casosTeste.size(); i++) {
 
@@ -73,13 +66,6 @@ public class ExercicioCasoTesteService extends HibernateUtil<ExercicioCasoTeste>
                 this.insert(casoTeste);
             }
             idsCasosTeste.add(casoTeste.getId());
-
-            List<ExercicioCasoTestePasso> passos = casoTeste.getPassos();
-            boolean sucess = repoPasso.SavePassos(casoTeste.getId(), passos);
-
-            if (sucess == false) {
-                return false;
-            }
         }
 
         return this.deleteNotIn(idExercicio, idsCasosTeste);

@@ -23,14 +23,17 @@ public class ClassCreator {
     }
 
     private String getPrivateFieldsGetter() {
+        String lineSeparator = System.getProperty("line.separator");
+        
         StringBuilder builder = new StringBuilder();
-        builder.append("public Object get_Private_Field_Acessor(String fieldName){");
-        builder.append("try {");
-        builder.append("java.lang.reflect.Field field = this.getClass().getDeclaredField(fieldName);");
-        builder.append("return field.get(this);");
-        builder.append("} catch (Exception ex) {");
-        builder.append("return null;");
-        builder.append("}}");
+        builder.append("public Object get_Private_Field_Acessor(String fieldName){" + lineSeparator);
+        builder.append("try {" + lineSeparator);
+        builder.append("java.lang.reflect.Field field = this.getClass().getDeclaredField(fieldName);" + lineSeparator);
+        builder.append("return field.get(this);" + lineSeparator);
+        builder.append("} catch (Exception ex) {" + lineSeparator);
+        builder.append("return null;" + lineSeparator);
+        builder.append("}" + lineSeparator);
+        builder.append("}" + lineSeparator);
         return builder.toString();
     }
 }

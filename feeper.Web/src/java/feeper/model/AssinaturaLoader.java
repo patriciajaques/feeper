@@ -47,6 +47,7 @@ public class AssinaturaLoader {
 
         //primeiro move tudo
         for (ExercicioClasseAuxiliar classeAuxiliar : classesAuxiliares) {
+
             File sourceFile = new File(basePath + classeAuxiliar.getNomeClasse() + ".java");
             sourceFile.createNewFile();
 
