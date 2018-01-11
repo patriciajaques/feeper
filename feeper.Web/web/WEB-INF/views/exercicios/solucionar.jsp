@@ -60,7 +60,7 @@
     </jsp:attribute>
     <jsp:body>
         <h2><c:out value="${Exercicio.getNome()}"/></h2>
-
+        <h2><c:out value="${Pessoa.getPontos()}"/></h2>
         <c:if test="${Solucao != null}">
             <h4><fmt:message key="label.exercicios.resultado"/></h4>
             <c:choose>

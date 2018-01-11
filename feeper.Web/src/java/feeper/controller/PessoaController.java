@@ -127,8 +127,9 @@ public class PessoaController extends ApplicationController {
         pessoa.setSenha("");
 
         if (service.insert(pessoa)) {
-
-            if (pessoa.getIdPerfil() == EPerfil.ADMIN || pessoa.getIdPerfil() == EPerfil.PROFESSOR) {
+            if (pessoa.getIdPerfil() == EPerfil.ADMIN || 
+                pessoa.getIdPerfil() == EPerfil.PROFESSOR ||
+                pessoa.getIdPerfil() == EPerfil.ALUNO) { 
                 service.enviarEmailCadastro(pessoa);
             }
 

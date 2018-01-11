@@ -23,12 +23,24 @@ public class Pessoa  implements java.io.Serializable {
     private int idPerfil;
     private int idTurmaSelecionada;
     private List<Turma> turmas;
+    
+    private Integer pontos = null;
+    private Integer newPontos = null;
     //private List<Turma> turmasProfessor;
 
 
     public Pessoa() {
     }
 
+    public Integer getPontos() {
+        return pontos;
+    }
+
+    public Integer getNewPontos() {
+        return newPontos;
+    }
+
+    
 	
     public Pessoa(String nome, String email, String senha, Date dataCadastro, boolean ativo) {
         this.nome = nome;
@@ -49,6 +61,16 @@ public class Pessoa  implements java.io.Serializable {
     public Integer getId() {
         return this.id;
     }
+
+    public void setNewPontos(Integer newPontos) {
+        this.newPontos = newPontos;
+    }
+
+    public void setPontos(Integer pontos) {
+        this.pontos = pontos;
+    }
+    
+    
     
     public void setId(Integer id) {
         this.id = id;
@@ -128,4 +150,5 @@ public class Pessoa  implements java.io.Serializable {
     public void setIdTurmaSelecionada(int idTurmaSelecionada) {
         this.idTurmaSelecionada = idTurmaSelecionada;
     }
+    
 }

@@ -9,6 +9,7 @@ import feeper.Data.entity.Exercicio;
 import feeper.Data.entity.ExercicioCasoTeste;
 import feeper.Data.entity.ExercicioClasse;
 import feeper.Data.entity.ExercicioClasseAuxiliar;
+import feeper.Data.entity.ExercicioPontos;
 import feeper.Data.entity.ExercicioSolucao;
 import feeper.Data.entity.ExercicioSolucaoClasse;
 import feeper.Data.entity.ExercicioSolucaoErro;
@@ -31,6 +32,7 @@ import feeper.Data.service.ExercicioClasseService;
 import feeper.Data.service.ExercicioSolucaoService;
 import feeper.Data.service.ExercicioCasoTesteService;
 import feeper.Data.service.ExercicioClasseAuxiliarService;
+import feeper.Data.service.ExercicioPontosService;
 import feeper.Data.service.ExercicioSolucaoClasseService;
 import feeper.Data.service.ExercicioSolucaoErroService;
 import feeper.Data.service.UploadTempService;
@@ -450,10 +452,13 @@ public class ExerciciosController extends ApplicationController {
         ModelAndView mav = new ModelAndView();
         HttpSession session = request.getSession(false);
         Pessoa pessoa = (Pessoa) session.getAttribute("UsuarioLogado");
+        pessoa.setPontos(100);
         Turma turma = (Turma) session.getAttribute("TurmaSelecionada");
-
+        
         Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
 
+        ExercicioPontosService exercicioPontos = new ExercicioPontosService();
+        pessoa.setPontos(exercicioPontos.getPointsByIdPessoa(pessoa.getId()));
         if (exercicio != null) {
 
             ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();
@@ -490,15 +495,12 @@ public class ExerciciosController extends ApplicationController {
                     classe.setIdAluno(pessoa.getId());
                     classe.setDataCadastro(new Date());
                     classe.setNomeClasse(classeAuxiliar.getNomeClasse());
-
                     classe.setCodigo(classeAuxiliar.getCodigo());
-
                     repoClasses.insert(classe);
-
                     listaClasses.add(classe);
                 }
             }
-
+            mav.addObject("Pessoa", pessoa);
             mav.addObject("Exercicio", exercicio);
             mav.addObject("Solucao", solucao);
             mav.addObject("Classes", listaClasses);
@@ -958,6 +960,7 @@ public class ExerciciosController extends ApplicationController {
     public static void setaResultadoSolucao(String responseText) throws JAXBException {
 
         ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();
+        ExercicioPontosService exercicioPontosService = new ExercicioPontosService();
         ExercicioSolucao solucao = ExerciciosController.solucaoFromXML(responseText);
 
         if (solucao.getErros() != null) {
@@ -968,7 +971,15 @@ public class ExerciciosController extends ApplicationController {
                 repoErrosSolucao.insert(erro);
             }
         }
+        
         repoSolucao.update(solucao);
+        ExercicioPontos exercicioPontos = new ExercicioPontos();
+        exercicioPontos.setIdAluno(solucao.getIdAluno());
+        exercicioPontos.setIdExercicio(solucao.getIdExercicio());
+        exercicioPontos.setPontos(100);
+        exercicioPontosService.insert(exercicioPontos);
+        
+        
     }
 
     private static String solucaoToXML(ExercicioSolucao solucao) throws JAXBException {

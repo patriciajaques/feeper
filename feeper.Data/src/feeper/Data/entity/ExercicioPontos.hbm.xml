@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 1, 2014 9:45:43 AM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="feeper.Data.entity.ExercicioPontos" table="ExercicioPontos" catalog="feeper">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="idAluno" type="int">
+            <column name="idAluno" not-null="true" />
+        </property>
+        <property name="idExercicio" type="int">
+            <column name="idExercicio" not-null="true" />
+        </property>
+        <property name="pontos" type="int">
+            <column name="pontos" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
