@@ -35,6 +35,7 @@ import feeper.Data.service.ExercicioClasseAuxiliarService;
 import feeper.Data.service.ExercicioPontosService;
 import feeper.Data.service.ExercicioSolucaoClasseService;
 import feeper.Data.service.ExercicioSolucaoErroService;
+import feeper.Data.service.MedalhaPessoaService;
 import feeper.Data.service.UploadTempService;
 import feeper.model.AssinaturaLoader;
 import feeper.model.PaginadorUtil;
@@ -973,13 +974,19 @@ public class ExerciciosController extends ApplicationController {
         }
         
         repoSolucao.update(solucao);
-        ExercicioPontos exercicioPontos = new ExercicioPontos();
-        exercicioPontos.setIdAluno(solucao.getIdAluno());
-        exercicioPontos.setIdExercicio(solucao.getIdExercicio());
-        exercicioPontos.setPontos(100);
-        exercicioPontosService.insert(exercicioPontos);
         
         
+        // Se for 4 exercicio correto
+        if(solucao.getIdStatus() == EStatusSolucao.RESOLVIDO){ // Pontuacao
+            ExercicioPontos exercicioPontos = new ExercicioPontos();
+            exercicioPontos.setIdAluno(solucao.getIdAluno());
+            exercicioPontos.setIdExercicio(solucao.getIdExercicio());
+            exercicioPontos.setPontos(100);
+            exercicioPontosService.insert(exercicioPontos);
+        }
+        
+        MedalhaPessoaService medalhaPessoaService = new MedalhaPessoaService();
+        medalhaPessoaService.notifyEnvioExercicio(solucao.getIdAluno());
     }
 
     private static String solucaoToXML(ExercicioSolucao solucao) throws JAXBException {

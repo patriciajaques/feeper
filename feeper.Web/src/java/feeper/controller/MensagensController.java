@@ -17,21 +17,28 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class MensagensController extends ApplicationController {
     
     @RequestMapping(method=RequestMethod.GET)
-    public String list(
-            Model model,
-            HttpSession session) {
-        
+    public String list(Model model,HttpSession session) {
         Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
         MensagemCabecalhoService repoMensagemCabecalho = new MensagemCabecalhoService();
-        
         List<Object> lista = repoMensagemCabecalho.getMensagens(usuarioLogado.getId(), 'A', false, true);
         model.addAttribute("listaMensagens", lista);
-        
         Date dataLeitura = new Date();
         MensagemLeitorService repoMensagemLeitor = new MensagemLeitorService();
         repoMensagemLeitor.atualizarDataLeitura(usuarioLogado.getId(), ETipoLeitor.DESTINATARIO, dataLeitura);
         repoMensagemLeitor.atualizarDataLeitura(usuarioLogado.getId(), ETipoLeitor.REMETENTE, dataLeitura);
-        
+        return "mensagens/list";
+    }
+    
+    @RequestMapping(method=RequestMethod.GET, value = "/ranking")
+    public String list2(Model model,HttpSession session) {
+        Pessoa usuarioLogado = (Pessoa)session.getAttribute("UsuarioLogado");
+        MensagemCabecalhoService repoMensagemCabecalho = new MensagemCabecalhoService();
+        List<Object> lista = repoMensagemCabecalho.getMensagens(usuarioLogado.getId(), 'A', false, true);
+        model.addAttribute("listaMensagens", lista);
+        Date dataLeitura = new Date();
+        MensagemLeitorService repoMensagemLeitor = new MensagemLeitorService();
+        repoMensagemLeitor.atualizarDataLeitura(usuarioLogado.getId(), ETipoLeitor.DESTINATARIO, dataLeitura);
+        repoMensagemLeitor.atualizarDataLeitura(usuarioLogado.getId(), ETipoLeitor.REMETENTE, dataLeitura);
         return "mensagens/list";
     }
     

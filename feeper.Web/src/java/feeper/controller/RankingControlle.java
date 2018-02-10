@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package feeper.controller;
 
 import feeper.Data.entity.Pessoa;
@@ -11,10 +16,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+/**
+ *
+ * @author Rodrigo
+ */
 @Controller
-@RequestMapping(value="/colegas")
-public class ColegasController extends ApplicationController {
-    
+@RequestMapping(value="/ranking1")
+public class RankingControlle {
     @RequestMapping(method=RequestMethod.GET)
     public String list(Model model, HttpSession session) {
         Turma turma = (Turma)session.getAttribute("TurmaSelecionada");
@@ -24,7 +32,6 @@ public class ColegasController extends ApplicationController {
         Pessoa professor = repoPessoa.getById(turma.getIdProfessor());
         model.addAttribute("listaTurma", lista);
         model.addAttribute("professor", professor);
-        return "colegas/list";
+        return "ranking/list";
     }
-    
 }

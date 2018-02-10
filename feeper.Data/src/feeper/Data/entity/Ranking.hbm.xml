@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 1, 2014 9:45:43 AM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="feeper.Data.entity.Ranking" table="ranking_pontos" catalog="feeper">
+        <id name="id" type="java.lang.Integer">
+            <column name="idAluno" />
+            <generator class="identity" />
+        </id>
+        <property name="pontos" type="java.math.BigDecimal">
+            <column name="sum_pontos" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

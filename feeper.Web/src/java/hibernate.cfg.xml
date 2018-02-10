@@ -38,6 +38,7 @@
     <mapping resource="feeper/Data/entity/MensagemCurtir.hbm.xml"/>
     <mapping resource="feeper/Data/entity/TurmaPessoa.hbm.xml"/>
     <mapping resource="feeper/Data/entity/Pessoa.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/Ranking.hbm.xml"/>
     <mapping resource="feeper/Data/entity/UploadTemp.hbm.xml"/>
     <mapping resource="feeper/Data/entity/TelaPerfil.hbm.xml"/>
     <mapping resource="feeper/Data/entity/Tela.hbm.xml"/>
@@ -46,6 +47,7 @@
     <mapping resource="feeper/Data/entity/StatusSolucao.hbm.xml"/>
     <mapping resource="feeper/Data/entity/Exercicio.hbm.xml"/>
     <mapping resource="feeper/Data/entity/ExercicioPontos.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/MedalhaPessoa.hbm.xml"/>
     <mapping resource="feeper/Data/entity/ExercicioClasse.hbm.xml"/>
     <mapping resource="feeper/Data/entity/ExercicioClasseMarcacao.hbm.xml"/>
     <mapping resource="feeper/Data/entity/ExercicioCasoTeste.hbm.xml"/>

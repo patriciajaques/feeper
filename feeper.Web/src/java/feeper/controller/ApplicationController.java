@@ -1,8 +1,10 @@
 package feeper.controller;
 
 import feeper.Data.entity.Pessoa;
+import feeper.Data.model.ETipoLog;
 import feeper.Data.model.Util;
 import feeper.Data.service.LogService;
+import feeper.Data.service.MedalhaPessoaService;
 import feeper.model.DontValidateAccess;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -17,9 +19,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ApplicationController {
 
     private LogService repoLog;
+    private MedalhaPessoaService medalhaPessoaService;
 
     public ApplicationController() {
         repoLog = new LogService();
+        medalhaPessoaService = new MedalhaPessoaService();
     }
 
     @DontValidateAccess
@@ -74,6 +78,12 @@ public class ApplicationController {
     public void log(int idPessoa, String msg, int idTipoLog) {
         //int idPessoa = ((Pessoa)session.getAttribute("UsuarioLogado")).getId();
         repoLog.log(idPessoa, msg, idTipoLog);
+        try {
+            if(idTipoLog == ETipoLog.LOGIN){
+                medalhaPessoaService.medalhaLogin(idPessoa);
+            }
+        } catch (Exception e) {
+        }
     }
 
 }

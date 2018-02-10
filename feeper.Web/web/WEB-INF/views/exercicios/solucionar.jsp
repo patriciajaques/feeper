@@ -50,12 +50,13 @@
     <jsp:attribute name="rightmenu">
         <h4><fmt:message key="label.exercicios.acoes"/></h4>
         <div class="list-group">
-            <a href="#" class="list-group-item btn-classe-enviar">
+            <a href="#" class="list-group-item btn-classe-enviar col-md-6">
                 <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;<fmt:message key="menu.solucao.enviar"/>
             </a>
-            <a href="#" class="list-group-item btn-classe-download">
+            <a href="#" class="list-group-item btn-classe-download col-md-6">
                 <span class="glyphicon glyphicon-save"></span>&nbsp;&nbsp;<fmt:message key="menu.solucao.baixar"/>
             </a>
+            <br><br>
         </div>
     </jsp:attribute>
     <jsp:body>
