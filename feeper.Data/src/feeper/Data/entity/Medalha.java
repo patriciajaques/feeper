@@ -21,4 +21,50 @@ public class Medalha {
     public static Integer PONTUACAO_OBTIDA = 6; 
     public static Integer RANKING_MELHOR_DA_TURMA = 7; 
     public static Integer RANKING_MELHOR_DO_FEEPER = 8; 
+    
+    private Integer id;
+    private String nome;
+    private String descricao;
+
+    public Medalha(Integer id, String nome, String descricao) {
+        this.id = id;
+        this.nome = nome;
+        this.descricao = descricao;
+    }
+    
+    public Medalha(){
+        
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+    
+    
+    
+   
+
+    
+    
+    
 }

@@ -27,6 +27,8 @@ public class ExercicioPontosService extends HibernateUtil<ExercicioPontos> {
             query.setInteger("idAluno", idAluno);
             BigInteger data =  (BigInteger) query.uniqueResult();
             transaction.commit();
+            if(data == null)
+                return 0;
             return data.intValue();
         } catch (Exception e) {
             transaction.rollback();

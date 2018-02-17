@@ -7,6 +7,7 @@ import feeper.Data.entity.Medalha;
 import feeper.Data.entity.MedalhaPessoa;
 import feeper.Data.model.HibernateUtil;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -20,9 +21,11 @@ import org.hibernate.Transaction;
 public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
     
     PessoaService pessoaService;
+    MedalhaService medalhaService;
     
     public MedalhaPessoaService() {
         super(MedalhaPessoaService.class);
+        this.medalhaService = new MedalhaService();
     }    
     
     /*
@@ -64,7 +67,19 @@ public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
     
     // Recupera Medalhas do Aluno 
     public List<MedalhaPessoa> findByIdAluno(Integer idAluno){
-        return super.getByColumn("idAluno", idAluno);
+        String SQL = "select *from medalhapessoas  cc where cc.idPessoa = :idPessoa order by idMedalha asc";
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+            SQLQuery query = currentSession().createSQLQuery(SQL).addEntity(MedalhaPessoa.class);
+            query.setInteger("idPessoa", idAluno);
+            List<MedalhaPessoa> list = query.list();
+            transaction.commit();
+            return generateNoMedal(list);
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return null;
+        }
     }
     
     /*
@@ -314,6 +329,50 @@ public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
             setNivelMedalha(idAluno, Medalha.RANKING_MELHOR_DO_FEEPER, nivel);
         }
     } 
+    
+    
+    public List<MedalhaPessoa> listMedalhas(Integer idAluno){
+        String SQL = "select *from medalhapessoas where idPessoa = :idAluno order by idMedalha asc";
+        
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+            SQLQuery query = currentSession().createSQLQuery(SQL).addEntity(MedalhaPessoa.class);
+            query.setInteger("idAluno", idAluno);
+            List<MedalhaPessoa> list = query.list();
+            transaction.commit();
+            
+            
+            return generateNoMedal(list);
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return null;
+        }
+    }
+    
+    public List<MedalhaPessoa> generateNoMedal(List<MedalhaPessoa> list){
+        
+        ArrayList<Integer> lista = new ArrayList<>();
+        lista.add(1);lista.add(2);lista.add(3);lista.add(4);
+        lista.add(5);lista.add(6);lista.add(7);lista.add(8); 
+        for(int i =0;i<lista.size();i++){
+            if(
+                    list.size()<=i  ||
+                    lista.get(i) != list.get(i).getIdMedalha()
+                    ){
+                list.add(i, new MedalhaPessoa(lista.get(i), 0, 0));
+            }
+        }
+        
+        for(MedalhaPessoa medalha: list){
+            Medalha med = medalhaService.getById(medalha.getIdMedalha());
+            medalha.setMedalha(med);
+        }
+        
+        return list;
+    }
+    
+    
     
 }
     

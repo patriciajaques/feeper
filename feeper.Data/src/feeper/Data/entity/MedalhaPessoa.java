@@ -12,6 +12,16 @@ public class MedalhaPessoa implements java.io.Serializable {
     private Integer idPessoa;
     private Integer nivel;
 
+    public void setMedalha(Medalha medalha) {
+        this.medalha = medalha;
+    }
+
+    public Medalha getMedalha() {
+        return medalha;
+    }
+    
+    private Medalha medalha;
+
     public MedalhaPessoa() {
     }
 
@@ -53,5 +63,4 @@ public class MedalhaPessoa implements java.io.Serializable {
         this.nivel = nivel;
     }
     
-
 }

@@ -4,82 +4,30 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <t:master>
-    <jsp:attribute name="title"><fmt:message key="title.conquistas"/></jsp:attribute>
-    <jsp:attribute name="header"></jsp:attribute>
+    <jsp:attribute name="title"><fmt:message key="title.colegas"/></jsp:attribute>
+    <jsp:attribute name="header">
+        
+       
+        
+    </jsp:attribute>
     <jsp:body>
-        
-        <h2><fmt:message key="label.conquistas"/></h2>
-        
-        <ul class="mosaico">
-            <!--li style="cursor:pointer">
-                <img src="<c:url value='/resources/img/trofeu.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li-->
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-            <li style="background-color: #F8F8F8">
-                <img src="<c:url value='/resources/img/trofeu_off.png'/>" alt="<fmt:message key="label.embreve"/>" class="img-circle">
-                <span class="quebrar-linha" style="margin-top:5px;"><fmt:message key="label.embreve"/></span>
-            </li>
-        </ul>
+
+        <div class="row">
+            <c:if test="${not empty medalhas}">
+                    <c:forEach var="item" varStatus="status" items="${medalhas}">
+                        <div div class="col-lg-3 d-flex align-items-stretch">
+                            <img class="card-img-top" src="<c:url value='/resources/img/medalhas/${item.getIdMedalha()}/${item.getNivel()}.png'/>" alt="Card image cap">
+                            <div class="card-body">
+                              <h5 class="card-title">${item.getMedalha().getNome()}</h5>
+                              <p class="card-text">${item.getMedalha().getDescricao()}</p>
+                              <a href="#" class="btn btn-primary">Go somewhere</a>
+                            </div>
+                         </div>
+                </c:forEach>
+            </c:if>
+        </div>
+
+       
             
     </jsp:body>
 </t:master>

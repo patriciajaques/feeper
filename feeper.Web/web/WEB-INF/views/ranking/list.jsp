@@ -20,7 +20,7 @@
         
         <br>
                 <br>
-        <h4><fmt:message key="Ranking Turma"/></h4>
+        <h4><fmt:message key="label.ranking.turma"/></h4>
         <ul class="mosaico">
             <c:if test="${not empty listaTurma}">
                 <c:forEach var="item" varStatus="status" items="${rankingTurma}">
@@ -42,7 +42,7 @@
         </ul>
         
         <br>
-        <h4><fmt:message key="Ranking Global"/></h4>
+        <h4><fmt:message key="label.ranking.global"/></h4>
         <ul class="mosaico">
             <c:if test="${not empty listaTurma}">
                 <c:forEach var="item" varStatus="status" items="${listaTurma}">

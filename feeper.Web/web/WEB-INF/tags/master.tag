@@ -127,6 +127,7 @@
                                 
                                 <li id="menu-mensagens"><a href="<c:url value='/'/>mensagens"><fmt:message key="menu.mensagens"/> ${BadgeMensagens}</a></li>
                                 <li id="menu-ranking"><a href="<c:url value='/'/>ranking"><fmt:message key="menu.leaderboard"/></a></li>
+                                <li id="menu-minhasconquistas"><a href="<c:url value='/'/>conquistas/minhasconquistas"><fmt:message key="menu.conquistas"/></a></li>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="menu.turmas"/> <b class="caret"></b></a>
                                     <ul class="dropdown-menu">${MinhasTurmas}</ul>
@@ -190,7 +191,7 @@
                             <jsp:doBody/>
                         </div>
                         <div class="col-md-3">
-                            <h4><c:out value="${TurmaSelecionada.getNome()}"/></h4>
+                            
                             <div class="list-group">
                                 <a href="<c:url value='/'/>turma/edit/${TurmaSelecionada.getId()}" class="list-group-item" id="menu-minha-turma">
                                     <span class="glyphicon glyphicon-wrench"></span>&nbsp;&nbsp;<fmt:message key="menu.minhaturma"/>
@@ -211,7 +212,7 @@
                     </c:when>
                     <c:otherwise>
                         <div class="col-md-12">
-                            <h4><c:out value="${TurmaSelecionada.getNome()}"/></h4>
+                            
                             <div class="list-group">
                                       
                                 <a  href="<c:url value='/'/>classes" class="list-group-item col-md-3" id="menu-minhas-classes-favoritas">

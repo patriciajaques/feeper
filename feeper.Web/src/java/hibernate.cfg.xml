@@ -47,6 +47,7 @@
     <mapping resource="feeper/Data/entity/StatusSolucao.hbm.xml"/>
     <mapping resource="feeper/Data/entity/Exercicio.hbm.xml"/>
     <mapping resource="feeper/Data/entity/ExercicioPontos.hbm.xml"/>
+    <mapping resource="feeper/Data/entity/Medalha.hbm.xml"/>
     <mapping resource="feeper/Data/entity/MedalhaPessoa.hbm.xml"/>
     <mapping resource="feeper/Data/entity/ExercicioClasse.hbm.xml"/>
     <mapping resource="feeper/Data/entity/ExercicioClasseMarcacao.hbm.xml"/>
