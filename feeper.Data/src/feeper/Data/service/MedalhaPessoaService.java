@@ -365,7 +365,7 @@ public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
         }
         
         for(MedalhaPessoa medalha: list){
-            Medalha med = medalhaService.getById(medalha.getIdMedalha());
+            Medalha med = medalhaService.findByIdMedalhaAndNivel(medalha.getIdMedalha(), medalha.getNivel());
             medalha.setMedalha(med);
         }
         

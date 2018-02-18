@@ -20,9 +20,30 @@ import org.hibernate.Transaction;
 
 public class MedalhaService extends HibernateUtil<Medalha> {
     
+    
+    
     public MedalhaService() {
         super(Medalha.class);
     }    
+    
+    public Medalha findByIdMedalhaAndNivel(Integer idMedalha, Integer nivel){
+        String SQL = "select me.id, me.nome, mnd.descricao from medalha me join medalhaniveldescricao mnd on (me.id=mnd.idMedalha) where me.id = :idMedalha and mnd.nivel = :nivel";   
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+            SQLQuery query = currentSession().createSQLQuery(SQL).addEntity(Medalha.class);
+            query.setInteger("idMedalha", idMedalha);
+            query.setInteger("nivel", nivel);
+            query.setMaxResults(1);
+            List<Medalha> list = query.list();
+            transaction.commit();
+            return list.size()>0?list.get(0):null;
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return null;
+        }
+    }    
+        
     
 }
     

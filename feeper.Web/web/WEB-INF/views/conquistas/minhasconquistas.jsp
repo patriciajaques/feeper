@@ -16,11 +16,11 @@
             <div class="row">
                 <c:if test="${not empty medalhas}">
                         <c:forEach var="item" varStatus="status" items="${medalhas}">
-                            <div div class="col-lg-3 d-flex align-items-stretch">
-                                <img class="card-img-top" src="<c:url value='/resources/img/medalhas/${item.getIdMedalha()}/${item.getNivel()}.png'/>" alt="Card image cap">
-                                <div class="card-body">
-                                  <h5 class="card-title">${item.getMedalha().getNome()}</h5>
-                                  <p class="card-text">${item.getMedalha().getDescricao()}</p>
+                            <div class="col-md-2 img-responsive" style="height:300px;">
+                                <img src="<c:url value='/resources/img/medalhas/${item.getIdMedalha()}/${item.getNivel()}.png'/>" alt="Card image cap">
+                                <div>
+                                  <h4>${item.getMedalha().getNome()}</h4>
+                                  <p >${item.getMedalha().getDescricao()}</p>
                                   <a href="#" class="btn btn-primary">Go somewhere</a>
                                 </div>
                              </div>
