@@ -86,9 +86,11 @@ import org.springframework.web.servlet.view.RedirectView;
 public class ExerciciosController extends ApplicationController {
 
     ExercicioService service;
+    ExercicioPontosService exercicioPontosService;
 
     public ExerciciosController() {
         this.service = new ExercicioService();
+        this.exercicioPontosService = new ExercicioPontosService();
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -453,13 +455,12 @@ public class ExerciciosController extends ApplicationController {
         ModelAndView mav = new ModelAndView();
         HttpSession session = request.getSession(false);
         Pessoa pessoa = (Pessoa) session.getAttribute("UsuarioLogado");
-        pessoa.setPontos(100);
         Turma turma = (Turma) session.getAttribute("TurmaSelecionada");
         
         Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
-
-        ExercicioPontosService exercicioPontos = new ExercicioPontosService();
-        pessoa.setPontos(exercicioPontos.getPointsByIdPessoa(pessoa.getId()));
+        exercicio.setPontosAcerto(exercicioPontosService.exercicioPontuacaoIdPessoa(pessoa.getId(), id));
+        
+        pessoa.setPontos(exercicioPontosService.getPointsByIdPessoa(pessoa.getId()));
         if (exercicio != null) {
 
             ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();
@@ -501,6 +502,7 @@ public class ExerciciosController extends ApplicationController {
                     listaClasses.add(classe);
                 }
             }
+            
             mav.addObject("Pessoa", pessoa);
             mav.addObject("Exercicio", exercicio);
             mav.addObject("Solucao", solucao);
@@ -973,15 +975,16 @@ public class ExerciciosController extends ApplicationController {
             }
         }
         
+        Integer pontos = exercicioPontosService.exercicioPontuacaoIdPessoa(solucao.getIdAluno(), solucao.getIdExercicio());
         repoSolucao.update(solucao);
-        
         
         // Se for 4 exercicio correto
         if(solucao.getIdStatus() == EStatusSolucao.RESOLVIDO){ // Pontuacao
             ExercicioPontos exercicioPontos = new ExercicioPontos();
             exercicioPontos.setIdAluno(solucao.getIdAluno());
             exercicioPontos.setIdExercicio(solucao.getIdExercicio());
-            exercicioPontos.setPontos(100);
+            exercicioPontos.setPontos(pontos);
+            //exercicioPontos.setPontos(100);
             exercicioPontosService.insert(exercicioPontos);
         }
         

@@ -73,7 +73,18 @@ public class PessoaService extends HibernateUtil<Pessoa> {
     }
 
     public boolean enviarEmailCadastro(Pessoa pessoa) {
-        String htmlEmailComSenha = "<p>Olá #NOME#,</p>\n"
+        String htmlEmailComSenha = null;
+        if(pessoa.getIdPerfil() == EPerfil.ALUNO){
+            htmlEmailComSenha = "<p>Olá #NOME#,</p>\n"
+                + "<p>Você foi convidado pelo seu professor a utilizar o <i>feeper</i> como uma ferramenta para resolução de exercícios disponibilizados à sua turma.</p>\n"
+                + "<p>\n"
+                + "Utilize estes dados para acessá-lo:<br>\n"
+                + "Endereço: <a href=\"" + Util.serverUrl + "\">" + Util.serverUrl + "</a><br>\n"
+                + "Login: #EMAIL#<br>\n"
+                + "Senha: #SENHA#<br>\n"
+                + "</p>";
+        }else{
+            htmlEmailComSenha = "<p>Olá #NOME#,</p>\n"
                 + "<p>Você foi cadastrado como " + (pessoa.getIdPerfil() == EPerfil.ADMIN ? "Administrador" : "Professor") + " para utilizar o <i>feeper</i>.<br>\nCom o feeper você pode cadastrar seus alunos turmas e exercícios e deixe que o <i>feeper</i> cuide da avaliação das soluções submetidas pelos alunos!</p>\n"
                 + "<p>\n"
                 + "Utilize estes dados para acessá-lo:<br>\n"
@@ -81,6 +92,7 @@ public class PessoaService extends HibernateUtil<Pessoa> {
                 + "Login: #EMAIL#<br>\n"
                 + "Senha: #SENHA#<br>\n"
                 + "</p>";
+        }
 
         String novaSenha = Util.gerarSenha(8);
         String novaSenhaCripto = Util.criptoMD5(novaSenha);

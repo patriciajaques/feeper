@@ -26,6 +26,9 @@
         <property name="ativo" type="boolean">
             <column name="Ativo" not-null="true" />
         </property>
+        <property name="gamificado" type="boolean">
+            <column name="Gamificado" not-null="true" />
+        </property>
         <property name="possuiFoto" type="boolean">
             <column name="PossuiFoto" />
         </property>

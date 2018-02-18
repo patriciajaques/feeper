@@ -78,6 +78,11 @@
                             <input type="checkbox" name="ativo" ${IsAdd != null && IsAdd ? "checked" : pessoa.isAtivo() ? "checked" : ""}> <fmt:message key="label.pessoa.ativo"/>
                         </label>
                     </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="gamificado" ${IsAdd != null && IsAdd ? "checked" : pessoa.isGamificado() ? "checked" : ""}> <fmt:message key="label.pessoa.gamificado"/>
+                        </label>
+                    </div>                            
                     <br>
                     <button type="submit" class="btn btn-primary"><fmt:message key="button.salvar"/></button>
                     <button type="button" class="btn btn-default btn-voltar"><fmt:message key="button.voltarlistagem"/></button>

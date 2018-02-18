@@ -19,6 +19,7 @@ public class Pessoa  implements java.io.Serializable {
     private Date dataCadastro;
     private Date dataUltimoAcesso;
     private boolean ativo;
+    private boolean gamificado;
     private boolean possuiFoto;
     private int idPerfil;
     private int idTurmaSelecionada;
@@ -69,8 +70,14 @@ public class Pessoa  implements java.io.Serializable {
     public void setPontos(Integer pontos) {
         this.pontos = pontos;
     }
-    
-    
+
+    public void setGamificado(boolean gamificado) {
+        this.gamificado = gamificado;
+    }
+
+    public boolean isGamificado() {
+        return gamificado;
+    }
     
     public void setId(Integer id) {
         this.id = id;

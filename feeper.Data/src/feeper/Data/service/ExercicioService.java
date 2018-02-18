@@ -13,8 +13,11 @@ import org.hibernate.Transaction;
 
 public class ExercicioService extends HibernateUtil<Exercicio> {
 
+    ExercicioPontosService exercicioPontosService;
+    
     public ExercicioService() {
         super(Exercicio.class);
+        exercicioPontosService = new ExercicioPontosService();
     }
 
     public Pessoa getAutor(int idExercicio) {

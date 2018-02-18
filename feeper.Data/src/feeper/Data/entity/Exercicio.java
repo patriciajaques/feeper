@@ -23,6 +23,17 @@ public class Exercicio implements java.io.Serializable {
     private List<ExercicioClasseAuxiliar> classesAuxiliares;
     
     private int idUploadTemp;
+    
+    //Pontos caso acerte
+    private Integer pontosAcerto;
+
+    public Integer getPontosAcerto() {
+        return pontosAcerto;
+    }
+
+    public void setPontosAcerto(Integer pontosAcerto) {
+        this.pontosAcerto = pontosAcerto;
+    }
 
     public Exercicio() {
     }

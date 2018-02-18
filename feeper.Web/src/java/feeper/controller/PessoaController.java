@@ -172,6 +172,8 @@ public class PessoaController extends ApplicationController {
         pessoaBanco.setAtivo(pessoa.isAtivo());
         pessoaBanco.setEmail(pessoa.getEmail());
         pessoaBanco.setNome(pessoa.getNome());
+        pessoaBanco.setGamificado(pessoa.isGamificado());
+        pessoaBanco.setIdPerfil(pessoa.getIdPerfil());
 
         if (service.update(pessoaBanco)) {
             log(usuarioLogado.getId(), "SUCESSO: ID: " + pessoa.getId(), ETipoLog.ALTERAR_PESSOA);

@@ -60,8 +60,22 @@
         </div>
     </jsp:attribute>
     <jsp:body>
-        <h2><c:out value="${Exercicio.getNome()}"/></h2>
-        <h2><c:out value="${Pessoa.getPontos()}"/></h2>
+        
+        
+        <div href="#" class="${UsuarioLogado.isGamificado() ? "col-md-4" : "col-md-12"}">
+            <h3><c:out value="Exercicio: ${Exercicio.getNome()}"/></h3>    
+        </div>
+
+        <c:if test="${UsuarioLogado.isGamificado()}">
+            <div href="#" class="col-md-4">
+                <h3><c:out value="Total de Pontos: ${Pessoa.getPontos()}"/></h>
+            </div>
+            <div href="#" class="col-md-4"> 
+                <h2><c:out value="Pontos pelo Exercicio: ${Exercicio.getPontosAcerto()}"/></h2>
+            </div>
+        </c:if>
+        
+        
         <c:if test="${Solucao != null}">
             <h4><fmt:message key="label.exercicios.resultado"/></h4>
             <c:choose>
@@ -100,12 +114,7 @@
                             <c:forEach var="erro" items="${Solucao.getErros()}">
                                 <tr>
                                     <td>
-                                        ${erro.getErrorType() == 2
-                                          ?
-                                          "<button type=\"button\" class=\"btn btn-warning btn-xs\"><span class=\"glyphicon glyphicon-warning-sign\"></span> Alerta</button>"
-                                          :
-                                          "<button type=\"button\" class=\"btn btn-danger btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span> Erro</button>"
-                                        }
+                                        ${erro.getErrorType() == 2?"<button type=\"button\" class=\"btn btn-warning btn-xs\"><span class=\"glyphicon glyphicon-warning-sign\"></span> Alerta</button>":"<button type=\"button\" class=\"btn btn-danger btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span> Erro</button>"}
                                     </td>
                                     <td>${erro.getLinhaErro()>0 ? erro.getLinhaErro() : ""}</td>
                                     <td>${erro.getMensagemPersonalizada()}
