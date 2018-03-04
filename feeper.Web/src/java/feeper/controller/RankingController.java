@@ -3,6 +3,7 @@ package feeper.controller;
 import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.Ranking;
 import feeper.Data.entity.Turma;
+import feeper.Data.model.ETipoLog;
 import feeper.Data.service.PessoaService;
 import feeper.Data.service.RankingService;
 import feeper.Data.service.TurmaService;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping(value="/ranking")
-public class RankingController {
+public class RankingController  extends ApplicationController {
     
     @RequestMapping(method=RequestMethod.GET)
     public String list(Model model, HttpSession session) {
@@ -33,6 +34,11 @@ public class RankingController {
         model.addAttribute("listaTurma", gg);
         model.addAttribute("rankingTurma", rankingTurma);
         model.addAttribute("professor", professor);
+        
+        
+        Pessoa usuarioLogado = (Pessoa) session.getAttribute("UsuarioLogado");
+        log(usuarioLogado.getId(), "", ETipoLog.VISUALIZA_RANKING);
+        
         return "ranking/list";
     }
     

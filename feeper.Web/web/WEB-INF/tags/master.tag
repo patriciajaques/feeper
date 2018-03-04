@@ -129,8 +129,16 @@
                                 
                                 
                                 <c:if test="${UsuarioLogado.isGamificado()}">
-                                    <li id="menu-ranking"><a href="<c:url value='/'/>ranking"><fmt:message key="menu.leaderboard"/></a></li>
-                                    <li id="menu-minhasconquistas"><a href="<c:url value='/'/>conquistas/minhasconquistas"><fmt:message key="menu.conquistas"/></a></li>
+                                    <c:if test="${UsuarioLogado.isElementoRanking()}">
+                                        <li id="menu-ranking"><a href="<c:url value='/'/>ranking"><fmt:message key="menu.leaderboard"/></a></li>    
+                                    </c:if>
+                                    <c:if test="${UsuarioLogado.isElementoMedalha()}">
+                                        <li id="menu-minhasconquistas"><a href="<c:url value='/'/>conquistas/minhasconquistas"><fmt:message key="menu.conquistas"/></a></li>
+                                    </c:if>
+                                    <c:if test="${UsuarioLogado.isElementoPonto()}">
+                                        <li id="menu-minhasconquistas"><a href="<c:url value='/'/>pontos"><fmt:message key="menu.pontos"/></a></li>
+                                    </c:if>
+                                    
                                 </c:if>
                                     
                                 <li class="dropdown">
@@ -159,10 +167,6 @@
                             </a>
                             <ul class="dropdown-menu">
 
-                                <c:if test="${UsuarioLogado.getIdPerfil() == 3 && UsuarioLogado.isGamificado()}">
-                                    <li><a href="<c:url value='/'/>conquistas/minhasconquistas"><span class="glyphicon glyphicon-certificate"></span>&nbsp;&nbsp;<fmt:message key="menu.minhasconquistas"/></a></li>
-                                    <li class="divider"></li>
-                                </c:if>
 
                                 <li><a href="<c:url value='/'/>pessoa/perfil"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;<fmt:message key="menu.meuperfil"/></a></li>
 

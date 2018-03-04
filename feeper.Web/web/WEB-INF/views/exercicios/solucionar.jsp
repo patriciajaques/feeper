@@ -62,15 +62,12 @@
     <jsp:body>
         
         
-        <div href="#" class="${UsuarioLogado.isGamificado() ? "col-md-4" : "col-md-12"}">
+        <div href="#" class="${(UsuarioLogado.isGamificado()&&UsuarioLogado.isElementoPonto()) ? "col-md-6" : "col-md-12"}">
             <h3><c:out value="Exercicio: ${Exercicio.getNome()}"/></h3>    
         </div>
 
-        <c:if test="${UsuarioLogado.isGamificado()}">
-            <div href="#" class="col-md-4">
-                <h3><c:out value="Total de Pontos: ${Pessoa.getPontos()}"/></h>
-            </div>
-            <div href="#" class="col-md-4"> 
+        <c:if test="${(UsuarioLogado.isGamificado()&&UsuarioLogado.isElementoPonto())}">
+            <div href="#" class="col-md-6"> 
                 <h2><c:out value="Pontos pelo Exercicio: ${Exercicio.getPontosAcerto()}"/></h2>
             </div>
         </c:if>

@@ -540,12 +540,21 @@ public class ExerciciosController extends ApplicationController {
             if (listaClasses != null && listaClasses.size() > 0) {
 
                 ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();
-                IntegerResult idSolucao = new IntegerResult();
-                repoSolucao.salvarSolucao(pessoa.getId(), exercicio.getId(), idSolucao);
-
-                //enviar para correção
-                log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId(), ETipoLog.CODIGO_ENVIADO);
-                this.enviarCorrecao(idSolucao.getResult());
+                
+                ExercicioSolucao lastResponse = repoSolucao.getLastByIdExercicio(exercicio.getId(), pessoa.getId());
+                
+                // Se estiver aguardando solução ou resolvido
+                // Nao enviar novamente para correcao
+                Boolean enviaCorrecao = 
+                        lastResponse == null ||
+                        (!(lastResponse.getIdStatus() == EStatusSolucao.AGUARDANDO) &&
+                        !(lastResponse.getIdStatus() == EStatusSolucao.RESOLVIDO));
+                if(enviaCorrecao){
+                    IntegerResult idSolucao = new IntegerResult();
+                    repoSolucao.salvarSolucao(pessoa.getId(), exercicio.getId(), idSolucao);
+                    log(pessoa.getId(), "SUCESSO: ID EXERCICIO: " + exercicio.getId(), ETipoLog.CODIGO_ENVIADO);
+                    this.enviarCorrecao(idSolucao.getResult());
+                }
             }
         }
 

@@ -4,6 +4,7 @@ import feeper.Data.entity.MedalhaPessoa;
 import feeper.Data.entity.Pessoa;
 import feeper.Data.entity.Ranking;
 import feeper.Data.entity.Turma;
+import feeper.Data.model.ETipoLog;
 import feeper.Data.service.MedalhaPessoaService;
 import feeper.Data.service.PessoaService;
 import feeper.Data.service.RankingService;
@@ -11,6 +12,7 @@ import feeper.Data.service.TurmaService;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,6 +35,8 @@ public class ConquistasController extends ApplicationController {
         
         List<MedalhaPessoa> medalhas = medalhaPessoaService.findByIdAluno(userLogged.getId());
         model.addAttribute("medalhas", medalhas);
+        
+        log(userLogged.getId(), "", ETipoLog.VISUALIZA_MEDALHAS);
         
         return "conquistas/minhasconquistas";
     }

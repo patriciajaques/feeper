@@ -6,6 +6,7 @@ package feeper.Data.service;
 
 import feeper.Data.entity.ExercicioClasseAuxiliar;
 import feeper.Data.entity.ExercicioPontos;
+import feeper.Data.entity.Ranking;
 import feeper.Data.model.HibernateUtil;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -39,6 +40,23 @@ public class ExercicioPontosService extends HibernateUtil<ExercicioPontos> {
             return null;
         }
     }
+    
+    public List<ExercicioPontos> findByIdAluno(Integer idAluno){
+        String SQL_PONTOS = "select *from exerciciopontos where idAluno = :idAluno";
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+            SQLQuery query = currentSession().createSQLQuery(SQL_PONTOS).addEntity(ExercicioPontos.class);
+            query.setInteger("idAluno", idAluno);
+            List<ExercicioPontos> list  =  query.list();
+            transaction.commit();
+            return list;
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return null;
+        }
+    }
+    
     
     public Integer exercicioPontuacaoIdPessoa(Integer idAluno, Integer idExercicio){
         

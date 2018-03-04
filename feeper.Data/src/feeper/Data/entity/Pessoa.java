@@ -27,6 +27,37 @@ public class Pessoa  implements java.io.Serializable {
     
     private Integer pontos = null;
     private Integer newPontos = null;
+    
+    private boolean elementoPonto;
+    private boolean elementoRanking;
+    private boolean elementoMedalha;
+
+    
+    
+    public boolean isElementoPonto() {
+        return elementoPonto;
+    }
+
+    public void setElementoPonto(boolean elementoPonto) {
+        this.elementoPonto = elementoPonto;
+    }
+
+    public boolean isElementoRanking() {
+        return elementoRanking;
+    }
+
+    public void setElementoRanking(boolean elementoRanking) {
+        this.elementoRanking = elementoRanking;
+    }
+
+    public boolean isElementoMedalha() {
+        return elementoMedalha;
+    }
+
+    public void setElementoMedalha(boolean elementoMedalha) {
+        this.elementoMedalha = elementoMedalha;
+    }
+    
     //private List<Turma> turmasProfessor;
 
 

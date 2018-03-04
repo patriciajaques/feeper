@@ -173,6 +173,9 @@ public class PessoaController extends ApplicationController {
         pessoaBanco.setEmail(pessoa.getEmail());
         pessoaBanco.setNome(pessoa.getNome());
         pessoaBanco.setGamificado(pessoa.isGamificado());
+        pessoaBanco.setElementoMedalha(pessoa.isElementoMedalha());
+        pessoaBanco.setElementoPonto(pessoa.isElementoPonto());
+        pessoaBanco.setElementoRanking(pessoa.isElementoRanking());
         pessoaBanco.setIdPerfil(pessoa.getIdPerfil());
 
         if (service.update(pessoaBanco)) {

@@ -29,6 +29,15 @@
         <property name="gamificado" type="boolean">
             <column name="Gamificado" not-null="true" />
         </property>
+        <property name="elementoPonto" type="boolean">
+            <column name="elementoPonto" not-null="true" />
+        </property>
+        <property name="elementoRanking" type="boolean">
+            <column name="elementoRanking" not-null="true" />
+        </property>
+        <property name="elementoMedalha" type="boolean">
+            <column name="elementoMedalha" not-null="true" />
+        </property>
         <property name="possuiFoto" type="boolean">
             <column name="PossuiFoto" />
         </property>

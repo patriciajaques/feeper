@@ -5,6 +5,7 @@
 package feeper.Data.service;
 import feeper.Data.entity.Medalha;
 import feeper.Data.entity.MedalhaPessoa;
+import feeper.Data.entity.Pessoa;
 import feeper.Data.model.HibernateUtil;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
     
     public MedalhaPessoaService() {
         super(MedalhaPessoaService.class);
+        this.pessoaService = new PessoaService();
         this.medalhaService = new MedalhaService();
     }    
     
@@ -87,12 +89,16 @@ public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
     deve se utilizar eventos futuramente.
     */
     public void notifyEnvioExercicio(Integer idAluno){
-        medalhaExerciciosConcluidos(idAluno);
-        medalhaExerciciosSemErros(idAluno);
-        medalhaExerciciosEnviados(idAluno);
-        medalhaPontuacaoObtida(idAluno);
-        medalhaRankingMelhorTurma(idAluno);
-        medalhaRankingMelhordoFeeper(idAluno);
+        // Decidido que motor so deve funcionar se for gamificado
+        Pessoa pessoa = pessoaService.getById(idAluno);
+        if(pessoa.isGamificado()){
+            medalhaExerciciosConcluidos(idAluno);
+            medalhaExerciciosSemErros(idAluno);
+            medalhaExerciciosEnviados(idAluno);
+            medalhaPontuacaoObtida(idAluno);
+            medalhaRankingMelhorTurma(idAluno);
+            medalhaRankingMelhordoFeeper(idAluno);
+        }
     }
     
     
@@ -122,6 +128,12 @@ public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
     ///////////////////////////////
     private static String SQL_LOGIN = "select count(*) from log ll where ll.IdTipoLog = 1 and IdPessoa = :idAluno";
     public void medalhaLogin(Integer idAluno){
+        // Se nao e gamificado nao deve conseder medalha
+        Pessoa pessoa = pessoaService.getById(idAluno);
+        if(!pessoa.isGamificado()){
+            return;
+        }
+        
         Integer counter = countByIdAlunoAndSQL(idAluno, SQL_LOGIN);
         Integer nivel = 0;
         if(counter > 0 && counter <3){
@@ -217,6 +229,12 @@ public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
 "group by DAY(DataCadastro)\n" +
 "order by DataCadastro asc";
     public void medalhaAtividadeDiaria(Integer idAluno){
+        // Se nao e gamificado nao deve conseder medalha
+        Pessoa pessoa = pessoaService.getById(idAluno);
+        if(!pessoa.isGamificado()){
+            return;
+        }
+        
         Integer counter = countAtividadeDiaria(idAluno, SQL_ATIVIDADE_DIARIA);
         Integer nivel = 0;
         if(counter > 0 && counter <3){

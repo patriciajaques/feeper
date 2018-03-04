@@ -12,7 +12,7 @@
     </jsp:attribute>
     <jsp:body>
 
-        <c:if test="${UsuarioLogado.isGamificado()}">
+        <c:if test="${UsuarioLogado.isGamificado() && UsuarioLogado.isElementoMedalha()}">
             <div class="row">
                 <c:if test="${not empty medalhas}">
                         <c:forEach var="item" varStatus="status" items="${medalhas}">
@@ -20,8 +20,7 @@
                                 <img src="<c:url value='/resources/img/medalhas/${item.getIdMedalha()}/${item.getNivel()}.png'/>" alt="Card image cap">
                                 <div>
                                   <h4>${item.getMedalha().getNome()}</h4>
-                                  <p >${item.getMedalha().getDescricao()}</p>
-                                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                                  <p>${item.getMedalha().getDescricao()}</p>
                                 </div>
                              </div>
                     </c:forEach>

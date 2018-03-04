@@ -59,7 +59,5 @@
     <mapping resource="feeper/Data/entity/ExercicioClasseAuxiliar.hbm.xml"/>
     <mapping resource="feeper/Data/entity/ConfiguracaoSistema.hbm.xml"/>
     <mapping resource="feeper/Data/entity/MensagemPredefinida.hbm.xml"/>
-    
-    
   </session-factory>
 </hibernate-configuration>

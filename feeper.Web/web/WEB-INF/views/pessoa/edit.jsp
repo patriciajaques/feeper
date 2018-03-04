@@ -83,6 +83,26 @@
                             <input type="checkbox" name="gamificado" ${IsAdd != null && IsAdd ? "checked" : pessoa.isGamificado() ? "checked" : ""}> <fmt:message key="label.pessoa.gamificado"/>
                         </label>
                     </div>                            
+                        
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="elementoPonto" ${IsAdd != null && IsAdd ? "checked" : pessoa.isElementoPonto() ? "checked" : ""}> <fmt:message key="label.pessoa.elementoPontos"/>
+                        </label>
+                    </div>                                
+                        
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="elementoRanking" ${IsAdd != null && IsAdd ? "checked" : pessoa.isElementoRanking() ? "checked" : ""}> <fmt:message key="label.pessoa.elementoRanking"/>
+                        </label>
+                    </div>      
+                        
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="elementoMedalha" ${IsAdd != null && IsAdd ? "checked" : pessoa.isElementoMedalha() ? "checked" : ""}> <fmt:message key="label.pessoa.elementoMedalhas"/>
+                        </label>
+                    </div>      
+                                            
+
                     <br>
                     <button type="submit" class="btn btn-primary"><fmt:message key="button.salvar"/></button>
                     <button type="button" class="btn btn-default btn-voltar"><fmt:message key="button.voltarlistagem"/></button>

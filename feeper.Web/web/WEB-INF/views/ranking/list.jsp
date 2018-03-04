@@ -16,54 +16,82 @@
     </jsp:attribute>
     <jsp:body>
         
-        <c:if test="${UsuarioLogado.isGamificado()}">
+        <c:if test="${UsuarioLogado.isGamificado() && UsuarioLogado.isElementoRanking()}">
 
             <h2><c:out value="${TurmaSelecionada.getNome()}"/> - <fmt:message key="label.colegas"/></h2>
 
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <h4><fmt:message key="label.ranking.turma"/></h4>
+                <table cellpadding="10" border ="1" style="width:100%; background:#F2F2F2">
+                    <thead>
+                        <tr>
+                            <th>Posição</th>
+                            <th>Foto</th>
+                            <th>Nome</th>
+                            <th>Pontuação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="item" varStatus="status" items="${rankingTurma}">
+                            <tr>
+                                <td><c:out value="${item.getPosicao()}"/></td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${item.getPessoa().isPossuiFoto()}">
+                                            <img src="<c:url value='/resources/img/photo/photo-${item.getPessoa().getId()}.png'/>" alt="<c:out value="${item.getNome()}"/>" >
+                                        </c:when>
+                                        <c:otherwise>
+                                            <img src="<c:url value='/resources/img/sem_foto.png'/>" alt="<c:out value="${item.getPessoa().getNome()}"/>" >
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td><c:out value="${item.getPessoa().getNome()}"/></td>
+                                <td><c:out value="${item.getPontos()}"/></td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+                </div>
+                    
+                <div class="col-md-6">
+                    <h4><fmt:message key="label.ranking.global"/></h4>
+                <table cellpadding="10" border ="1" style="width:100%; background:#F2F2F2">
+                    <thead>
+                        <tr>
+                            <th>Posição</th>
+                            <th>Foto</th>
+                            <th>Nome</th>
+                            <th>Pontuação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="item" varStatus="status" items="${listaTurma}">
+                            <tr>
+                                <td><c:out value="${item.getPosicao()}"/></td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${item.getPessoa().isPossuiFoto()}">
+                                            <img src="<c:url value='/resources/img/photo/photo-${item.getPessoa().getId()}.png'/>" alt="<c:out value="${item.getNome()}"/>" >
+                                        </c:when>
+                                        <c:otherwise>
+                                            <img src="<c:url value='/resources/img/sem_foto.png'/>" alt="<c:out value="${item.getPessoa().getNome()}"/>" >
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td><c:out value="${item.getPessoa().getNome()}"/></td>
+                                <td><c:out value="${item.getPontos()}"/></td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            
+            
             <br>
-                    <br>
-            <h4><fmt:message key="label.ranking.turma"/></h4>
-            <ul class="mosaico">
-                <c:if test="${not empty listaTurma}">
-                    <c:forEach var="item" varStatus="status" items="${rankingTurma}">
-                        <li>
-                            <span class="quebrar-linha" style="margin-top:5px;"><c:out value="${item.getPosicao()}"/></span>
-                            <c:choose>
-                                <c:when test="${item.getPessoa().isPossuiFoto()}">
-                                    <img src="<c:url value='/resources/img/photo/photo-${item.getPessoa().getId()}.png'/>" style="width:45px; height:45px;" alt="<c:out value="${item.getNome()}"/>" class="img-circle">
-                                </c:when>
-                                <c:otherwise>
-                                    <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="<c:out value="${item.getPessoa().getNome()}"/>" class="img-circle">
-                                </c:otherwise>
-                            </c:choose>
-                            <span class="quebrar-linha" style="margin-top:5px;"><c:out value="${item.getPessoa().getNome()}"/></span>
-                            <span class="quebrar-linha" style="margin-top:5px;"><c:out value="${item.getPontos()}"/></span>
-                        </li>
-                    </c:forEach>
-                </c:if>
-            </ul>
+            <br>
 
-            <br>
-            <h4><fmt:message key="label.ranking.global"/></h4>
-            <ul class="mosaico">
-                <c:if test="${not empty listaTurma}">
-                    <c:forEach var="item" varStatus="status" items="${listaTurma}">
-                        <li>
-                            <span class="quebrar-linha" style="margin-top:5px;"><c:out value="${item.getPosicao()}"/></span>
-                            <c:choose>
-                                <c:when test="${item.getPessoa().isPossuiFoto()}">
-                                    <img src="<c:url value='/resources/img/photo/photo-${item.getPessoa().getId()}.png'/>" style="width:45px; height:45px;" alt="<c:out value="${item.getNome()}"/>" class="img-circle">
-                                </c:when>
-                                <c:otherwise>
-                                    <img src="<c:url value='/resources/img/sem_foto.png'/>" style="width:45px; height:45px;" alt="<c:out value="${item.getPessoa().getNome()}"/>" class="img-circle">
-                                </c:otherwise>
-                            </c:choose>
-                            <span class="quebrar-linha" style="margin-top:5px;"><c:out value="${item.getPessoa().getNome()}"/></span>
-                            <span class="quebrar-linha" style="margin-top:5px;"><c:out value="${item.getPontos()}"/></span>
-                        </li>
-                    </c:forEach>
-                </c:if>
-            </ul>
         </c:if>
     </jsp:body>
 </t:master>
