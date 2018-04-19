@@ -193,6 +193,7 @@ public class ExerciciosController extends ApplicationController {
             exercicio.setAtivo(true);
             exercicio.setAutor(usuarioLogado);
             exercicio.setIdAutor(usuarioLogado.getId());
+            exercicio.setPontos(100);
 
         } else {
             //esvazia para diminuir o tráfego de dados
@@ -209,6 +210,12 @@ public class ExerciciosController extends ApplicationController {
             ExercicioCasoTesteService repoCasoTeste = new ExercicioCasoTesteService();
             List<ExercicioCasoTeste> casosTeste = repoCasoTeste.getByIdExercicio(exercId, false);
             exercicio.setCasosTeste(casosTeste);
+        }
+        
+        List<Exercicio> listPossible = service.myGetAll();
+        exercicio.setPossiblePreRequisito(listPossible);
+        if(exercicio.getPreRequisito()!=null){
+            exercicio.setChoosedPreRequisito(service.getById(exercicio.getPreRequisito()));
         }
         List<Object> resultados = new ArrayList<Object>();
         resultados.add(exercicio);
@@ -256,6 +263,18 @@ public class ExerciciosController extends ApplicationController {
         List<ExercicioCasoTeste> casosTeste = exercicio.getCasosTeste();
 
         return repoCasoTeste.SaveCasos(exercicio.getId(), casosTeste);
+    }
+    
+    @RequestMapping(value = "/addprerequisito/{idTurma}", method = RequestMethod.GET)
+    public String addexercicio(
+            @PathVariable int idTurma,
+            Model model) {
+            
+        List<Exercicio> lista = service.getAll();
+        model.addAttribute("idTurma", idTurma);
+        model.addAttribute("lista", lista);
+
+        return "exercicios/addprerequisito";
     }
 
     @RequestMapping(value = "/carregaAssinaturas", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -418,7 +437,18 @@ public class ExerciciosController extends ApplicationController {
                 + "where "
                 + "  TE.Visivel = 1 "
                 + "  and TE.IdTurma = :p1 "
-                + "  and T.Ativo = 1";
+                + "  and T.Ativo = 1 "
+                
+                // Essa parte serve para o pre requisito
+                + " and\n" +
+                    "(E.preRequisito is null or \n" +
+                    "exists (\n" +
+                    "select *from exerciciosolucao dd \n" +
+                    "where dd.idAluno = :p0 and dd.idExercicio = E.preRequisito and dd.IdStatus = 4))"
+                
+                + "";
+                
+       
 
         Integer[] params = new Integer[2];
         params[0] = pessoa.getId();
@@ -459,8 +489,8 @@ public class ExerciciosController extends ApplicationController {
         
         Exercicio exercicio = service.getMeuExercicio(turma.getId(), id);
         exercicio.setPontosAcerto(exercicioPontosService.exercicioPontuacaoIdPessoa(pessoa.getId(), id));
-        
         pessoa.setPontos(exercicioPontosService.getPointsByIdPessoa(pessoa.getId()));
+        
         if (exercicio != null) {
 
             ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();
@@ -545,10 +575,10 @@ public class ExerciciosController extends ApplicationController {
                 
                 // Se estiver aguardando solução ou resolvido
                 // Nao enviar novamente para correcao
-                Boolean enviaCorrecao = 
-                        lastResponse == null ||
-                        (!(lastResponse.getIdStatus() == EStatusSolucao.AGUARDANDO) &&
-                        !(lastResponse.getIdStatus() == EStatusSolucao.RESOLVIDO));
+                Boolean enviaCorrecao = true; // Condicao abaixo aceita enviar correcao apenas se nao estiver correta.
+//                        lastResponse == null ||;
+//                        (!(lastResponse.getIdStatus() == EStatusSolucao.AGUARDANDO) &&
+//                        !(lastResponse.getIdStatus() == EStatusSolucao.RESOLVIDO));
                 if(enviaCorrecao){
                     IntegerResult idSolucao = new IntegerResult();
                     repoSolucao.salvarSolucao(pessoa.getId(), exercicio.getId(), idSolucao);

@@ -21,6 +21,7 @@ public class Medalha {
     public static Integer PONTUACAO_OBTIDA = 6; 
     public static Integer RANKING_MELHOR_DA_TURMA = 7; 
     public static Integer RANKING_MELHOR_DO_FEEPER = 8; 
+    public static Integer EXERCICIOS_DESAFIOS = 9; 
     
     private Integer id;
     private String nome;

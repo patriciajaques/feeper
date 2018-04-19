@@ -44,7 +44,7 @@ public class NotasController extends ApplicationController {
             mav.addObject("grade", grade);
         }       
         
-        List<Exercicio> exercicios = repoExercicio.getExercioByTurma(turma.getId());
+        List<Exercicio> exercicios = repoExercicio.findExercioByTurmaOrderByNome(turma.getId());
         mav.addObject("listaExercicios", exercicios);
         
         mav.setViewName("notas/results");

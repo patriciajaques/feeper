@@ -64,12 +64,22 @@ public class ExercicioPontosService extends HibernateUtil<ExercicioPontos> {
                 + "idAluno = :idAluno and "
                 + "idExercicio = :idExercicio and idstatus in(3,2)";
         
+        String SQL_PONTOS = "select pontos from exerciciopontos where idaluno = :idAluno and idexercicio = :idExercicio";
+        
         Transaction transaction = currentSession().beginTransaction();
         try {
-            SQLQuery query = currentSession().createSQLQuery(SQL_QUERY);
+            
+            SQLQuery query = currentSession().createSQLQuery(SQL_PONTOS);
+            query.setInteger("idAluno", idAluno);
+            query.setInteger("idExercicio", idExercicio);
+            Integer pontosGanhos =  (Integer) query.uniqueResult();
+            
+            
+            query = currentSession().createSQLQuery(SQL_QUERY);
             query.setInteger("idAluno", idAluno);
             query.setInteger("idExercicio", idExercicio);
             BigInteger data =  (BigInteger) query.uniqueResult();
+            
             transaction.commit();
             
             Integer count = 0;
@@ -82,7 +92,11 @@ public class ExercicioPontosService extends HibernateUtil<ExercicioPontos> {
             if(pontosErro>30)
                 pontosErro = 30;
             
-            return PONTOS_ACERTO - pontosErro;
+            if(pontosGanhos != null){
+                return pontosGanhos;
+            }else{
+                return PONTOS_ACERTO - pontosErro;
+            }
         } catch (Exception e) {
             transaction.rollback();
             System.err.println(e.fillInStackTrace());

@@ -19,17 +19,63 @@ public class Exercicio implements java.io.Serializable {
     private String descricaoHtml;
     private byte[] descricao;
     private Pessoa autor;
+    
+    private Integer pontos;
+    private Integer preRequisito;
+    
     private List<ExercicioCasoTeste> casosTeste;
     private List<ExercicioClasseAuxiliar> classesAuxiliares;
+    
+    
+    //Transient Only Used because no Json Response Object;
+    private Exercicio choosedPreRequisito;
+    private List<Exercicio> possiblePreRequisito;
     
     private int idUploadTemp;
     
     //Pontos caso acerte
     private Integer pontosAcerto;
 
+    public Integer getPreRequisito() {
+        return preRequisito;
+    }
+
+    public Exercicio getChoosedPreRequisito() {
+        return choosedPreRequisito;
+    }
+
+    public void setChoosedPreRequisito(Exercicio choosedPreRequisito) {
+        this.choosedPreRequisito = choosedPreRequisito;
+    }
+
+    public List<Exercicio> getPossiblePreRequisito() {
+        return possiblePreRequisito;
+    }
+
+    public void setPossiblePreRequisito(List<Exercicio> possiblePreRequisito) {
+        this.possiblePreRequisito = possiblePreRequisito;
+    }
+    
+    
+
+    public void setPreRequisito(Integer preRequisito) {
+        this.preRequisito = preRequisito;
+    }
+
+    
     public Integer getPontosAcerto() {
         return pontosAcerto;
     }
+
+    public Integer getPontos() {
+        return pontos;
+    }
+
+    public void setPontos(Integer pontos) {
+        this.pontos = pontos;
+    }
+    
+    
 
     public void setPontosAcerto(Integer pontosAcerto) {
         this.pontosAcerto = pontosAcerto;

@@ -25,6 +25,52 @@ public class ExercicioService extends HibernateUtil<Exercicio> {
         PessoaService repoPessoa = new PessoaService();
         return repoPessoa.getById(exercicio.getIdAutor());
     }
+    
+    public List<Exercicio> myGetAll() {
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+
+            SQLQuery query = currentSession().createSQLQuery("select *from Exercicio").addEntity(Exercicio.class);
+
+            List<Exercicio> data = query.list();
+            transaction.commit();
+            return data;
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return null;
+        }
+    }
+    
+    public List<Exercicio> findExercioByTurmaOrderByNome(int idTurma) {
+        Transaction transaction = currentSession().beginTransaction();
+        try {
+
+            SQLQuery query = currentSession().createSQLQuery("select "
+                    + "  E.* "
+                    + "from  "
+                    + "  TurmaExercicio TE "
+                    + "  inner join Exercicio E "
+                    + "  on E.ID = TE.IdExercicio "
+                    + "  inner join Turma T "
+                    + "  on T.ID = TE.IdTurma "
+                    + "where "
+                    + "  TE.Visivel = 1 "
+                    + "  and TE.IdTurma = :idTurma  "
+                    + "  and E.Ativo = 1 "
+                    + "  and T.Ativo = 1 order by E.NOME" ).addEntity(Exercicio.class);
+            query.setInteger("idTurma", idTurma);
+
+            List<Exercicio> data = query.list();
+            transaction.commit();
+            return data;
+        } catch (Exception e) {
+            transaction.rollback();
+            System.err.println(e.fillInStackTrace());
+            return null;
+        }
+    }
+    
 
     public List<Exercicio> getExercioByTurma(int idTurma) {
         Transaction transaction = currentSession().beginTransaction();

@@ -217,7 +217,7 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "  and E.Ativo = 1 "
                     + "order by "
                     + "  P.Nome, "
-                    + "  E.ID");
+                    + "  E.Nome");
 
             query.addScalar("IdPessoa", IntegerType.INSTANCE);
             query.addScalar("NomePessoa", StringType.INSTANCE);
@@ -283,7 +283,7 @@ public class TurmaService extends HibernateUtil<Turma> {
                     + "  and E.Ativo = 1 "
                     + "order by "
                     + "  P.Nome, "
-                    + "  E.ID");
+                    + "  E.Nome");
 
             query.addScalar("IdPessoa", IntegerType.INSTANCE);
             query.addScalar("NomePessoa", StringType.INSTANCE);

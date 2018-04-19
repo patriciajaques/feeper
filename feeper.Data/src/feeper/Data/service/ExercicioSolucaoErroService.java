@@ -29,11 +29,42 @@ public class ExercicioSolucaoErroService extends HibernateUtil<ExercicioSolucaoE
             query.setInteger("idSolucao", idSolucao);
             List<ExercicioSolucaoErro> data = query.list();
             transaction.commit();
-            return data;
+            return friendLyMessage(data);
         } catch (Exception e) {
             transaction.rollback();
             System.err.println(e.fillInStackTrace());
             return null;
         }
+    }
+    
+    
+    public List<ExercicioSolucaoErro> friendLyMessage(List<ExercicioSolucaoErro> list){
+        for(ExercicioSolucaoErro sol : list){
+            if(sol.getMensagemErro()!=null){
+                String fMensagem = sol.getMensagemErro();
+                fMensagem = fMensagem.replace("expected:", "Valor esperado é: ");
+                fMensagem = fMensagem.replace("but was:", "Mas é: ");
+                fMensagem = fMensagem.replace("java.lang.AssertionError:", "");
+                fMensagem = fMensagem.replace("cannot find symbol  symbol:   method", "Metodo nao encontrado: ");
+                Integer sizeOf = fMensagem.indexOf("at org.junit.Assert.fail");
+                if(sizeOf !=null && sizeOf != -1){
+                    String mReplace = fMensagem.substring(sizeOf, fMensagem.length());
+                    fMensagem = fMensagem.replace(mReplace, "");
+                }
+                sol.setMensagemErro(fMensagem);
+                
+            }
+            if(sol.getMensagemPersonalizada()!= null){
+                sol.setMensagemPersonalizada(
+                    sol.getMensagemPersonalizada().replace("java.lang.AssertionError:", "")
+                );
+            }
+            if(sol.getStaticErrorType()!= null){
+                sol.setStaticErrorType(
+                    sol.getStaticErrorType().replace("java.lang.AssertionError:", "")
+                );
+            }
+        }
+        return list;
     }
 }

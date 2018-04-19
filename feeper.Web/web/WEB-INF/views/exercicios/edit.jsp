@@ -73,6 +73,28 @@
                             <fmt:message key="label.exercicios.ativo"/>
                         </label>
                     </div>
+                        
+                    <div class="form-group">
+                        <label><fmt:message key="label.exercicios.pontos"/></label>
+                        <input type="number" class="form-control" id="nome" name="pontos" ng-model="exercicio.pontos">
+                    </div>
+<!--                        <div>
+                            {{exercicio}}
+                        </div>-->
+                         <div class="form-group">
+                            <select name="singleSelect" id="singleSelect" ng-model="exercicio.preRequisito">
+                                <option value="null">--- Escolha um exercicio que seja pré requisito para esse---</option> <!-- not selected / blank option -->
+                                <option ng-repeat="exer in exercicio.possiblePreRequisito" value="{{exer.id}}">{{exer.nome}}
+                                </option> <!-- interpolation -->
+                            </select>
+                        
+                            
+                             <label>{{exercicio.choosedPreRequisito.nome}}</label>
+                             
+                        </div>
+    
+                    
+                        
                     <div class="form-group">
                         <label><fmt:message key="label.exercicios.detalhamento"/>:</label>
                         <br>

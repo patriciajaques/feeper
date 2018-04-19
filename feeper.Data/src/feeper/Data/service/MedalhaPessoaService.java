@@ -98,6 +98,7 @@ public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
             medalhaPontuacaoObtida(idAluno);
             medalhaRankingMelhorTurma(idAluno);
             medalhaRankingMelhordoFeeper(idAluno);
+            medalhaExerciciosPreRequisitos(idAluno);
         }
     }
     
@@ -348,6 +349,27 @@ public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
         }
     } 
     
+    ////////////////////////////////////
+    // 9 - Medalha de Exercicios Concluidos
+    // Medalha Exercicios que são Pre-Requisitos
+    //////////////////////////////////
+    private static String SQL_EXERCICIOS_PRE_REQUISITOS = "select count(distinct(ee.IdExercicio)) from exerciciosolucao ee join exercicio e on (ee.idexercicio = e.preRequisito) where IdStatus = 4 and IdAluno = :idAluno";
+    public void medalhaExerciciosPreRequisitos(Integer idAluno){
+        Integer counter = countByIdAlunoAndSQL(idAluno, SQL_EXERCICIOS_PRE_REQUISITOS);
+        Integer nivel = 0;
+        if(counter > 0 && counter <3){
+            nivel = Medalha.NIVEL_BRONZE;
+        }else if(counter >= 3 && counter < 5){
+            nivel = Medalha.NIVEL_PRATA;
+        }else if(counter >=7){
+            nivel  = Medalha.NIVEL_OURO;
+        }
+        if(nivel > 0){
+            setNivelMedalha(idAluno, Medalha.EXERCICIOS_DESAFIOS, nivel);
+        }
+    }
+  
+    
     
     public List<MedalhaPessoa> listMedalhas(Integer idAluno){
         String SQL = "select *from medalhapessoas where idPessoa = :idAluno order by idMedalha asc";
@@ -372,7 +394,7 @@ public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
         
         ArrayList<Integer> lista = new ArrayList<>();
         lista.add(1);lista.add(2);lista.add(3);lista.add(4);
-        lista.add(5);lista.add(6);lista.add(7);lista.add(8); 
+        lista.add(5);lista.add(6);lista.add(7);lista.add(8);lista.add(9); 
         for(int i =0;i<lista.size();i++){
             if(
                     list.size()<=i  ||
