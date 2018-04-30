@@ -137,11 +137,11 @@ public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
         
         Integer counter = countByIdAlunoAndSQL(idAluno, SQL_LOGIN);
         Integer nivel = 0;
-        if(counter > 0 && counter <3){
+        if(counter >= 10 && counter <20){
             nivel = Medalha.NIVEL_BRONZE;
-        }else if(counter >= 3 && counter < 10){
+        }else if(counter >= 20 && counter < 40){
             nivel = Medalha.NIVEL_PRATA;
-        }else if(counter >=10){
+        }else if(counter >=40){
             nivel  = Medalha.NIVEL_OURO;
         }
         if(nivel > 0){
@@ -158,11 +158,11 @@ public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
     public void medalhaExerciciosConcluidos(Integer idAluno){
         Integer counter = countByIdAlunoAndSQL(idAluno, SQL_EXERCICIOS_CONCLUIDOS);
         Integer nivel = 0;
-        if(counter > 0 && counter <5){
+        if(counter >= 8 && counter <15){
             nivel = Medalha.NIVEL_BRONZE;
-        }else if(counter >= 5 && counter < 10){
+        }else if(counter >= 15 && counter < 25){
             nivel = Medalha.NIVEL_PRATA;
-        }else if(counter >=10){
+        }else if(counter >=25){
             nivel  = Medalha.NIVEL_OURO;
         }
         if(nivel > 0){
@@ -178,11 +178,11 @@ public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
     public void medalhaExerciciosEnviados(Integer idAluno){
         Integer counter = countByIdAlunoAndSQL(idAluno, SQL_EXERCICIOS_ENVIADOS);
         Integer nivel = 0;
-        if(counter > 0 && counter <10){
+        if(counter >= 15 && counter <30){
             nivel = Medalha.NIVEL_BRONZE;
-        }else if(counter >= 10 && counter < 25){
+        }else if(counter >= 30 && counter < 50){
             nivel = Medalha.NIVEL_PRATA;
-        }else if(counter >=25){
+        }else if(counter >=50){
             nivel  = Medalha.NIVEL_OURO;
         }
         if(nivel > 0){
@@ -238,9 +238,9 @@ public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
         
         Integer counter = countAtividadeDiaria(idAluno, SQL_ATIVIDADE_DIARIA);
         Integer nivel = 0;
-        if(counter > 0 && counter <3){
+        if(counter >= 2 && counter <4){
             nivel = Medalha.NIVEL_BRONZE;
-        }else if(counter >= 3 && counter < 7){
+        }else if(counter >= 4 && counter < 7){
             nivel = Medalha.NIVEL_PRATA;
         }else if(counter >=7){
             nivel  = Medalha.NIVEL_OURO;
@@ -293,11 +293,11 @@ public class MedalhaPessoaService extends HibernateUtil<MedalhaPessoa> {
         ExercicioPontosService exercicioPontosService = new ExercicioPontosService();
         Integer counter = exercicioPontosService.getPointsByIdPessoa(idAluno);
         Integer nivel = 0;
-        if(counter > 300 && counter <1000){
+        if(counter >= 500 && counter <1500){
             nivel = Medalha.NIVEL_BRONZE;
-        }else if(counter >= 1000 && counter < 2000){
+        }else if(counter >= 1500 && counter < 2500){
             nivel = Medalha.NIVEL_PRATA;
-        }else if(counter >=2000){
+        }else if(counter >=2500){
             nivel  = Medalha.NIVEL_OURO;
         }
         if(nivel > 0){
