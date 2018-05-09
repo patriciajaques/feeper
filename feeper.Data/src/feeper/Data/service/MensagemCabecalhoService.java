@@ -7,6 +7,7 @@ package feeper.Data.service;
 import feeper.Data.entity.MensagemCabecalho;
 import feeper.Data.model.ETipoLeitor;
 import feeper.Data.model.HibernateUtil;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.SQLQuery;
 import org.hibernate.Transaction;
@@ -76,6 +77,9 @@ public class MensagemCabecalhoService extends HibernateUtil<MensagemCabecalho> {
     }
 
     public List<Object> getMensagens(int idPessoa, char tipoLeitor, boolean apenasNovas, boolean agrupadas) {
+        //Apenas para testes ja que não é usado, depois ver em producao
+       
+        
         Transaction transaction = currentSession().beginTransaction();
         try {
 

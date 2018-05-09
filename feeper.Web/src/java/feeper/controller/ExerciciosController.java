@@ -48,6 +48,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -572,13 +573,17 @@ public class ExerciciosController extends ApplicationController {
                 ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();
                 
                 ExercicioSolucao lastResponse = repoSolucao.getLastByIdExercicio(exercicio.getId(), pessoa.getId());
+                Date last = lastResponse.getDataCadastro();
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.MINUTE, -2);
+                Date atual = calendar.getTime();
                 
-                // Se estiver aguardando solução ou resolvido
-                // Nao enviar novamente para correcao
-                Boolean enviaCorrecao = true; // Condicao abaixo aceita enviar correcao apenas se nao estiver correta.
-//                        lastResponse == null ||;
-//                        (!(lastResponse.getIdStatus() == EStatusSolucao.AGUARDANDO) &&
-//                        !(lastResponse.getIdStatus() == EStatusSolucao.RESOLVIDO));
+                Boolean enviaCorrecao = true;
+                if(lastResponse.getIdStatus() == EStatusSolucao.AGUARDANDO &&atual.before(last)){
+                    enviaCorrecao = false;
+                }
+
+
                 if(enviaCorrecao){
                     IntegerResult idSolucao = new IntegerResult();
                     repoSolucao.salvarSolucao(pessoa.getId(), exercicio.getId(), idSolucao);

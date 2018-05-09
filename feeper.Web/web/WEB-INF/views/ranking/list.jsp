@@ -39,7 +39,8 @@
                                 <td>
                                     <c:choose>
                                         <c:when test="${item.getPessoa().isPossuiFoto()}">
-                                            <img src="<c:url value='/resources/img/photo/photo-${item.getPessoa().getId()}.png'/>" alt="<c:out value="${item.getNome()}"/>" >
+                                            
+                                            <img src="<c:url value='/resources/img/photo/photo-${item.getPessoa().getId()}.png'/>" alt="<c:out value=""/>" >
                                         </c:when>
                                         <c:otherwise>
                                             <img src="<c:url value='/resources/img/sem_foto.png'/>" alt="<c:out value="${item.getPessoa().getNome()}"/>" >
@@ -72,7 +73,7 @@
                                 <td>
                                     <c:choose>
                                         <c:when test="${item.getPessoa().isPossuiFoto()}">
-                                            <img src="<c:url value='/resources/img/photo/photo-${item.getPessoa().getId()}.png'/>" alt="<c:out value="${item.getNome()}"/>" >
+                                            <img src="<c:url value='/resources/img/photo/photo-${item.getPessoa().getId()}.png'/>" alt="<c:out value=""/>" >
                                         </c:when>
                                         <c:otherwise>
                                             <img src="<c:url value='/resources/img/sem_foto.png'/>" alt="<c:out value="${item.getPessoa().getNome()}"/>" >
