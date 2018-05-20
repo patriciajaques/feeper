@@ -130,16 +130,18 @@
                                 
                                 <c:if test="${UsuarioLogado.isGamificado()}">
                                     <c:if test="${UsuarioLogado.isElementoRanking()}">
-                                        <li id="menu-ranking"><a href="<c:url value='/'/>ranking"><fmt:message key="menu.leaderboard"/></a></li>    
+                                        <li id="menu-ranking"><a href="<c:url value='/'/>ranking" style="color:red"><fmt:message key="menu.leaderboard"/></a></li>    
                                     </c:if>
                                     <c:if test="${UsuarioLogado.isElementoMedalha()}">
-                                        <li id="menu-minhasconquistas"><a href="<c:url value='/'/>conquistas/minhasconquistas"><fmt:message key="menu.conquistas"/></a></li>
+                                        <li id="menu-minhasconquistas"><a href="<c:url value='/'/>conquistas/minhasconquistas" style="color:red"><fmt:message key="menu.conquistas"/></a></li>
                                     </c:if>
                                     <c:if test="${UsuarioLogado.isElementoPonto()}">
                                         <li id="menu-minhasconquistas"><a href="<c:url value='/'/>pontos"><fmt:message key="menu.pontos"/></a></li>
                                     </c:if>
-                                    
+                                        
                                 </c:if>
+                                        
+                                <li id="menu-termo"><a href="<c:url value='/'/>termo"><fmt:message key="menu.termo"/></a></li>                                        
                                     
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="menu.turmas"/> <b class="caret"></b></a>

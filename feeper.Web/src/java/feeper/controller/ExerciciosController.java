@@ -573,14 +573,17 @@ public class ExerciciosController extends ApplicationController {
                 ExercicioSolucaoService repoSolucao = new ExercicioSolucaoService();
                 
                 ExercicioSolucao lastResponse = repoSolucao.getLastByIdExercicio(exercicio.getId(), pessoa.getId());
-                Date last = lastResponse.getDataCadastro();
-                Calendar calendar = Calendar.getInstance();
-                calendar.add(Calendar.MINUTE, -2);
-                Date atual = calendar.getTime();
                 
                 Boolean enviaCorrecao = true;
-                if(lastResponse.getIdStatus() == EStatusSolucao.AGUARDANDO &&atual.before(last)){
-                    enviaCorrecao = false;
+                
+                if(lastResponse !=null){
+                    Date last = lastResponse.getDataCadastro();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.MINUTE, -2);
+                    Date atual = calendar.getTime();
+                    if(lastResponse.getIdStatus() == EStatusSolucao.AGUARDANDO &&atual.before(last)){
+                        enviaCorrecao = false;
+                    }
                 }
 
 

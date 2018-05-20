@@ -47,5 +47,8 @@
         <property name="idTurmaSelecionada" type="int">
             <column name="IdTurmaSelecionada" not-null="true" />
         </property>
+        <property name="termo" type="java.lang.Integer">
+            <column name="termo" />
+        </property>
     </class>
 </hibernate-mapping>

@@ -33,10 +33,24 @@ public class Pessoa  implements java.io.Serializable {
     private boolean elementoMedalha;
 
     
+    private Integer termo;
+    
     
     public boolean isElementoPonto() {
         return elementoPonto;
     }
+
+    public Integer getTermo() {
+        if(termo == null)
+            return 0;
+        return termo;
+    }
+
+    public void setTermo(Integer termo) {
+        this.termo = termo;
+    }
+    
+    
 
     public void setElementoPonto(boolean elementoPonto) {
         this.elementoPonto = elementoPonto;
