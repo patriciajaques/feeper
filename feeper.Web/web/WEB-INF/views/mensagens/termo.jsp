@@ -125,7 +125,7 @@ instituição. Em caso de dúvida você pode procurar a professora e pesquisador
 A. Jaques Maillard no telefone (51) 3591-1226 ou pelo e-mail pjaques@unisinos.br. <br> <br>
         
 
-<form class="form-group" action="/feeper.Web/termo" method="POST">
+<form class="form-group" action="<c:url value='/'/>termo" method="POST">
     <button type="submit" name="action" value="1" class="btn btn-primary">Declaro que entendi os objetivos, riscos e benefícios da minha participação na pesquisa
 e concordo em participar</button>
     <button type="submit" name="action" value="-1" class="btn btn-default btn-fechar">Não desejo participar dessa pesquisa</button>

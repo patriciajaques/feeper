@@ -218,6 +218,7 @@
                             <tr>
                                 <th><fmt:message key="label.turma.acoes"/></th>
                                 <th>#</th>
+                                <th>TCLE</th>
                                 <th><fmt:message key="label.turma.nomealuno"/></th>
                                 <th><fmt:message key="label.turma.email"/></th>
                             </tr>
@@ -233,6 +234,7 @@
                                             </div>
                                         </td>
                                         <td><c:out value="${item.getId()}"/></td>
+                                        <td><c:out value="${item.getTermo()}"/></td>
                                         <td><c:out value="${item.getNome()}"/></td>
                                         <td><c:out value="${item.getEmail()}"/></td>
                                     </tr>

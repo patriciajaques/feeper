@@ -86,8 +86,12 @@ public class LoginController extends ApplicationController {
                 }
                 session.setAttribute("TurmaSelecionada", turmaSelecionada);
             }
-
-            mav.setView(new RedirectView("/", true, true, false));
+            
+            if(pessoa.getTermo()==0){
+                mav.setView(new RedirectView("/termo", true, true, false));    
+            }else{
+                mav.setView(new RedirectView("/", true, true, false));   
+            }
         }
         return mav;
     }
