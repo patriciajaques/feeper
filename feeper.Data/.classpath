@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_144">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry including="**/*.java" kind="src" output="target/classes" path="src">
+	<classpathentry kind="src" output="target/classes" path="src">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path=".metadata/.plugins/org.jboss.tools.central/proxyWizards/1418772477306/com.jboss.jbds.central.discovery_8.0.1.Final_v20141214_2352_B431.jar_8497975036623731302.jar"/>
-	<classpathentry kind="lib" path=".metadata/.plugins/org.jboss.tools.central/proxyWizards/1418772477306/com.jboss.jbds.central.discovery.earlyaccess_8.0.1.Final_v20141214_2352_B431.jar_6743704166073779178.jar"/>
-	<classpathentry kind="lib" path=".metadata/.plugins/org.jboss.tools.central/proxyWizards/1418772477306/com.jboss.jbds.central.discovery.integration_stack.earlyaccess_8.0.0.Beta1_v20141023_1623_B69.jar_2316116797165449275.jar"/>
-	<classpathentry kind="lib" path="E:/workspace-java-2ee/feeper/lib"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>

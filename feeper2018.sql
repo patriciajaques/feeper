@@ -7,6 +7,12 @@
 -- Versão do servidor: 10.1.19-MariaDB
 -- PHP Version: 5.6.24
 
+SET time_zone='America/Sao_Paulo';
+
+SET @@global.time_zone = '+3:00';
+
+
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
