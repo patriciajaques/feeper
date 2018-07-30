@@ -107,7 +107,7 @@ $(function () {
             }
             ControlaBotoes();
             RemoveCarregando();
-            $('html, body').animate({scrollTop: $("#lblFilename").offset().top}, 500);
+            $('html, body').animate({scrollTop: $("#lblFilename").offset().top}, 1000);
         });
     });
 
