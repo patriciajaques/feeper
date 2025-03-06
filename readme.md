@@ -139,4 +139,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 Patrícia Augustin Jaques Maillard - patricia.jaques@gmail.com
 
-Project URL: [https://github.com/patriciajaques/feeper-public](https://github.com/patriciajaques/feeper-public)
+Project URL: [https://github.com/patriciajaques/feeper](https://github.com/patriciajaques/feeper)
