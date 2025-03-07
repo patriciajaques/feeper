@@ -108,6 +108,8 @@ This environment was used as a case study in research on the effect of gamificat
 
 If you use the code from this project or base your work on it, please cite the original publications below, in addition to the source code link of this project:
 
+### Citations in bibtex:
+
 ```
 @mastersthesis{smiderle2017efeito,
   title={O efeito da gamificação no engajamento e aprendizagem de programação: um estudo considerando a personalidade e a orientação motivacional dos estudantes},
@@ -193,9 +195,26 @@ If you use the code from this project or base your work on it, please cite the o
   organization={SBC},
   url={https://doi.org/10.5753/cbie.sbie.2018.973}
 }
-
-
 ```
+
+### Citations in ABNT: 
+
+- SMIDERLE, Rodrigo. O efeito da gamificação no engajamento e aprendizagem de programação: um estudo considerando a personalidade e a orientação motivacional dos estudantes. 2017. Dissertação (Mestrado) - Universidade do Vale do Rio dos Sinos, São Leopoldo, 2017.
+
+- SCHNEIDER, Gilvani. Combinando técnicas de análise estática e avaliação dinâmica para avaliação de código em ambientes virtuais de aprendizagem. 2014. Trabalho de Conclusão de Curso (Graduação em Análise e Desenvolvimento de Sistemas) - Universidade do Vale do Rio dos Sinos, São Leopoldo, 2014.
+
+- ALVES, Fábio Pacheco. Um ambiente virtual de aprendizagem com feedback personalizado para apoio a disciplinas de programação. 2014. Trabalho de Conclusão de Curso (Graduação em Tecnólogo em Análise e Desenvolvimento de Sistemas) - Universidade do Vale do Rio dos Sinos, São Leopoldo, 2014.
+
+- SMIDERLE, Rodrigo et al. The impact of gamification on students' learning, engagement and behavior based on their personality traits. Smart Learning Environments, v. 7, p. 1-11, 2020. Disponível em: https://doi.org/10.1186/s40561-020-00127-6. Acesso em: 7 mar. 2025.
+
+- SMIDERLE, Rodrigo et al. Studying the Impact of Gamification on Learning and Engagement of Introverted and Extroverted Students. In: IEEE INTERNATIONAL CONFERENCE ON ADVANCED LEARNING TECHNOLOGIES, 19., 2019. Proceedings [...]. IEEE, 2019. p. 71-75. Disponível em: https://doi.org/10.1109/ICALT.2019.00024. Acesso em: 7 mar. 2025.
+
+- SMIDERLE, Rodrigo; RIGO, Sandro; JAQUES, Patricia. Estudando o impacto da gamificação na aprendizagem e engajamento de alunos de acordo com os traços de personalidade e a orientação motivacional. In: SIMPÓSIO BRASILEIRO DE INFORMÁTICA NA EDUCAÇÃO, 30., 2019. Anais [...]. Porto Alegre: Sociedade Brasileira de Computação, 2019. p. 793-802. Disponível em: https://doi.org/10.5753/cbie.sbie.2019.793. Acesso em: 7 mar. 2025.
+
+- SCHNEIDER, Gilvani; JAQUES, Patricia Augustin. Combinando técnicas de análise estática e avaliação dinâmica para avaliação de código em ambientes de aprendizagem de programação. Revista Brasileira de Computação Aplicada, v. 8, n. 2, p. 114-129, 2016. Disponível em: https://doi.org/10.5335/rbca.v8i2.5903. Acesso em: 7 mar. 2025.
+
+- ALVES, Fábio P.; JAQUES, Patricia. Um Ambiente Virtual com Feedback Personalizado para Apoio a Disciplinas de Programação. In: SIMPÓSIO BRASILEIRO DE INFORMÁTICA NA EDUCAÇÃO, 25., 2014. Anais [...]. Porto Alegre: Sociedade Brasileira de Computação, 2014. p. 1078-1082. Disponível em: https://doi.org/10.5753/cbie.sbie.2014.1078. Acesso em: 7 mar. 2025.
+
 
 ## License
 
