@@ -1,7 +1,5 @@
 # Feeper: Gamified Programming Learning Environment
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 > **Important note**: Feeper was developed at UNISINOS under the supervision of Prof. Dr. Patrícia Augustin Jaques Maillard, while she was part of the PPGC faculty at that university. The system is no longer available due to this institutional change. Currently, Prof. Patrícia is leading innovative research at PPGInf/UFPR, developing a new system that integrates generative AI for programming education. The professor welcomes Master's and PhD students interested in contributing to this promising line of research. Those interested can contact her via email at patricia@inf.ufpr.br to discuss supervision and collaboration opportunities in this expanding field.
 
 ## About the Project
@@ -218,7 +216,18 @@ If you use the code from this project or base your work on it, please cite the o
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0). This license allows non-commercial use, including academic research, with appropriate attribution. For commercial use, please contact the authors.
+
+For more details, see [Creative Commons BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
+
+## Permitted Use
+
+This software is freely available for:
+- Academic research
+- Teaching and education
+- Personal non-commercial use
+
+For any commercial or production use, please contact the authors to obtain a commercial license.
 
 ## Contact
 
