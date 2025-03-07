@@ -129,6 +129,72 @@ If you use the code from this project or base your work on it, please cite the o
   year={2014},
   howpublished={Trabalho de Conclusão de Curso. (Graduação em Tecnólogo em Análise e Desenvolvimento de Sistemas) - Universidade do Vale do Rio dos Sinos}
 }
+
+@article{smiderle2020impact,
+  title={The impact of gamification on students' learning, engagement and behavior based on their personality traits},
+  author={Smiderle, Rodrigo and Rigo, Sandro and Marques, Leonardo B. and Coelho, Jorge A. P. M. and Jaques, Patricia A.},
+  journal={Smart Learning Environments},
+  volume={7},
+  pages={1--11},
+  year={2020},
+  publisher={Springer},
+  url={https://doi.org/10.1186/s40561-020-00127-6}
+}
+
+@inproceedings{smiderle2019studying,
+  title={Studying the Impact of Gamification on Learning and Engagement of Introverted and Extroverted Students},
+  author={Smiderle, Rodrigo and Marques, Leonardo and de M. Coelho, Jorge Artur P. and Rigo, Sandro J. and Jaques, Patricia A.},
+  booktitle={2019 IEEE 19th International Conference on Advanced Learning Technologies (ICALT)},
+  pages={71--75},
+  year={2019},
+  organization={IEEE},
+  url={https://doi.org/10.1109/ICALT.2019.00024}
+}
+
+@inproceedings{smiderle2019estudando,
+  title={Estudando o impacto da gamificação na aprendizagem e engajamento de alunos de acordo com os traços de personalidade e a orientação motivacional},
+  author={Smiderle, Rodrigo and Rigo, Sandro and Jaques, Patricia},
+  booktitle={Anais do XXX Simpósio Brasileiro de Informática na Educação (SBIE 2019)},
+  pages={793--802},
+  year={2019},
+  organization={Brazilian Computer Society (Sociedade Brasileira de Computação - SBC)},
+  url={https://doi.org/10.5753/cbie.sbie.2019.793}
+}
+
+
+@article{schneider2016combinando,
+  title={Combinando técnicas de análise estática e avaliação dinâmica para avaliação de código em ambientes de aprendizagem de programação},
+  author={Schneider, Gilvani and Jaques, Patricia Augustin},
+  journal={Revista Brasileira de Computação Aplicada},
+  volume={8},
+  number={2},
+  pages={114--129},
+  year={2016},
+  url={https://doi.org/10.5335/rbca.v8i2.5903}
+}
+
+
+@inproceedings{alves2014ambiente,
+  title={Um Ambiente Virtual com Feedback Personalizado para Apoio a Disciplinas de Programação},
+  author={Alves, Fábio P. and Jaques, Patricia},
+  booktitle={XXV Simpósio Brasileiro de Informática na Educação},
+  pages={1078--1082},
+  year={2014},
+  organization={SBC},
+  url={https://doi.org/10.5753/cbie.sbie.2014.1078}
+}
+
+@inproceedings{alves2018melhorando,
+  title={Melhorando a atenção dos estudantes através da tutoria de mindfulness em sistemas tutores inteligentes},
+  author={Alves, Antônio and Morais, Felipe and Schaab, Bruno and Jaques, Patricia},
+  booktitle={XXIX Simpósio Brasileiro de Informática na Educação},
+  pages={973--982},
+  year={2018},
+  organization={SBC},
+  url={https://doi.org/10.5753/cbie.sbie.2018.973}
+}
+
+
 ```
 
 ## License
