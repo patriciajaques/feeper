@@ -104,7 +104,11 @@ Este ambiente foi utilizado como estudo de caso em uma pesquisa sobre o efeito d
 
 ## Citação
 
-Se você utilizar o código deste projeto ou se basear nele para seu trabalho, por favor cite as publicações originais abaixo, além do link do código fonte desse projeto:
+Se você utilizar o código deste projeto ou se basear nele para seu trabalho, por favor cite as publicações originais abaixo, além do link do código fonte desse projeto. 
+
+Para mais informações específicas sobre artigos publicados e alunos orientados no âmbito do projeto, consulte o Currículo Lattes da Profa. Dra. Patricia Augustin Jaques Maillard: 
+[http://lattes.cnpq.br/5723385125570881](http://lattes.cnpq.br/5723385125570881)
+
 
 ### Citação em bibtex:
 
