@@ -104,12 +104,12 @@ This environment was used as a case study in research on the effect of gamificat
 
 ## Citation
 
-To use the code or concepts from PAT2Math in academic papers or projects, please cite the project and its related publications.
+To use the code or concepts from this project in academic papers or projects, please cite the project and its related publications.
 
 For more specific information about published articles and students supervised within the scope of the project, please refer to Prof. Dr. Patricia Augustin Jaques Maillard's Lattes Curriculum:
 [http://lattes.cnpq.br/5723385125570881](http://lattes.cnpq.br/5723385125570881)
 
-Suggested citationS:
+Suggested citations:
 
 - JAQUES, P. A. et al. FEEPER: A Gamified web environment for programming education with automatic grading and plagiarism detection. Available at: (https://github.com/patriciajaques/feeper). Accessed on: [access date].
 
