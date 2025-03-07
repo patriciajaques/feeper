@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Important note**: Feeper was developed at UNISINOS under the guidance of Prof. Dr. Patrícia Augustin Jaques Maillard, who is no longer at this university. For this reason, the system has been taken offline. Currently, Prof. Patrícia is working on a new system that integrates generative AI for teaching programming.
+> **Important note**: Feeper was developed at UNISINOS under the supervision of Prof. Dr. Patrícia Augustin Jaques Maillard, while she was part of the PPGC faculty at that university. The system is no longer available due to this institutional change. Currently, Prof. Patrícia is leading innovative research at PPGInf/UFPR, developing a new system that integrates generative AI for programming education. The professor welcomes Master's and PhD students interested in contributing to this promising line of research. Those interested can contact her via email at patricia@inf.ufpr.br to discuss supervision and collaboration opportunities in this expanding field.
 
 ## About the Project
 
