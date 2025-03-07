@@ -1,8 +1,6 @@
 # Feeper: Ambiente de Ensino de Programação Gamificado
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-> **Nota importante: O Feeper foi desenvolvido na UNISINOS sob orientação da Profa. Dra. Patrícia Augustin Jaques Maillard, enquanto era parte do corpo docente do PPGC dessa universidade. O sistema não está mais no ar devido a essa mudança institucional. Atualmente, a Profa. Patrícia está liderando pesquisas inovadoras no PPGInf/UFPR, desenvolvendo um novo sistema que integra IA generativa para o ensino de programação. A professora recebe alunos interessados em mestrado e doutorado que desejem contribuir com essa linha de pesquisa promissora. Interessados podem entrar em contato através do e-mail patricia@inf.ufpr.br para discutir oportunidades de orientação e colaboração neste campo em expansão.
+> **Nota importante**: O Feeper foi desenvolvido na UNISINOS sob orientação da Profa. Dra. Patrícia Augustin Jaques Maillard, enquanto era parte do corpo docente do PPGC dessa universidade. O sistema não está mais no ar devido a essa mudança institucional. Atualmente, a Profa. Patrícia está liderando pesquisas inovadoras no PPGInf/UFPR, desenvolvendo um novo sistema que integra IA generativa para o ensino de programação. A professora recebe alunos interessados em mestrado e doutorado que desejem contribuir com essa linha de pesquisa promissora. Interessados podem entrar em contato através do e-mail patricia@inf.ufpr.br para discutir oportunidades de orientação e colaboração neste campo em expansão.
 
 ## Sobre o Projeto
 
