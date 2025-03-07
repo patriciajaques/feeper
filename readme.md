@@ -104,7 +104,11 @@ This environment was used as a case study in research on the effect of gamificat
 
 ## Citation
 
-If you use the code from this project or base your work on it, please cite the original publications below, in addition to the source code link of this project:
+If you use the code from this project or base your work on it, please cite the original publications below, in addition to the source code link of this project. 
+
+For more specific information about published articles and students supervised within the scope of the project, please refer to Prof. Dr. Patricia Augustin Jaques Maillard's Lattes Curriculum:
+[http://lattes.cnpq.br/5723385125570881](http://lattes.cnpq.br/5723385125570881)
+
 
 ### Citations in bibtex:
 
